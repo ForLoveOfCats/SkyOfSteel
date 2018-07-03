@@ -174,7 +174,7 @@ func _process(delta):
 			self.momentum.x = 0
 
 	if self.net_timer == 0:
-		rpc('update_pos', OS.get_ticks_msec(), self.translation, self.rotation_degrees.y)
+		rpc_unreliable('update_pos', OS.get_ticks_msec(), self.translation, self.rotation_degrees.y)
 	self.net_timer += delta
 	if self.net_timer >= NetTimerLength:
 		self.net_timer = 0
