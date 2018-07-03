@@ -20,11 +20,10 @@ func SC_host(arg):
 func SC_connect(arg):
 	if SingleSteel.DevMode:
 		arg = '127.0.0.1'
-	else:
-		if arg == 'localhost':
-			arg = '127.0.0.1'
-		self.printf('Attempting to connect to ' + str(arg) + ' on port `' + str(SingleSteel.Port))
-		SNet.connect(arg, SingleSteel.Port)
+	if arg == 'localhost':
+		arg = '127.0.0.1'
+	self.printf('Attempting to connect to ' + str(arg) + ' on port `' + str(SingleSteel.Port))
+	SNet.connect(arg, SingleSteel.Port)
 
 
 func execute_command(command_string):

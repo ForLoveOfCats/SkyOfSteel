@@ -66,8 +66,6 @@ remote func update_pos(time, pos, roty):
 		player.rotation_degrees.y = roty
 		player.translation = pos
 		self.net_move_time = time
-	else:
-		print('rejected position ', pos)
 
 remote func send_move_request(time, pos, roty):
 	if get_tree().is_network_server():
