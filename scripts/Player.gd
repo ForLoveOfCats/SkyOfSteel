@@ -7,7 +7,7 @@ const MaxAngle = 50
 const Gravity = 0.4
 const BaseMoveSpeed = 15
 const MinimumMoveSpeed = 6
-const Friction = BaseMoveSpeed*7
+const Friction = BaseMoveSpeed*6
 const BaseJumpPush = 10
 const ContinueJumpPush = 0.09
 const MaxJumpLength = 0.3
@@ -99,7 +99,7 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 	else:
-		if not self.is_jumping: 
+		if not self.is_jumping:
 			self.momentum.y -= Gravity
 
 		if Input.is_action_pressed("Jump") and self.is_jumping and not is_on_ceiling():
@@ -111,7 +111,7 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+	move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction))*self.movement_multiplyer, Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
 	#move_and_slide(self.momentum, Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
 
 func _input(event):
@@ -126,6 +126,13 @@ func _process(delta):
 	self.current_delta = delta
 	if not self.possessed:
 		return null
+
+	if Input.is_action_pressed("Sprint"):
+		self.movement_multiplyer = 2.5
+	elif Input.is_action_pressed("Crouch"):
+		self.movement_multiplyer = 0.2
+	else:
+		self.movement_multiplyer = 1
 
 	if Input.is_action_just_pressed("TestBind"):
 		pass#self.send_move_request(OS.get_ticks_msec(), self.translation, self.rotation_degrees.y)
@@ -142,7 +149,7 @@ func _process(delta):
 			moving_this_frame_z = true
 		else:
 			self.momentum.z = 0
-	
+
 	if not moving_this_frame_z and is_on_floor():
 		if self.momentum.z > 0:
 			self.momentum.z -= Friction*delta

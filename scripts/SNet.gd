@@ -1,4 +1,4 @@
-extends Node 
+extends Node
 
 
 var connect_ip = null
@@ -51,6 +51,8 @@ func _connected_ok():
 
 func _server_disconnected():
 	SConsole.logf('Lost connection to server at ' + connect_ip + ' on port ' + str(connect_port))
+	get_tree().set_network_peer(null)
+	SingleSteel.close_world()
 
 func _connected_fail():
 	SConsole.logf('Failed to connect to ' + connect_ip + ' on port ' + str(connect_port))

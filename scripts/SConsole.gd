@@ -19,10 +19,11 @@ func SC_host(arg):
 
 func SC_connect(arg):
 	if SingleSteel.DevMode:
-		self.printf('Attempting to connect to localhost on port ' + str(SingleSteel.Port))
-		SNet.connect(SingleSteel.DevIp, SingleSteel.Port)
+		arg = '127.0.0.1'
 	else:
-		self.printf('Attempting to connect to ' + arg + ' on port ' + str(SingleSteel.Port))
+		if arg == 'localhost':
+			arg = '127.0.0.1'
+		self.printf('Attempting to connect to ' + str(arg) + ' on port `' + str(SingleSteel.Port))
 		SNet.connect(arg, SingleSteel.Port)
 
 
@@ -45,7 +46,7 @@ func execute_command(command_string):
 
 	if not found_command:
 		self.printf('Error: Command "' + command_split[0] + '" not found')
-	
+
 	elif not succedded and needs_arg:
 		self.printf('Error: Invalid argument "' + str(argument) + '" for command "' + command_split[0] + '"')
 

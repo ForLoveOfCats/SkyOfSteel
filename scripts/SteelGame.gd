@@ -20,6 +20,9 @@ func start_world():
 	world.set_name("SkyScene")
 	add_child(world)
 
+func close_world():
+	get_node("SkyScene").queue_free()
+
 
 
 func _notification(what):

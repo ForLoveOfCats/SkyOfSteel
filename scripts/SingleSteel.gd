@@ -1,4 +1,4 @@
-extends Node 
+extends Node
 
 
 const DevMode = false
@@ -17,6 +17,9 @@ func spawn_player(id, possess):
 
 func start_world():
 	SteelGame.start_world()
+
+func close_world():
+	SteelGame.close_world()
 
 
 func _ready():
