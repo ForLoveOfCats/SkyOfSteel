@@ -79,6 +79,7 @@ func _ready():
 	if self.possessed:
 		$SteelCamera.make_current()  # If commented out uses global camera instead of FPS camera
 		$FPSMesh.hide()
+		add_child(load("res://scenes/SteelHUD.tscn").instance())
 
 func _physics_process(delta):
 	if not self.possessed:
