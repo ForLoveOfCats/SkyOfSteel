@@ -7,7 +7,7 @@ const MaxAngle = 50
 const Gravity = 0.4
 const BaseMoveSpeed = 15
 const MinimumMoveSpeed = 6
-const Friction = BaseMoveSpeed*6
+const Friction = BaseMoveSpeed*7
 const BaseJumpPush = 10
 const ContinueJumpPush = 0.09
 const MaxJumpLength = 0.3
@@ -109,7 +109,7 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction))*self.movement_multiplyer, Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+	move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
 	#move_and_slide(self.momentum, Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
 
 func _input(event):
@@ -126,9 +126,9 @@ func _process(delta):
 		return null
 
 	if Input.is_action_pressed("Sprint"):
-		self.movement_multiplyer = 2.5
+		self.movement_multiplyer = 2
 	elif Input.is_action_pressed("Crouch"):
-		self.movement_multiplyer = 0.2
+		self.movement_multiplyer = 0.4
 	else:
 		self.movement_multiplyer = 1
 
@@ -139,11 +139,11 @@ func _process(delta):
 
 	var moving_this_frame_z = false
 	if Input.is_action_pressed("MoveForward") and SingleSteel.player_input_enabled:
-		self.momentum.z = BaseMoveSpeed
+		self.momentum.z = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_z = true
 	if Input.is_action_pressed("MoveBack") and SingleSteel.player_input_enabled:
 		if not moving_this_frame_z:
-			self.momentum.z = BaseMoveSpeed*-1
+			self.momentum.z = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_z = true
 		else:
 			self.momentum.z = 0
@@ -160,11 +160,11 @@ func _process(delta):
 
 	var moving_this_frame_x = false
 	if Input.is_action_pressed("MoveLeft") and SingleSteel.player_input_enabled:
-		self.momentum.x = BaseMoveSpeed
+		self.momentum.x = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_x = true
 	if Input.is_action_pressed("MoveRight") and SingleSteel.player_input_enabled:
 		if not moving_this_frame_x:
-			self.momentum.x = BaseMoveSpeed*-1
+			self.momentum.x = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_x = true
 		else:
 			self.momentum.x = 0
