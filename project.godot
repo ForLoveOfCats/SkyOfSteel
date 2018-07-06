@@ -19,6 +19,7 @@ config/icon="res://icon.png"
 SingleSteel="*res://scripts/SingleSteel.gd"
 SConsole="*res://scripts/SConsole.gd"
 SNet="*res://scripts/SNet.gd"
+Items="*res://scripts/Items.gd"
 
 [debug]
 
@@ -52,6 +53,8 @@ Enter=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"",
 Sprint=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777237,"unicode":0,"echo":false,"script":null)
  ]
 Crouch=[ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777238,"unicode":0,"echo":false,"script":null)
+ ]
+Fire=[ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
  ]
 
 [rendering]
