@@ -25,6 +25,11 @@ func SC_connect(arg):
 	self.printf('Attempting to connect to ' + str(arg) + ' on port `' + str(SingleSteel.Port))
 	SNet.connect(arg, SingleSteel.Port)
 
+func SC_spectate(arg):
+	var camera = get_tree().get_root().get_node("SteelGame/SkyScene/"+str(arg)+"/SteelCamera")
+	camera.make_current()
+	return true
+
 
 func execute_command(command_string):
 	self.printf('\n >>> ' + command_string)
@@ -61,6 +66,7 @@ func _ready():
 	self.console_window = get_tree().get_root().get_node("SteelGame/ConsoleWindow")
 	command_list.append(['test_command', funcref(self, 'SC_test_command'), false])
 	command_list.append(['host', funcref(self, 'SC_host'), false])
+	command_list.append(['spectate', funcref(self, 'SC_spectate'), true])
 
 	if SingleSteel.DevMode:
 		command_list.append(['connect', funcref(self, 'SC_connect'), false])
