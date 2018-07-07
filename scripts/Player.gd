@@ -38,6 +38,9 @@ var possessed = false
 
 
 func airstrafe(rot):
+	if Input.is_action_pressed("MoveForward") or Input.is_action_pressed("MoveBack"):
+		return null
+
 	self.air_direction = self.direction
 
 	if round(self.momentum.z) > 0:
@@ -157,10 +160,10 @@ func _process(delta):
 
 
 	var moving_this_frame_x = false
-	if Input.is_action_pressed("MoveLeft") and SingleSteel.player_input_enabled and is_on_floor() and not Input.is_action_pressed("Sprint"):
+	if Input.is_action_pressed("MoveLeft") and SingleSteel.player_input_enabled and is_on_floor() and abs(self.momentum.z) <= BaseMoveSpeed*self.movement_multiplyer:
 		self.momentum.x = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_x = true
-	if Input.is_action_pressed("MoveRight") and SingleSteel.player_input_enabled and is_on_floor() and not Input.is_action_pressed("Sprint"):
+	if Input.is_action_pressed("MoveRight") and SingleSteel.player_input_enabled and is_on_floor() and abs(self.momentum.z) <= BaseMoveSpeed*self.movement_multiplyer:
 		if not moving_this_frame_x:
 			self.momentum.x = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_x = true
