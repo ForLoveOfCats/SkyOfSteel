@@ -5,7 +5,7 @@ extends KinematicBody
 const MouseSensMultiplyer = 0.2
 const MaxAngle = 50
 const Gravity = 0.4
-const BaseMoveSpeed = 15
+const BaseMoveSpeed = 18
 const AirstrafeBoostMultiplyer = 0.023
 const AirstrafeMaxBoost = 80
 const MinimumMoveSpeed = 6
@@ -94,6 +94,8 @@ func _ready():
 		$SteelCamera.make_current()  # If commented out uses global camera instead of FPS camera
 		$FPSMesh.hide()
 		add_child(load("res://scenes/SteelHUD.tscn").instance())
+	else:
+		set_process(false)
 
 func _physics_process(delta):
 	if not self.possessed:
@@ -103,6 +105,7 @@ func _physics_process(delta):
 		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
 	else:
 		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+
 	#move_and_slide(self.momentum, Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
 
 
@@ -124,9 +127,6 @@ func _input(event):
 
 
 func _process(delta):
-	if not self.possessed:
-		return null
-
 	if Input.is_action_pressed("Sprint") and SingleSteel.player_input_enabled:
 		self.movement_multiplyer = 2
 	elif Input.is_action_pressed("Crouch") and SingleSteel.player_input_enabled:
@@ -195,7 +195,7 @@ func _process(delta):
 		if not self.is_jumping:
 			self.momentum.y -= Gravity
 
-		if Input.is_action_pressed("Jump") and self.is_jumping and not is_on_ceiling()  and SingleSteel.player_input_enabled:
+		if Input.is_action_pressed("Jump") and self.is_jumping and not is_on_ceiling() and SingleSteel.player_input_enabled:
 			if self.jump_length < self.MaxJumpLength:
 				self.continue_jumping()
 			else:
