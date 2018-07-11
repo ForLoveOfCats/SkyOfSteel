@@ -31,7 +31,6 @@ var jump_length = 0
 
 var health = 0
 
-var net_timer = 0
 var net_move_time = 0
 
 var possessed = false
@@ -43,7 +42,9 @@ func airstrafe(rot):
 
 	self.air_direction = self.direction
 
-	if round(self.momentum.z) > 0:
+	if not Input.is_action_pressed("Sprint"):
+		return null
+	if round(self.momentum.z) >= 0:
 		self.momentum.z += abs(rot)*AirstrafeBoostMultiplyer
 	elif round(self.momentum.z) < 0:
 		self.momentum.z -= abs(rot)*AirstrafeBoostMultiplyer
@@ -74,59 +75,19 @@ func set_direction(new_dir):
 		self.direction = self.direction+360
 	self.rotation_degrees = Vector3(0,self.direction,0)
 
-remote func update_pos(time, pos, roty):
-	if time > self.net_move_time:
-		var player = get_tree().get_root().get_node("SteelGame").get_node("SkyScene").get_node(str(get_tree().get_rpc_sender_id()))
-		player.rotation_degrees.y = roty
-		player.translation = pos
-		self.net_move_time = time
-
-remote func send_move_request(time, pos, roty):  # Unused
-	if get_tree().is_network_server():
-		if time > self.net_move_time:
-			pass
-	else:
-		rpc_id(1, 'send_move_request', time, pos, roty)
-
 
 func _ready():
+	self.translation = Vector3(0,1,0)
 	if self.possessed:
 		$SteelCamera.make_current()  # If commented out uses global camera instead of FPS camera
 		$FPSMesh.hide()
 		add_child(load("res://scenes/SteelHUD.tscn").instance())
-	else:
-		set_process(false)
+	set_process(false)
 
 func _physics_process(delta):
 	if not self.possessed:
 		return null
 
-	if is_on_floor():
-		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
-	else:
-		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
-
-	#move_and_slide(self.momentum, Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
-
-
-func _input(event):
-	if not self.possessed:
-		return null
-
-	if event is InputEventMouseMotion and SingleSteel.mouse_locked and SingleSteel.player_input_enabled:
-		self.set_direction(self.direction+(event.relative[0]*-1*MouseSens*MouseSensMultiplyer))
-		$SteelCamera.rotation_degrees.x = clamp(($SteelCamera.rotation_degrees.x + event.relative[1]*-1*MouseSens*MouseSensMultiplyer), -90, 90)
-
-		if not is_on_floor():
-			if event.relative[0] < 0 and Input.is_action_pressed("MoveLeft"):
-				self.airstrafe(event.relative[0])
-			elif event.relative[0] > 0 and Input.is_action_pressed("MoveRight"):
-				self.airstrafe(event.relative[0])
-		else:
-			self.air_direction = self.direction
-
-
-func _process(delta):
 	if Input.is_action_pressed("Sprint") and SingleSteel.player_input_enabled:
 		self.movement_multiplyer = 2
 	elif Input.is_action_pressed("Crouch") and SingleSteel.player_input_enabled:
@@ -135,7 +96,8 @@ func _process(delta):
 		self.movement_multiplyer = 1
 
 	if Input.is_action_just_pressed("TestBind") and SingleSteel.player_input_enabled:
-		self.translation = Vector3 (0,5,0)
+		self.translation = Vector3(0,5,60)
+		#SNet.request_pos(OS.get_ticks_msec(), Vector3(0,5,20))
 		#OS.shell_open(OS.get_user_data_dir())
 
 	var moving_this_frame_z = false
@@ -204,11 +166,31 @@ func _process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	if self.net_timer == 0:
-		rpc_unreliable('update_pos', OS.get_ticks_msec(), self.translation, self.rotation_degrees.y)
-	self.net_timer += delta
-	if self.net_timer >= NetTimerLength:
-		self.net_timer = 0
+	SNet.request_pos(OS.get_ticks_msec(), self.translation)
+	SNet.sync_rot(self.rotation_degrees.y)
+
+	if is_on_floor():
+		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+	else:
+		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+
+	if is_on_floor():
+		self.air_direction = self.direction
+
+
+func _input(event):
+	if not self.possessed:
+		return null
+
+	if event is InputEventMouseMotion and SingleSteel.mouse_locked and SingleSteel.player_input_enabled:
+		self.set_direction(self.direction+(event.relative[0]*-1*MouseSens*MouseSensMultiplyer))
+		$SteelCamera.rotation_degrees.x = clamp(($SteelCamera.rotation_degrees.x + event.relative[1]*-1*MouseSens*MouseSensMultiplyer), -90, 90)
+
+		if not is_on_floor():
+			if event.relative[0] < 0 and Input.is_action_pressed("MoveLeft"):
+				self.airstrafe(event.relative[0])
+			elif event.relative[0] > 0 and Input.is_action_pressed("MoveRight"):
+				self.airstrafe(event.relative[0])
 
 #OS.get_user_data_dir()
 #OS.shell_open(OS.get_user_data_dir())

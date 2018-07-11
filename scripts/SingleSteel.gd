@@ -21,6 +21,8 @@ func start_world():
 func close_world():
 	SteelGame.close_world()
 
+func round_vec(vector):
+	return Vector3(round(vector.x), round(vector.y), round(vector.z))
 
 func _ready():
 	self.SteelGame = get_tree().get_root().get_node("SteelGame")

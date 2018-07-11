@@ -62,14 +62,4 @@ shape = ExtResource( 5 )
 disabled = false
 _sections_unfolded = [ "Transform" ]
 
-[node name="Tween" type="Tween" parent="." index="3"]
-
-repeat = false
-playback_process_mode = 1
-playback_speed = 1.0
-playback/active = false
-playback/repeat = false
-playback/speed = 1.0
-_sections_unfolded = [ "Pause", "playback" ]
-
 

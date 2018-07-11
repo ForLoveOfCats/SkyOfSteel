@@ -9,6 +9,7 @@ var command_list = []
 
 func SC_test_command(arg):
 	self.printf(str(get_tree().get_network_unique_id()))
+	return true
 
 func SC_host(arg):
 	self.printf('Attempting to host game on port ' + str(SingleSteel.Port))
@@ -17,18 +18,28 @@ func SC_host(arg):
 	if SingleSteel.DevMode:
 		OS.execute('godot', ['-dev_connect'], false)
 
+	return true
+
 func SC_connect(arg):
-	if SingleSteel.DevMode:
-		arg = '127.0.0.1'
 	if arg == 'localhost':
 		arg = '127.0.0.1'
-	self.printf('Attempting to connect to ' + str(arg) + ' on port `' + str(SingleSteel.Port))
+	self.printf('Attempting to connect to ' + str(arg) + ' on port ' + str(SingleSteel.Port))
 	SNet.connect(arg, SingleSteel.Port)
+	return true
 
 func SC_spectate(arg):
-	var camera = get_tree().get_root().get_node("SteelGame/SkyScene/"+str(arg)+"/SteelCamera")
-	camera.make_current()
-	return true
+	if arg == 'self':
+		arg = get_tree().get_network_unique_id()
+
+	var camera = get_tree().get_root().get_node("SteelGame/SkyScene/"+str(arg)+"/Camera")
+
+	if camera == null:
+		SConsole.logf('Failed to find player "' + str(arg) + '" to spectate')
+		camera.make_current()
+		return false
+	else:
+		camera.make_current()
+		return true
 
 
 func execute_command(command_string):
@@ -66,9 +77,5 @@ func _ready():
 	self.console_window = get_tree().get_root().get_node("SteelGame/ConsoleWindow")
 	command_list.append(['test_command', funcref(self, 'SC_test_command'), false])
 	command_list.append(['host', funcref(self, 'SC_host'), false])
+	command_list.append(['connect', funcref(self, 'SC_connect'), true])
 	command_list.append(['spectate', funcref(self, 'SC_spectate'), true])
-
-	if SingleSteel.DevMode:
-		command_list.append(['connect', funcref(self, 'SC_connect'), false])
-	else:
-		command_list.append(['connect', funcref(self, 'SC_connect'), true])

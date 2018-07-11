@@ -43,7 +43,7 @@ func _ready():
 	for current_arg in cmd_args:
 		SConsole.logf('Console Argument: ' + current_arg)
 		if current_arg == '-dev_connect':
-			SConsole.execute_command('connect')
+			SConsole.execute_command('connect localhost')
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel"):
