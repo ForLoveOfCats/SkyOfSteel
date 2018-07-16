@@ -67,6 +67,9 @@ remote func request_pos(time, pos):
 			if not SMath.vec_similar(player.translation, pos):
 				SConsole.logf('Rubberbanding player "' + str(sender) + '" Movement discrepancy: ' + str(SingleSteel.round_vec(player.translation)) + ' != ' + str(SingleSteel.round_vec(pos)))
 				self.rubberband_player(sender, SingleSteel.round_vec(player.translation))
+			else:
+				player.translation = pos
+
 			self.send_positions(sender, player.translation)
 
 remote func rubberband_player(id, pos):

@@ -6,7 +6,7 @@
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
 [ext_resource path="res://collision_shapes/PlayerCollisionShape.tres" type="Shape" id=5]
 
-[node name="Player" type="KinematicBody" index="0"]
+[node name="Player" type="KinematicBody"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
