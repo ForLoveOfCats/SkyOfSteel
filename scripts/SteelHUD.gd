@@ -1,17 +1,15 @@
 extends Node
 
-# class member variables go here, for example:
-# var a = 2
-# var b = "textvar"
+var player = null
 
-#func _ready():
-	#var viewport = get_node("Viewport")
-	#viewport.set_clear_mode(Viewport.CLEAR_MODE_ONLY_NEXT_FRAME)
-	#yield(get_tree(), "idle_frame")
-	#yield(get_tree(), "idle_frame")
-	#get_node("TextureRect2").texture = viewport.get_texture()
 
-#func _process(delta):
-#	# Called every frame. Delta is time since last frame.
-#	# Update game logic here.
-#	pass
+func update_hotbar():
+	for index in len(player.inventory):
+		print(player.inventory[index])
+		get_node('CLayer/HotBarCenter/Vbox').get_children()[index].texture = Items.thumbnail(player.inventory[index]['name'])
+
+
+func _ready():
+	self.player = get_parent()
+
+	self.update_hotbar()

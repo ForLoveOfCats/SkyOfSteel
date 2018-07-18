@@ -5,7 +5,7 @@ var SteelGame = null
 
 
 func return_instance(name):
-	return {'name':name, 'temp':0, 'count':0}
+	return {'name':name, 'temp':0, 'count':0, 'uses':0}
 
 func lookup(name):
 	var out = {'name':'error', 'type':'error', 'description':'This is an error item and should not exist.'}

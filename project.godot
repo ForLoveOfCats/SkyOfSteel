@@ -29,6 +29,7 @@ settings/fps/force_fps=60
 [display]
 
 window/vsync/use_vsync=false
+window/stretch/shrink="1"
 
 [input]
 

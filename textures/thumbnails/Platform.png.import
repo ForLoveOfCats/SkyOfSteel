@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/slope.png-a73c72d02fb1e10494f6b81d98fc5f66.stex"
+path="res://.import/Platform.png-a6d299f44844ca40ea596475b8c413fe.stex"
 
 [deps]
 
-source_file="res://textures/thumbnails/slope.png"
-dest_files=[ "res://.import/slope.png-a73c72d02fb1e10494f6b81d98fc5f66.stex" ]
+source_file="res://textures/thumbnails/Platform.png"
+dest_files=[ "res://.import/Platform.png-a6d299f44844ca40ea596475b8c413fe.stex" ]
 
 [params]
 

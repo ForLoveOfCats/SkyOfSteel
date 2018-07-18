@@ -28,8 +28,11 @@ var direction = 0
 var air_direction = 0
 var is_jumping = false
 var jump_length = 0
+var on_floor_last_frame = false
 
 var health = 0
+var inventory = []
+var slot = 0
 
 var net_move_time = 0
 
@@ -76,6 +79,12 @@ func set_direction(new_dir):
 	self.rotation_degrees = Vector3(0,self.direction,0)
 
 
+func _init():
+	self.inventory.append(Items.return_instance('Platform'))
+	self.inventory.append(Items.return_instance('Wall'))
+	self.inventory.append(Items.return_instance('Slope'))
+
+
 func _ready():
 	self.translation = Vector3(0,1,0)
 	if self.possessed:
@@ -83,6 +92,7 @@ func _ready():
 		$FPSMesh.hide()
 		add_child(load("res://scenes/SteelHUD.tscn").instance())
 	set_process(false)
+
 
 func _physics_process(delta):
 	if not self.possessed:
@@ -170,9 +180,9 @@ func _physics_process(delta):
 	SNet.sync_rot(self.rotation_degrees.y)
 
 	if is_on_floor():
-		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+		self.momentum = move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle)).rotated(Vector3(0,1,0), deg2rad(-self.direction))
 	else:
-		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle))
+		self.momentum = move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle)).rotated(Vector3(0,1,0), deg2rad(-self.air_direction))
 
 	if is_on_floor():
 		self.air_direction = self.direction

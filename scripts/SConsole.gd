@@ -31,11 +31,10 @@ func SC_spectate(arg):
 	if arg == 'self':
 		arg = get_tree().get_network_unique_id()
 
-	var camera = get_tree().get_root().get_node("SteelGame/SkyScene/"+str(arg)+"/Camera")
+	var camera = get_tree().get_root().get_node("SteelGame/SkyScene/"+str(arg)+"/SteelCamera")
 
 	if camera == null:
 		SConsole.logf('Failed to find player "' + str(arg) + '" to spectate')
-		camera.make_current()
 		return false
 	else:
 		camera.make_current()
@@ -70,7 +69,6 @@ func printf(string):
 
 func logf(string):
 	self.console_window.log_add_line(string)
-
 
 
 func _ready():
