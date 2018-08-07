@@ -13,13 +13,20 @@ var player_input_enabled = true
 
 
 func spawn_player(id, possess):
-	SteelGame.spawn_player(id, possess)
+	var player = load("res://scenes/Player.tscn").instance()
+	player.possessed = possess
+	player.set_name(str(id))
+	SteelGame.get_node("SkyScene").add_child(player)
 
 func start_world():
-	SteelGame.start_world()
+	close_world()
+	var world = load("res://scenes/SkyScene.tscn").instance()
+	world.set_name("SkyScene")
+	SteelGame.add_child(world)
 
 func close_world():
-	SteelGame.close_world()
+	if SteelGame.has_node("SkyScene"):
+		SteelGame.get_node("SkyScene").queue_free()
 
 func round_vec(vector):
 	return Vector3(round(vector.x), round(vector.y), round(vector.z))

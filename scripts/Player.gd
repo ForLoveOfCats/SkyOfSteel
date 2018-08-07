@@ -31,7 +31,7 @@ var jump_length = 0
 var on_floor_last_frame = false
 
 var health = 0
-var inventory = []
+var inventory = [null,null,null,null,null,null,null,null,null,null]
 var slot = 0
 
 var net_move_time = 0
@@ -79,10 +79,26 @@ func set_direction(new_dir):
 	self.rotation_degrees = Vector3(0,self.direction,0)
 
 
+
+func give_item(item):
+	var added = false
+	for slot in len(inventory):
+		if inventory[slot] != null:  # Actual item in slot
+			if inventory[slot].name == item.name:
+				inventory[slot].count += item.count
+				added = true
+
+	if not added:
+		for slot in len(inventory):
+			if inventory[slot] == null:
+				inventory[slot] = item
+				break
+
+
 func _init():
-	self.inventory.append(Items.return_instance('Platform'))
-	self.inventory.append(Items.return_instance('Wall'))
-	self.inventory.append(Items.return_instance('Slope'))
+	give_item(Items.return_instance('Platform'))
+	give_item(Items.return_instance('Wall'))
+	give_item(Items.return_instance('Slope'))
 
 
 func _ready():

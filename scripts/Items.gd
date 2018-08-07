@@ -4,16 +4,33 @@ extends Node
 var SteelGame = null
 
 
+class ItemInstance:
+	var name = 'Error'
+	var temp = 0
+	var count = 0
+	var uses = 0
+
+class ItemInfo:
+	var name = 'Error'
+	var type = 'Error'
+	var description = 'This is an error item and should not exist.'
+
+
 func return_instance(name):
-	return {'name':name, 'temp':0, 'count':0, 'uses':0}
+	var out = ItemInstance.new()
+	out.name = name
+	out.temp = 0
+	out.count = 1
+	out.uses = 0
+	return out
 
 func lookup(name):
-	var out = {'name':'error', 'type':'error', 'description':'This is an error item and should not exist.'}
+	var out = ItemInfo.new()
 	match name:
-		'platform':
-			out['name'] = 'platform'
-			out['type'] = 'structure'
-			out['description'] = 'Basic flat platform, for use as a foor or ceiling.'
+		'Platform':
+			out.name = 'Platform'
+			out.type = 'Structure'
+			out.description = 'Basic flat platform, for use as a foor or ceiling.'
 
 	return out
 

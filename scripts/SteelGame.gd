@@ -6,25 +6,6 @@ func quit():
 	get_tree().set_network_peer(null)
 	get_tree().quit()
 
-func spawn_player(id, possess):
-	var player = load("res://scenes/Player.tscn").instance()
-	player.possessed = possess
-	player.set_name(str(id))
-	get_node("SkyScene").add_child(player)
-
-func start_world():
-	if has_node("SkyScene"):
-		get_node("SkyScene").queue_free()
-
-	var world = load("res://scenes/SkyScene.tscn").instance()
-	world.set_name("SkyScene")
-	add_child(world)
-
-func close_world():
-	get_node("SkyScene").queue_free()
-
-
-
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.quit()
