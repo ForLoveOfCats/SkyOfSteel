@@ -6,7 +6,7 @@ const MouseSensMultiplyer = 0.2
 const MaxAngle = 50
 const Gravity = 0.4
 const BaseMoveSpeed = 18
-const AirstrafeBoostMultiplyer = 0.023
+const AirstrafeBoostMultiplyer = 0.015
 const AirstrafeMaxBoost = 80
 const MinimumMoveSpeed = 6
 const Friction = BaseMoveSpeed*7
@@ -107,7 +107,6 @@ func _ready():
 		$SteelCamera.make_current()  # If commented out uses global camera instead of FPS camera
 		$FPSMesh.hide()
 		add_child(load("res://scenes/SteelHUD.tscn").instance())
-	set_process(false)
 
 
 func _physics_process(delta):
@@ -203,7 +202,6 @@ func _physics_process(delta):
 	if is_on_floor():
 		self.air_direction = self.direction
 
-
 func _input(event):
 	if not self.possessed:
 		return null
@@ -217,6 +215,19 @@ func _input(event):
 				self.airstrafe(event.relative[0])
 			elif event.relative[0] > 0 and Input.is_action_pressed("MoveRight"):
 				self.airstrafe(event.relative[0])
+
+	elif event is InputEventMouseButton:
+		if event.is_pressed():
+			if event.button_index == BUTTON_WHEEL_UP:
+				self.slot -= 1
+				if self.slot < 0:
+					self.slot = 9
+			elif event.button_index == BUTTON_WHEEL_DOWN:
+				self.slot += 1
+				if self.slot > 9:
+					self.slot = 0
+			$SteelHUD.update_hotbar()
+
 
 #OS.get_user_data_dir()
 #OS.shell_open(OS.get_user_data_dir())

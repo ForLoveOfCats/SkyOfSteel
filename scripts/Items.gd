@@ -2,6 +2,8 @@ extends Node
 
 
 var SteelGame = null
+var Triangle = null
+var Alpha = null
 
 
 class ItemInstance:
@@ -45,3 +47,5 @@ func thumbnail(name):
 
 func _ready():
 	self.SteelGame = get_tree().get_root().get_node("SteelGame")
+	self.Triangle = load("res://textures/triangle.png")
+	self.Alpha = load("res://textures/alpha.png")

@@ -19,7 +19,7 @@ sun_angle_max = 100.0
 sun_curve = 0.05
 sun_energy = 16.0
 texture_size = 2
-_sections_unfolded = [ "Ground", "Sky", "Sun" ]
+_sections_unfolded = [ "Ground", "Sky", "Sun", "Texture" ]
 
 [resource]
 
@@ -29,9 +29,9 @@ background_sky_custom_fov = 0.0
 background_color = Color( 0, 0, 0, 1 )
 background_energy = 1.0
 background_canvas_max_layer = 0
-ambient_light_color = Color( 0, 0, 0, 1 )
+ambient_light_color = Color( 1, 1, 1, 1 )
 ambient_light_energy = 1.0
-ambient_light_sky_contribution = 1.0
+ambient_light_sky_contribution = 0.0
 fog_enabled = true
 fog_color = Color( 0.5, 0.6, 0.7, 1 )
 fog_sun_color = Color( 1, 0.9, 0.7, 1 )
@@ -99,5 +99,5 @@ adjustment_enabled = false
 adjustment_brightness = 1.0
 adjustment_contrast = 1.0
 adjustment_saturation = 1.0
-_sections_unfolded = [ "Background", "Fog" ]
+_sections_unfolded = [ "Adjustments", "Ambient Light", "Auto Exposure", "Background", "DOF Far Blur", "DOF Near Blur", "Fog", "Glow", "SS Reflections", "SSAO", "Tonemap" ]
 

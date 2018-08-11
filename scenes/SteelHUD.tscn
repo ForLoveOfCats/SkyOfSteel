@@ -59,7 +59,7 @@ anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 1.0
-margin_right = 128.0
+margin_right = 50.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 0
@@ -69,16 +69,33 @@ size_flags_vertical = 3
 use_top_left = false
 _sections_unfolded = [ "Size Flags" ]
 
-[node name="Vbox" type="VBoxContainer" parent="CLayer/HotBarCenter" index="0"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CLayer/HotBarCenter" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_left = 59.0
+margin_left = 13.0
 margin_top = 232.0
-margin_right = 69.0
+margin_right = 37.0
 margin_bottom = 368.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Size Flags" ]
+
+[node name="Vbox" type="VBoxContainer" parent="CLayer/HotBarCenter/HBoxContainer" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 10.0
+margin_bottom = 136.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 1
@@ -88,7 +105,7 @@ size_flags_vertical = 1
 alignment = 0
 _sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="0"]
+[node name="NinePatchRect" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -106,7 +123,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect2" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="1"]
+[node name="NinePatchRect2" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="1"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -125,7 +142,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect3" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="2"]
+[node name="NinePatchRect3" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="2"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -144,7 +161,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect4" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="3"]
+[node name="NinePatchRect4" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -163,7 +180,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect5" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="4"]
+[node name="NinePatchRect5" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="4"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -182,7 +199,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect6" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="5"]
+[node name="NinePatchRect6" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="5"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -201,7 +218,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect7" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="6"]
+[node name="NinePatchRect7" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="6"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -220,7 +237,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect8" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="7"]
+[node name="NinePatchRect8" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="7"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -239,7 +256,7 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect9" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="8"]
+[node name="NinePatchRect9" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="8"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -258,7 +275,214 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="NinePatchRect10" type="NinePatchRect" parent="CLayer/HotBarCenter/Vbox" index="9"]
+[node name="NinePatchRect10" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox" index="9"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 126.0
+margin_right = 10.0
+margin_bottom = 136.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="Vbox2" type="VBoxContainer" parent="CLayer/HotBarCenter/HBoxContainer" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 14.0
+margin_right = 24.0
+margin_bottom = 136.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 1
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 1
+alignment = 0
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="0"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_right = 10.0
+margin_bottom = 10.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="1"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 14.0
+margin_right = 10.0
+margin_bottom = 24.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect3" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="2"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 28.0
+margin_right = 10.0
+margin_bottom = 38.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect4" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="3"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 42.0
+margin_right = 10.0
+margin_bottom = 52.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect5" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="4"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 56.0
+margin_right = 10.0
+margin_bottom = 66.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect6" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="5"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 70.0
+margin_right = 10.0
+margin_bottom = 80.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect7" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="6"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 84.0
+margin_right = 10.0
+margin_bottom = 94.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect8" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="7"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 98.0
+margin_right = 10.0
+margin_bottom = 108.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect9" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="8"]
+
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_top = 112.0
+margin_right = 10.0
+margin_bottom = 122.0
+rect_min_size = Vector2( 10, 10 )
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 3 )
+_sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
+
+[node name="NinePatchRect10" type="NinePatchRect" parent="CLayer/HotBarCenter/HBoxContainer/Vbox2" index="9"]
 
 anchor_left = 0.0
 anchor_top = 0.0
