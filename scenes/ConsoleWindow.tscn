@@ -54,7 +54,7 @@ scroll_horizontal = 0
 scroll_vertical_enabled = true
 scroll_vertical = 0
 scroll_deadzone = 0
-_sections_unfolded = [ "Scroll", "Size Flags" ]
+_sections_unfolded = [ "Rect", "Scroll", "Size Flags" ]
 
 [node name="VBox" type="VBoxContainer" parent="HBox/ConsoleScroll" index="0"]
 

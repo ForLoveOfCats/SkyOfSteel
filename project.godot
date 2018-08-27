@@ -21,6 +21,7 @@ SConsole="*res://scripts/SConsole.gd"
 SNet="*res://scripts/SNet.gd"
 Items="*res://scripts/Items.gd"
 SMath="*res://scripts/SMath.gd"
+SteelScript="*res://SteelScript/SteelScript.gd"
 
 [debug]
 

@@ -1,14 +1,15 @@
 extends Node
 
 
-
 func quit():
 	get_tree().set_network_peer(null)
 	get_tree().quit()
 
+
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		self.quit()
+
 
 func _ready():
 	get_tree().set_auto_accept_quit(false)
@@ -24,7 +25,8 @@ func _ready():
 	for current_arg in cmd_args:
 		SConsole.logf('Console Argument: ' + current_arg)
 		if current_arg == '-dev_connect':
-			SConsole.execute_command('connect localhost')
+			SConsole.execute_command('connect()')
+
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel"):
