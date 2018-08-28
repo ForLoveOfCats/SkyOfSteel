@@ -1,5 +1,6 @@
 extends Node
 
+
 var player = null
 
 
@@ -22,8 +23,13 @@ func update_hotbar():
 func _on_screen_resized():
 	self.update_hotbar()
 
+
 func _ready():
 	self.player = get_parent()
 	get_tree().connect("screen_resized", self, "_on_screen_resized")
 
 	self.update_hotbar()
+
+
+func _process(delta):
+	$CLayer.get_node("FPSLabel").set_text(str(Engine.get_frames_per_second())+' fps')

@@ -23,10 +23,6 @@ Items="*res://scripts/Items.gd"
 SMath="*res://scripts/SMath.gd"
 SteelScript="*res://SteelScript/SteelScript.gd"
 
-[debug]
-
-settings/fps/force_fps=60
-
 [display]
 
 window/vsync/use_vsync=false
