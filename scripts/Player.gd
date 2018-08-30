@@ -9,6 +9,7 @@ const AirstrafeBoostMultiplyer = 0.01
 const AirstrafeMaxBoost = 65
 const MinimumMoveSpeed = 6
 const Friction = BaseMoveSpeed*10
+const LandSlowMultiplyer = 0.84
 const BaseJumpPush = 10
 const ContinueJumpPush = 0.09
 const MaxJumpLength = 0.3
@@ -173,6 +174,10 @@ func _physics_process(delta):
 		else:
 			if self.is_jumping:
 				self.stop_jumping()
+
+		if not self.on_floor_last_frame:
+			self.momentum.y *= LandSlowMultiplyer
+			self.momentum.z *= LandSlowMultiplyer
 	else:
 		if not self.is_jumping:
 			self.momentum.y -= Gravity
