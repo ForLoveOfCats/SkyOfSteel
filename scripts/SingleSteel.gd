@@ -24,6 +24,12 @@ func start_world():
 	world.set_name("SkyScene")
 	SteelGame.add_child(world)
 
+	for x in range(0,11):
+			for y in range(0,11):
+				var platform = load("res://scenes/structures/Platform.tscn").instance()
+				platform.translate(Vector3(x*12,0,y*12))
+				world.add_child(platform)
+
 func close_world():
 	if SteelGame.has_node("SkyScene"):
 		SteelGame.get_node("SkyScene").queue_free()

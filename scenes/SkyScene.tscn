@@ -1,10 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/SkyScene.gd" type="Script" id=1]
 [ext_resource path="res://default_env.tres" type="Environment" id=2]
-[ext_resource path="res://scenes/structures/Platform.tscn" type="PackedScene" id=3]
 
-[node name="SkyScene" type="Node"]
+[node name="SkyScene" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -52,67 +51,5 @@ size = 1.0
 near = 0.05
 far = 1000.0
 _sections_unfolded = [ "Transform" ]
-
-[node name="Platform" parent="." index="2" instance=ExtResource( 3 )]
-
-[node name="Platform3" parent="." index="3" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12 )
-
-[node name="Platform10" parent="." index="4" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24 )
-
-[node name="Platform16" parent="." index="5" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 36 )
-
-[node name="Platform5" parent="." index="6" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 12 )
-
-[node name="Platform11" parent="." index="7" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 24 )
-
-[node name="Platform15" parent="." index="8" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 36 )
-
-[node name="Platform6" parent="." index="9" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 0 )
-
-[node name="Platform7" parent="." index="10" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -12 )
-
-[node name="Platform8" parent="." index="11" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12 )
-
-[node name="Platform13" parent="." index="12" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -24 )
-
-[node name="Platform9" parent="." index="13" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -12 )
-
-[node name="Platform4" parent="." index="14" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 12 )
-
-[node name="Platform12" parent="." index="15" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 24 )
-
-[node name="Platform14" parent="." index="16" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 36 )
-
-[node name="Platform2" parent="." index="17" instance=ExtResource( 3 )]
-
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0 )
 
 

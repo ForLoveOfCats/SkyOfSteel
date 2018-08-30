@@ -116,7 +116,7 @@ func _physics_process(delta):
 		self.movement_multiplyer = 1
 
 	if Input.is_action_just_pressed("TestBind") and SingleSteel.player_input_enabled:
-		self.translation = Vector3(0,5,0)
+		self.translation = Vector3(0,0,0)
 		#SNet.request_pos(OS.get_ticks_msec(), Vector3(0,5,20))
 		#OS.shell_open(OS.get_user_data_dir())
 
