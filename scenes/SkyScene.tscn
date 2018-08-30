@@ -3,7 +3,7 @@
 [ext_resource path="res://scripts/SkyScene.gd" type="Script" id=1]
 [ext_resource path="res://default_env.tres" type="Environment" id=2]
 
-[node name="SkyScene" type="Node" index="0"]
+[node name="SkyScene" type="Node"]
 
 script = ExtResource( 1 )
 
