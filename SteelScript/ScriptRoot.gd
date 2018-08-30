@@ -38,9 +38,9 @@ func RuntimeError(message, line):
 		else:
 			SConsole.printf('RuntimeError: ' + message + ' @ line ' + str(line+1))
 
-		if self.mode != 'autoexec':
+		if self.mode == 'normal':
 			self.queue_free()
-		else:
+		elif self.mode == 'autoexec':
 			SConsole.printf('AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.')
 			for child in self.get_children():
 				child.queue_free()
