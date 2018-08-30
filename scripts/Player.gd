@@ -5,7 +5,6 @@ const MouseSensMultiplyer = 0.2
 const MaxAngle = 50
 const Gravity = 0.4
 const BaseMoveSpeed = 18
-const MinGroundFramesMove = 2
 const AirstrafeBoostMultiplyer = 0.01
 const AirstrafeMaxBoost = 65
 const MinimumMoveSpeed = 6
@@ -24,7 +23,7 @@ var direction = 0
 var air_direction = 0
 var is_jumping = false
 var jump_length = 0
-var floor_frame_counter = 0
+var on_floor_last_frame = false
 
 var health = 0
 var inventory = [null,null,null,null,null,null,null,null,null,null]
@@ -122,10 +121,10 @@ func _physics_process(delta):
 		#OS.shell_open(OS.get_user_data_dir())
 
 	var moving_this_frame_z = false
-	if Input.is_action_pressed("MoveForward") and SingleSteel.player_input_enabled and is_on_floor() and self.floor_frame_counter >= MinGroundFramesMove:
+	if Input.is_action_pressed("MoveForward") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		self.momentum.z = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_z = true
-	if Input.is_action_pressed("MoveBack") and SingleSteel.player_input_enabled and is_on_floor() and self.floor_frame_counter >= MinGroundFramesMove:
+	if Input.is_action_pressed("MoveBack") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		if not moving_this_frame_z:
 			self.momentum.z = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_z = true
@@ -142,10 +141,10 @@ func _physics_process(delta):
 			self.momentum.z = 0
 
 	var moving_this_frame_x = false
-	if Input.is_action_pressed("MoveLeft") and SingleSteel.player_input_enabled and is_on_floor() and self.floor_frame_counter >= MinGroundFramesMove:
+	if Input.is_action_pressed("MoveLeft") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		self.momentum.x = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_x = true
-	if Input.is_action_pressed("MoveRight") and SingleSteel.player_input_enabled and is_on_floor() and self.floor_frame_counter >= MinGroundFramesMove:
+	if Input.is_action_pressed("MoveRight") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		if not moving_this_frame_x:
 			self.momentum.x = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_x = true
@@ -191,16 +190,13 @@ func _physics_process(delta):
 	SNet.sync_rot(self.rotation_degrees.y)
 
 	if is_on_floor():
+		if self.on_floor_last_frame:
+			self.air_direction = self.direction
+		self.on_floor_last_frame = true
 		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle)).rotated(Vector3(0,1,0), deg2rad(-self.direction))
 	else:
+		self.on_floor_last_frame = false
 		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle)).rotated(Vector3(0,1,0), deg2rad(-self.air_direction))
-
-	if is_on_floor():
-		self.floor_frame_counter += 1
-		if self.floor_frame_counter >= MinGroundFramesMove:
-			self.air_direction = self.direction
-	else:
-		self.floor_frame_counter = 0
 
 
 func _input(event):
