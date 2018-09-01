@@ -177,12 +177,13 @@ func paren_parser(parent, string, index=0):
 		node = load_node('Literal')
 		node.Data = SteelScript.check_float(float(fullstr))
 
-	elif fullstr[0] in ['+', '-', '*', '/'] or all_plus(fullstr):  # Math node
-		if not all_same(fullstr):
-			ParseError('Cannot mix operation types')
-			return null
+	elif fullstr[0] in ['+', '-', '*', '/']:  # Math node
 		node = load_node('Math')
-		node.Operation = fullstr[0]
+
+		for car in fullstr:
+			if not car in ['+', '-', '*', '/']:
+				ParseError('Invalid character "' + car + '" in math expression')
+			node.Operations.append(car)
 
 	elif fullstr[0] in ['=', '>', '<', "!"] and fullstr[1] in ['=', '>', '<', "!"] and len(fullstr) == 2:  # Comparison
 		node = load_node('Comparison')

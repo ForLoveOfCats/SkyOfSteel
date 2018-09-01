@@ -1,32 +1,45 @@
 extends "Base.gd"
 
 const Type = 'data'
-var Operation = ''
+var Operations = []
 
 func get_data():
-	var data = []
-	data.append(get_children()[0].get_data())
-	data.append(get_children()[1].get_data())
+	var data_list = []
+	var type = typeof(self.get_child(0).get_data())
 
-	for index in [0,1]:
-		if typeof(data[index]) == TYPE_STRING:
-			print(Operation)
-			if not Operation in ['+', '*']:
-				sroot.RuntimeError('Invaldid operator "' + Operation + '" for type "string"', self.line_number)
-				return null
+	if not type in [TYPE_INT, TYPE_REAL, TYPE_STRING]:
+		sroot.RuntimeError('Unsupported data type "' + SteelScript.get_type(self.get_child(0).get_data()) + '" in math expression', self.line_number)
+		return null
 
-			data[index] = "'" + SteelScript.to_string(data[index]) + "'"
+	for node in self.get_children():
+		var data = node.get_data()
 
-		elif typeof(data[index]) in [TYPE_INT, TYPE_REAL]:
-			data = float(data)
-
-		else:
-			sroot.RuntimeError('Invalid data type "' + SteelScript.get_type(data[index]) + '" in math expression "' + Operation + '"', self.line_number)
+		if typeof(data) != type:
+			sroot.RuntimeError('All types must be the same in math expression', self.line_number)
 			return null
 
-		data[index] = SteelScript.to_string(data[index])
+		data_list.append(node.get_data())
 
-	var out = SteelScript.eval_str(data[0]+Operation+data[1])
+	if len(data_list) > len(Operations)+1:
+		sroot.RuntimeError('To many data inputs in math expression', self.line_number)
+		return null
+	if len(data_list) < len(Operations)+1:
+		sroot.RuntimeError('To many operations in math expression', self.line_number)
+		return null
+
+	var expression = ''
+	var data = null
+	for index in len(data_list):
+		data = data_list[index]
+		if typeof(data) == TYPE_STRING:
+			expression += "'" + data + "'"
+		else:
+			expression += SteelScript.to_string(data)
+
+		if index+1 != len(data_list):
+			expression += Operations[index]
+
+	var out = SteelScript.eval_str(expression)
 
 	if typeof(out) in [TYPE_INT, TYPE_REAL]:
 		return SteelScript.check_float(out)
