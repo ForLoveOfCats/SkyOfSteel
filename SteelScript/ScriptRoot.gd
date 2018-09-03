@@ -1,6 +1,7 @@
 extends Node
 
 const InvalidNames = ['true', 'false']
+const InvalidCars = [':', '/', '.', '*', '{', '}', '[', ']', '(', ')', '!']
 
 var GlobalVars = {}
 var Functions = {}
@@ -116,6 +117,17 @@ func all_plus(string):
 			out = false
 			break
 	return out
+
+
+func invalid_name(name):
+	if name in InvalidNames or name.is_valid_integer():
+		return true
+
+	for car in name:
+		if car in InvalidCars:
+			return true
+
+	return false
 
 
 func paren_parser(parent, string, index=0):
@@ -235,7 +247,7 @@ func parse_line(line, parent):
 			ParseError('Variable name required in variable declaration')
 			return parent
 
-		if SetVar.Variable in InvalidNames:
+		if invalid_name(SetVar.Variable):
 			ParseError('Invalid variable name "' + SetVar.Variable + '" in variable declaration')
 			return parent
 
@@ -347,10 +359,10 @@ func exec_line(line):
 	line = strip_white(line)
 	parse_line(line, self)
 
-	var node = self.get_child(len(self.get_children())-1)
 	if self.successful_parse:
+		var node = self.get_child(len(self.get_children())-1)
 		node.execute()
-	node.queue_free()
+		node.queue_free()
 
 
 func start():
