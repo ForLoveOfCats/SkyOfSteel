@@ -62,34 +62,42 @@ func ParseError(message):
 func strip_white(script):
 	var out = ''
 	var in_string = false
+
 	for index in len(script):
 		if script[index] == "'":
 			in_string = !in_string
 			out += script[index]
 			continue
+
 		if in_string or script[index] != ' ' and script[index] != '	' :
 			out += script[index]
+
 	return out
 
+
+func strip_comments(script):
+	var out = ''
+	var in_comment = false
+	var in_string = false
+
+	for car in script:
+		if car == "'":
+			in_string = !in_string
+		elif car == '#' and not in_string:
+			in_comment = true
+		elif car == '\n':
+			in_comment = false
+
+		if not in_comment:
+			out += car
+
+	return out
 
 func remove_open_curly(string):
 	var out = ''
 	for car in string:
 		if car == '{':
 			continue
-		out += car
-	return out
-
-
-func prepare_paren_str(string):
-	var out = ''
-	var in_string = false
-	for car in string:
-		if car == "'":
-			in_string = !in_string
-
-		if car == '#' and not in_string:
-			break
 		out += car
 	return out
 
@@ -131,8 +139,6 @@ func invalid_name(name):
 
 
 func paren_parser(parent, string, index=0):
-	string = prepare_paren_str(string)
-
 	var opencount = 0
 	var carlist = []
 	var childlist = []
@@ -281,13 +287,9 @@ func parse_line(line, parent):
 			return parent
 
 		parent = parent.get_parent()
-		if len(line) > 1:
-			if line.substr(1,1) != '#':
-				ParseError('Invalid characters following }')
-				return parent
 
 	else:  # Must be a Call
-		if line.substr(0,1) != '#' and line != '':
+		if line != '':
 			var Call = load_node('Call')
 
 			var parendex = null
@@ -326,7 +328,7 @@ func exec_script(script, die):
 	self.successful_parse = true
 
 	var parent = self
-	var split = strip_white(script).split('\n')
+	var split = strip_comments(strip_white(script)).split('\n')
 
 	for lindex in len(split):
 		if not self.successful_parse:
@@ -356,7 +358,7 @@ func exec_line(line):
 	self.current_parse_line = 0
 	self.successful_parse = true
 
-	line = strip_white(line)
+	line = strip_comments(strip_white(line))
 	parse_line(line, self)
 
 	if self.successful_parse:
