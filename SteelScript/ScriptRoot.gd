@@ -50,12 +50,12 @@ func ParseError(message):
 	SConsole.printf('ParseError: ' + message + ' @ line ' + str(self.current_parse_line+1))
 	self.successful_parse = false
 
-	if self.mode != 'autoexec':
+	if self.mode == 'normal':
 		self.queue_free()
-	else:
+	elif self.mode == 'autoexec':
+		SConsole.printf('AUTOEXEC FAILED: Your autoexec was not executed. It is highly recommended that you fix your autoexec and restart the game.')
 		for child in self.get_children():
 			child.queue_free()
-		SConsole.printf('AUTOEXEC FAILED: Your autoexec was not executed. It is highly recommended that you fix your autoexec and restart the game.')
 
 
 func strip_white(script):
