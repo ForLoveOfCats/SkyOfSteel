@@ -25,18 +25,18 @@ func execute_command(command_string):
 func _ready():
 	self.console_window = get_tree().get_root().get_node("SteelGame/ConsoleWindow")
 	self.printf('')
-	self.sroot = load("res://SteelScript/ScriptRoot.gd").new()
+	self.sroot = load("res://TabbyScript/ScriptRoot.gd").new()
 	self.sroot.set_name('ConsoleScriptRoot')
 	self.sroot.mode = 'autoexec'
 	add_child(sroot)
 
 	var autoexec = File.new()
-	if autoexec.file_exists('user://autoexec.steelscript'):
-		autoexec.open('user://autoexec.steelscript', autoexec.READ)
-		printf('Autoexec loaded "autoexec.steelscript"')
+	if autoexec.file_exists('user://autoexec.tabby'):
+		autoexec.open('user://autoexec.tabby', autoexec.READ)
+		printf('Autoexec loaded "autoexec.tabby"')
 		sroot.exec_script(autoexec.get_as_text(), false)
 	else:
-		printf('Autoexec not found "autoexec.steelscript"')
+		printf('Autoexec not found "autoexec.tabby"')
 
 	self.sroot.mode = 'console'
 

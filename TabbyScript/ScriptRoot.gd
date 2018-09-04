@@ -193,7 +193,7 @@ func paren_parser(parent, string, index=0):
 
 	elif fullstr.is_valid_float():  # It is a number
 		node = load_node('Literal')
-		node.Data = SteelScript.check_float(float(fullstr))
+		node.Data = TabbyScript.check_float(float(fullstr))
 
 	elif fullstr[0] in ['+', '-', '*', '/']:  # Math node
 		node = load_node('Math')

@@ -8,7 +8,7 @@ func get_data():
 	var type = typeof(self.get_child(0).get_data())
 
 	if not type in [TYPE_INT, TYPE_REAL, TYPE_STRING]:
-		sroot.RuntimeError('Unsupported data type "' + SteelScript.get_type(self.get_child(0).get_data()) + '" in math expression', self.line_number)
+		sroot.RuntimeError('Unsupported data type "' + TabbyScript.get_type(self.get_child(0).get_data()) + '" in math expression', self.line_number)
 		return null
 
 	for node in self.get_children():
@@ -34,13 +34,13 @@ func get_data():
 		if typeof(data) == TYPE_STRING:
 			expression += "'" + data + "'"
 		else:
-			expression += SteelScript.to_string(data)
+			expression += TabbyScript.to_string(data)
 
 		if index+1 != len(data_list):
 			expression += Operations[index]
 
-	var out = SteelScript.eval_str(expression)
+	var out = TabbyScript.eval_str(expression)
 
 	if typeof(out) in [TYPE_INT, TYPE_REAL]:
-		return SteelScript.check_float(out)
+		return TabbyScript.check_float(out)
 	return out
