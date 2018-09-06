@@ -5,12 +5,26 @@ const InvalidCars = [':', '/', '.', '*', '{', '}', '[', ']', '(', ')', '!']
 
 var GlobalVars = {}
 var Functions = {}
+var APIFunctions = {}
 var Break = false
 
 var current_parse_line = 0
 var successful_parse = true
 var cwd = null
 var mode = 'normal'
+
+
+func _init():
+	var api_dir = Directory.new()
+	api_dir.open(self.get_script().get_path().get_base_dir()+'/API')
+
+	api_dir.list_dir_begin(true)
+	var file_name = api_dir.get_next()
+	while file_name != "":
+		var call = load(self.get_script().get_path().get_base_dir()+"/API/"+file_name).new()
+		call.sroot = self
+		self.APIFunctions[file_name.get_basename()] = call
+		file_name = api_dir.get_next()
 
 
 func load_node(node):
@@ -21,13 +35,9 @@ func load_node(node):
 
 
 func call_api(call, args):
-	call = load(self.get_script().get_path().get_base_dir()+"/API/"+call+".gd")
-
-	if call == null:
-		return false
-
-	call = call.new()
-	return call.Call(self, args)
+	if call in self.APIFunctions:
+		return self.APIFunctions[call].Call(args)
+	return false
 
 
 func RuntimeError(message, line):

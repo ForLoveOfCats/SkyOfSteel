@@ -1,7 +1,6 @@
-const PermWhite = []
-const PermBlack = []
+var sroot
 
-func Call(sroot, args):
+func Call(args):
 	var to_print = ''
 
 	for arg in args:

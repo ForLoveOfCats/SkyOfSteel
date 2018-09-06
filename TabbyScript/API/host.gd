@@ -1,7 +1,6 @@
-const PermWhite = []
-const PermBlack = []
+var sroot
 
-func Call(sroot, args):
+func Call(args):
 	if args[0] != null:
 		return 'Expected argument type "null"'
 

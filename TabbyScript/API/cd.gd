@@ -1,7 +1,6 @@
-const PermWhite = []
-const PermBlack = []
+var sroot
 
-func Call(sroot, args):
+func Call(args):
 	if typeof(args[0]) != TYPE_STRING:
 		return 'Expected argument type "string"'
 
