@@ -12,4 +12,4 @@ func Call(args):
 			to_print += ' ' + arg
 
 	if not sroot.Break:
-		SConsole.printf(to_print)
+		Console.printf(to_print)

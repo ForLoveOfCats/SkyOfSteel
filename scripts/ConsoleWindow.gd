@@ -38,5 +38,5 @@ func _ready():
 
 func _process(delta):
 	if Input.is_action_just_pressed("Enter") and self.is_visible:
-		SConsole.execute_command($LineEdit.text)
+		Console.execute_command($LineEdit.text)
 		$LineEdit.text = ''

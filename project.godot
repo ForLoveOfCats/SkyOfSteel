@@ -17,7 +17,7 @@ config/icon="res://icon.png"
 [autoload]
 
 SingleSteel="*res://scripts/SingleSteel.gd"
-SConsole="*res://scripts/SConsole.gd"
+Console="*res://scripts/Console.gd"
 SNet="*res://scripts/SNet.gd"
 Items="*res://scripts/Items.gd"
 SMath="*res://scripts/SMath.gd"

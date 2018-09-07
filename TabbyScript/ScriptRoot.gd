@@ -45,26 +45,26 @@ func RuntimeError(message, line):
 		self.Break = true
 
 		if self.mode == 'console':
-			SConsole.printf('RuntimeError: ' + message)
+			Console.printf('RuntimeError: ' + message)
 		else:
-			SConsole.printf('RuntimeError: ' + message + ' @ line ' + str(line+1))
+			Console.printf('RuntimeError: ' + message + ' @ line ' + str(line+1))
 
 		if self.mode == 'normal':
 			self.queue_free()
 		elif self.mode == 'autoexec':
-			SConsole.printf('AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.')
+			Console.printf('AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.')
 			for child in self.get_children():
 				child.queue_free()
 
 
 func ParseError(message):
-	SConsole.printf('ParseError: ' + message + ' @ line ' + str(self.current_parse_line+1))
+	Console.printf('ParseError: ' + message + ' @ line ' + str(self.current_parse_line+1))
 	self.successful_parse = false
 
 	if self.mode == 'normal':
 		self.queue_free()
 	elif self.mode == 'autoexec':
-		SConsole.printf('AUTOEXEC FAILED: Your autoexec was not executed. It is highly recommended that you fix your autoexec and restart the game.')
+		Console.printf('AUTOEXEC FAILED: Your autoexec was not executed. It is highly recommended that you fix your autoexec and restart the game.')
 		for child in self.get_children():
 			child.queue_free()
 

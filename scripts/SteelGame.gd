@@ -16,16 +16,16 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	SingleSteel.mouse_locked = true
 
-	SConsole.logf('')
+	Console.logf('')
 	if SingleSteel.DevMode:
-		SConsole.logf('**DEVMODE IS ENABLED**')
-		SConsole.logf('')
+		Console.logf('**DEVMODE IS ENABLED**')
+		Console.logf('')
 
 	var cmd_args = OS.get_cmdline_args()
 	for current_arg in cmd_args:
-		SConsole.logf('Console Argument: ' + current_arg)
+		Console.logf('Console Argument: ' + current_arg)
 		if current_arg == '-dev_connect':
-			SConsole.execute_command('connect()')
+			Console.execute_command('connect()')
 
 
 func _process(delta):
