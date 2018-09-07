@@ -1,0 +1,65 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scripts/Player.gd" type="Script" id=1]
+[ext_resource path="res://meshes/Body.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://materials/PlayerMat.tres" type="Material" id=3]
+[ext_resource path="res://default_env.tres" type="Environment" id=4]
+[ext_resource path="res://collision_shapes/PlayerCollisionShape.tres" type="Shape" id=5]
+
+[node name="Player" type="KinematicBody"]
+
+input_ray_pickable = true
+input_capture_on_drag = false
+collision_layer = 1
+collision_mask = 1
+axis_lock_linear_x = false
+axis_lock_linear_y = false
+axis_lock_linear_z = false
+axis_lock_angular_x = false
+axis_lock_angular_y = false
+axis_lock_angular_z = false
+collision/safe_margin = 0.005
+script = ExtResource( 1 )
+_sections_unfolded = [ "Collision", "Transform", "collision" ]
+
+[node name="FPSMesh" type="MeshInstance" parent="." index="0"]
+
+layers = 1
+material_override = null
+cast_shadow = 1
+extra_cull_margin = 0.0
+use_in_baked_light = false
+lod_min_distance = 0.0
+lod_min_hysteresis = 0.0
+lod_max_distance = 0.0
+lod_max_hysteresis = 0.0
+mesh = ExtResource( 2 )
+skeleton = NodePath("..")
+material/0 = ExtResource( 3 )
+_sections_unfolded = [ "Transform", "Visibility", "material" ]
+
+[node name="SteelCamera" type="Camera" parent="." index="1"]
+
+transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 5.7223, 0 )
+keep_aspect = 1
+cull_mask = 1048575
+environment = ExtResource( 4 )
+h_offset = 0.0
+v_offset = 0.0
+doppler_tracking = 0
+projection = 0
+current = false
+fov = 100.0
+size = 1.0
+near = 0.05
+far = 1000.0
+_sections_unfolded = [ "Transform" ]
+
+[node name="CollisionShape" type="CollisionShape" parent="." index="2"]
+
+transform = Transform( 1, 0, 0, 0, -2.8213e-07, -1, 0, 1, -2.8213e-07, 0, 3.4, 0 )
+shape = ExtResource( 5 )
+disabled = false
+_sections_unfolded = [ "Transform" ]
+
+
