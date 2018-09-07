@@ -10,8 +10,8 @@ func get_data():
 
 	for index in [0,1]:
 		if typeof(data[index]) == TYPE_STRING:
-			data[index] = "'" + TabbyScript.to_string(data[index]) + "'"
+			data[index] = "'" + Tabby.to_string(data[index]) + "'"
 		else:
-			data[index] = TabbyScript.to_string(data[index])
+			data[index] = Tabby.to_string(data[index])
 
-	return TabbyScript.eval_str(data[0]+Expression+data[1])
+	return Tabby.eval_str(data[0]+Expression+data[1])

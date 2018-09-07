@@ -4,7 +4,7 @@ func Call(args):
 	var to_print = ''
 
 	for arg in args:
-		arg = TabbyScript.to_string(arg)
+		arg = Tabby.to_string(arg)
 
 		if to_print == '':
 			to_print += arg
