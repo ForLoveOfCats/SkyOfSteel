@@ -20,7 +20,7 @@ SingleSteel="*res://scripts/SingleSteel.gd"
 Console="*res://scripts/Console.gd"
 Net="*res://scripts/Net.gd"
 Items="*res://scripts/Items.gd"
-SMath="*res://scripts/SMath.gd"
+Math="*res://scripts/Math.gd"
 TabbyScript="*res://TabbyScript/TabbyScript.gd"
 
 [display]

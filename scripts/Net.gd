@@ -64,7 +64,7 @@ remote func request_pos(time, pos):
 			var old_pos = player.translation
 			player.move_and_collide(pos-old_pos)
 
-			if not SMath.vec_similar(player.translation, pos):
+			if not Math.vec_similar(player.translation, pos):
 				Console.logf('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(SingleSteel.round_vec(player.translation)) + ' != ' + str(SingleSteel.round_vec(pos)))
 				self.rubberband_player(sender, SingleSteel.round_vec(player.translation))
 			else:
