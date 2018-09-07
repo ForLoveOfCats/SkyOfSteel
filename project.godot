@@ -18,7 +18,7 @@ config/icon="res://icon.png"
 
 SingleSteel="*res://scripts/SingleSteel.gd"
 Console="*res://scripts/Console.gd"
-SNet="*res://scripts/SNet.gd"
+Net="*res://scripts/Net.gd"
 Items="*res://scripts/Items.gd"
 SMath="*res://scripts/SMath.gd"
 TabbyScript="*res://TabbyScript/TabbyScript.gd"

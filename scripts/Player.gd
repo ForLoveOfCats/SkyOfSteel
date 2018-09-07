@@ -118,7 +118,7 @@ func _physics_process(delta):
 
 	if Input.is_action_just_pressed("TestBind") and SingleSteel.player_input_enabled:
 		self.translation = Vector3(0,0,0)
-		#SNet.request_pos(OS.get_ticks_msec(), Vector3(0,5,20))
+		#Net.request_pos(OS.get_ticks_msec(), Vector3(0,5,20))
 		#OS.shell_open(OS.get_user_data_dir())
 
 	var moving_this_frame_z = false
@@ -191,8 +191,8 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	SNet.request_pos(OS.get_ticks_msec(), self.translation)
-	SNet.sync_rot(self.rotation_degrees.y)
+	Net.request_pos(OS.get_ticks_msec(), self.translation)
+	Net.sync_rot(self.rotation_degrees.y)
 
 	if is_on_floor():
 		if self.on_floor_last_frame:

@@ -8,4 +8,4 @@ func Call(args):
 		args[0] = '127.0.0.1'
 
 	Console.logf('Attempting to connect to "' + args[0] + '" on port "' + str(SingleSteel.Port) + '"')
-	SNet.connect(args[0], SingleSteel.Port)
+	Net.connect(args[0], SingleSteel.Port)
