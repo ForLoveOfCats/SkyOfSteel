@@ -7,5 +7,5 @@ func Call(args):
 	if args[0] == 'localhost' or args[0] == null:
 		args[0] = '127.0.0.1'
 
-	Console.logf('Attempting to connect to "' + args[0] + '" on port "' + str(SingleSteel.Port) + '"')
-	Net.connect(args[0], SingleSteel.Port)
+	Console.logf('Attempting to connect to "' + args[0] + '" on port "' + str(Game.Port) + '"')
+	Net.connect(args[0], Game.Port)

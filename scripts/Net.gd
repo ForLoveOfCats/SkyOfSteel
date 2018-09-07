@@ -9,10 +9,10 @@ var peers = {}
 func host(port):
 	self.connect_port = port
 
-	SingleSteel.start_world()
+	Game.start_world()
 
 	var peer = NetworkedMultiplayerENet.new()
-	peer.create_server(port, SingleSteel.MaxPlayers)
+	peer.create_server(port, Game.MaxPlayers)
 	get_tree().set_network_peer(peer)
 	get_tree().set_meta("network_peer", peer)
 	Console.logf('Started hosting on port "' + str(port) + '"')
@@ -24,7 +24,7 @@ func connect(ip, port):
 	self.connect_ip = ip
 	self.connect_port = port
 
-	SingleSteel.start_world()
+	Game.start_world()
 
 	var peer = NetworkedMultiplayerENet.new()
 	peer.create_client(ip, port)
@@ -65,8 +65,8 @@ remote func request_pos(time, pos):
 			player.move_and_collide(pos-old_pos)
 
 			if not Math.vec_similar(player.translation, pos):
-				Console.logf('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(SingleSteel.round_vec(player.translation)) + ' != ' + str(SingleSteel.round_vec(pos)))
-				self.rubberband_player(sender, SingleSteel.round_vec(player.translation))
+				Console.logf('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(Game.round_vec(player.translation)) + ' != ' + str(Game.round_vec(pos)))
+				self.rubberband_player(sender, Game.round_vec(player.translation))
 			else:
 				player.translation = pos
 
@@ -91,7 +91,7 @@ remote func sync_rot(rot):
 
 func _player_connected(id):
 	Console.logf('Player "' + str(id) + '" connected')
-	SingleSteel.spawn_player(id, false)
+	Game.spawn_player(id, false)
 	self.peers[id] = 0
 
 func _player_disconnected(id):
@@ -105,7 +105,7 @@ func _connected_ok():
 func _server_disconnected():
 	Console.logf('Lost connection to server at "' + connect_ip + '" on port "' + str(connect_port) + '"')
 	get_tree().set_network_peer(null)
-	SingleSteel.close_world()
+	Game.close_world()
 
 func _connected_fail():
 	Console.logf('Failed to connect to "' + connect_ip + '" on port "' + str(connect_port) + '"')

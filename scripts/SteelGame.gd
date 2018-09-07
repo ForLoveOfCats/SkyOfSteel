@@ -14,10 +14,10 @@ func _notification(what):
 func _ready():
 	get_tree().set_auto_accept_quit(false)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	SingleSteel.mouse_locked = true
+	Game.mouse_locked = true
 
 	Console.logf('')
-	if SingleSteel.DevMode:
+	if Game.DevMode:
 		Console.logf('**DEVMODE IS ENABLED**')
 		Console.logf('')
 
@@ -35,11 +35,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("MouseLock"):
 		if Input.get_mouse_mode() == 0:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			SingleSteel.mouse_locked = true
-			SingleSteel.player_input_enabled = true
+			Game.mouse_locked = true
+			Game.player_input_enabled = true
 			$ConsoleWindow.hide()
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			SingleSteel.mouse_locked = false
-			SingleSteel.player_input_enabled = false
+			Game.mouse_locked = false
+			Game.player_input_enabled = false
 			$ConsoleWindow.show()

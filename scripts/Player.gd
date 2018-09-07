@@ -109,23 +109,23 @@ func _physics_process(delta):
 	if not self.possessed:
 		return null
 
-	if Input.is_action_pressed("Sprint") and SingleSteel.player_input_enabled:
+	if Input.is_action_pressed("Sprint") and Game.player_input_enabled:
 		self.movement_multiplyer = 2
-	elif Input.is_action_pressed("Crouch") and SingleSteel.player_input_enabled:
+	elif Input.is_action_pressed("Crouch") and Game.player_input_enabled:
 		self.movement_multiplyer = 0.4
 	else:
 		self.movement_multiplyer = 1
 
-	if Input.is_action_just_pressed("TestBind") and SingleSteel.player_input_enabled:
+	if Input.is_action_just_pressed("TestBind") and Game.player_input_enabled:
 		self.translation = Vector3(0,0,0)
 		#Net.request_pos(OS.get_ticks_msec(), Vector3(0,5,20))
 		#OS.shell_open(OS.get_user_data_dir())
 
 	var moving_this_frame_z = false
-	if Input.is_action_pressed("MoveForward") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
+	if Input.is_action_pressed("MoveForward") and Game.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		self.momentum.z = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_z = true
-	if Input.is_action_pressed("MoveBack") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
+	if Input.is_action_pressed("MoveBack") and Game.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		if not moving_this_frame_z:
 			self.momentum.z = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_z = true
@@ -142,10 +142,10 @@ func _physics_process(delta):
 			self.momentum.z = 0
 
 	var moving_this_frame_x = false
-	if Input.is_action_pressed("MoveLeft") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
+	if Input.is_action_pressed("MoveLeft") and Game.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		self.momentum.x = BaseMoveSpeed*self.movement_multiplyer
 		moving_this_frame_x = true
-	if Input.is_action_pressed("MoveRight") and SingleSteel.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
+	if Input.is_action_pressed("MoveRight") and Game.player_input_enabled and is_on_floor() and self.on_floor_last_frame:
 		if not moving_this_frame_x:
 			self.momentum.x = BaseMoveSpeed*-1*self.movement_multiplyer
 			moving_this_frame_x = true
@@ -168,7 +168,7 @@ func _physics_process(delta):
 	if is_on_floor():
 		self.momentum.y = clamp(self.momentum.y, -1, 1)
 
-		if Input.is_action_pressed("Jump") and SingleSteel.player_input_enabled:
+		if Input.is_action_pressed("Jump") and Game.player_input_enabled:
 			if not self.is_jumping:
 				self.start_jumping()
 		else:
@@ -182,7 +182,7 @@ func _physics_process(delta):
 		if not self.is_jumping:
 			self.momentum.y -= Gravity
 
-		if Input.is_action_pressed("Jump") and self.is_jumping and not is_on_ceiling() and SingleSteel.player_input_enabled:
+		if Input.is_action_pressed("Jump") and self.is_jumping and not is_on_ceiling() and Game.player_input_enabled:
 			if self.jump_length < self.MaxJumpLength:
 				self.continue_jumping()
 			else:
@@ -208,7 +208,7 @@ func _input(event):
 	if not self.possessed:
 		return null
 
-	if event is InputEventMouseMotion and SingleSteel.mouse_locked and SingleSteel.player_input_enabled:
+	if event is InputEventMouseMotion and Game.mouse_locked and Game.player_input_enabled:
 		self.set_direction(self.direction+(event.relative[0]*-1*MouseSens*MouseSensMultiplyer))
 		$SteelCamera.rotation_degrees.x = clamp(($SteelCamera.rotation_degrees.x + event.relative[1]*-1*MouseSens*MouseSensMultiplyer), -90, 90)
 
