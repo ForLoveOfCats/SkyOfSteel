@@ -1,9 +1,6 @@
 extends Node
 
 
-const InvalidNames = ['true', 'false']
-
-
 func eval_str(input):
 	var script = GDScript.new()
 	script.set_source_code('func eval():\n\treturn ' + input)
