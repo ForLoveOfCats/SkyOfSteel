@@ -118,14 +118,3 @@ func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
-
-
-"""extends Node
-
-const SimilarAmmount = 3
-
-func vec_similar(vec1, vec2):
-	if abs(vec1.x-vec2.x) > SimilarAmmount or abs(vec1.y-vec2.y) > SimilarAmmount or abs(vec1.z-vec2.z) > SimilarAmmount:
-		return false
-	return true
-"""
