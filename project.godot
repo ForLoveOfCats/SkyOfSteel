@@ -23,6 +23,10 @@ Items="*res://scripts/Items.gd"
 Math="*res://scripts/Math.gd"
 Tabby="*res://TabbyScript/Tabby.gd"
 
+[debug]
+
+settings/fps/force_fps=60
+
 [display]
 
 window/vsync/use_vsync=false

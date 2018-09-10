@@ -1,7 +1,7 @@
 var sroot
 
 func Call(args):
-	if args[0] != null:
+	if args[0].type != Tabby.NULL:
 		return 'Expected argument type "null"'
 
 	sroot.cwd.list_dir_begin(true)
@@ -11,12 +11,12 @@ func Call(args):
 	while file_name != "":
 		found_files = true
 		if sroot.cwd.current_is_dir():
-			sroot.call_api('print', ['Folder: ' + file_name])
+			Console.printf('Folder: ' + file_name)
 		else:
-			sroot.call_api('print', ['File: ' + file_name])
+			Console.printf('File: ' + file_name)
 		file_name = sroot.cwd.get_next()
 
 	if not found_files:
-		sroot.call_api('print', ['Folder empty'])
+		Console.printf('Folder empty')
 
 	sroot.cwd.list_dir_end()

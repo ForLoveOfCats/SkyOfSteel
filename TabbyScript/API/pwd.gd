@@ -1,7 +1,7 @@
 var sroot
 
 func Call(args):
-	if args[0] != null:
+	if args[0].type != Tabby.NULL:
 		return 'Expected argument type "null"'
 
-	sroot.call_api('print', [sroot.cwd.get_current_dir()])
+	Console.printf(sroot.cwd.get_current_dir())

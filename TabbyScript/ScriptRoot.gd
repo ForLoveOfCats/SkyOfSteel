@@ -199,11 +199,11 @@ func paren_parser(parent, string, index=0):
 
 	if fullstr == '':
 		node = load_node('Literal')
-		node.Data = null
+		node.Data = Tabby.malloc(Tabby.NULL)
 
 	elif fullstr.is_valid_float():  # It is a number
 		node = load_node('Literal')
-		node.Data = Tabby.check_float(float(fullstr))
+		node.Data = Tabby.malloc(Tabby.NUM, Tabby.check_float(float(fullstr)))
 
 	elif fullstr[0] in ['+', '-', '*', '/']:  # Math node
 		node = load_node('Math')
@@ -220,14 +220,14 @@ func paren_parser(parent, string, index=0):
 	elif fullstr[0]  == "'":  # String
 		if fullstr[len(fullstr)-1] == "'":
 			node = load_node('Literal')
-			node.Data = fullstr.substr(1,len(fullstr)-2)
+			node.Data = Tabby.malloc(Tabby.STR, fullstr.substr(1,len(fullstr)-2))
 		else:
 			ParseError('Expected end of string')
 			return null
 
 	elif fullstr in ['true', 'false']:  # Boolean
 		node = load_node('Literal')
-		node.Data = fullstr == 'true'
+		node.Data = Tabby.malloc(Tabby.BOOL, fullstr == 'true')
 
 	else:  # Must be a getvar
 		node = load_node('GetVar')

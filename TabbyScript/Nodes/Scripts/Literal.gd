@@ -6,7 +6,7 @@ var Data = null
 func get_data():
 	var data = self.Data
 
-	if typeof(data) in [TYPE_INT, TYPE_REAL]:
-		data = Tabby.check_float(data)
+	if data.type == Tabby.NUM:
+		data.data = Tabby.check_float(data.data)
 
-	return self.Data
+	return data.dup()

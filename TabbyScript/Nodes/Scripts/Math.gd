@@ -5,16 +5,16 @@ var Operations = []
 
 func get_data():
 	var data_list = []
-	var type = typeof(self.get_child(0).get_data())
+	var type = self.get_child(0).get_data().type
 
-	if not type in [TYPE_INT, TYPE_REAL, TYPE_STRING]:
-		sroot.RuntimeError('Unsupported data type "' + Tabby.get_type(self.get_child(0).get_data()) + '" in math expression', self.line_number)
+	if not type in [Tabby.NUM, Tabby.STR]:
+		sroot.RuntimeError('Unsupported data type "' + Tabby.get_name(self.get_child(0).get_data()) + '" in math expression', self.line_number)
 		return null
 
 	for node in self.get_children():
 		var data = node.get_data()
 
-		if typeof(data) != type:
+		if data.type != type:
 			sroot.RuntimeError('All types must be the same in math expression', self.line_number)
 			return null
 
@@ -31,16 +31,17 @@ func get_data():
 	var data = null
 	for index in len(data_list):
 		data = data_list[index]
-		if typeof(data) == TYPE_STRING:
-			expression += "'" + data + "'"
+		if data.type == Tabby.STR:
+			expression += "'" + data.data + "'"
 		else:
-			expression += Tabby.to_string(data)
+			expression += Tabby.to_string(data.data)
 
 		if index+1 != len(data_list):
 			expression += Operations[index]
 
 	var out = Tabby.eval_str(expression)
+	out = Tabby.malloc(Tabby.get_type(out), out)
 
-	if typeof(out) in [TYPE_INT, TYPE_REAL]:
-		return Tabby.check_float(out)
-	return out
+	if out.type == Tabby.NUM:
+		out.data = Tabby.check_float(out.data)
+	return out.dup()

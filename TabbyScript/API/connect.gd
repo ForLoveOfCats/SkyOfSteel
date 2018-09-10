@@ -1,11 +1,11 @@
 var sroot
 
 func Call(args):
-	if typeof(args[0]) != TYPE_STRING and typeof(args[0]) != TYPE_NIL:
+	if args[0].type != Tabby.STR and args[0].type != Tabby.NULL:
 		return 'Expected argument type "string" or "null"'
 
-	if args[0] == 'localhost' or args[0] == null:
-		args[0] = '127.0.0.1'
+	if args[0].data == 'localhost' or args[0].data == null:
+		args[0].data = '127.0.0.1'
 
-	Console.logf('Attempting to connect to "' + args[0] + '" on port "' + str(Game.Port) + '"')
-	Net.connect(args[0], Game.Port)
+	Console.logf('Attempting to connect to "' + args[0].data + '" on port "' + str(Game.Port) + '"')
+	Net.connect(args[0].data, Game.Port)

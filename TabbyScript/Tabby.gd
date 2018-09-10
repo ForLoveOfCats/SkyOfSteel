@@ -1,6 +1,27 @@
 extends Node
 
 
+enum {NULL, NUM, BOOL, STR, ERR}
+
+
+class DataClass:
+	var type = null
+	var data = null
+
+	func dup():
+		var out = get_script().new()
+		out.type = self.type
+		out.data = self.data
+		return out
+
+
+func malloc(type, data=null):
+	var out = DataClass.new()
+	out.type = type
+	out.data = data
+	return out
+
+
 func eval_str(input):
 	var script = GDScript.new()
 	script.set_source_code('func eval():\n\treturn ' + input)
@@ -32,20 +53,38 @@ func to_string(arg):
 	return arg
 
 
-func get_type(arg):
+func get_name(arg):
 	var out = 'missing_type'
+
+	match arg.type:
+		NULL:
+			out = 'null'
+		NUM:
+			out = 'number'
+		BOOL:
+			out = 'bool'
+		STR:
+			out = 'string'
+		ERR:
+			out = 'error'
+
+	return out
+
+
+func get_type(arg):
+	var out = NULL
 
 	match typeof(arg):
 		TYPE_NIL:
-			out = 'null'
-		TYPE_BOOL:
-			out = 'bool'
-		TYPE_STRING:
-			out = 'string'
+			out = NULL
 		TYPE_INT:
-			out = 'number'
+			out = NUM
 		TYPE_REAL:
-			out = 'number'
+			out = NUM
+		TYPE_BOOL:
+			out = BOOL
+		TYPE_STRING:
+			out = STR
 
 	return out
 

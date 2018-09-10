@@ -9,9 +9,10 @@ func get_data():
 	data.append(get_children()[1].get_data())
 
 	for index in [0,1]:
-		if typeof(data[index]) == TYPE_STRING:
-			data[index] = "'" + Tabby.to_string(data[index]) + "'"
+		if data[index].type == Tabby.STR:
+			data[index].data = "'" + data[index].data + "'"
 		else:
-			data[index] = Tabby.to_string(data[index])
+			data[index].data = Tabby.to_string(data[index].data)
 
-	return Tabby.eval_str(data[0]+Expression+data[1])
+	data = Tabby.eval_str(data[0].data+Expression+data[1].data)
+	return Tabby.malloc(Tabby.get_type(data), data)
