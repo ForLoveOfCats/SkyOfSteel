@@ -4,7 +4,9 @@ extends Node
 var connect_ip = null
 var connect_port = null
 
+
 var peers = {}
+
 
 func host(port):
 	self.connect_port = port
@@ -34,14 +36,15 @@ func connect(ip, port):
 	self.peers[get_tree().get_network_unique_id()] = 0
 
 
-
 remote func update_pos_id(id, pos):
 	get_parent().get_node("SteelGame/SkyScene/" + str(id)).translation = pos
+
 
 func send_positions(id, pos):
 	for current_peer in peers:
 		if current_peer != id and current_peer != 1:
 			rpc_unreliable_id(current_peer, 'update_pos_id', id, pos)
+
 
 remote func request_pos(time, pos):
 	if not get_tree().is_network_server():
@@ -72,6 +75,7 @@ remote func request_pos(time, pos):
 
 			self.send_positions(sender, player.translation)
 
+
 remote func rubberband_player(id, pos):
 	if get_tree().get_network_unique_id() != id:
 		rpc_id(id, 'rubberband_player', id, pos)
@@ -88,28 +92,30 @@ remote func sync_rot(rot):
 		 get_parent().get_node("SteelGame/SkyScene/" + str(get_tree().get_rpc_sender_id())).rotation_degrees.y = rot
 
 
-
 func _player_connected(id):
 	Console.logf('Player "' + str(id) + '" connected')
 	Game.spawn_player(id, false)
 	self.peers[id] = 0
+
 
 func _player_disconnected(id):
 	Console.logf('Player "' + str(id) + '" disconnected')
 	get_tree().get_root().get_node("SteelGame/SkyScene/" + str(id)).queue_free()
 	self.peers.erase(id)
 
+
 func _connected_ok():
 	Console.logf('Connected to "' + connect_ip + '" on port ' + str(connect_port))
+
 
 func _server_disconnected():
 	Console.logf('Lost connection to server at "' + connect_ip + '" on port "' + str(connect_port) + '"')
 	get_tree().set_network_peer(null)
 	Game.close_world()
 
+
 func _connected_fail():
 	Console.logf('Failed to connect to "' + connect_ip + '" on port "' + str(connect_port) + '"')
-
 
 
 func _ready():
