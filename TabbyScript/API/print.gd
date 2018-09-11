@@ -11,5 +11,4 @@ func Call(args):
 		else:
 			to_print += ' ' + arg
 
-	if not sroot.Break:
-		Console.printf(to_print)
+	Console.printf(to_print)

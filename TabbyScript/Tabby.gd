@@ -1,7 +1,7 @@
 extends Node
 
 
-enum {NULL, NUM, BOOL, STR, ERR}
+enum {NULL, NUM, BOOL, STR, SUC, ERR}
 
 
 class DataClass:
@@ -19,6 +19,18 @@ func malloc(type, data=null):
 	var out = DataClass.new()
 	out.type = type
 	out.data = data
+	return out
+
+
+class ErrorClass:
+	var type = ERR
+	var message = null
+	var line = null
+
+func throw(message, line):
+	var out = ErrorClass.new()
+	out.message = message
+	out.line = line
 	return out
 
 

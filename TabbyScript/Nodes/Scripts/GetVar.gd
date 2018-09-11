@@ -7,4 +7,4 @@ func get_data():
 	if Variable in self.sroot.GlobalVars:
 		return self.sroot.GlobalVars[Variable].dup()
 
-	sroot.RuntimeError('No variable named "' + Variable + '"', self.line_number)
+	return Tabby.throw('No variable named "' + Variable + '"', self.line_number)

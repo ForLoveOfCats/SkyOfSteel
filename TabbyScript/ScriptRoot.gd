@@ -6,7 +6,6 @@ const InvalidCars = [':', '/', '.', '*', '{', '}', '[', ']', '(', ')', '!']
 var GlobalVars = {}
 var Functions = {}
 var APIFunctions = {}
-var Break = false
 
 var current_parse_line = 0
 var successful_parse = true
@@ -41,20 +40,17 @@ func call_api(call, args):
 
 
 func RuntimeError(message, line):
-	if not self.Break:
-		self.Break = true
+	if self.mode == 'console':
+		Console.printf('RuntimeError: ' + message)
+	else:
+		Console.printf('RuntimeError: ' + message + ' @ line ' + str(line+1))
 
-		if self.mode == 'console':
-			Console.printf('RuntimeError: ' + message)
-		else:
-			Console.printf('RuntimeError: ' + message + ' @ line ' + str(line+1))
-
-		if self.mode == 'normal':
-			self.queue_free()
-		elif self.mode == 'autoexec':
-			Console.printf('AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.')
-			for child in self.get_children():
-				child.queue_free()
+	if self.mode == 'normal':
+		self.queue_free()
+	elif self.mode == 'autoexec':
+		Console.printf('AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.')
+		for child in self.get_children():
+			child.queue_free()
 
 
 func ParseError(message):
@@ -347,7 +343,6 @@ func exec_line(line):
 		self.cwd = Directory.new()
 		self.cwd.open('user://')
 
-	self.Break = false
 	self.current_parse_line = 0
 	self.successful_parse = true
 
@@ -356,12 +351,15 @@ func exec_line(line):
 
 	if self.successful_parse:
 		var node = self.get_child(len(self.get_children())-1)
-		node.execute()
+		var returned = node.execute()
+		if returned.type == Tabby.ERR:
+			RuntimeError(returned.message, returned.line)
 		node.queue_free()
 
 
 func start():
 	for child in get_children():
-		if Break:
+		var returned = child.execute()
+		if returned.type == Tabby.ERR:
+			RuntimeError(returned.message, returned.line)
 			break
-		child.execute()

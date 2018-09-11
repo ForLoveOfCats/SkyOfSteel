@@ -5,8 +5,14 @@ var Expression = ''
 
 func get_data():
 	var data = []
+
 	data.append(get_children()[0].get_data())
+	if data[0].type == Tabby.ERR:
+		return data[0]
+
 	data.append(get_children()[1].get_data())
+	if data[1].type == Tabby.ERR:
+		return data[1]
 
 	for index in [0,1]:
 		if data[index].type == Tabby.STR:

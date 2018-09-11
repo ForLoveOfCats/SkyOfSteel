@@ -4,13 +4,13 @@ var sroot = null
 var line_number = null
 
 func execute():
-	pass
+	return Tabby.malloc(Tabby.SUC)
 
 func get_data():
-	pass
+	return Tabby.malloc(Tabby.SUC)
 
 func execute_children():
 	for child in get_children():
-		if sroot.Break:
-			break
-		child.execute()
+		var returned = child.execute()
+		if returned.type == Tabby.ERR:
+			return returned

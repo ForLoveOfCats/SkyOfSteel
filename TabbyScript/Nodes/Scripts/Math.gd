@@ -5,27 +5,29 @@ var Operations = []
 
 func get_data():
 	var data_list = []
-	var type = self.get_child(0).get_data().type
-
-	if not type in [Tabby.NUM, Tabby.STR]:
-		sroot.RuntimeError('Unsupported data type "' + Tabby.get_name(self.get_child(0).get_data()) + '" in math expression', self.line_number)
-		return null
+	var type = null
 
 	for node in self.get_children():
 		var data = node.get_data()
 
-		if data.type != type:
-			sroot.RuntimeError('All types must be the same in math expression', self.line_number)
-			return null
+		if data.type == Tabby.ERR:
+			return data
 
-		data_list.append(node.get_data())
+		if type == null:
+			type = data.type
+
+		if not data.type in [Tabby.NUM, Tabby.STR]:
+			return Tabby.throw('Unsupported data type "' + Tabby.get_name(data) + '" in math expression', self.line_number)
+
+		if data.type != type:
+			return Tabby.throw('All types must be the same in math expression', self.line_number)
+
+		data_list.append(data)
 
 	if len(data_list) > len(Operations)+1:
-		sroot.RuntimeError('To many data inputs in math expression', self.line_number)
-		return null
+		return Tabby.throw('To many data inputs in math expression', self.line_number)
 	if len(data_list) < len(Operations)+1:
-		sroot.RuntimeError('To many operations in math expression', self.line_number)
-		return null
+		return Tabby.throw('To many operations in math expression', self.line_number)
 
 	var expression = ''
 	var data = null

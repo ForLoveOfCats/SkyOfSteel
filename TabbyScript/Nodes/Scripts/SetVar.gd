@@ -4,4 +4,10 @@ const Type = 'exec'
 var Variable = ''
 
 func execute():
-	self.sroot.GlobalVars[Variable] = get_children()[0].get_data()
+	var data = get_children()[0].get_data()
+
+	if data.type == Tabby.ERR:
+		return data
+
+	self.sroot.GlobalVars[Variable] = data
+	return Tabby.malloc(Tabby.SUC)
