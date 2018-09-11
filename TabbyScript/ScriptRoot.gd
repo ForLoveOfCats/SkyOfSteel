@@ -120,23 +120,6 @@ func list_to_end(string, start):
 	return out
 
 
-func all_same(string):
-	var same = string.substr(0,1)
-	for car in string:
-		if car != same:
-			return false
-	return true
-
-
-func all_plus(string):
-	var out = true
-	for car in string:
-		if car != '+':
-			out = false
-			break
-	return out
-
-
 func invalid_name(name):
 	if name in InvalidNames or name.is_valid_integer():
 		return true
