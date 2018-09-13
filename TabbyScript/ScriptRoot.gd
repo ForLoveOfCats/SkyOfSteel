@@ -192,7 +192,15 @@ func paren_parser(parent, string, index=0):
 				ParseError('Invalid character "' + car + '" in math expression')
 			node.Operations.append(car)
 
-	elif fullstr[0] in ['=', '>', '<', "!"] and fullstr[1] in ['=', '>', '<', "!"] and len(fullstr) == 2:  # Comparison
+	elif fullstr[0] in ['=', '>', '<', "!"]:  # Comparison
+		if len(fullstr) > 2:
+			ParseError('To many operators in comparison')
+			return null
+
+		if len(fullstr) == 2 and fullstr[1] != '=':
+			ParseError('Cannot have "' + fullstr[1] + '" following "' + fullstr[0] + '" in comparison')
+			return null
+
 		node = load_node('Comparison')
 		node.Expression = fullstr
 
@@ -268,6 +276,22 @@ func parse_line(line, parent):
 
 		paren_parser(If, remove_open_curly(line.substr(2, len(line)-2)))
 		parent = If
+		return parent
+
+	elif line.substr(0,5) == 'while':
+		if self.mode == 'console':
+			ParseError('Cannot use while statement in console')
+			return parent
+
+		if line.substr(5, 1) != '(':
+			ParseError('Missing parentheses in "while"')
+			return parent
+
+		var While = load_node('While')
+		parent.add_child(While)
+
+		paren_parser(While, remove_open_curly(line.substr(5, len(line)-5)))
+		parent = While
 		return parent
 
 	elif line.substr(0,1) == '}':
