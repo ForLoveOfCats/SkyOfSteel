@@ -11,12 +11,9 @@ func execute():
 			return data
 		args.append(data)
 
-	var returned = sroot.call_api(Call, args)
+	var returned = sroot.call_api(Call, args, self.line_number)
 
-	if typeof(returned) == TYPE_STRING:
-		return Tabby.throw(returned, self.line_number)
-
-	elif returned == false:
-		return Tabby.throw('Call to nonexistant function "' + str(Call) + '"', self.line_number)
+	if returned.type == Tabby.ERR:
+		return returned
 
 	return Tabby.malloc(Tabby.SUC)

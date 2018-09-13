@@ -33,10 +33,10 @@ func load_node(node):
 	return node
 
 
-func call_api(call, args):
+func call_api(call, args, line):
 	if call in self.APIFunctions:
-		return self.APIFunctions[call].Call(args)
-	return false
+		return self.APIFunctions[call].Call(args, line)
+	return Tabby.throw('Call to nonexistant function "' + str(call) + '"', line)
 
 
 func RuntimeError(message, line):
@@ -142,7 +142,7 @@ func paren_parser(parent, string, index=0):
 
 		elif car == '(' and not in_string:
 			opencount += 1
-			if opencount > 1:
+			if opencount == 2:
 				childlist.append(paren_parser(null, string, cindex))
 			continue
 
@@ -209,7 +209,7 @@ func paren_parser(parent, string, index=0):
 		node.Data = Tabby.malloc(Tabby.BOOL, fullstr == 'true')
 
 	else:  # Must be a getvar
-		node = load_node('GetVar')
+		node = load_node('Get')
 		node.Variable = fullstr
 
 	for child in childlist:

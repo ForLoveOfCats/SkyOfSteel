@@ -1,6 +1,6 @@
 var sroot
 
-func Call(args):
+func Call(args, line):
 	var to_print = ''
 
 	for arg in args:
@@ -12,3 +12,4 @@ func Call(args):
 			to_print += ' ' + arg
 
 	Console.printf(to_print)
+	return Tabby.malloc(Tabby.SUC)

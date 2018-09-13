@@ -1,13 +1,15 @@
 var sroot
 
-func Call(args):
+func Call(args, line):
 	if args[0].type != Tabby.STR:
-		return 'Expected argument type "string"'
+		return Tabby.throw('Expected argument type "string"', line)
 
 	if args[0].data in ['', '.', './']:
-		return 'Cannot cd to "' + args[0].data + '" no folder specified'
+		return Tabby.throw('Cannot cd to "' + args[0].data + '" no folder specified', line)
 
 	var returned = sroot.cwd.change_dir(args[0].data)
 
 	if returned == ERR_INVALID_PARAMETER:
-		return 'Cannot cd to "' + args[0].data + '" invalid path'
+		return Tabby.throw('Cannot cd to "' + args[0].data + '" invalid path', line)
+
+	return Tabby.malloc(Tabby.SUC)

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TabbyScript/Nodes/Scripts/Get.gd" type="Script" id=1]
+
+[node name="Get" type="Node" index="0"]
+
+script = ExtResource( 1 )
+
+

@@ -1,8 +1,8 @@
 var sroot
 
-func Call(args):
+func Call(args, line):
 	if args[0].type != Tabby.NULL:
-		return 'Expected argument type "null"'
+		return Tabby.throw('Expected argument type "null"', line)
 
 	sroot.cwd.list_dir_begin(true)
 
@@ -20,3 +20,4 @@ func Call(args):
 		Console.printf('Folder empty')
 
 	sroot.cwd.list_dir_end()
+	return Tabby.malloc(Tabby.SUC)

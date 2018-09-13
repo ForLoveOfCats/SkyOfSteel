@@ -8,6 +8,7 @@ func get_data():
 	var type = null
 
 	for node in self.get_children():
+		print(node.get_name())
 		var data = node.get_data()
 
 		if data.type == Tabby.ERR:
