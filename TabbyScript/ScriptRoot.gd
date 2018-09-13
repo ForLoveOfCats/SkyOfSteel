@@ -339,6 +339,9 @@ func exec_script(script, die):
 
 
 func exec_line(line):
+	if line == '':
+		return 0
+
 	if self.cwd == null:
 		self.cwd = Directory.new()
 		self.cwd.open('user://')
