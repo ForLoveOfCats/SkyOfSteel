@@ -3,7 +3,7 @@ extends Node
 const InvalidNames = ['true', 'false']
 const InvalidCars = [':', '/', '.', '&', '*', '{', '}', '[', ']', '(', ')', '!']
 
-var GlobalVars = {}
+var Variables = {}
 var Functions = {}
 var APIFunctions = {}
 
@@ -135,6 +135,16 @@ func invalid_name(name):
 
 
 func paren_parser(parent, string, index=0):
+	var scope_stack = []
+	var scope_item = parent
+	while true:
+		if scope_item is self.get_script():
+			scope_stack.append(scope_item)
+			break
+		elif scope_item is preload("Nodes/Scripts/Func.gd"):
+			scope_stack.append(scope_item)
+		scope_item = scope_item.get_parent()
+
 	var opencount = 0
 	var carlist = []
 	var childlist = []
@@ -224,6 +234,7 @@ func paren_parser(parent, string, index=0):
 	else:  # Must be a getvar
 		node = load_node('Get')
 		node.Variable = fullstr
+		node.scope_stack = scope_stack
 
 	for child in childlist:
 		node.add_child(child)
@@ -242,7 +253,18 @@ func parse_line(line, parent):
 		return parent
 
 	elif line.substr(0,3) == 'var':
+		var scope_stack = []
+		var scope_item = parent
+		while true:
+			if scope_item is self.get_script():
+				scope_stack.append(scope_item)
+				break
+			elif scope_item is preload("Nodes/Scripts/Func.gd"):
+				scope_stack.append(scope_item)
+			scope_item = scope_item.get_parent()
+
 		var SetVar = load_node('SetVar')
+		SetVar.scope_stack = scope_stack
 
 		var equaldex = null
 		for cindex in len(line)-3:
@@ -297,6 +319,31 @@ func parse_line(line, parent):
 
 		paren_parser(While, remove_open_curly(line.substr(5, len(line)-5)))
 		parent = While
+		return parent
+
+	elif line.substr(0,4) == 'func':
+		if self.mode == 'console':
+			ParseError('Cannot declare function in console')
+			return parent
+
+		var parendex = null
+		var func_name = ''
+		for cindex in len(line)-4:
+			if line.substr(4,len(line)-4)[cindex] == '(':
+				parendex = cindex+4
+				break
+			func_name += line.substr(4,len(line)-4)[cindex]
+
+		if parendex == null:
+			ParseError('Missing parentheses in function declaration')
+			return parent
+
+		var Func = load_node('Func')
+		Func.FuncName = func_name
+		parent.add_child(Func)
+
+		paren_parser(Func, remove_open_curly(line.substr(parendex, len(line)-parendex)))
+		parent = Func
 		return parent
 
 	elif line.substr(0,1) == '}':

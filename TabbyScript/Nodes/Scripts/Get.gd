@@ -3,18 +3,35 @@ extends "Base.gd"
 const Type = 'data'
 var Variable = ''
 
+
+func _var_exists(variable):
+	for entry in scope_stack:
+		if variable in entry.Variables:
+			return true
+	return false
+
+
+func _get_var(variable):
+	for entry in scope_stack:
+		if variable in entry.Variables:
+			return entry.Variables[variable]
+
+
 func get_data():
 	if Variable[0] == '&':
-		if not Variable.substr(1,len(Variable)-1) in self.sroot.GlobalVars:
-			self.sroot.GlobalVars[Variable.substr(1,len(Variable)-1)] = Tabby.malloc(Tabby.NULL)
+		if not _var_exists(Variable.substr(1,len(Variable)-1)):
+			self.scope_stack[len(scope_stack)-1].Variables[Variable.substr(1,len(Variable)-1)] = Tabby.malloc(Tabby.NULL)
 
 		return Tabby.malloc(Tabby.PTR, Variable.substr(1,len(Variable)-1))
 
 	elif Variable[0] == '*':
-		return self.sroot.GlobalVars[self.sroot.GlobalVars[Variable.substr(1,len(Variable)-1)].data]  # Spagetti
+		if _var_exists(Variable.substr(1,len(Variable)-1)):
+			return _get_var(_get_var( Variable.substr(1,len(Variable)-1) ).data)  # Spagetti
+		else:
+			return Tabby.throw('No variable or function named "' + Variable.substr(1,len(Variable)-1) + '"', self.line_number)
 
-	elif Variable in self.sroot.GlobalVars:
-		return self.sroot.GlobalVars[Variable].dup()
+	elif _var_exists(Variable):
+		return _get_var(Variable).dup()
 
 	elif Variable in self.sroot.APIFunctions:
 		var args = []

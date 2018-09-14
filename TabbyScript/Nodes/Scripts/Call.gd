@@ -11,7 +11,11 @@ func execute():
 			return data
 		args.append(data)
 
-	var returned = sroot.call_api(Call, args, self.line_number)
+	var returned = null
+	if Call in self.sroot.Functions:
+		returned = self.sroot.Functions[Call].call(args)
+	else:
+		returned = self.sroot.call_api(Call, args, self.line_number)
 
 	if returned.type == Tabby.ERR:
 		return returned

@@ -77,6 +77,10 @@ func get_name(arg):
 			out = 'bool'
 		STR:
 			out = 'string'
+		PTR:
+			out = 'pointer'
+		SUC:
+			out = 'success'
 		ERR:
 			out = 'error'
 
