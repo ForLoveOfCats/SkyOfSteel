@@ -35,6 +35,8 @@ func get_data():
 		data = data_list[index]
 		if data.type == Tabby.STR:
 			expression += "'" + data.data + "'"
+		elif data.type == Tabby.NUM:
+			expression += 'float(' + str(data.data) + ')'  # Stupid but necessary otherwise division problems are truncated
 		else:
 			expression += Tabby.to_string(data.data)
 
