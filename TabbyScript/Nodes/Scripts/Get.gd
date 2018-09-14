@@ -4,8 +4,18 @@ const Type = 'data'
 var Variable = ''
 
 func get_data():
-	if Variable in self.sroot.GlobalVars:
+	if Variable[0] == '&':
+		if not Variable.substr(1,len(Variable)-1) in self.sroot.GlobalVars:
+			self.sroot.GlobalVars[Variable.substr(1,len(Variable)-1)] = Tabby.malloc(Tabby.NULL)
+
+		return Tabby.malloc(Tabby.PTR, Variable.substr(1,len(Variable)-1))
+
+	elif Variable[0] == '*':
+		return self.sroot.GlobalVars[self.sroot.GlobalVars[Variable.substr(1,len(Variable)-1)].data]  # Spagetti
+
+	elif Variable in self.sroot.GlobalVars:
 		return self.sroot.GlobalVars[Variable].dup()
+
 	elif Variable in self.sroot.APIFunctions:
 		var args = []
 		for child in get_children():

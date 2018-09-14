@@ -1,7 +1,7 @@
 extends Node
 
 const InvalidNames = ['true', 'false']
-const InvalidCars = [':', '/', '.', '*', '{', '}', '[', ']', '(', ')', '!']
+const InvalidCars = [':', '/', '.', '&', '*', '{', '}', '[', ']', '(', ')', '!']
 
 var GlobalVars = {}
 var Functions = {}
@@ -116,6 +116,13 @@ func list_to_end(string, start):
 	return out
 
 
+func all_in(string, list):
+	for car in string:
+		if not car in list:
+			return false
+	return true
+
+
 func invalid_name(name):
 	if name in InvalidNames or name.is_valid_integer():
 		return true
@@ -184,12 +191,10 @@ func paren_parser(parent, string, index=0):
 		node = load_node('Literal')
 		node.Data = Tabby.malloc(Tabby.NUM, Tabby.check_float(float(fullstr)))
 
-	elif fullstr[0] in ['+', '-', '*', '/']:  # Math node
+	elif all_in(fullstr, ['+', '-', '*', '/']):  # Math node
 		node = load_node('Math')
 
 		for car in fullstr:
-			if not car in ['+', '-', '*', '/']:
-				ParseError('Invalid character "' + car + '" in math expression')
 			node.Operations.append(car)
 
 	elif fullstr[0] in ['=', '>', '<', "!"]:  # Comparison

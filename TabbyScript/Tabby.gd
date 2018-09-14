@@ -1,7 +1,7 @@
 extends Node
 
 
-enum {NULL, NUM, BOOL, STR, SUC, ERR}
+enum {NULL, NUM, BOOL, STR, PTR, SUC, ERR}
 
 
 class DataClass:
