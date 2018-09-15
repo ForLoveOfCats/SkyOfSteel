@@ -134,7 +134,7 @@ func invalid_name(name):
 	return false
 
 
-func paren_parser(parent, string, index=0):
+func paren_parser(parent, string, index=0, should_return=false):
 	var scope_stack = []
 	var scope_item = parent
 	while true:
@@ -160,7 +160,7 @@ func paren_parser(parent, string, index=0):
 		elif car == '(' and not in_string:
 			opencount += 1
 			if opencount == 2:
-				childlist.append(paren_parser(null, string, cindex))
+				childlist.append(paren_parser(parent, string, cindex, true))
 			continue
 
 		elif car == ')' and not in_string:
@@ -239,13 +239,13 @@ func paren_parser(parent, string, index=0):
 	for child in childlist:
 		node.add_child(child)
 
-	if parent != null:
+	if should_return:
+		return node
+	else:
 		parent.add_child(node)
 		if len(list_to_end(string, index))-endex > 1 and index == 0:
 			if string.substr(endex+1, 1) == '(':
 				paren_parser(parent, string, endex+1)
-	else:
-		return node
 
 
 func parse_line(line, parent):
