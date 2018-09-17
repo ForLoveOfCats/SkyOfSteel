@@ -1,7 +1,17 @@
 extends "Base.gd"
 
+
 const Type = 'data'
 var Operations = []
+
+
+func _list_to_end(list, index):
+	var out = []
+	for entrydex in len(list):
+		if entrydex >= index:
+			out.append(list[entrydex])
+	return out
+
 
 func get_data():
 	var data_list = []
@@ -29,21 +39,48 @@ func get_data():
 	if len(data_list) < len(Operations)+1:
 		return Tabby.throw('To many operations in math expression', self.line_number)
 
-	var expression = ''
-	var data = null
-	for index in len(data_list):
-		data = data_list[index]
-		if data.type == Tabby.STR:
-			expression += "'" + data.data + "'"
-		elif data.type == Tabby.NUM:
-			expression += 'float(' + str(data.data) + ')'  # Stupid but necessary otherwise division problems are truncated
-		else:
-			expression += Tabby.to_string(data.data)
+	var expression = []
+	for datadex in len(data_list):
+		expression.append(data_list[datadex].data)
+		if datadex != len(data_list)-1:
+			expression.append(Operations[datadex])
 
-		if index+1 != len(data_list):
-			expression += Operations[index]
+	while len(expression) > 1:
+		var multi = '*' in expression or '/' in expression
+		var new_ex = []
+		for entrydex in len(expression):
+			var entry = expression[entrydex]
 
-	var out = Tabby.eval_str(expression)
+			if entry in ['*', '/']:
+				match entry:
+					'*':
+						new_ex.pop_back()
+						new_ex.append( expression[entrydex-1]*expression[entrydex+1] )
+						new_ex = new_ex + _list_to_end(expression, entrydex+2)
+						break
+					'/':
+						new_ex.pop_back()
+						new_ex.append( float(expression[entrydex-1])/float(expression[entrydex+1]) )
+						new_ex = new_ex + _list_to_end(expression, entrydex+2)
+						break
+			else:
+				if multi:
+					new_ex.append(entry)
+				else:
+					match entry:
+						'+':
+							new_ex.pop_back()
+							new_ex.append( expression[entrydex-1]+expression[entrydex+1] )
+							new_ex = new_ex + _list_to_end(expression, entrydex+2)
+							break
+						'-':
+							new_ex.pop_back()
+							new_ex.append( expression[entrydex-1]-expression[entrydex+1] )
+							new_ex = new_ex + _list_to_end(expression, entrydex+2)
+							break
+		expression = new_ex
+
+	var out = expression[0]
 	out = Tabby.malloc(Tabby.get_type(out), out)
 
 	if out.type == Tabby.NUM:
