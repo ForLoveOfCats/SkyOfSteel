@@ -31,7 +31,7 @@ func get_data():
 			return Tabby.throw('No variable or function named "' + Variable.substr(1,len(Variable)-1) + '"', self.line_number)
 
 	elif _var_exists(Variable):
-		return _get_var(Variable).dup()
+		return _get_var(Variable)
 
 	elif Variable in self.sroot.APIFunctions:
 		var args = []

@@ -8,12 +8,6 @@ class DataClass:
 	var type = null
 	var data = null
 
-	func dup():
-		var out = get_script().new()
-		out.type = self.type
-		out.data = self.data
-		return out
-
 
 func malloc(type, data=null):
 	var out = DataClass.new()
