@@ -34,17 +34,6 @@ func throw(message, line):
 	return out
 
 
-func eval_str(input):
-	var script = GDScript.new()
-	script.set_source_code('func eval():\n\treturn ' + input)
-	script.reload()
-
-	var obj = Reference.new()
-	obj.set_script(script)
-
-	return obj.eval()
-
-
 func check_float(infloat):
 	if infloat == int(infloat):
 		infloat = int(infloat)
