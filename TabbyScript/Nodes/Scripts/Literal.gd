@@ -9,4 +9,4 @@ func get_data():
 	if data.type == Tabby.NUM:
 		data.data = Tabby.check_float(data.data)
 
-	return data.dup()
+	return data
