@@ -27,5 +27,9 @@ func call(args):
 	return Tabby.malloc(Tabby.SUC)
 
 func execute():
+	if self.FuncName in self.sroot.Functions:
+		if self.sroot.Functions[self.FuncName] != self:
+			return Tabby.throw('Function "' + self.FuncName + '" already exists', self.line_number)
+
 	self.sroot.Functions[self.FuncName] = self
 	return Tabby.malloc(Tabby.SUC)
