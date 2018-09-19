@@ -34,11 +34,6 @@ func get_data():
 
 		data_list.append(data)
 
-	if len(data_list) > len(Operations)+1:
-		return Tabby.throw('To many data inputs in math expression', self.line_number)
-	if len(data_list) < len(Operations)+1:
-		return Tabby.throw('To many operations in math expression', self.line_number)
-
 	var expression = []
 	for datadex in len(data_list):
 		expression.append(data_list[datadex].data)

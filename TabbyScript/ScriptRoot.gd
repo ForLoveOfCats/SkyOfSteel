@@ -202,8 +202,14 @@ func paren_parser(parent, string, index=0, should_return=false):
 		node.Data = Tabby.malloc(Tabby.NUM, Tabby.check_float(float(fullstr)))
 
 	elif all_in(fullstr, ['+', '-', '*', '/']):  # Math node
-		node = load_node('Math')
+		if len(childlist) > len(fullstr)+1:
+			ParseError('To many data inputs in math expression')
+			return null
+		if len(childlist) < len(fullstr)+1:
+			ParseError('To many operations in math expression')
+			return null
 
+		node = load_node('Math')
 		for car in fullstr:
 			node.Operations.append(car)
 
