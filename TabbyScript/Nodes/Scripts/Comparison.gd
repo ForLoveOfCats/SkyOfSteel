@@ -28,4 +28,4 @@ func get_data():
 		'<':
 			data = data0.data < data1.data
 
-	return Tabby.malloc(Tabby.get_type(data), data)
+	return Tabby.malloc(Tabby.BOOL, data)

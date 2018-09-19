@@ -81,7 +81,7 @@ func get_data():
 		expression = new_ex
 
 	var out = expression[0]
-	out = Tabby.malloc(Tabby.get_type(out), out)
+	out = Tabby.malloc(type, out)
 
 	if out.type == Tabby.NUM:
 		out.data = Tabby.check_float(out.data)
