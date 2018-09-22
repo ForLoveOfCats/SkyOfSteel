@@ -3,7 +3,9 @@ extends Node
 const InvalidNames = ['true', 'false']
 const InvalidCars = [':', '/', '.', '&', '*', '{', '}', '[', ']', '(', ')', '!']
 
-var Variables = {}
+var Variables = []
+var IDs = {}
+var GetNodes = []
 var Functions = {}
 var APIFunctions = {}
 
@@ -11,6 +13,7 @@ var current_parse_line = 0
 var successful_parse = true
 var cwd = null
 var mode = 'normal'
+
 
 
 func _init():
@@ -135,14 +138,14 @@ func invalid_name(name):
 
 
 func paren_parser(parent, string, index=0, should_return=false):
-	var scope_stack = []
+	var scope = null
 	var scope_item = parent
 	while true:
 		if scope_item is self.get_script():
-			scope_stack.append(scope_item)
+			scope = scope_item
 			break
 		elif scope_item is preload("Nodes/Scripts/Func.gd"):
-			scope_stack.append(scope_item)
+			scope = scope_item
 		scope_item = scope_item.get_parent()
 
 	var opencount = 0
@@ -240,7 +243,8 @@ func paren_parser(parent, string, index=0, should_return=false):
 	else:  # Must be a getvar
 		node = load_node('Get')
 		node.Variable = fullstr
-		node.scope_stack = scope_stack
+		node.scope = scope
+		self.GetNodes.append(node)
 
 	for child in childlist:
 		node.add_child(child)
@@ -259,18 +263,18 @@ func parse_line(line, parent):
 		return parent
 
 	elif line.substr(0,3) == 'var':
-		var scope_stack = []
+		var scope = null
 		var scope_item = parent
 		while true:
 			if scope_item is self.get_script():
-				scope_stack.append(scope_item)
+				scope = scope_item
 				break
 			elif scope_item is preload("Nodes/Scripts/Func.gd"):
-				scope_stack.append(scope_item)
+				scope = scope_item
 			scope_item = scope_item.get_parent()
 
 		var SetVar = load_node('SetVar')
-		SetVar.scope_stack = scope_stack
+		SetVar.scope = scope
 
 		var equaldex = null
 		for cindex in len(line)-3:
@@ -278,6 +282,10 @@ func parse_line(line, parent):
 				equaldex = cindex+3
 				break
 			SetVar.Variable += line.substr(3,len(line)-3)[cindex]
+
+		if equaldex == null:
+			ParseError('Missing equal sign in variable declaration')
+			return parent
 
 		if SetVar.Variable == '':
 			ParseError('Variable name required in variable declaration')
@@ -287,9 +295,12 @@ func parse_line(line, parent):
 			ParseError('Invalid variable name "' + SetVar.Variable + '" in variable declaration')
 			return parent
 
-		if equaldex == null:
-			ParseError('Missing equal sign in variable declaration')
-			return parent
+		if SetVar.Variable in SetVar.scope.IDs:
+			SetVar.ID = SetVar.scope.IDs[SetVar.Variable]
+		else:
+			SetVar.ID = len(SetVar.scope.IDs)
+			SetVar.scope.IDs[SetVar.Variable] = SetVar.ID
+			SetVar.scope.Variables.append(Tabby.malloc(Tabby.NULL))
 
 		parent.add_child(SetVar)
 		paren_parser(SetVar, line.substr(equaldex+1,len(line)-equaldex+1))
@@ -390,6 +401,18 @@ func parse_line(line, parent):
 	return parent
 
 
+func prepare_get_nodes():
+	for get in self.GetNodes:
+		if get.Variable in get.scope.IDs:
+			get.ID = get.scope.IDs[get.Variable]
+			get.GetMode = get.VAR
+
+		elif get.Variable in self.Functions:
+			get.ID = self.Functions[get.Variable]
+			get.GetMode = get.FUNC
+	self.GetNodes = []
+
+
 func exec_script(script, die):
 	if self.cwd == null:
 		self.cwd = Directory.new()
@@ -409,6 +432,7 @@ func exec_script(script, die):
 		self.current_parse_line = lindex
 
 		parent = parse_line(line, parent)
+	prepare_get_nodes()
 
 	if parent != self and self.successful_parse:
 		ParseError('Block left unclosed from line ' + str(parent.line_number+1))
@@ -433,6 +457,7 @@ func exec_line(line):
 
 	line = strip_comments(strip_white(line))
 	parse_line(line, self)
+	prepare_get_nodes()
 
 	if self.successful_parse:
 		var node = self.get_child(len(self.get_children())-1)

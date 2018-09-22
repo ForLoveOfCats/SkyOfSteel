@@ -2,7 +2,7 @@ extends Node
 
 
 var sroot = null
-var scope_stack = []
+var scope = null
 var line_number = null
 
 

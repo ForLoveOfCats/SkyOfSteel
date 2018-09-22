@@ -2,9 +2,12 @@ extends "Base.gd"
 
 const Type = 'exec'
 var FuncName = ''
-var Variables = {}
 
-func call(args):
+var Variables = []
+var IDs = {}
+
+
+func Call(args):
 	var pointers = []
 	for child in get_children():
 		var data = child.get_data()
