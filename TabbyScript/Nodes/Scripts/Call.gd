@@ -18,4 +18,4 @@ func execute():
 	if returned.type == Tabby.ERR:
 		return returned
 
-	return Tabby.malloc(Tabby.SUC)
+	return self.success

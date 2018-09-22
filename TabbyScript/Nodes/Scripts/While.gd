@@ -14,4 +14,4 @@ func execute():
 		else:
 			break
 
-	return Tabby.malloc(Tabby.SUC)
+	return self.success

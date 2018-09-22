@@ -27,4 +27,4 @@ func Call(args, call_line):
 			self.Variables[pointers[index].data] = args[index]
 
 	execute_children()
-	return Tabby.malloc(Tabby.SUC)
+	return self.success

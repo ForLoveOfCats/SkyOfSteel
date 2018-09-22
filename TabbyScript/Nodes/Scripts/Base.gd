@@ -4,14 +4,18 @@ extends Node
 var sroot = null
 var scope = null
 var line_number = null
+var success = null
 
+
+func _init():
+	self.success = Tabby.malloc(Tabby.SUC)
 
 func execute():
-	return Tabby.malloc(Tabby.SUC)
+	return self.success
 
 
 func get_data():
-	return Tabby.malloc(Tabby.SUC)
+	return self.success
 
 
 func execute_children():

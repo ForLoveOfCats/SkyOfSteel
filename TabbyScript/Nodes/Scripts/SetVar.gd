@@ -15,4 +15,4 @@ func execute():
 	#	return Tabby.throw('Cannot name variable same as function', self.line_number)
 
 	self.scope.Variables[ID] = data
-	return Tabby.malloc(Tabby.SUC)
+	return self.success

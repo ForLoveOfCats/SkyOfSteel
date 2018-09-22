@@ -11,4 +11,4 @@ func execute():
 	if data.data:
 		execute_children()
 
-	return Tabby.malloc(Tabby.SUC)
+	return self.success
