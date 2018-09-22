@@ -7,7 +7,7 @@ var Variables = []
 var IDs = {}
 
 
-func Call(args):
+func Call(args, call_line):
 	var pointers = []
 	for child in get_children():
 		var data = child.get_data()
@@ -27,12 +27,4 @@ func Call(args):
 			self.Variables[pointers[index].data] = args[index]
 
 	execute_children()
-	return Tabby.malloc(Tabby.SUC)
-
-func execute():
-	if self.FuncName in self.sroot.Functions:
-		if self.sroot.Functions[self.FuncName] != self:
-			return Tabby.throw('Function "' + self.FuncName + '" already exists', self.line_number)
-
-	self.sroot.Functions[self.FuncName] = self
 	return Tabby.malloc(Tabby.SUC)

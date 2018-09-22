@@ -6,7 +6,9 @@ const InvalidCars = [':', '/', '.', '&', '*', '{', '}', '[', ']', '(', ')', '!']
 var Variables = []
 var IDs = {}
 var GetNodes = []
-var Functions = {}
+var Functions = []
+var FuncIDs = {}
+var CallNodes = []
 var APIFunctions = {}
 
 var current_parse_line = 0
@@ -25,7 +27,8 @@ func _init():
 	while file_name != "":
 		var call = load(self.get_script().get_path().get_base_dir()+"/API/"+file_name).new()
 		call.sroot = self
-		self.APIFunctions[file_name.get_basename()] = call
+		self.FuncIDs[file_name.get_basename()] = len(Functions)
+		self.Functions.append(call)
 		file_name = api_dir.get_next()
 
 
@@ -36,10 +39,8 @@ func load_node(node):
 	return node
 
 
-func call_api(call, args, line):
-	if call in self.APIFunctions:
-		return self.APIFunctions[call].Call(args, line)
-	return Tabby.throw('Call to nonexistant function "' + str(call) + '"', line)
+func call_func(id, args, line):
+	return self.Functions[id].Call(args, line)
 
 
 func RuntimeError(message, line):
@@ -356,6 +357,14 @@ func parse_line(line, parent):
 			return parent
 
 		var Func = load_node('Func')
+
+		if func_name in self.FuncIDs:
+			ParseError('Function "' + func_name +  '" already exists')
+			return parent
+		else:
+			self.FuncIDs[func_name] = len(Functions)
+			self.Functions.append(Func)
+
 		Func.FuncName = func_name
 		parent.add_child(Func)
 
@@ -373,6 +382,7 @@ func parse_line(line, parent):
 	else:  # Must be a Call
 		if line != '':
 			var Call = load_node('Call')
+			self.CallNodes.append(Call)
 
 			var parendex = null
 			for cindex in len(line):
@@ -407,10 +417,26 @@ func prepare_get_nodes():
 			get.ID = get.scope.IDs[get.Variable]
 			get.GetMode = get.VAR
 
-		elif get.Variable in self.Functions:
-			get.ID = self.Functions[get.Variable]
+		elif get.Variable in self.FuncIDs:
+			get.ID = self.FuncIDs[get.Variable]
 			get.GetMode = get.FUNC
+
+		else:
+			self.current_parse_line = get.line_number
+			ParseError('No variable or function named "' + get.Variable + '"')
+			break
 	self.GetNodes = []
+
+
+func prepare_call_nodes():
+	for call in self.CallNodes:
+		if call.Call in self.FuncIDs:
+			call.ID = self.FuncIDs[call.Call]
+		else:
+			self.current_parse_line = call.line_number
+			ParseError('No function named "' + call.Call + '"')
+			break
+	self.CallNodes = []
 
 
 func exec_script(script, die):
@@ -433,6 +459,7 @@ func exec_script(script, die):
 
 		parent = parse_line(line, parent)
 	prepare_get_nodes()
+	prepare_call_nodes()
 
 	if parent != self and self.successful_parse:
 		ParseError('Block left unclosed from line ' + str(parent.line_number+1))
@@ -458,6 +485,7 @@ func exec_line(line):
 	line = strip_comments(strip_white(line))
 	parse_line(line, self)
 	prepare_get_nodes()
+	prepare_call_nodes()
 
 	if self.successful_parse:
 		var node = self.get_child(len(self.get_children())-1)

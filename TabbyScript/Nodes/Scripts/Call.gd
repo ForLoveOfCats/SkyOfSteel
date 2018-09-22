@@ -2,6 +2,7 @@ extends "Base.gd"
 
 const Type = 'exec'
 var Call = ''
+var ID = null
 
 func execute():
 	var args = []
@@ -12,10 +13,7 @@ func execute():
 		args.append(data)
 
 	var returned = null
-	if Call in self.sroot.Functions:
-		returned = self.sroot.Functions[Call].call(args)
-	else:
-		returned = self.sroot.call_api(Call, args, self.line_number)
+	returned = self.sroot.call_func(ID, args, self.line_number)
 
 	if returned.type == Tabby.ERR:
 		return returned

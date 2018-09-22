@@ -31,6 +31,7 @@ func get_data():
 			if data.type == Tabby.ERR:
 				return data
 			args.append(data)
-		return self.sroot.call_api(Variable, args, self.line_number)
+
+		return self.sroot.call_func(ID, args, self.line_number)
 
 	return Tabby.throw('No variable or function named "' + Variable + '"', self.line_number)
