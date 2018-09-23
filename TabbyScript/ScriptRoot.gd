@@ -297,6 +297,10 @@ func parse_line(line, parent):
 			ParseError('Invalid variable name "' + SetVar.Variable + '" in variable declaration')
 			return parent
 
+		if SetVar.Variable in self.FuncIDs:
+			ParseError('Cannot name variable same name as function "' + SetVar.Variable + '"')
+			return parent
+
 		if SetVar.Variable in SetVar.scope.IDs:
 			SetVar.ID = SetVar.scope.IDs[SetVar.Variable]
 		else:
