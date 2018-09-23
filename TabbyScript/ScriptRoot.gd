@@ -216,6 +216,7 @@ func paren_parser(parent, string, index=0, should_return=false):
 		node = load_node('Math')
 		for car in fullstr:
 			node.Operations.append(car)
+		node.OpCount = len(fullstr)-1
 
 	elif fullstr[0] in ['=', '>', '<', "!"]:  # Comparison
 		if len(fullstr) > 2:

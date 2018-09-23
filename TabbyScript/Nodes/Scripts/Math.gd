@@ -3,6 +3,7 @@ extends "Base.gd"
 
 const Type = 'data'
 var Operations = []
+var OpCount = null
 
 
 func _list_to_end(list, index):
@@ -14,10 +15,12 @@ func _list_to_end(list, index):
 
 
 func get_data():
-	var data_list = []
+	var expression = []
 	var type = null
 
+	var ndex = -1
 	for node in self.get_children():
+		ndex += 1
 		var data = node.get_data()
 
 		if data.type == Tabby.ERR:
@@ -32,13 +35,9 @@ func get_data():
 		if data.type != type:
 			return Tabby.throw('All types must be the same in math expression', self.line_number)
 
-		data_list.append(data)
-
-	var expression = []
-	for datadex in len(data_list):
-		expression.append(data_list[datadex].data)
-		if datadex != len(data_list)-1:
-			expression.append(Operations[datadex])
+		expression.append(data.data)
+		if ndex <= self.OpCount:
+			expression.append(self.Operations[ndex])
 
 	while len(expression) > 1:
 		var multi = '*' in expression or '/' in expression
