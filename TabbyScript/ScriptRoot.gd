@@ -366,6 +366,9 @@ func parse_line(line, parent):
 		if func_name in self.FuncIDs:
 			ParseError('Function "' + func_name +  '" already exists')
 			return parent
+		elif func_name in self.IDs:
+			ParseError('Cannot name function same name as variable "' + func_name +  '"')
+			return parent
 		else:
 			self.FuncIDs[func_name] = len(Functions)
 			self.Functions.append(Func)
