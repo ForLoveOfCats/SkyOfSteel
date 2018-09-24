@@ -6,6 +6,8 @@ const InvalidCars = [':', '/', '.', '&', '*', '{', '}', '[', ']', '(', ')', '!']
 var Variables = []
 var IDs = {}
 var GetNodes = []
+var RefNodes = []
+var DerefNodes = []
 var Functions = []
 var FuncIDs = {}
 var CallNodes = []
@@ -243,11 +245,37 @@ func paren_parser(parent, string, index=0, should_return=false):
 		node = load_node('Literal')
 		node.Data = Tabby.malloc(Tabby.BOOL, fullstr == 'true')
 
-	else:  # Must be a getvar
-		node = load_node('Get')
-		node.Variable = fullstr
-		node.scope = scope
-		self.GetNodes.append(node)
+	else:  # Must be a get, reference, or dereference
+		if fullstr[0] == '&':  # Reference
+			node = load_node('Reference')
+			node.Variable = fullstr.substr(1,len(fullstr))
+			node.scope = scope
+
+			if node.Variable in node.scope.IDs:
+				node.Ref = node.scope.IDs[node.Variable]
+			else:
+				node.Ref = len(node.scope.IDs)
+				node.scope.IDs[node.Variable] = node.Ref
+				node.scope.Variables.append(Tabby.malloc(Tabby.NULL))
+
+			var Ref = node.Ref
+			if node.scope is self.get_script():
+				Ref = [-1, Ref]
+			else:
+				Ref = [self.FuncIDs[node.scope.FuncName], Ref]
+			node.Ref = Tabby.malloc(Tabby.PTR, Ref)
+
+			self.RefNodes.append(node)
+		elif fullstr[0] == '*':  # Dereference
+			node = load_node('Dereference')
+			node.Variable = fullstr.substr(1,len(fullstr))
+			node.scope = scope
+			self.DerefNodes.append(node)
+		else:  # Get
+			node = load_node('Get')
+			node.Variable = fullstr
+			node.scope = scope
+			self.GetNodes.append(node)
 
 	for child in childlist:
 		node.add_child(child)
@@ -438,6 +466,16 @@ func prepare_get_nodes():
 	self.GetNodes = []
 
 
+func prepare_deref_nodes():
+	for deref in self.DerefNodes:
+		if not deref.Variable in deref.scope.IDs:
+			self.current_parse_line = deref.line_number
+			ParseError('Could not find variable named "' + deref.Variable + '" when creating dereference')
+			break
+
+		deref.ID = deref.scope.IDs[deref.Variable]
+
+
 func prepare_call_nodes():
 	for call in self.CallNodes:
 		if call.Call in self.FuncIDs:
@@ -470,6 +508,7 @@ func exec_script(script, die):
 		parent = parse_line(line, parent)
 	prepare_get_nodes()
 	prepare_call_nodes()
+	prepare_deref_nodes()
 
 	if parent != self and self.successful_parse:
 		ParseError('Block left unclosed from line ' + str(parent.line_number+1))
@@ -496,6 +535,7 @@ func exec_line(line):
 	parse_line(line, self)
 	prepare_get_nodes()
 	prepare_call_nodes()
+	prepare_deref_nodes()
 
 	if self.successful_parse:
 		var node = self.get_child(len(self.get_children())-1)

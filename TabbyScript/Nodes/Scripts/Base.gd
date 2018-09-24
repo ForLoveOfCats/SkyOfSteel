@@ -23,3 +23,4 @@ func execute_children():
 		var returned = child.execute()
 		if returned.type == Tabby.ERR:
 			return returned
+	return self.success

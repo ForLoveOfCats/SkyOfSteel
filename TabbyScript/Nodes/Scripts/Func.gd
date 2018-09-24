@@ -24,7 +24,6 @@ func Call(args, call_line):
 
 	if len(pointers) != 0:
 		for index in len(pointers):
-			self.Variables[pointers[index].data] = args[index]
+			self.Variables[pointers[index].data[1]] = args[index]
 
-	execute_children()
-	return self.success
+	return execute_children()
