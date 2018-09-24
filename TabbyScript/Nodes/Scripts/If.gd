@@ -9,6 +9,4 @@ func execute():
 		return Tabby.throw('Expected "bool" in "if" got "' + Tabby.get_name(data) + '" instead', self.line_number)
 
 	if data.data:
-		execute_children()
-
-	return self.success
+		return execute_children()
