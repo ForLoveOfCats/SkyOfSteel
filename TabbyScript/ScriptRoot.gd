@@ -147,6 +147,7 @@ func paren_parser(parent, string, index=0, should_return=false):
 			break
 		elif scope_item is preload("Nodes/Scripts/Func.gd"):
 			scope = scope_item
+			break
 		scope_item = scope_item.get_parent()
 
 	var opencount = 0
@@ -273,6 +274,7 @@ func parse_line(line, parent):
 				break
 			elif scope_item is preload("Nodes/Scripts/Func.gd"):
 				scope = scope_item
+				break
 			scope_item = scope_item.get_parent()
 
 		var SetVar = load_node('SetVar')
