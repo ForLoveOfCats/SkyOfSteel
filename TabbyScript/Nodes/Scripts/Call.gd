@@ -12,10 +12,4 @@ func execute():
 			return data
 		args.append(data)
 
-	var returned = null
-	returned = self.sroot.call_func(ID, args, self.line_number)
-
-	if returned.type == Tabby.ERR:
-		return returned
-
-	return self.success
+	return self.sroot.call_func(ID, args, self.line_number)
