@@ -21,7 +21,6 @@ Console="*res://scripts/Console.gd"
 Net="*res://scripts/Net.gd"
 Items="*res://scripts/Items.gd"
 Math="*res://scripts/Math.gd"
-Tabby="*res://TabbyScript/Tabby.gd"
 
 [debug]
 

@@ -19,12 +19,14 @@ func execute_command(command_string):
 	self.printf('\n >>> ' + command_string)
 	self.history.append(command_string)
 	self.hist_local = len(self.history)
+	return null
 	self.sroot.exec_line(command_string)
 
 
 func _ready():
 	self.console_window = get_tree().get_root().get_node("SteelGame/ConsoleWindow")
 	self.printf('')
+	return null
 	self.sroot = load("res://TabbyScript/ScriptRoot.gd").new()
 	self.sroot.set_name('ConsoleScriptRoot')
 	self.sroot.mode = 'autoexec'
