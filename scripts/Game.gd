@@ -11,6 +11,9 @@ var Port = 7777
 var mouse_locked = false
 var player_input_enabled = true
 
+var script = """var first_var = 5
+var second_var = 10"""
+
 
 func spawn_player(id, possess):
 	var player = load("res://scenes/Player.tscn").instance()
@@ -38,4 +41,5 @@ func round_vec(vector):
 	return Vector3(round(vector.x), round(vector.y), round(vector.z))
 
 func _ready():
+	Tabby.RunNewScript(script)
 	self.SteelGame = get_tree().get_root().get_node("SteelGame")

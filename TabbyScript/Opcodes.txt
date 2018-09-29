@@ -1,0 +1,7 @@
+OP_PLACE: 0
+OP_STORE: 1
+OP_GET:   2
+OP_ADD:   3
+OP_SUB:   4
+OP_MULT:  5
+OP_DIVI:  6
