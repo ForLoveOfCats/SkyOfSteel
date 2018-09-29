@@ -79,11 +79,11 @@ public class ScriptRoot : Node
 	}
 
 
-	Tabby.DataClass ParseExpression(string Expression)
+	List<List<object>> ParseExpression(string Expression)
 	{
-		GD.Print(Expression);
-		Tabby.DataClass OutData = new Tabby.DataClass(Tabby.TYPE.NUM, Int32.Parse(Expression));
-		return OutData;
+		List<List<object>> Instructions = new List<List<object>>();
+		Instructions.Add(new List<object> {Tabby.OP.STORE, new Tabby.DataClass(Tabby.TYPE.NUM, Int32.Parse(Expression))});
+		return Instructions;
 	}
 
 
@@ -109,7 +109,10 @@ public class ScriptRoot : Node
 				BufferStack();
 			}
 
-			Output.Add(new List<object> {Tabby.OP.PLACE, ParseExpression(Line.Substring(EqualIndex+1 ,Line.Length-EqualIndex-1))}); //Place value in scratch
+			foreach(List<object> Instruction in ParseExpression(Line.Substring(EqualIndex+1 ,Line.Length-EqualIndex-1)))
+			{
+				Output.Add(Instruction);
+			}
 			Output.Add(new List<object> {Tabby.OP.STORE, NameIndex}); //Store contents of scratch at stack location NameIndex
 		}
 
