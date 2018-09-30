@@ -9,37 +9,33 @@ public class ScriptRoot : Node
 	List<string> VariableNames = new List<string>();
 
 	List<List<object>> Bytecode = new List<List<object>>();
+	List<Tabby.DataClass> VmData = new List<Tabby.DataClass>();
 	List<Tabby.DataClass> VmStack = new List<Tabby.DataClass>();
-	List<Tabby.DataClass> VmScratch = new List<Tabby.DataClass>();
 
 
-	void SetStack(object Index, object Value)
+	void SetData(object Index, object Value)
 	{
-		this.VmStack[(int)Index] = (Tabby.DataClass)Value;
+		this.VmData[(int)Index] = (Tabby.DataClass)Value;
 	}
 
 
-	void BufferStack()
+	void BufferData()
 	{
-		VmStack.Add(new Tabby.DataClass());
+		VmData.Add(new Tabby.DataClass());
 	}
 
 
-	void AddScratch(object Value)
+	void PushStack(object Value)
 	{
-		this.VmScratch.Add((Tabby.DataClass)Value);
+		this.VmStack.Add((Tabby.DataClass)Value);
 	}
 
 
-	object GetScratch(object Index)
+	Tabby.DataClass PopStack()
 	{
-		return this.VmScratch[(int)Index];
-	}
-
-
-	void ClearScratch()
-	{
-		this.VmScratch.Clear();
+		Tabby.DataClass Output = this.VmStack.Last();
+		this.VmStack.RemoveAt(this.VmStack.Count-1);
+		return Output;
 	}
 
 
@@ -50,16 +46,13 @@ public class ScriptRoot : Node
 			switch(Instruction[0])
 			{
 				case Tabby.OP.PLACE:
-					AddScratch(Instruction[1]);
+					PushStack(Instruction[1]);
 					break;
 				case Tabby.OP.STORE:
-					SetStack(Instruction[1], GetScratch(0));
-					ClearScratch();
+					SetData(Instruction[1], PopStack());
 					break;
 				case Tabby.OP.ADD:
-					Tabby.DataClass Result = VmScratch[0] + VmScratch[1];
-					ClearScratch();
-					AddScratch(Result);
+					PushStack(PopStack() + PopStack());
 					break;
 			}
 		}
@@ -106,7 +99,7 @@ public class ScriptRoot : Node
 			{
 				NameIndex = VariableNames.Count;
 				VariableNames.Add(Name);
-				BufferStack();
+				BufferData();
 			}
 
 			foreach(List<object> Instruction in ParseExpression(Line.Substring(EqualIndex+1 ,Line.Length-EqualIndex-1)))
@@ -143,7 +136,7 @@ public class ScriptRoot : Node
 		this.Bytecode.Add(new List<object> {Tabby.OP.ADD});
 		this.Bytecode.Add(new List<object> {Tabby.OP.STORE, 0});
 
-		BufferStack();
+		BufferData();
 
 		foreach(List<object> Instruction in this.Bytecode)
 		{
@@ -157,7 +150,7 @@ public class ScriptRoot : Node
 
 		ExecuteBytecode();
 
-		foreach(Tabby.DataClass StackItem in VmStack)
+		foreach(Tabby.DataClass StackItem in VmData)
 		{
 			GD.Print(StackItem.ToString() + " " + StackItem.Type);
 		}
