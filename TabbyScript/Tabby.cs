@@ -12,7 +12,7 @@ public class Tabby : Node
 	}
 
 
-	public enum OP {PLACE, STORE, GET, ADD, SUB, MULT, DIVI};
+	public enum OP {PUSH, STORE, GET, ADD, SUB, MULT, DIVI};
 	public enum TYPE {BOOL, NUM, STR, NULL, VOID}
 
 

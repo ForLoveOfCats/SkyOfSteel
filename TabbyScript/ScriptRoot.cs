@@ -45,7 +45,7 @@ public class ScriptRoot : Node
 		{
 			switch(Instruction[0])
 			{
-				case Tabby.OP.PLACE:
+				case Tabby.OP.PUSH:
 					PushStack(Instruction[1]);
 					break;
 				case Tabby.OP.STORE:
@@ -131,8 +131,8 @@ public class ScriptRoot : Node
 			}
 		}
 
-		this.Bytecode.Add(new List<object> {Tabby.OP.PLACE, new Tabby.DataClass(Tabby.TYPE.NUM, 10)});
-		this.Bytecode.Add(new List<object> {Tabby.OP.PLACE, new Tabby.DataClass(Tabby.TYPE.NUM, 5)});
+		this.Bytecode.Add(new List<object> {Tabby.OP.PUSH, new Tabby.DataClass(Tabby.TYPE.NUM, 10)});
+		this.Bytecode.Add(new List<object> {Tabby.OP.PUSH, new Tabby.DataClass(Tabby.TYPE.NUM, 5)});
 		this.Bytecode.Add(new List<object> {Tabby.OP.ADD});
 		this.Bytecode.Add(new List<object> {Tabby.OP.STORE, 0});
 
