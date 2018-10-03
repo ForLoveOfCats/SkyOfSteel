@@ -55,7 +55,7 @@ public class Tabby : Node
 		this.AddChild(ScriptRootNode);
 
 		ScriptRoot Sroot = (ScriptRoot)ScriptRootNode;
-		//Sroot.ExecScript(Script);
-		Sroot.ExecScript("");
+		Sroot.ExecScript(Script);
+		//Sroot.ExecScript("");
 	}
 }

@@ -11,8 +11,7 @@ var Port = 7777
 var mouse_locked = false
 var player_input_enabled = true
 
-var script = """var first_var = 5
-var second_var = 10"""
+var script = """var first_var = 10+5*4"""
 
 
 func spawn_player(id, possess):
