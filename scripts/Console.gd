@@ -19,8 +19,7 @@ func execute_command(command_string):
 	self.printf('\n >>> ' + command_string)
 	self.history.append(command_string)
 	self.hist_local = len(self.history)
-	return null
-	self.sroot.exec_line(command_string)
+	Scripting.RunConsoleLine(command_string)
 
 
 func _ready():

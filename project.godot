@@ -21,7 +21,7 @@ Console="*res://scripts/Console.gd"
 Net="*res://scripts/Net.gd"
 Items="*res://scripts/Items.gd"
 Math="*res://scripts/Math.gd"
-ScriptEngine="*res://TypeScript/ScriptEngine.cs"
+Scripting="*res://Scripting/Scripting.cs"
 
 [debug]
 
