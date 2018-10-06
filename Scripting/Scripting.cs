@@ -39,6 +39,11 @@ public class Scripting : Node
 		Console.Call("printf", new string[] {ToPrint});
 	}
 
+	public void ApiLog(string ToLog)
+	{
+		Console.Call("logf", new string[] {ToLog});
+	}
+
 
 	public void RunConsoleLine(string Line)
 	{
