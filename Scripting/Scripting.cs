@@ -39,6 +39,26 @@ public class Scripting : Node
 	{
 		this.Game = GetNode("/root/Game");
 		this.Console = GetNode("/root/Console");
+
+		File Autoexec = new File();
+		if(Autoexec.FileExists("user://autoexec.js"))
+		{
+			Autoexec.Open("user://autoexec.js", 1);
+			ApiPrint("Autoexec loaded 'autoexec.js'");
+			try
+			{
+				this.ConsoleEngine.Execute(Autoexec.GetAsText());
+			}
+			catch(Exception Error)
+			{
+				ApiPrint(Error.Message);
+				ApiPrint("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
+			}
+		}
+		else
+		{
+			ApiPrint("Autoexec not found 'autoexec.js'");
+		}
 	}
 
 
