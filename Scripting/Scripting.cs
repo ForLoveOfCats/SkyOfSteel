@@ -16,8 +16,16 @@ public class Scripting : Node
 	Scripting()
 	{
 		this.ServerGmEngine = new Jurassic.ScriptEngine();
+		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, this))
+		{
+			this.ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
 
 		this.ClientGmEngine = new Jurassic.ScriptEngine();
+		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, this))
+		{
+			this.ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
 
 		this.ConsoleEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.ADMIN, this))
