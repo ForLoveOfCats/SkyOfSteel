@@ -18,6 +18,18 @@ public class API : Node
 				return new List<object> {"print", new DelVoidPassString(ScriptingRef.ApiPrint)};
 			case "log":
 				return new List<object> {"log", new DelVoidPassString(ScriptingRef.ApiLog)};
+			case "host":
+				return new List<object> {"host", new Action(delegate(){
+					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("host", new string[] {"7777"});
+				})};
+			case "connect":
+				return new List<object> {"connect", new Action<string>(delegate(string Ip){
+					if(Ip == "" || Ip == "localhost")
+					{
+						Ip = "127.0.0.1";
+					}
+					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("connect", new string[] {Ip, "7777"});
+				})};
 			case "get_ms":
 				return new List<object> {"get_ms", new Func<int>(() => {return OS.GetTicksMsec();})};
 		}
@@ -35,6 +47,8 @@ public class API : Node
 				Output.Add(GetDelCall("print", ScriptingRef));
 				Output.Add(GetDelCall("log", ScriptingRef));
 				Output.Add(GetDelCall("get_ms", ScriptingRef));
+				Output.Add(GetDelCall("host", ScriptingRef));
+				Output.Add(GetDelCall("connect", ScriptingRef));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log", ScriptingRef));
