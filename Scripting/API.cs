@@ -18,6 +18,8 @@ public class API : Node
 				return new List<object> {"print", new DelVoidPassString(ScriptingRef.ApiPrint)};
 			case "log":
 				return new List<object> {"log", new DelVoidPassString(ScriptingRef.ApiLog)};
+			case "get_ms":
+				return new List<object> {"get_ms", new Func<int>(() => {return OS.GetTicksMsec();})};
 		}
 	return new List<object>();
 	}
@@ -32,12 +34,15 @@ public class API : Node
 			case LEVEL.ADMIN:
 				Output.Add(GetDelCall("print", ScriptingRef));
 				Output.Add(GetDelCall("log", ScriptingRef));
+				Output.Add(GetDelCall("get_ms", ScriptingRef));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log", ScriptingRef));
+				Output.Add(GetDelCall("get_ms", ScriptingRef));
 				break;
 			case LEVEL.CLIENT_GM:
 				Output.Add(GetDelCall("log", ScriptingRef));
+				Output.Add(GetDelCall("get_ms", ScriptingRef));
 				break;
 		}
 
