@@ -9,6 +9,7 @@ var peers = {}
 
 
 func host(port):
+	port = int(port)
 	self.connect_port = port
 
 	Game.start_world()
@@ -23,6 +24,7 @@ func host(port):
 
 
 func connect(ip, port):
+	port = int(port)
 	self.connect_ip = ip
 	self.connect_port = port
 
