@@ -14,12 +14,9 @@ func _notification(what):
 func _ready():
 	get_tree().set_auto_accept_quit(false)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	Game.mouse_locked = true
+	Game.MouseLocked = true
 
 	Console.logf('')
-	if Game.DevMode:
-		Console.logf('**DEVMODE IS ENABLED**')
-		Console.logf('')
 
 	var cmd_args = OS.get_cmdline_args()
 	for current_arg in cmd_args:
@@ -35,11 +32,11 @@ func _process(delta):
 	if Input.is_action_just_pressed("MouseLock"):
 		if Input.get_mouse_mode() == 0:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-			Game.mouse_locked = true
-			Game.player_input_enabled = true
+			Game.Set("MouseLocked", true)
+			Game.Set("PlayerInputEnabled", true)
 			$ConsoleWindow.hide()
 		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-			Game.mouse_locked = false
-			Game.player_input_enabled = false
+			Game.Set("MouseLocked", false)
+			Game.Set("PlayerInputEnabled", false)
 			$ConsoleWindow.show()
