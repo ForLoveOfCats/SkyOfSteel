@@ -10,14 +10,14 @@ public class API : Node
 	public enum LEVEL {ADMIN, SERVER_GM, CLIENT_GM};
 
 
-	static List<object> GetDelCall(string Name, Scripting ScriptingRef)
+	static List<object> GetDelCall(string Name)
 	{
 		switch(Name)
 		{
 			case "print":
-				return new List<object> {"print", new DelVoidPassString(ScriptingRef.ApiPrint)};
+				return new List<object> {"print", new DelVoidPassString(Scripting.ApiPrint)};
 			case "log":
-				return new List<object> {"log", new DelVoidPassString(ScriptingRef.ApiLog)};
+				return new List<object> {"log", new DelVoidPassString(Scripting.ApiLog)};
 			case "host":
 				return new List<object> {"host", new Action(delegate(){
 					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("host", new string[] {"7777"});
@@ -44,19 +44,19 @@ public class API : Node
 		switch(ApiLevel)
 		{
 			case LEVEL.ADMIN:
-				Output.Add(GetDelCall("print", ScriptingRef));
-				Output.Add(GetDelCall("log", ScriptingRef));
-				Output.Add(GetDelCall("get_ms", ScriptingRef));
-				Output.Add(GetDelCall("host", ScriptingRef));
-				Output.Add(GetDelCall("connect", ScriptingRef));
+				Output.Add(GetDelCall("print"));
+				Output.Add(GetDelCall("log"));
+				Output.Add(GetDelCall("get_ms"));
+				Output.Add(GetDelCall("host"));
+				Output.Add(GetDelCall("connect"));
 				break;
 			case LEVEL.SERVER_GM:
-				Output.Add(GetDelCall("log", ScriptingRef));
-				Output.Add(GetDelCall("get_ms", ScriptingRef));
+				Output.Add(GetDelCall("log"));
+				Output.Add(GetDelCall("get_ms"));
 				break;
 			case LEVEL.CLIENT_GM:
-				Output.Add(GetDelCall("log", ScriptingRef));
-				Output.Add(GetDelCall("get_ms", ScriptingRef));
+				Output.Add(GetDelCall("log"));
+				Output.Add(GetDelCall("get_ms"));
 				break;
 		}
 

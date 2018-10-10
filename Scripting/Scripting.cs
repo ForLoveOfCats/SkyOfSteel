@@ -6,39 +6,38 @@ using Jurassic;
 
 public class Scripting : Node
 {
-	private Jurassic.ScriptEngine ServerGmEngine;
-	private Jurassic.ScriptEngine ClientGmEngine;
-	private Jurassic.ScriptEngine ConsoleEngine;
+	private static Jurassic.ScriptEngine ServerGmEngine;
+	private static Jurassic.ScriptEngine ClientGmEngine;
+	private static Jurassic.ScriptEngine ConsoleEngine;
 
-	private Node Game = null;
-	private Node Console = null;
-
+	private static Node Console = null;
+	private static Scripting Self;
 	Scripting()
 	{
-		this.ServerGmEngine = new Jurassic.ScriptEngine();
+		Self = this;
+		ServerGmEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, this))
 		{
-			this.ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 
-		this.ClientGmEngine = new Jurassic.ScriptEngine();
+		ClientGmEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, this))
 		{
-			this.ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 
-		this.ConsoleEngine = new Jurassic.ScriptEngine();
+		ConsoleEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.ADMIN, this))
 		{
-			this.ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 	}
 
 
 	public override void _Ready()
 	{
-		this.Game = GetNode("/root/Game");
-		this.Console = GetNode("/root/Console");
+		Console = GetNode("/root/Console");
 
 		File Autoexec = new File();
 		if(Autoexec.FileExists("user://autoexec.js"))
@@ -47,7 +46,7 @@ public class Scripting : Node
 			ApiPrint("Autoexec loaded 'autoexec.js'");
 			try
 			{
-				this.ConsoleEngine.Execute(Autoexec.GetAsText());
+				ConsoleEngine.Execute(Autoexec.GetAsText());
 			}
 			catch(Exception Error)
 			{
@@ -62,23 +61,23 @@ public class Scripting : Node
 	}
 
 
-	public void ApiPrint(string ToPrint)
+	public static void ApiPrint(string ToPrint)
 	{
 		Console.Call("printf", new string[] {ToPrint});
 	}
 
-	public void ApiLog(string ToLog)
+	public static void ApiLog(string ToLog)
 	{
 		Console.Call("logf", new string[] {ToLog});
 	}
 
 
-	public void RunConsoleLine(string Line)
+	public static void RunConsoleLine(string Line)
 	{
 		object Returned;
 		try
 		{
-			Returned = this.ConsoleEngine.Evaluate(Line);
+			Returned = ConsoleEngine.Evaluate(Line);
 		}
 		catch(Exception Error)
 		{
