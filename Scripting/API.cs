@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Jurassic;
 
-public delegate void DelVoidPassString(string In);
 
 public class API : Node
 {
@@ -15,9 +14,9 @@ public class API : Node
 		switch(Name)
 		{
 			case "print":
-				return new List<object> {"print", new DelVoidPassString(Console.Print)};
+				return new List<object> {"print", new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
 			case "log":
-				return new List<object> {"log", new DelVoidPassString(Console.Log)};
+				return new List<object> {"log", new Action<string>(delegate(string ToLog){Console.Log(ToLog);})};
 			case "host":
 				return new List<object> {"host", new Action(delegate(){
 					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("host", new string[] {"7777"});
