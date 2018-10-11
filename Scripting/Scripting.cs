@@ -10,6 +10,7 @@ public class Scripting : Node
 	private static Jurassic.ScriptEngine ClientGmEngine;
 	private static Jurassic.ScriptEngine ConsoleEngine;
 
+
 	private static Scripting Self;
 	Scripting()
 	{

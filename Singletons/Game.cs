@@ -1,6 +1,7 @@
 using Godot;
 using System;
 
+
 public class Game : Node
 {
 	private static Node SteelGame;
@@ -8,6 +9,7 @@ public class Game : Node
 	public static int MaxPlayers = 8;
 	public static bool MouseLocked = false;
 	public static bool PlayerInputEnabled = true;
+
 
 	private static Game Self;
 	private Game()
