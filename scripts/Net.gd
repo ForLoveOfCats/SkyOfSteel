@@ -22,7 +22,7 @@ func host(port):
 	peer.create_server(port, Game.MaxPlayers)
 	get_tree().set_network_peer(peer)
 	get_tree().set_meta("network_peer", peer)
-	Console.logf('Started hosting on port "' + str(port) + '"')
+	Console.Log('Started hosting on port "' + str(port) + '"')
 
 	self.peers[get_tree().get_network_unique_id()] = 0
 
@@ -61,7 +61,7 @@ remote func request_pos(time, pos):
 			sender = 1
 
 		if time < self.peers[sender]:
-			Console.logf('Discarded position request from player "' + str(sender) + '" (out of date)')
+			Console.Log('Discarded position request from player "' + str(sender) + '" (out of date)')
 		else:  # Do work
 			self.peers[sender] = time
 			var player = get_parent().get_node("SteelGame/SkyScene/" + str(sender))
@@ -74,7 +74,7 @@ remote func request_pos(time, pos):
 			player.move_and_collide(pos-old_pos)
 
 			if not Math.vec_similar(player.translation, pos):
-				Console.logf('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(round_vec(player.translation)) + ' != ' + str(round_vec(pos)))
+				Console.Log('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(round_vec(player.translation)) + ' != ' + str(round_vec(pos)))
 				self.rubberband_player(sender, round_vec(player.translation))
 			else:
 				player.translation = pos
@@ -99,29 +99,29 @@ remote func sync_rot(rot):
 
 
 func _player_connected(id):
-	Console.logf('Player "' + str(id) + '" connected')
+	Console.Log('Player "' + str(id) + '" connected')
 	Game.SpawnPlayer(id, false)
 	self.peers[id] = 0
 
 
 func _player_disconnected(id):
-	Console.logf('Player "' + str(id) + '" disconnected')
+	Console.Log('Player "' + str(id) + '" disconnected')
 	get_tree().get_root().get_node("SteelGame/SkyScene/" + str(id)).queue_free()
 	self.peers.erase(id)
 
 
 func _connected_ok():
-	Console.logf('Connected to "' + connect_ip + '" on port ' + str(connect_port))
+	Console.Log('Connected to "' + connect_ip + '" on port ' + str(connect_port))
 
 
 func _server_disconnected():
-	Console.logf('Lost connection to server at "' + connect_ip + '" on port "' + str(connect_port) + '"')
+	Console.Log('Lost connection to server at "' + connect_ip + '" on port "' + str(connect_port) + '"')
 	get_tree().set_network_peer(null)
 	Game.CloseWorld()
 
 
 func _connected_fail():
-	Console.logf('Failed to connect to "' + connect_ip + '" on port "' + str(connect_port) + '"')
+	Console.Log('Failed to connect to "' + connect_ip + '" on port "' + str(connect_port) + '"')
 
 
 func _ready():

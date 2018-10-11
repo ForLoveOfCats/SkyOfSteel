@@ -41,7 +41,7 @@ func thumbnail(name):
 
 	if out == null:
 		out = load("res://textures/error.png")
-		Console.logf('Error: Failed to find thumbnail for item "' + name + '"')
+		Console.Log('Error: Failed to find thumbnail for item "' + name + '"')
 
 	return out
 

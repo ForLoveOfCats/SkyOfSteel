@@ -10,7 +10,6 @@ public class Scripting : Node
 	private static Jurassic.ScriptEngine ClientGmEngine;
 	private static Jurassic.ScriptEngine ConsoleEngine;
 
-	private static Node Console = null;
 	private static Scripting Self;
 	Scripting()
 	{
@@ -37,38 +36,25 @@ public class Scripting : Node
 
 	public override void _Ready()
 	{
-		Console = GetNode("/root/Console");
-
 		File Autoexec = new File();
 		if(Autoexec.FileExists("user://autoexec.js"))
 		{
 			Autoexec.Open("user://autoexec.js", 1);
-			ApiPrint("Autoexec loaded 'autoexec.js'");
+			Console.Print("Autoexec loaded 'autoexec.js'");
 			try
 			{
 				ConsoleEngine.Execute(Autoexec.GetAsText());
 			}
 			catch(Exception Error)
 			{
-				ApiPrint(Error.Message);
-				ApiPrint("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
+				Console.Print(Error.Message);
+				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
 			}
 		}
 		else
 		{
-			ApiPrint("Autoexec not found 'autoexec.js'");
+			Console.Print("Autoexec not found 'autoexec.js'");
 		}
-	}
-
-
-	public static void ApiPrint(string ToPrint)
-	{
-		Console.Call("printf", new string[] {ToPrint});
-	}
-
-	public static void ApiLog(string ToLog)
-	{
-		Console.Call("logf", new string[] {ToLog});
 	}
 
 
@@ -81,13 +67,13 @@ public class Scripting : Node
 		}
 		catch(Exception Error)
 		{
-			ApiPrint(Error.Message);
+			Console.Print(Error.Message);
 			return;
 		}
 
 		if(!(Returned is Jurassic.Undefined))
 		{
-			ApiPrint(Returned.ToString());
+			Console.Print(Returned.ToString());
 		}
 	}
 }

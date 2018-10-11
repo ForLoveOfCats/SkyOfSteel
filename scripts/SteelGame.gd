@@ -16,13 +16,13 @@ func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	Game.MouseLocked = true
 
-	Console.logf('')
+	Console.Log('')
 
 	var cmd_args = OS.get_cmdline_args()
 	for current_arg in cmd_args:
-		Console.logf('Console Argument: ' + current_arg)
+		Console.Log('Console Argument: ' + current_arg)
 		if current_arg == '-dev_connect':
-			Console.execute_command('connect()')
+			Console.Execute('connect()')
 
 
 func _process(delta):

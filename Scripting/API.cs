@@ -15,9 +15,9 @@ public class API : Node
 		switch(Name)
 		{
 			case "print":
-				return new List<object> {"print", new DelVoidPassString(Scripting.ApiPrint)};
+				return new List<object> {"print", new DelVoidPassString(Console.Print)};
 			case "log":
-				return new List<object> {"log", new DelVoidPassString(Scripting.ApiLog)};
+				return new List<object> {"log", new DelVoidPassString(Console.Log)};
 			case "host":
 				return new List<object> {"host", new Action(delegate(){
 					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("host", new string[] {"7777"});
