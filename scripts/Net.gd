@@ -73,7 +73,7 @@ remote func request_pos(time, pos):
 			var old_pos = player.translation
 			player.move_and_collide(pos-old_pos)
 
-			if not Math.vec_similar(player.translation, pos):
+			if not SMath.AreVectorsSimilar(player.translation, pos):
 				Console.Log('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(round_vec(player.translation)) + ' != ' + str(round_vec(pos)))
 				self.rubberband_player(sender, round_vec(player.translation))
 			else:
