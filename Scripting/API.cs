@@ -23,7 +23,7 @@ public class API : Node
 				})};
 			case "connect":
 				return new List<object> {"connect", new Action<string>(delegate(string Ip){
-					if(Ip == "" || Ip == "localhost")
+					if(Ip == "" || Ip == "localhost" || Ip == "undefined")
 					{
 						Ip = "127.0.0.1";
 					}
