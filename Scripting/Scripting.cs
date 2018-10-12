@@ -46,9 +46,9 @@ public class Scripting : Node
 			{
 				ConsoleEngine.Execute(Autoexec.GetAsText());
 			}
-			catch(Exception Error)
+			catch(JavaScriptException Error)
 			{
-				Console.Print(Error.Message);
+				Console.Print(Error.Message + " @ line " + Error.LineNumber.ToString());
 				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
 			}
 		}
@@ -66,7 +66,7 @@ public class Scripting : Node
 		{
 			Returned = ConsoleEngine.Evaluate(Line);
 		}
-		catch(Exception Error)
+		catch(JavaScriptException Error)
 		{
 			Console.Print(Error.Message);
 			return;
