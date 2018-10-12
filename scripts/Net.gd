@@ -8,10 +8,6 @@ var connect_port = null
 var peers = {}
 
 
-func round_vec(vector):
-	return Vector3(round(vector.x), round(vector.y), round(vector.z))
-
-
 func host(port):
 	port = int(port)
 	self.connect_port = port
@@ -74,8 +70,8 @@ remote func request_pos(time, pos):
 			player.move_and_collide(pos-old_pos)
 
 			if not SMath.AreVectorsSimilar(player.translation, pos):
-				Console.Log('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(round_vec(player.translation)) + ' != ' + str(round_vec(pos)))
-				self.rubberband_player(sender, round_vec(player.translation))
+				Console.Log('Rubberbanding player "' + str(sender) + '" due to a movement discrepancy: ' + str(player.translation) + ' is not close enough to ' + str(pos))
+				self.rubberband_player(sender, player.translation)
 			else:
 				player.translation = pos
 
