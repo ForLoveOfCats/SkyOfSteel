@@ -59,11 +59,13 @@ public class Net : Node
 		Console.Log("Lost connection to server at '" + Ip.ToString() + "'");
 		GetTree().SetNetworkPeer(null);
 		Game.CloseWorld();
+		PeerList.Clear();
 	}
 
 
 	public static void Host()
 	{
+		PeerList.Clear();
 		Game.StartWorld();
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
