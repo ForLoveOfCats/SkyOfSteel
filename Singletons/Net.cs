@@ -35,6 +35,7 @@ public class Net : Node
 		{
 			Console.Log("Connected to server at '" + Ip.ToString() + "'");
 			Game.StartWorld();
+			PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		}
 		else
 		{
@@ -84,8 +85,6 @@ public class Net : Node
 		Peer.CreateClient(Ip, Port);
 		Self.GetTree().SetNetworkPeer(Peer);
 		Self.GetTree().SetMeta("network_peer", Peer);
-
-		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 	}
 
 
