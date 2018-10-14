@@ -2,6 +2,7 @@ extends Node
 
 
 func quit():
+	Game.CloseWorld()
 	get_tree().set_network_peer(null)
 	get_tree().quit()
 
