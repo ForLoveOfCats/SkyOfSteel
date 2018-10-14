@@ -31,7 +31,15 @@ public class Net : Node
 
 	public void _PlayerConnected(int Id)
 	{
-		Console.Log("Player '" + Id.ToString() + "' connected");
+		if(Id == 1)
+		{
+			Console.Log("Connected to server at '" + Ip.ToString() + "'");
+			Game.StartWorld();
+		}
+		else
+		{
+			Console.Log("Player '" + Id.ToString() + "' connected");
+		}
 		Game.SpawnPlayer(Id.ToString(), false);
 		PeerList.Add(Id);
 	}
@@ -78,8 +86,6 @@ public class Net : Node
 		Self.GetTree().SetMeta("network_peer", Peer);
 
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
-
-		Game.StartWorld();
 	}
 
 
