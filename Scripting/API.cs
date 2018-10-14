@@ -19,7 +19,7 @@ public class API : Node
 				return new List<object> {"log", new Action<string>(delegate(string ToLog){Console.Log(ToLog);})};
 			case "host":
 				return new List<object> {"host", new Action(delegate(){
-					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("host", new string[] {"7777"});
+					Net.Host();
 				})};
 			case "connect":
 				return new List<object> {"connect", new Action<string>(delegate(string Ip){
@@ -27,7 +27,7 @@ public class API : Node
 					{
 						Ip = "127.0.0.1";
 					}
-					((SceneTree)Engine.GetMainLoop()).GetRoot().GetNode("/root/Net").Call("connect", new string[] {Ip, "7777"});
+					Net.ConnectTo(Ip);
 				})};
 			case "get_ms":
 				return new List<object> {"get_ms", new Func<int>(() => {return OS.GetTicksMsec();})};

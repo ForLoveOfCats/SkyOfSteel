@@ -35,6 +35,9 @@ var net_move_time = 0
 var possessed = false
 
 
+enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT}  #TODO Rewrite in C# and remove this
+
+
 func airstrafe(rot):
 	if Input.is_action_pressed("MoveForward") or Input.is_action_pressed("MoveBack"):
 		return null
@@ -191,8 +194,10 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	Net.request_pos(OS.get_ticks_msec(), self.translation)
-	Net.sync_rot(self.rotation_degrees.y)
+	Net.SendUnreliableMessage(Net.ServerId, MESSAGE.PLAYER_REQUEST_POS, [self.translation])
+	Net.SendUnreliableMessage(Net.ServerId, MESSAGE.PLAYER_REQUEST_ROT, [self.rotation_degrees.y])
+	#Net.request_pos(OS.get_ticks_msec(), self.translation)
+	#Net.sync_rot(self.rotation_degrees.y)
 
 	if is_on_floor():
 		if self.on_floor_last_frame:

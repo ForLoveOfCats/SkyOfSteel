@@ -20,7 +20,7 @@ Game="*res://Singletons/Game.cs"
 SMath="*res://Singletons/SMath.cs"
 Console="*res://Scripting/Console.cs"
 Scripting="*res://Scripting/Scripting.cs"
-Net="*res://scripts/Net.gd"
+Net="*res://Singletons/Net.cs"
 Items="*res://scripts/Items.gd"
 
 [debug]
