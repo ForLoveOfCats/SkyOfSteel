@@ -72,14 +72,14 @@ public class Net : Node
 	{
 		Ip = InIp;
 
-		Game.StartWorld();
-
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateClient(Ip, Port);
 		Self.GetTree().SetNetworkPeer(Peer);
 		Self.GetTree().SetMeta("network_peer", Peer);
 
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+
+		Game.StartWorld();
 	}
 
 
