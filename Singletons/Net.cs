@@ -11,7 +11,7 @@ public class Net : Node
 	private static int Port = 7777;
 	private static string Ip;
 
-	private static List<int> PeerList = new List<int>();
+	public static List<int> PeerList = new List<int>();
 
 
 	public static Net Self;

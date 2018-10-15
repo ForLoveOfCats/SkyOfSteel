@@ -31,6 +31,15 @@ public class API : Node
 				})};
 			case "get_ms":
 				return new List<object> {"get_ms", new Func<int>(() => {return OS.GetTicksMsec();})};
+			case "get_peerlist":
+				return new List<object> {"get_peerlist", new Func<Jurassic.Library.ArrayInstance>(() => {
+					Jurassic.Library.ArrayInstance Out = Scripting.ConsoleEngine.Array.Construct();
+					foreach(int Id in Net.PeerList)
+					{
+						Out.Push(Id);
+					}
+					return Out;
+				})};
 		}
 	return new List<object>();
 	}
@@ -48,14 +57,17 @@ public class API : Node
 				Output.Add(GetDelCall("get_ms"));
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
+				Output.Add(GetDelCall("get_peerlist"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("get_ms"));
+				Output.Add(GetDelCall("get_peerlist"));
 				break;
 			case LEVEL.CLIENT_GM:
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("get_ms"));
+				Output.Add(GetDelCall("get_peerlist"));
 				break;
 		}
 

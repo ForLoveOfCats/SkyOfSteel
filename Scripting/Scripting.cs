@@ -8,13 +8,20 @@ public class Scripting : Node
 {
 	private static Jurassic.ScriptEngine ServerGmEngine;
 	private static Jurassic.ScriptEngine ClientGmEngine;
-	private static Jurassic.ScriptEngine ConsoleEngine;
+	public static Jurassic.ScriptEngine ConsoleEngine;
 
 
 	private static Scripting Self;
 	Scripting()
 	{
 		Self = this;
+
+		ConsoleEngine = new Jurassic.ScriptEngine();
+		foreach(List<object> List in API.Expose(API.LEVEL.ADMIN, this))
+		{
+			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
+
 		ServerGmEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, this))
 		{
@@ -25,12 +32,6 @@ public class Scripting : Node
 		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, this))
 		{
 			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
-
-		ConsoleEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.ADMIN, this))
-		{
-			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 	}
 
