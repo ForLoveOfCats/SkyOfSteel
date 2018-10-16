@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT};
+	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT, SYNC_PEERLIST};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -41,8 +41,20 @@ public class Net : Node
 		{
 			Console.Log("Player '" + Id.ToString() + "' connected");
 		}
+
 		Game.SpawnPlayer(Id.ToString(), false);
-		PeerList.Add(Id);
+
+		if(Self.GetTree().IsNetworkServer())
+		{
+			PeerList.Add(Id);
+			foreach(int Peer in PeerList)
+			{
+				if(Peer != ServerId)
+				{
+					SendMessage(Peer, MESSAGE.SYNC_PEERLIST, new object[] {PeerList.ToArray()});
+				}
+			}
+		}
 	}
 
 
@@ -50,7 +62,18 @@ public class Net : Node
 	{
 		Console.Log("Player '" + Id.ToString() + "' disconnected");
 		Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Id.ToString()).QueueFree();
-		PeerList.Remove(Id);
+
+		if(Self.GetTree().IsNetworkServer())
+		{
+			PeerList.Remove(Id);
+			foreach(int Peer in PeerList)
+			{
+				if(Peer != ServerId)
+				{
+					SendMessage(Peer, MESSAGE.SYNC_PEERLIST, new object[] {PeerList.ToArray()});
+				}
+			}
+		}
 	}
 
 
@@ -142,6 +165,15 @@ public class Net : Node
 			case(MESSAGE.UPDATE_PLAYER_ROT):{
 				Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Args[0].ToString());
 				Player.SetRotationDegrees(new Vector3(0, (float)Args[1], 0));
+				return;
+			}
+
+			case(MESSAGE.SYNC_PEERLIST):{
+				PeerList.Clear();
+				foreach(int Peer in (int[])(Args[0]))
+				{
+					PeerList.Add(Peer);
+				}
 				return;
 			}
 

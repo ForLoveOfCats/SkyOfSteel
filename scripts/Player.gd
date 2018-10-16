@@ -35,7 +35,7 @@ var net_move_time = 0
 var possessed = false
 
 
-enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT}  #TODO Rewrite in C# and remove this
+enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT, SYNC_PEERLIST}  #TODO Rewrite in C# and remove this
 
 
 func airstrafe(rot):
