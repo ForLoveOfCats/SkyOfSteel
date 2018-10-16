@@ -14,25 +14,30 @@ public class API : Node
 		switch(Name)
 		{
 			case "print":
-				return new List<object> {"print", new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
+				return new List<object> {Name, new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
+
 			case "log":
-				return new List<object> {"log", new Action<string>(delegate(string ToLog){Console.Log(ToLog);})};
+				return new List<object> {Name, new Action<string>(delegate(string ToLog){Console.Log(ToLog);})};
+
 			case "host":
-				return new List<object> {"host", new Action(delegate(){
+				return new List<object> {Name, new Action(delegate(){
 					Net.Host();
 				})};
+
 			case "connect":
-				return new List<object> {"connect", new Action<string>(delegate(string Ip){
+				return new List<object> {Name, new Action<string>(delegate(string Ip){
 					if(Ip == "" || Ip == "localhost" || Ip == "undefined")
 					{
 						Ip = "127.0.0.1";
 					}
 					Net.ConnectTo(Ip);
 				})};
+
 			case "get_ms":
-				return new List<object> {"get_ms", new Func<int>(() => {return OS.GetTicksMsec();})};
+				return new List<object> {Name, new Func<int>(() => {return OS.GetTicksMsec();})};
+
 			case "get_peerlist":
-				return new List<object> {"get_peerlist", new Func<Jurassic.Library.ArrayInstance>(() => {
+				return new List<object> {Name, new Func<Jurassic.Library.ArrayInstance>(() => {
 					Jurassic.Library.ArrayInstance Out = Scripting.ConsoleEngine.Array.Construct();
 					foreach(int Id in Net.PeerList)
 					{
@@ -40,8 +45,10 @@ public class API : Node
 					}
 					return Out;
 				})};
+
+			default:
+				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
-	return new List<object>();
 	}
 
 
