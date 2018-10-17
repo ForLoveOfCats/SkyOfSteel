@@ -76,7 +76,7 @@ func set_direction(new_dir):
 		self.direction = self.direction-360
 	if self.direction < 0:
 		self.direction = self.direction+360
-	self.rotation_degrees = Vector3(0,self.direction,0)
+	Perform.PlayerRotate(get_tree().get_network_unique_id(), self.direction)
 
 
 func give_item(item):

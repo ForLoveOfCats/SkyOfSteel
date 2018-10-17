@@ -7,4 +7,10 @@ public class Perform : Node
 	{
 		Events.Run(Events.TYPE.PLAYER_MOVE, new object[] {Id, Position});
 	}
+
+
+	public static void PlayerRotate(int Id, float Rotation)
+	{
+		Events.Run(Events.TYPE.PLAYER_ROT, new object[] {Id, Rotation});
+	}
 }

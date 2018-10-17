@@ -139,8 +139,7 @@ public class Net : Node
 				}
 
 				case(MESSAGE.PLAYER_REQUEST_ROT):{
-					Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Sender.ToString());
-					Player.SetRotationDegrees(new Vector3(0, (float)Args[0], 0));
+					Perform.PlayerRotate(Sender, (float)Args[0]);
 					foreach(int Peer in PeerList)
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
@@ -162,8 +161,7 @@ public class Net : Node
 			}
 
 			case(MESSAGE.PLAYER_UPDATE_ROT):{
-				Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Args[0].ToString());
-				Player.SetRotationDegrees(new Vector3(0, (float)Args[1], 0));
+				Perform.PlayerRotate((int)Args[0], (float)Args[1]);
 				return;
 			}
 
