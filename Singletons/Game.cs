@@ -9,7 +9,7 @@ public class Game : Node
 	public static int MaxPlayers = 8;
 	public static bool MouseLocked = false;
 	public static bool PlayerInputEnabled = true;
-	public static System.Collections.Generic.Dictionary<string, Spatial> PlayerList = new System.Collections.Generic.Dictionary<string, Spatial>();
+	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
 
 
 	private static Game Self;
@@ -39,11 +39,11 @@ public class Game : Node
 	}
 
 
-	public static void SpawnPlayer(string Id, bool Possess)
+	public static void SpawnPlayer(int Id, bool Possess)
 	{
 		Node Player = ((PackedScene)GD.Load("res://scenes/Player.tscn")).Instance();
 		Player.Set("possessed", Possess);
-		Player.SetName(Id);
+		Player.SetName(Id.ToString());
 		PlayerList.Add(Id, (Spatial)Player);
 		SteelGame.GetNode("SkyScene").AddChild(Player);
 	}

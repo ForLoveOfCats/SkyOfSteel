@@ -42,7 +42,7 @@ public class Net : Node
 			Console.Log("Player '" + Id.ToString() + "' connected");
 		}
 
-		Game.SpawnPlayer(Id.ToString(), false);
+		Game.SpawnPlayer(Id, false);
 
 		if(Self.GetTree().IsNetworkServer())
 		{

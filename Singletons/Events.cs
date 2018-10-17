@@ -19,7 +19,7 @@ public class Events : Node
 		switch(Event)
 		{
 			case(TYPE.PLAYER_MOVE):{
-				Game.PlayerList[ ((int)(Args[0])).ToString() ].SetTranslation( (Vector3)(Args[1]) );
+				Game.PlayerList[ (int)(Args[0]) ].SetTranslation( (Vector3)(Args[1]) );
 				return;
 			}
 
