@@ -206,7 +206,7 @@ func _physics_process(delta):
 		var new_pos = self.translation
 		self.translation = old_pos
 		if new_pos != old_pos:
-			Events.Run(EVENT_TYPE.PLAYER_MOVE, [get_tree().get_network_unique_id(), new_pos])
+			Perform.PlayerMove(get_tree().get_network_unique_id(), new_pos)
 	else:
 		self.on_floor_last_frame = false
 		var old_pos = self.translation
@@ -214,7 +214,7 @@ func _physics_process(delta):
 		var new_pos = self.translation
 		self.translation = old_pos
 		if new_pos != old_pos:
-			Events.Run(EVENT_TYPE.PLAYER_MOVE, [get_tree().get_network_unique_id(), new_pos])
+			Perform.PlayerMove(get_tree().get_network_unique_id(), new_pos)
 
 
 func _input(event):

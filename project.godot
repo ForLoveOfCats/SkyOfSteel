@@ -22,6 +22,7 @@ Scripting="*res://Scripting/Scripting.cs"
 Net="*res://Net/Net.cs"
 Message="*res://Net/Message.cs"
 Events="*res://Events/Events.cs"
+Perform="*res://Events/Perform.cs"
 Items="*res://scripts/Items.gd"
 
 [debug]
