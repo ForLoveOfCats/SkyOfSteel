@@ -127,8 +127,7 @@ public class Net : Node
 			switch(RecievedMessage)
 			{
 				case(MESSAGE.PLAYER_REQUEST_POS):{
-					Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Sender.ToString());
-					Player.Translation = (Vector3)Args[0];
+					Perform.PlayerMove(Sender, (Vector3)Args[0]);
 					foreach(int Peer in PeerList)
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
