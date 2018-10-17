@@ -57,6 +57,7 @@
     <Compile Include="Scripting\API.cs" />
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
+    <Compile Include="Singletons\Events.cs" />
     <Compile Include="Singletons\Game.cs" />
     <Compile Include="Singletons\Net.cs" />
     <Compile Include="Singletons\SMath.cs" />

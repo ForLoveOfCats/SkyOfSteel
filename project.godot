@@ -21,6 +21,7 @@ SMath="*res://Singletons/SMath.cs"
 Console="*res://Scripting/Console.cs"
 Scripting="*res://Scripting/Scripting.cs"
 Net="*res://Singletons/Net.cs"
+Events="*res://Singletons/Events.cs"
 Items="*res://scripts/Items.gd"
 
 [debug]

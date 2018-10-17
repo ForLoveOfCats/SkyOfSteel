@@ -36,6 +36,7 @@ var possessed = false
 
 
 enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT, SYNC_PEERLIST}  #TODO Rewrite in C# and remove this
+enum EVENT_TYPE {PLAYER_MOVE}  #TODO Rewrite in C# and remove this
 
 
 func airstrafe(rot):
@@ -203,10 +204,20 @@ func _physics_process(delta):
 		if self.on_floor_last_frame:
 			self.air_direction = self.direction
 		self.on_floor_last_frame = true
+		var old_pos = self.translation
 		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle)).rotated(Vector3(0,1,0), deg2rad(-self.direction))
+		var new_pos = self.translation
+		self.translation = old_pos
+		if new_pos != old_pos:
+			Events.Run(EVENT_TYPE.PLAYER_MOVE, [get_tree().get_network_unique_id(), new_pos])
 	else:
 		self.on_floor_last_frame = false
+		var old_pos = self.translation
 		move_and_slide(self.momentum.rotated(Vector3(0,1,0), deg2rad(self.air_direction)), Vector3(0,1,0), 0.05, 4, deg2rad(MaxAngle)).rotated(Vector3(0,1,0), deg2rad(-self.air_direction))
+		var new_pos = self.translation
+		self.translation = old_pos
+		if new_pos != old_pos:
+			Events.Run(EVENT_TYPE.PLAYER_MOVE, [get_tree().get_network_unique_id(), new_pos])
 
 
 func _input(event):
