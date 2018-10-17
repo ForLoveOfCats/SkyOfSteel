@@ -57,10 +57,9 @@
     <Compile Include="Scripting\API.cs" />
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
-    <Compile Include="Singletons\Events.cs" />
-    <Compile Include="Singletons\Game.cs" />
-    <Compile Include="Singletons\Net.cs" />
-    <Compile Include="Singletons\SMath.cs" />
+    <Compile Include="Events\Events.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="Net\Net.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

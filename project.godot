@@ -16,12 +16,11 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Game="*res://Singletons/Game.cs"
-SMath="*res://Singletons/SMath.cs"
+Game="*res://Game.cs"
 Console="*res://Scripting/Console.cs"
 Scripting="*res://Scripting/Scripting.cs"
-Net="*res://Singletons/Net.cs"
-Events="*res://Singletons/Events.cs"
+Net="*res://Net/Net.cs"
+Events="*res://Events/Events.cs"
 Items="*res://scripts/Items.gd"
 
 [debug]
