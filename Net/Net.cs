@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT, SYNC_PEERLIST};
+	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, PLAYER_UPDATE_POS, PLAYER_UPDATE_ROT, PEERLIST_UPDATE};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -156,19 +156,19 @@ public class Net : Node
 
 		switch(RecievedMessage)
 		{
-			case(MESSAGE.UPDATE_PLAYER_POS):{
+			case(MESSAGE.PLAYER_UPDATE_POS):{
 				Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Args[0].ToString());
 				Player.Translation = (Vector3)Args[1];
 				return;
 			}
 
-			case(MESSAGE.UPDATE_PLAYER_ROT):{
+			case(MESSAGE.PLAYER_UPDATE_ROT):{
 				Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Args[0].ToString());
 				Player.SetRotationDegrees(new Vector3(0, (float)Args[1], 0));
 				return;
 			}
 
-			case(MESSAGE.SYNC_PEERLIST):{
+			case(MESSAGE.PEERLIST_UPDATE):{
 				PeerList.Clear();
 				foreach(int Peer in (int[])(Args[0]))
 				{
