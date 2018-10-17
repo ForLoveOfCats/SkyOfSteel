@@ -35,7 +35,6 @@ var net_move_time = 0
 var possessed = false
 
 
-enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, UPDATE_PLAYER_POS, UPDATE_PLAYER_ROT, SYNC_PEERLIST}  #TODO Rewrite in C# and remove this
 enum EVENT_TYPE {PLAYER_MOVE}  #TODO Rewrite in C# and remove this
 
 
@@ -195,10 +194,8 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	Net.SendUnreliableMessage(Net.ServerId, MESSAGE.PLAYER_REQUEST_POS, [self.translation])
-	Net.SendUnreliableMessage(Net.ServerId, MESSAGE.PLAYER_REQUEST_ROT, [self.rotation_degrees.y])
-	#Net.request_pos(OS.get_ticks_msec(), self.translation)
-	#Net.sync_rot(self.rotation_degrees.y)
+	Message.PlayerRequestPos(self.translation)
+	Message.PlayerRequestRot(self.rotation_degrees.y)
 
 	if is_on_floor():
 		if self.on_floor_last_frame:

@@ -20,6 +20,7 @@ Game="*res://Game.cs"
 Console="*res://Scripting/Console.cs"
 Scripting="*res://Scripting/Scripting.cs"
 Net="*res://Net/Net.cs"
+Message="*res://Net/Message.cs"
 Events="*res://Events/Events.cs"
 Items="*res://scripts/Items.gd"
 

@@ -51,7 +51,7 @@ public class Net : Node
 			{
 				if(Peer != ServerId)
 				{
-					SendMessage(Peer, MESSAGE.SYNC_PEERLIST, new object[] {PeerList.ToArray()});
+					Message.ServerUpdatePeerList(Peer, PeerList.ToArray());
 				}
 			}
 		}
@@ -70,7 +70,7 @@ public class Net : Node
 			{
 				if(Peer != ServerId)
 				{
-					SendMessage(Peer, MESSAGE.SYNC_PEERLIST, new object[] {PeerList.ToArray()});
+					Message.ServerUpdatePeerList(Peer, PeerList.ToArray());
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public class Net : Node
 
 
 	[Remote]
-	public void ReceiveMessage(MESSAGE Message, object[] Args)
+	public void ReceiveMessage(MESSAGE RecievedMessage, object[] Args)
 	{
 		int Sender = Self.GetTree().GetRpcSenderId();
 		if(Sender == 0)
@@ -124,7 +124,7 @@ public class Net : Node
 
 		if(Self.GetTree().IsNetworkServer())
 		{ //Runs on server, 100% trusted
-			switch(Message)
+			switch(RecievedMessage)
 			{
 				case(MESSAGE.PLAYER_REQUEST_POS):{
 					Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Sender.ToString());
@@ -133,7 +133,7 @@ public class Net : Node
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
 						{
-							SendUnreliableMessage(Peer, MESSAGE.UPDATE_PLAYER_POS, new object[] {Sender, Args[0]});
+							Message.ServerUpdatePlayerPos(Peer, Sender, (Vector3)Args[0]);
 						}
 					}
 					return;
@@ -146,7 +146,7 @@ public class Net : Node
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
 						{
-							SendUnreliableMessage(Peer, MESSAGE.UPDATE_PLAYER_ROT, new object[] {Sender, Args[0]});
+							Message.ServerUpdatePlayerRot(Peer, Sender, (float)Args[0]);
 						}
 					}
 					return;
@@ -154,7 +154,7 @@ public class Net : Node
 			}
 		}
 
-		switch(Message)
+		switch(RecievedMessage)
 		{
 			case(MESSAGE.UPDATE_PLAYER_POS):{
 				Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Args[0].ToString());
@@ -178,7 +178,7 @@ public class Net : Node
 			}
 
 			default:{
-				Console.Log("Invalid message '" + Message.ToString() + "'");
+				Console.Log("Invalid message '" + RecievedMessage.ToString() + "'");
 				return;
 			}
 		}
