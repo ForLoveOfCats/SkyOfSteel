@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scripts/ConsoleWindow.gd" type="Script" id=1]
+[ext_resource path="res://Scripting/MonoFont.tres" type="DynamicFont" id=2]
 
-[node name="ConsoleWindow" type="VBoxContainer" index="0"]
+[node name="ConsoleWindow" type="VBoxContainer"]
 
 anchor_left = 0.0
 anchor_top = 0.0
@@ -128,6 +129,7 @@ mouse_filter = 0
 mouse_default_cursor_shape = 1
 size_flags_horizontal = 1
 size_flags_vertical = 1
+custom_fonts/font = ExtResource( 2 )
 focus_mode = 2
 context_menu_enabled = true
 placeholder_alpha = 0.6
