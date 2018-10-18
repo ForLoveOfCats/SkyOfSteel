@@ -25,6 +25,14 @@ public class Game : Node
 	}
 
 
+	public static void Quit()
+	{
+		CloseWorld();
+		Self.GetTree().SetNetworkPeer(null);
+		Self.GetTree().Quit();
+	}
+
+
 	public static void Set(string Object, bool Data)  //Temporary
 	{
 		switch(Object)

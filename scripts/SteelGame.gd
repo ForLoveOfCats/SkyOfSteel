@@ -1,15 +1,9 @@
 extends Node
 
 
-func quit():
-	Game.CloseWorld()
-	get_tree().set_network_peer(null)
-	get_tree().quit()
-
-
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
-		self.quit()
+		Game.Quit()
 
 
 func _ready():
@@ -28,7 +22,7 @@ func _ready():
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel"):
-		self.quit()
+		Game.Quit()
 
 	if Input.is_action_just_pressed("MouseLock"):
 		if Input.get_mouse_mode() == 0:
