@@ -127,7 +127,7 @@ public class Net : Node
 			switch(RecievedMessage)
 			{
 				case(MESSAGE.PLAYER_REQUEST_POS):{
-					Perform.PlayerMove(Sender, (Vector3)Args[0]);
+					Game.PlayerList[Sender].Translation = (Vector3)Args[0];
 					foreach(int Peer in PeerList)
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
@@ -139,7 +139,7 @@ public class Net : Node
 				}
 
 				case(MESSAGE.PLAYER_REQUEST_ROT):{
-					Perform.PlayerRotate(Sender, (float)Args[0]);
+					Game.PlayerList[Sender].SetRotationDegrees(new Vector3(0, (float)Args[0], 0));
 					foreach(int Peer in PeerList)
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
@@ -161,7 +161,7 @@ public class Net : Node
 			}
 
 			case(MESSAGE.PLAYER_UPDATE_ROT):{
-				Perform.PlayerRotate((int)Args[0], (float)Args[1]);
+				Game.PlayerList[(int)Args[0]].SetRotationDegrees(new Vector3(0, (float)Args[1], 0));
 				return;
 			}
 
