@@ -61,7 +61,7 @@ public class Console : Node
 
 	public static void Execute(string Command)
 	{
-		Console.Print("\n >>> " + Command);
+		Console.Print("\n>>> " + Command);
 		History.Add(Command);
 		HistLocal = History.Count;
 		Scripting.RunConsoleLine(Command);
