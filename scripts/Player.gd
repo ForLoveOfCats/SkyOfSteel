@@ -194,9 +194,6 @@ func _physics_process(delta):
 			if self.is_jumping:
 				self.stop_jumping()
 
-	Message.PlayerRequestPos(self.translation)
-	Message.PlayerRequestRot(self.rotation_degrees.y)
-
 	if is_on_floor():
 		if self.on_floor_last_frame:
 			self.air_direction = self.direction
@@ -215,6 +212,9 @@ func _physics_process(delta):
 		self.translation = old_pos
 		if new_pos != old_pos:
 			Perform.PlayerMove(get_tree().get_network_unique_id(), new_pos)
+
+	Message.PlayerRequestPos(self.translation)
+	Message.PlayerRequestRot(self.rotation_degrees.y)
 
 
 func _input(event):
