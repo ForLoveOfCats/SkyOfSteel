@@ -6,19 +6,6 @@ func _notification(what):
 		Game.Quit()
 
 
-func _ready():
-	get_tree().set_auto_accept_quit(false)
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	Game.MouseLocked = true
-
-	Console.Log('')
-
-	var cmd_args = OS.get_cmdline_args()
-	for current_arg in cmd_args:
-		Console.Log('Console Argument: ' + current_arg)
-		if current_arg == '-dev_connect':
-			Console.Execute('connect()')
-
 
 func _process(delta):
 	if Input.is_action_just_pressed("ui_cancel"):

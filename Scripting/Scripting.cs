@@ -57,6 +57,16 @@ public class Scripting : Node
 		{
 			Console.Print("Autoexec not found 'autoexec.js'");
 		}
+
+		string[] CmdArgs = OS.GetCmdlineArgs();
+		foreach(string CurrentArg in CmdArgs)
+		{
+			Console.Log("Command line argument '" + CurrentArg + "'");
+			if(CurrentArg == "-dev_connect")
+			{
+				Console.Execute("connect();");
+			}
+		}
 	}
 
 

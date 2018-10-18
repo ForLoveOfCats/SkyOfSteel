@@ -21,6 +21,7 @@ public class Console : Node
 	{
 		Window = GetTree().GetRoot().GetNode("SteelGame/ConsoleWindow");
 		Console.Print("");
+		Console.Log("");
 	}
 
 
