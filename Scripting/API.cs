@@ -33,10 +33,10 @@ public class API : Node
 					Net.ConnectTo(Ip);
 				})};
 
-			case "get_ms":
+			case "ms_get":
 				return new List<object> {Name, new Func<int>(() => {return OS.GetTicksMsec();})};
 
-			case "get_peerlist":
+			case "peerlist_get":
 				return new List<object> {Name, new Func<Jurassic.Library.ArrayInstance>(() => {
 					Jurassic.Library.ArrayInstance Out = Scripting.ConsoleEngine.Array.Construct();
 					foreach(int Id in Net.PeerList)
@@ -61,20 +61,20 @@ public class API : Node
 			case LEVEL.ADMIN:
 				Output.Add(GetDelCall("print"));
 				Output.Add(GetDelCall("log"));
-				Output.Add(GetDelCall("get_ms"));
+				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
-				Output.Add(GetDelCall("get_peerlist"));
+				Output.Add(GetDelCall("peerlist_get"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
-				Output.Add(GetDelCall("get_ms"));
-				Output.Add(GetDelCall("get_peerlist"));
+				Output.Add(GetDelCall("ms_get"));
+				Output.Add(GetDelCall("peerlist_get"));
 				break;
 			case LEVEL.CLIENT_GM:
 				Output.Add(GetDelCall("log"));
-				Output.Add(GetDelCall("get_ms"));
-				Output.Add(GetDelCall("get_peerlist"));
+				Output.Add(GetDelCall("ms_get"));
+				Output.Add(GetDelCall("peerlist_get"));
 				break;
 		}
 
