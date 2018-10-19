@@ -28,6 +28,15 @@ public class Game : Node
 	}
 
 
+	public override void _Notification(int What)
+	{
+		if(What == MainLoop.NotificationWmQuitRequest)
+		{
+			Game.Quit();
+		}
+	}
+
+
 	public static void Quit()
 	{
 		CloseWorld();
