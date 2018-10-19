@@ -37,6 +37,34 @@ public class Game : Node
 	}
 
 
+	public override void _Process(float Delta)
+	{
+		if(Input.IsActionJustPressed("ui_cancel"))
+		{
+			Game.Quit();
+		}
+
+		if(Input.IsActionJustPressed("MouseLock"))
+		{
+			if(Input.GetMouseMode() == 0)
+			{
+				Input.SetMouseMode(Input.MouseMode.Captured);
+				MouseLocked = true;
+				PlayerInputEnabled = true;
+				SteelGame.GetNode("ConsoleWindow").Call("hide");
+			}
+
+			else
+			{
+				Input.SetMouseMode(Input.MouseMode.Visible);
+				MouseLocked = false;
+				PlayerInputEnabled = false;
+				SteelGame.GetNode("ConsoleWindow").Call("show");
+			}
+		}
+	}
+
+
 	public static void Quit()
 	{
 		CloseWorld();
