@@ -19,14 +19,14 @@ func show():
 
 
 func console_add_line(string):
-	var new_label = load("res://Scripting/ConsoleLine.tscn").instance()
+	var new_label = load("res://UI/ConsoleLine.tscn").instance()
 	new_label.text = string
 	new_label.set_clip_text(true)
 	get_node("HBox/ConsoleScroll/VBox").add_child(new_label)
 
 
 func log_add_line(string):
-	var new_label = load("res://Scripting/ConsoleLine.tscn").instance()
+	var new_label = load("res://UI/ConsoleLine.tscn").instance()
 	new_label.text = string
 	new_label.set_clip_text(true)
 	get_node("HBox/LogScroll/VBox").add_child(new_label)
