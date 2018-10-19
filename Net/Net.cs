@@ -36,6 +36,7 @@ public class Net : Node
 			Console.Log("Connected to server at '" + Ip.ToString() + "'");
 			Game.StartWorld();
 			PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+			Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 		}
 		else
 		{
@@ -99,6 +100,7 @@ public class Net : Node
 		Console.Log("Started hosting on port '" + Port.ToString()+ "'");
 
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 	}
 
 
