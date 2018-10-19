@@ -73,20 +73,6 @@ public class Game : Node
 	}
 
 
-	public static void Set(string Object, bool Data)  //Temporary
-	{
-		switch(Object)
-		{
-			case "MouseLocked":
-				MouseLocked = Data;
-				break;
-			case "PlayerInputEnabled":
-				PlayerInputEnabled = Data;
-				break;
-		}
-	}
-
-
 	public static void SpawnPlayer(int Id, bool Possess)
 	{
 		Node Player = ((PackedScene)GD.Load("res://scenes/Player.tscn")).Instance();
