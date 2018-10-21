@@ -57,6 +57,7 @@
     <Compile Include="Net\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\API.cs" />
+    <Compile Include="Scripting\Bindings.cs" />
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
     <Compile Include="Events\Events.cs" />
