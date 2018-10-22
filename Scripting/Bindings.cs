@@ -18,8 +18,9 @@ public class Bindings : Node
 	}
 
 
-	public enum BIND_TYPE {SCANCODE, MOUSEBUTTON, AXIS}
+	public enum BIND_TYPE {SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
 	private static string[] MouseButtonList = {"MouseOne", "MouseTwo", "MouseThree"};
+	private static string[] MouseWheelList = {"WheelUp", "WheelDown"};
 	private static List<BindingObject> BindingList = new List<BindingObject>();
 
 	private static Bindings Self;
@@ -34,6 +35,10 @@ public class Bindings : Node
 		if(System.Array.IndexOf(MouseButtonList, InputString) >= 0)
 		{
 			Type = BIND_TYPE.MOUSEBUTTON;
+		}
+		if(System.Array.IndexOf(MouseWheelList, InputString) >= 0)
+		{
+			Type = BIND_TYPE.MOUSEWHEEL;
 		}
 
 		if(InputMap.HasAction(FunctionName))
@@ -69,6 +74,22 @@ public class Bindings : Node
 			InputMap.ActionAddEvent(FunctionName, Event);
 			BindingList.Add(new BindingObject(FunctionName, Type));
 		}
+		else if(Type == BIND_TYPE.MOUSEWHEEL)
+		{
+			InputMap.AddAction(FunctionName);
+			InputEventMouseButton Event = new InputEventMouseButton();
+			switch(InputString)
+			{
+				case("WheelUp"):
+					Event.ButtonIndex = (int)ButtonList.WheelUp;
+					break;
+				case("WheelDown"):
+					Event.ButtonIndex = (int)ButtonList.WheelDown;
+					break;
+			}
+			InputMap.ActionAddEvent(FunctionName, Event);
+			BindingList.Add(new BindingObject(FunctionName, Type));
+		}
 	}
 
 
@@ -94,6 +115,13 @@ public class Bindings : Node
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
 					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 0);
+				}
+			}
+			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
+			{
+				if(Input.IsActionJustReleased(Binding.Name))
+				{
+					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 1);
 				}
 			}
 		}
