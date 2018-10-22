@@ -27,6 +27,15 @@ public class Bindings : Node
 	}
 
 
+	public static void UnBind(string FunctionName)
+	{
+		if(InputMap.HasAction(FunctionName))
+		{
+			InputMap.EraseAction(FunctionName);
+		}
+	}
+
+
 	public override void _Process(float Delta)
 	{
 		foreach(string Binding in BindingList)

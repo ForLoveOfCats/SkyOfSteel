@@ -51,6 +51,11 @@ public class API : Node
 					Bindings.Bind(FunctionName, OS.FindScancodeFromString(ScanCodeString));
 				})};
 
+			case "unbind":
+				return new List<object> {Name, new Action<string>(delegate(string FunctionName){
+					Bindings.UnBind(FunctionName);
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -71,6 +76,7 @@ public class API : Node
 				Output.Add(GetDelCall("connect"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
+				Output.Add(GetDelCall("unbind"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
