@@ -5,20 +5,7 @@ using System.Collections.Generic;
 
 public class Bindings : Node
 {
-	class Binding
-	{
-		public int ScanCode = (int)KeyList.Unknown;
-		public string FunctionName = "";
-
-		public Binding(string FunctionNameArg, int ScanCodeArg)
-		{
-			this.ScanCode = ScanCodeArg;
-			this.FunctionName = FunctionNameArg;
-		}
-	}
-
-
-	private static List<Binding> BindingList = new List<Binding>();
+	private static List<string> BindingList = new List<string>();
 
 	private static Bindings Self;
 	private Bindings()
@@ -26,30 +13,31 @@ public class Bindings : Node
 		Self = this;
 	}
 
-
 	public static void Bind(string FunctionName, int ScanCode)
 	{
-		BindingList.Add(new Binding(FunctionName, ScanCode));
+		if(InputMap.HasAction(FunctionName))
+		{
+			InputMap.EraseAction(FunctionName);
+		}
+		InputMap.AddAction(FunctionName);
+		InputEventKey Event = new InputEventKey();
+		Event.Scancode = ScanCode;
+		InputMap.ActionAddEvent(FunctionName, Event);
+		BindingList.Add(FunctionName);
 	}
 
 
-	public override void _Input(InputEvent Event)
+	public override void _Process(float Delta)
 	{
-		if(Event is InputEventKey EventKey)
+		foreach(string Binding in BindingList)
 		{
-			foreach(Binding Binding in BindingList)
+			if(Input.IsActionJustPressed(Binding))
 			{
-				if(Binding.ScanCode == EventKey.Scancode)
-				{
-					if(EventKey.IsPressed())
-					{
-						Scripting.ConsoleEngine.CallGlobalFunction(Binding.FunctionName, 1);
-					}
-					else
-					{
-						Scripting.ConsoleEngine.CallGlobalFunction(Binding.FunctionName, 0);
-					}
-				}
+				Scripting.ConsoleEngine.CallGlobalFunction(Binding, 1);
+			}
+			else if(Input.IsActionJustReleased(Binding))
+			{
+				Scripting.ConsoleEngine.CallGlobalFunction(Binding, 0);
 			}
 		}
 	}
