@@ -47,8 +47,8 @@ public class API : Node
 				})};
 
 			case "bind":
-				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string ScanCodeString){
-					Bindings.Bind(FunctionName, OS.FindScancodeFromString(ScanCodeString));
+				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string InputString){
+					Bindings.Bind(FunctionName, InputString);
 				})};
 
 			case "unbind":
