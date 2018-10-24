@@ -46,6 +46,16 @@ public class API : Node
 					return Out;
 				})};
 
+			case "bind":
+				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string InputString){
+					Bindings.Bind(FunctionName, InputString);
+				})};
+
+			case "unbind":
+				return new List<object> {Name, new Action<string>(delegate(string FunctionName){
+					Bindings.UnBind(FunctionName);
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -65,6 +75,8 @@ public class API : Node
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
 				Output.Add(GetDelCall("peerlist_get"));
+				Output.Add(GetDelCall("bind"));
+				Output.Add(GetDelCall("unbind"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
