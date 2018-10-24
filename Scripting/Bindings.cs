@@ -36,6 +36,14 @@ public class Bindings : Node
 		if(InputMap.HasAction(FunctionName))
 		{
 			InputMap.EraseAction(FunctionName);
+			foreach(BindingObject Bind in BindingList)
+			{
+				if(Bind.Name == FunctionName)
+				{
+					BindingList.Remove(Bind);
+					break;
+				}
+			}
 		}
 
 		if(Type == BIND_TYPE.SCANCODE)
@@ -113,6 +121,14 @@ public class Bindings : Node
 		if(InputMap.HasAction(FunctionName))
 		{
 			InputMap.EraseAction(FunctionName);
+			foreach(BindingObject Bind in BindingList)
+			{
+				if(Bind.Name == FunctionName)
+				{
+					BindingList.Remove(Bind);
+					break;
+				}
+			}
 		}
 	}
 

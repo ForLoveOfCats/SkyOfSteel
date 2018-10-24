@@ -10,4 +10,10 @@ class BindingObject
 		this.Name = NameArg;
 		this.Type = TypeArg;
 	}
+
+
+	public bool Equals(BindingObject Other)
+	{
+		return this.Name == Other.Name;
+	}
 }
