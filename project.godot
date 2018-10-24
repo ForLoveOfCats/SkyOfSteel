@@ -16,7 +16,7 @@ config/icon="res://icon.png"
 
 [autoload]
 
-Game="*res://Game.cs"
+Game="*res://World/Game.cs"
 Console="*res://Scripting/Console.cs"
 Scripting="*res://Scripting/Scripting.cs"
 Net="*res://Net/Net.cs"
