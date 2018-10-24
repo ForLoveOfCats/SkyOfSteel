@@ -5,22 +5,10 @@ using System.Collections.Generic;
 
 public class Bindings : Node
 {
-	class BindingObject
-	{
-		public string Name = "";
-		public BIND_TYPE Type = Bindings.BIND_TYPE.SCANCODE;
-
-		public BindingObject(string NameArg, BIND_TYPE TypeArg)
-		{
-			this.Name = NameArg;
-			this.Type = TypeArg;
-		}
-	}
-
-
 	public enum BIND_TYPE {SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
 	private static string[] MouseButtonList = {"MouseOne", "MouseTwo", "MouseThree"};
 	private static string[] MouseWheelList = {"WheelUp", "WheelDown"};
+	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
 	private static List<BindingObject> BindingList = new List<BindingObject>();
 
 	private static Bindings Self;
@@ -39,6 +27,10 @@ public class Bindings : Node
 		if(System.Array.IndexOf(MouseWheelList, InputString) >= 0)
 		{
 			Type = BIND_TYPE.MOUSEWHEEL;
+		}
+		if(System.Array.IndexOf(AxisList, InputString) >= 0)
+		{
+			Type = BIND_TYPE.AXIS;
 		}
 
 		if(InputMap.HasAction(FunctionName))
@@ -90,6 +82,29 @@ public class Bindings : Node
 			InputMap.ActionAddEvent(FunctionName, Event);
 			BindingList.Add(new BindingObject(FunctionName, Type));
 		}
+		else if(Type == BIND_TYPE.AXIS)
+		{
+			InputMap.AddAction(FunctionName);
+			InputEventMouseMotion Event = new InputEventMouseMotion();
+			InputMap.ActionAddEvent(FunctionName, Event);
+			BindingObject Bind = new BindingObject(FunctionName, Type);
+			switch(InputString)
+			{
+				case("MouseUp"):
+					Bind.AxisDirection = BindingObject.DIRECTION.UP;
+					break;
+				case("MouseDown"):
+					Bind.AxisDirection = BindingObject.DIRECTION.DOWN;
+					break;
+				case("MouseRight"):
+					Bind.AxisDirection = BindingObject.DIRECTION.RIGHT;
+					break;
+				case("MouseLeft"):
+					Bind.AxisDirection = BindingObject.DIRECTION.LEFT;
+					break;
+			}
+			BindingList.Add(Bind);
+		}
 	}
 
 
@@ -99,6 +114,16 @@ public class Bindings : Node
 		{
 			InputMap.EraseAction(FunctionName);
 		}
+	}
+
+
+	private static float GreaterEqualZero(float In)
+	{
+		if(In < 0f)
+		{
+			return 0f;
+		}
+		return In;
 	}
 
 
@@ -122,6 +147,35 @@ public class Bindings : Node
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
 					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 1);
+				}
+			}
+		}
+	}
+
+
+	public override void _Input(InputEvent Event)
+	{
+		if(Event is InputEventMouseMotion MotionEvent)
+		{
+			foreach(BindingObject Binding in BindingList)
+			{
+				if(Binding.Type == BIND_TYPE.AXIS)
+				{
+					switch(Binding.AxisDirection)
+					{
+						case(BindingObject.DIRECTION.UP):
+							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)));
+							break;
+						case(BindingObject.DIRECTION.DOWN):
+							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y)));
+							break;
+						case(BindingObject.DIRECTION.RIGHT):
+							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x)));
+							break;
+						case(BindingObject.DIRECTION.LEFT):
+							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)));
+							break;
+					}
 				}
 			}
 		}
