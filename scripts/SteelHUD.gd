@@ -5,6 +5,7 @@ var player = null
 
 
 func update_hotbar():
+	return null
 	for index in len(player.inventory):
 		var node = get_node('CLayer/HotBarCenter/HBoxContainer/Vbox').get_children()[index]
 		if player.inventory[index] != null:

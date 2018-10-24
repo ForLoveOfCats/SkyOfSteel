@@ -64,6 +64,7 @@
     <Compile Include="Events\Events.cs" />
     <Compile Include="World\Game.cs" />
     <Compile Include="Net\Net.cs" />
+    <Compile Include="World\Player.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
