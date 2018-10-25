@@ -56,6 +56,27 @@ public class API : Node
 					Bindings.UnBind(FunctionName);
 				})};
 
+			case "player_forward_move":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.ForwardMove(Sens);
+				})};
+
+
+			case "player_backward_move":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.BackwardMove(Sens);
+				})};
+
+			case "player_right_move":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.RightMove(Sens);
+				})};
+
+			case "player_left_move":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.LeftMove(Sens);
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -77,6 +98,10 @@ public class API : Node
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));
+				Output.Add(GetDelCall("player_forward_move"));
+				Output.Add(GetDelCall("player_backward_move"));
+				Output.Add(GetDelCall("player_right_move"));
+				Output.Add(GetDelCall("player_left_move"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));

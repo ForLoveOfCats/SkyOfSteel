@@ -10,6 +10,8 @@ public class Game : Node
 	public static bool MouseLocked = false;
 	public static bool PlayerInputEnabled = true;
 	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
+	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
+	                                       //Prevent crashes when player movement commands are run when world is not initalized
 
 
 	private static Game Self;
@@ -78,6 +80,7 @@ public class Game : Node
 		Player Player = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
 		Player.Possessed = Possess;
 		Player.SetName(Id.ToString());
+		PossessedPlayer = Player;
 		PlayerList.Add(Id, (Spatial)Player);
 		SteelGame.GetNode("SkyScene").AddChild(Player);
 	}
