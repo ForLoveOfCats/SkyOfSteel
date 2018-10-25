@@ -75,7 +75,7 @@ public class Game : Node
 
 	public static void SpawnPlayer(int Id, bool Possess)
 	{
-		Player Player = (Player)(((PackedScene)GD.Load("res://World/Player.tscn")).Instance());
+		Player Player = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
 		Player.Possessed = Possess;
 		Player.SetName(Id.ToString());
 		PlayerList.Add(Id, (Spatial)Player);
