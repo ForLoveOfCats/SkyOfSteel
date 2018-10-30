@@ -77,6 +77,11 @@ public class API : Node
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
 
+			case "player_sprint":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.Sprint(Sens);
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -102,6 +107,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_backward_move"));
 				Output.Add(GetDelCall("player_right_move"));
 				Output.Add(GetDelCall("player_left_move"));
+				Output.Add(GetDelCall("player_sprint"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
