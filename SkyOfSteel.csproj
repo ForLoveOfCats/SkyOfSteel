@@ -53,6 +53,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\EventObject.cs" />
     <Compile Include="Events\Perform.cs" />
     <Compile Include="Net\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

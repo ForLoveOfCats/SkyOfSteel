@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Events : Node
 {
 	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT};
+	public enum INVOKER {CLIENT, SERVER};
 
 	private static Events Self;
 	Events()
@@ -14,23 +15,23 @@ public class Events : Node
 	}
 
 
-	public static void Run(TYPE Event, object[] Args)
+	public static void Run(EventObject EventArg)
 	{
-		switch(Event)
+		switch(EventArg.Type)
 		{
 			case(TYPE.LOCAL_PLAYER_MOVE):{
-				Game.PlayerList[Self.GetTree().GetNetworkUniqueId()].SetTranslation( (Vector3)(Args[0]) );
+				Game.PlayerList[Self.GetTree().GetNetworkUniqueId()].SetTranslation( (Vector3)(EventArg.Args[0]) );
 				return;
 			}
 
 
 			case(TYPE.LOCAL_PLAYER_ROT):{
-				Game.PlayerList[Self.GetTree().GetNetworkUniqueId()].SetRotationDegrees(new Vector3(0, (float)Args[0], 0));
+				Game.PlayerList[Self.GetTree().GetNetworkUniqueId()].SetRotationDegrees(new Vector3(0, (float)EventArg.Args[0], 0));
 				return;
 			}
 
 			default:
-				throw new System.ArgumentException("Invalid event type '" + Event.ToString() + "'");
+				throw new System.ArgumentException("Invalid event type '" + EventArg.Type.ToString() + "'");
 		}
 	}
 }

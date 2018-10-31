@@ -3,14 +3,14 @@ using System;
 
 public class Perform : Node
 {
-	public static void LocalPlayerMove(Vector3 Position)
+	public static void LocalPlayerMove(Events.INVOKER Invoker, Vector3 Position)
 	{
-		Events.Run(Events.TYPE.LOCAL_PLAYER_MOVE, new object[] {Position});
+		Events.Run(new EventObject(Invoker, Events.TYPE.LOCAL_PLAYER_MOVE, new object[] {Position}));
 	}
 
 
-	public static void LocalPlayerRotate(float Rotation)
+	public static void LocalPlayerRotate(Events.INVOKER Invoker, float Rotation)
 	{
-		Events.Run(Events.TYPE.LOCAL_PLAYER_ROT, new object[] {Rotation});
+		Events.Run(new EventObject(Invoker, Events.TYPE.LOCAL_PLAYER_ROT, new object[] {Rotation}));
 	}
 }

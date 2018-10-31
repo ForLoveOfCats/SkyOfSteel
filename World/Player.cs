@@ -176,7 +176,7 @@ public class Player : Spatial
 		Translation = OldPos;
 		if(NewPos != OldPos)
 		{
-			Perform.LocalPlayerMove(NewPos);
+			Perform.LocalPlayerMove(Events.INVOKER.CLIENT, NewPos);
 		}
 
 
