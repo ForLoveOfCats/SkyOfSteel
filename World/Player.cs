@@ -17,6 +17,7 @@ public class Player : Spatial
 	private bool IsSprinting = false;
 	private Vector3 Momentum = new Vector3(0,0,0);
 
+
 	public override void _Ready()
 	{
 		Translation = new Vector3(0,1,0);
@@ -25,6 +26,10 @@ public class Player : Spatial
 			((Camera)GetNode("SteelCamera")).MakeCurrent();
 			((MeshInstance)GetNode("FPSMesh")).Hide();
 			AddChild(((PackedScene)GD.Load("res://UI/SteelHUD.tscn")).Instance());
+		}
+		else
+		{
+			SetProcess(false);
 		}
 	}
 
