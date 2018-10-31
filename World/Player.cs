@@ -149,7 +149,6 @@ public class Player : Spatial
 
 	public void LookUp(double Sens)
 	{
-		GD.Print(Sens);
 		if(Sens > 0d)
 		{
 			LookVertical = Mathf.Clamp(LookVertical+((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
@@ -170,7 +169,6 @@ public class Player : Spatial
 
 	public void LookRight(double Sens)
 	{
-		GD.Print(Sens);
 		LookHorizontal -= ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 		if(LookHorizontal < 0)
 		{
