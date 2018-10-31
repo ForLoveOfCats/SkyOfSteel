@@ -8,7 +8,7 @@ public class Game : Node
 
 	public static int MaxPlayers = 8;
 	public static bool MouseLocked = false;
-	public static bool PlayerInputEnabled = true;
+	public static bool BindsEnabled = true;
 	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
 	                                       //Prevent crashes when player movement commands are run when world is not initalized
@@ -52,7 +52,7 @@ public class Game : Node
 			{
 				Input.SetMouseMode(Input.MouseMode.Captured);
 				MouseLocked = true;
-				PlayerInputEnabled = true;
+				BindsEnabled = true;
 				SteelGame.GetNode("ConsoleWindow").Call("hide");
 			}
 
@@ -60,7 +60,7 @@ public class Game : Node
 			{
 				Input.SetMouseMode(Input.MouseMode.Visible);
 				MouseLocked = false;
-				PlayerInputEnabled = false;
+				BindsEnabled = false;
 				SteelGame.GetNode("ConsoleWindow").Call("show");
 			}
 		}

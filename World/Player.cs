@@ -30,12 +30,6 @@ public class Player : Spatial
 
 	public void ForwardMove(double Sens)
 	{
-		GD.Print("Hello from player_forward_move(number)");
-		if(!Game.PlayerInputEnabled)
-		{
-			return;
-		}
-
 		if(Sens > 0d)
 		{
 			ForwardAxis = 1;
@@ -57,11 +51,6 @@ public class Player : Spatial
 
 	public void BackwardMove(double Sens)
 	{
-		if(!Game.PlayerInputEnabled)
-		{
-			return;
-		}
-
 		if(Sens > 0d)
 		{
 			if(IsSprinting)
@@ -83,11 +72,6 @@ public class Player : Spatial
 
 	public void RightMove(double Sens)
 	{
-		if(!Game.PlayerInputEnabled)
-		{
-			return;
-		}
-
 		if(Sens > 0d)
 		{
 			if(IsSprinting)
@@ -110,11 +94,6 @@ public class Player : Spatial
 
 	public void LeftMove(double Sens)
 	{
-		if(!Game.PlayerInputEnabled)
-		{
-			return;
-		}
-
 		if(Sens > 0d)
 		{
 			if(IsSprinting)

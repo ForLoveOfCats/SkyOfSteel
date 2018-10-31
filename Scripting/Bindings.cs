@@ -145,6 +145,11 @@ public class Bindings : Node
 
 	public override void _Process(float Delta)
 	{
+		if(!Game.BindsEnabled)
+		{
+			return;
+		}
+
 		foreach(BindingObject Binding in BindingList)
 		{
 			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
@@ -171,6 +176,11 @@ public class Bindings : Node
 
 	public override void _Input(InputEvent Event)
 	{
+		if(!Game.BindsEnabled)
+		{
+			return;
+		}
+
 		if(Event is InputEventMouseMotion MotionEvent)
 		{
 			foreach(BindingObject Binding in BindingList)
