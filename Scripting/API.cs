@@ -56,23 +56,23 @@ public class API : Node
 					Bindings.UnBind(FunctionName);
 				})};
 
-			case "player_forward_move":
+			case "player_move_forward":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.ForwardMove(Sens);
 				})};
 
 
-			case "player_backward_move":
+			case "player_move_backward":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.BackwardMove(Sens);
 				})};
 
-			case "player_right_move":
+			case "player_move_right":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.RightMove(Sens);
 				})};
 
-			case "player_left_move":
+			case "player_move_left":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
@@ -103,10 +103,10 @@ public class API : Node
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));
-				Output.Add(GetDelCall("player_forward_move"));
-				Output.Add(GetDelCall("player_backward_move"));
-				Output.Add(GetDelCall("player_right_move"));
-				Output.Add(GetDelCall("player_left_move"));
+				Output.Add(GetDelCall("player_move_forward"));
+				Output.Add(GetDelCall("player_move_backward"));
+				Output.Add(GetDelCall("player_move_right"));
+				Output.Add(GetDelCall("player_move_left"));
 				Output.Add(GetDelCall("player_sprint"));
 				break;
 			case LEVEL.SERVER_GM:
