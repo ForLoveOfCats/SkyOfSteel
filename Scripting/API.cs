@@ -82,6 +82,26 @@ public class API : Node
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
 
+			case "player_look_up":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.LookUp(Sens);
+				})};
+
+			case "player_look_down":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.LookDown(Sens);
+				})};
+
+			case "player_look_right":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.LookRight(Sens);
+				})};
+
+			case "player_look_left":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.LookLeft(Sens);
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -108,6 +128,10 @@ public class API : Node
 				Output.Add(GetDelCall("player_move_right"));
 				Output.Add(GetDelCall("player_move_left"));
 				Output.Add(GetDelCall("player_sprint"));
+				Output.Add(GetDelCall("player_look_up"));
+				Output.Add(GetDelCall("player_look_down"));
+				Output.Add(GetDelCall("player_look_right"));
+				Output.Add(GetDelCall("player_look_left"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));

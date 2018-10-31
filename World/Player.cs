@@ -11,11 +11,14 @@ public class Player : Spatial
 	private const float SprintMultiplyer = 2;
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
 	private const float Friction = BaseMovementSpeed*10;
+	private const float LookDivisor = 6;
 
 	private int ForwardAxis = 0;
 	private int RightAxis = 0;
 	private bool IsSprinting = false;
 	private Vector3 Momentum = new Vector3(0,0,0);
+	private float LookHorizontal = 0;
+	private float LookVertical = 0;
 
 
 	public override void _Ready()
@@ -144,6 +147,52 @@ public class Player : Spatial
 	}
 
 
+	public void LookUp(double Sens)
+	{
+		GD.Print(Sens);
+		if(Sens > 0d)
+		{
+			LookVertical = Mathf.Clamp(LookVertical+((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
+			GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+		}
+	}
+
+
+	public void LookDown(double Sens)
+	{
+		if(Sens > 0d)
+		{
+			LookVertical = Mathf.Clamp(LookVertical-((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
+			GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+		}
+	}
+
+
+	public void LookRight(double Sens)
+	{
+		GD.Print(Sens);
+		LookHorizontal -= ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+		if(LookHorizontal < 0)
+		{
+			LookHorizontal = 360+LookHorizontal;
+		}
+
+		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+	}
+
+
+	public void LookLeft(double Sens)
+	{
+		LookHorizontal += ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+		if(LookHorizontal > 360)
+		{
+			LookHorizontal = LookHorizontal-360;
+		}
+
+		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+	}
+
+
 	public override void _Process(float Delta)
 	{
 		if(ForwardAxis == 0)
@@ -178,7 +227,6 @@ public class Player : Spatial
 		{
 			Perform.LocalPlayerMove(Events.INVOKER.CLIENT, NewPos);
 		}
-
 
 		Message.PlayerRequestPos(Translation);
 		Message.PlayerRequestRot(RotationDegrees.y);

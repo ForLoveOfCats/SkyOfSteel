@@ -13,6 +13,8 @@ public class Game : Node
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
 	                                       //Prevent crashes when player movement commands are run when world is not initalized
 
+	public static float MouseSensitivity = 1;
+
 	private static Game Self;
 	private Game()
 	{
