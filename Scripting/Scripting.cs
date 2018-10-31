@@ -61,6 +61,7 @@ public class Scripting : Node
 		{
 			Console.Print("Autoexec not found 'autoexec.js'");
 		}
+		Autoexec.Close();
 
 		string[] CmdArgs = OS.GetCmdlineArgs();
 		foreach(string CurrentArg in CmdArgs)
