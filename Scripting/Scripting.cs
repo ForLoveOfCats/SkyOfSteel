@@ -37,6 +37,11 @@ public class Scripting : Node
 
 	public override void _Ready()
 	{
+		File SetupScript = new File();
+		SetupScript.Open("res://Scripting/SetupScript.js", 1);
+		ConsoleEngine.Execute(SetupScript.GetAsText());
+		SetupScript.Close();
+
 		File Autoexec = new File();
 		if(Autoexec.FileExists("user://autoexec.js"))
 		{
