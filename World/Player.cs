@@ -171,5 +171,7 @@ public class Player : Spatial
 		}
 
 		Translate(Momentum*Delta);
+		Message.PlayerRequestPos(Translation);
+		Message.PlayerRequestRot(RotationDegrees.y);
 	}
 }
