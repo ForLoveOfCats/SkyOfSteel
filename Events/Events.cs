@@ -20,13 +20,13 @@ public class Events : Node
 		switch(EventArg.Type)
 		{
 			case(TYPE.LOCAL_PLAYER_MOVE):{
-				Game.PlayerList[Self.GetTree().GetNetworkUniqueId()].SetTranslation( (Vector3)(EventArg.Args[0]) );
+				Game.PossessedPlayer.SetTranslation( (Vector3)(EventArg.Args[0]) );
 				return;
 			}
 
 
 			case(TYPE.LOCAL_PLAYER_ROT):{
-				Game.PlayerList[Self.GetTree().GetNetworkUniqueId()].SetRotationDegrees(new Vector3(0, (float)EventArg.Args[0], 0));
+				Game.PossessedPlayer.SetRotationDegrees(new Vector3(0, (float)EventArg.Args[0], 0));
 				return;
 			}
 
