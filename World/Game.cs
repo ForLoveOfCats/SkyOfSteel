@@ -79,9 +79,13 @@ public class Game : Node
 		Player Player = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
 		Player.Possessed = Possess;
 		Player.SetName(Id.ToString());
-		PossessedPlayer = Player;
 		PlayerList.Add(Id, (Spatial)Player);
 		SteelGame.GetNode("SkyScene").AddChild(Player);
+
+		if(Possess)
+		{
+			PossessedPlayer = Player;
+		}
 	}
 
 
