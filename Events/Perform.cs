@@ -5,12 +5,12 @@ public class Perform : Node
 {
 	public static void PlayerMove(int Id, Vector3 Position)
 	{
-		Events.Run(Events.TYPE.PLAYER_MOVE, new object[] {Id, Position});
+		Events.Run(Events.TYPE.LOCALPLAYER_MOVE, new object[] {Id, Position});
 	}
 
 
 	public static void PlayerRotate(int Id, float Rotation)
 	{
-		Events.Run(Events.TYPE.PLAYER_ROT, new object[] {Id, Rotation});
+		Events.Run(Events.TYPE.LOCALPLAYER_ROT, new object[] {Id, Rotation});
 	}
 }

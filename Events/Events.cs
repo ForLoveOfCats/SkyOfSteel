@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Events : Node
 {
-	public enum TYPE {PLAYER_MOVE, PLAYER_ROT};
+	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT};
 
 	private static Events Self;
 	Events()
@@ -18,13 +18,13 @@ public class Events : Node
 	{
 		switch(Event)
 		{
-			case(TYPE.PLAYER_MOVE):{
+			case(TYPE.LOCAL_PLAYER_MOVE):{
 				Game.PlayerList[ (int)(Args[0]) ].SetTranslation( (Vector3)(Args[1]) );
 				return;
 			}
 
 
-			case(TYPE.PLAYER_ROT):{
+			case(TYPE.LOCAL_PLAYER_ROT):{
 				Game.PlayerList[ (int)(Args[0]) ].SetRotationDegrees(new Vector3(0, (float)Args[1], 0));
 				return;
 			}
