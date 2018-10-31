@@ -170,7 +170,16 @@ public class Player : Spatial
 			}
 		}
 
+		Vector3 OldPos = Translation;
 		Translate(Momentum*Delta);
+		Vector3 NewPos = Translation;
+		Translation = OldPos;
+		if(NewPos != OldPos)
+		{
+			Perform.LocalPlayerMove(NewPos);
+		}
+
+
 		Message.PlayerRequestPos(Translation);
 		Message.PlayerRequestRot(RotationDegrees.y);
 	}
