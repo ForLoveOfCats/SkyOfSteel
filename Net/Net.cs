@@ -13,7 +13,6 @@ public class Net : Node
 
 	public static List<int> PeerList = new List<int>();
 
-
 	public static Net Self;
 	Net()
 	{

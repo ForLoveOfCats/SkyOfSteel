@@ -28,6 +28,7 @@ public class Player : Spatial
 		}
 	}
 
+
 	public void ForwardMove(double Sens)
 	{
 		if(Sens > 0d)
