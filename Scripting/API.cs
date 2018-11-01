@@ -82,6 +82,11 @@ public class API : Node
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
 
+			case "player_jump":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.Jump(Sens);
+				})};
+
 			case "player_look_up":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookUp(Sens);
@@ -128,6 +133,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_move_right"));
 				Output.Add(GetDelCall("player_move_left"));
 				Output.Add(GetDelCall("player_sprint"));
+				Output.Add(GetDelCall("player_jump"));
 				Output.Add(GetDelCall("player_look_up"));
 				Output.Add(GetDelCall("player_look_down"));
 				Output.Add(GetDelCall("player_look_right"));

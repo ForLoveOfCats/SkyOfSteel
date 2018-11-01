@@ -3,6 +3,7 @@ bind("player_move_backward", "S");
 bind("player_move_right", "D");
 bind("player_move_left", "A");
 bind("player_sprint", "Shift");
+bind("player_jump", "Space");
 
 bind("player_look_up", "MouseUp");
 bind("player_look_down", "MouseDown");
