@@ -16,7 +16,7 @@ public class Scripting : Node
 		Self = this;
 
 		ConsoleEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.ADMIN, this))
+		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
 		{
 			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}

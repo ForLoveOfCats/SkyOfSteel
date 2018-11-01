@@ -6,7 +6,7 @@ using Jurassic;
 
 public class API : Node
 {
-	public enum LEVEL {ADMIN, SERVER_GM, CLIENT_GM};
+	public enum LEVEL {CONSOLE, SERVER_GM, CLIENT_GM};
 
 
 	static List<object> GetDelCall(string Name)
@@ -114,7 +114,7 @@ public class API : Node
 
 		switch(ApiLevel)
 		{
-			case LEVEL.ADMIN:
+			case LEVEL.CONSOLE:
 				Output.Add(GetDelCall("print"));
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
