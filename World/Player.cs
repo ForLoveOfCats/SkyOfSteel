@@ -91,7 +91,6 @@ public class Player : Spatial
 			{
 				Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
 			}
-			//Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
 			RightAxis = 1;
 		}
 		else if(RightAxis > 0)
@@ -113,7 +112,6 @@ public class Player : Spatial
 			{
 				Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
 			}
-			//Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
 			RightAxis = -1;
 		}
 		else if(RightAxis < 0)
