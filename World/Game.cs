@@ -97,6 +97,8 @@ public class Game : Node
 		{
 			SteelGame.GetNode("SkyScene").QueueFree();
 		}
+		PossessedPlayer = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
+		                  //Prevent crashes when player movement commands are run when world is not initalized
 	}
 
 
