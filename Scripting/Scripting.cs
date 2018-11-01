@@ -75,6 +75,20 @@ public class Scripting : Node
 	}
 
 
+	public override void _Process(float Delta)
+	{
+		try
+		{
+			ConsoleEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
+		}
+		catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
+		catch(JavaScriptException Error)
+		{
+			Console.Print(Error.Message);
+		}
+	}
+
+
 	public static void RunConsoleLine(string Line)
 	{
 		object Returned;
