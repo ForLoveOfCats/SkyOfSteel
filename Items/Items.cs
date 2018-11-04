@@ -21,6 +21,11 @@ public class Items : Node
 	{
 		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{
+			if(Type == TYPE.NULL)
+			{
+				continue;
+			}
+
 			object Loaded = GD.Load("res://Items/Thumbnails/" + Type.ToString() + ".png");
 			if(Loaded == null)
 			{
