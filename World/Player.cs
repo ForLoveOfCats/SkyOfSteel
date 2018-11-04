@@ -32,8 +32,8 @@ public class Player : KinematicBody
 		Translation = new Vector3(0,1,0);
 		if(Possessed)
 		{
-			((Camera)GetNode("SteelCamera")).MakeCurrent();
-			((MeshInstance)GetNode("FPSMesh")).Hide();
+			GetNode<Camera>("SteelCamera").MakeCurrent();
+			GetNode<MeshInstance>("FPSMesh").Hide();
 			AddChild(((PackedScene)GD.Load("res://UI/SteelHUD.tscn")).Instance());
 		}
 		else
