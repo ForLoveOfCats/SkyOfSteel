@@ -26,6 +26,8 @@ public class Player : KinematicBody
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
 
+	private Items.Instance[] Inventory = new Items.Instance[10];
+
 
 	public override void _Ready()
 	{
@@ -42,6 +44,30 @@ public class Player : KinematicBody
 		}
 	}
 
+
+	public void ItemGive(Items.Instance ToGive)
+	{
+		foreach(int Slot in new int[10] {0,1,2,3,4,5,6,7,8,9})
+		{
+			if(!(Inventory[Slot] is null)) //If inventory item is not null
+			{
+				if(Inventory[Slot].Type == ToGive.Type)
+				{
+					Inventory[Slot].Count += ToGive.Count;
+					return;
+				}
+			}
+		}
+
+		foreach(int Slot in new int[10] {0,1,2,3,4,5,6,7,8,9})
+		{
+			if(Inventory[Slot] is null)
+			{
+				Inventory[Slot] = ToGive;
+				return;
+			}
+		}
+	}
 
 	public void ForwardMove(double Sens)
 	{
