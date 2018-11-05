@@ -44,7 +44,7 @@ public class Player : KinematicBody
 		{
 			GetNode<Camera>("SteelCamera").MakeCurrent();
 			GetNode<MeshInstance>("FPSMesh").Hide();
-			AddChild(((PackedScene)GD.Load("res://UI/SteelHUD.tscn")).Instance());
+			AddChild(((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance());
 		}
 		else
 		{
