@@ -28,6 +28,13 @@ public class Player : KinematicBody
 
 	private Items.Instance[] Inventory = new Items.Instance[10];
 
+	Player()
+	{
+		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
+		ItemGive(new Items.Instance(Items.TYPE.WALL));
+		ItemGive(new Items.Instance(Items.TYPE.SLOPE));
+	}
+
 
 	public override void _Ready()
 	{

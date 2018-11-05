@@ -18,7 +18,7 @@ public class Items : Node
 	}
 
 
-	public enum TYPE {ERROR}
+	public enum TYPE {ERROR, PLATFORM, WALL, SLOPE}
 
 	private static Dictionary<string, Image> Thumbnails = new Dictionary<string, Image>();
 
