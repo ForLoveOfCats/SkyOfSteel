@@ -63,6 +63,7 @@
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
     <Compile Include="Events\Events.cs" />
+    <Compile Include="UI\HUD.cs" />
     <Compile Include="World\Game.cs" />
     <Compile Include="Net\Net.cs" />
     <Compile Include="World\Player.cs" />

@@ -20,7 +20,7 @@ public class Items : Node
 
 	public enum TYPE {ERROR, PLATFORM, WALL, SLOPE}
 
-	private static Dictionary<string, Image> Thumbnails = new Dictionary<string, Image>();
+	private static Dictionary<TYPE, Texture> Thumbnails = new Dictionary<TYPE, Texture>();
 
 	Items()
 	{
@@ -32,7 +32,13 @@ public class Items : Node
 				GD.Print("No thumbnail for item '" + Type.ToString() + "'");
 				throw new System.Exception("No thumbnail for item '" + Type.ToString() + "'");
 			}
-			Thumbnails.Add(Type.ToString(), Loaded as Image);
+			Thumbnails.Add(Type, Loaded as Texture);
 		}
+	}
+
+
+	public static Texture Thumbnail(TYPE Type)
+	{
+		return Thumbnails[Type];
 	}
 }
