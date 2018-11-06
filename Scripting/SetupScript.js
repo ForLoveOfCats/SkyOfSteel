@@ -5,6 +5,9 @@ bind("player_move_left", "A");
 bind("player_sprint", "Shift");
 bind("player_jump", "Space");
 
+bind("player_inventory_up", "WheelUp");
+bind("player_inventory_down", "WheelDown");
+
 bind("player_look_up", "MouseUp");
 bind("player_look_down", "MouseDown");
 bind("player_look_right", "MouseRight");

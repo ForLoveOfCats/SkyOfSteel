@@ -29,6 +29,8 @@ public class Player : KinematicBody
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
 
+	private HUD HUDInstance;
+
 	Player()
 	{
 		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
@@ -44,7 +46,8 @@ public class Player : KinematicBody
 		{
 			GetNode<Camera>("SteelCamera").MakeCurrent();
 			GetNode<MeshInstance>("FPSMesh").Hide();
-			AddChild(((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance());
+			HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
+			AddChild(HUDInstance);
 		}
 		else
 		{
@@ -76,6 +79,35 @@ public class Player : KinematicBody
 			}
 		}
 	}
+
+
+	public void InventoryUp(double Sens)
+	{
+		if(Sens > 0d)
+		{
+			InventorySlot--;
+			if(InventorySlot < 0)
+			{
+				InventorySlot = 9;
+			}
+			HUDInstance.HotbarUpdate();
+		}
+	}
+
+
+	public void InventoryDown(double Sens)
+	{
+		if(Sens > 0d)
+		{
+			InventorySlot++;
+			if(InventorySlot > 9)
+			{
+				InventorySlot = 0;
+			}
+			HUDInstance.HotbarUpdate();
+		}
+	}
+
 
 	public void ForwardMove(double Sens)
 	{
