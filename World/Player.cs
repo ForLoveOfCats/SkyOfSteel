@@ -27,7 +27,7 @@ public class Player : KinematicBody
 	private float LookVertical = 0;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
-	public int InventorySlot = 1;
+	public int InventorySlot = 0;
 
 	Player()
 	{
