@@ -50,13 +50,13 @@ public class Console : Node
 
 	public static void Print(string ToPrint)
 	{
-		Window.Call("console_add_line", new string[] {ToPrint});
+		((TextEdit)Window.GetNode("HBox/Console")).Text += ToPrint + "\n";
 	}
 
 
 	public static void Log(string ToLog)
 	{
-		Window.Call("log_add_line", new string[] {ToLog});
+		((TextEdit)Window.GetNode("HBox/Log")).Text += ToLog + "\n";
 	}
 
 
