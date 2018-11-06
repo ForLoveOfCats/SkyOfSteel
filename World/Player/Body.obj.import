@@ -1,0 +1,17 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh"
+
+[deps]
+
+files=[ "res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh" ]
+
+source_file="res://World/Player/Body.obj"
+dest_files=[ "res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh", "res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
