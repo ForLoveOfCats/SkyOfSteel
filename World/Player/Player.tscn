@@ -4,10 +4,14 @@
 [ext_resource path="res://meshes/Body.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://materials/PlayerMat.tres" type="Material" id=3]
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
-[ext_resource path="res://collision_shapes/PlayerCollisionShape.tres" type="Shape" id=5]
 
+[sub_resource type="CapsuleShape" id=1]
 
-[node name="Player" type="KinematicBody" index="0"]
+radius = 1.24303
+height = 4.26055
+_sections_unfolded = [ "Resource" ]
+
+[node name="Player" type="KinematicBody"]
 
 input_ray_pickable = true
 input_capture_on_drag = false
@@ -59,7 +63,7 @@ _sections_unfolded = [ "Transform" ]
 [node name="CollisionShape" type="CollisionShape" parent="." index="2"]
 
 transform = Transform( 1, 0, 0, 0, -2.8213e-07, -1, 0, 1, -2.8213e-07, 0, 3.4, 0 )
-shape = ExtResource( 5 )
+shape = SubResource( 1 )
 disabled = false
 _sections_unfolded = [ "Transform" ]
 

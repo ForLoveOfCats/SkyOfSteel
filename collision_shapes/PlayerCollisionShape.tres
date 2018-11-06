@@ -1,8 +1,0 @@
-[gd_resource type="CapsuleShape" format=2]
-
-[resource]
-
-radius = 1.24303
-height = 4.26055
-_sections_unfolded = [ "Resource" ]
-
