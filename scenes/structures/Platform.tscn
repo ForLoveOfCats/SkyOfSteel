@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://scripts/Structure.gd" type="Script" id=1]
-[ext_resource path="res://meshes/platform.obj" type="ArrayMesh" id=2]
-[ext_resource path="res://textures/structures/Platform.png" type="Texture" id=3]
+[ext_resource path="res://meshes/platform.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://textures/structures/Platform.png" type="Texture" id=2]
 
 [sub_resource type="SpatialMaterial" id=1]
 
@@ -28,7 +27,7 @@ params_billboard_mode = 0
 params_grow = false
 params_use_alpha_scissor = false
 albedo_color = Color( 1, 1, 1, 1 )
-albedo_texture = ExtResource( 3 )
+albedo_texture = ExtResource( 2 )
 metallic = 0.0
 metallic_specular = 0.0
 metallic_texture_channel = 0
@@ -71,7 +70,6 @@ friction = 1.0
 bounce = 0.0
 constant_linear_velocity = Vector3( 0, 0, 0 )
 constant_angular_velocity = Vector3( 0, 0, 0 )
-script = ExtResource( 1 )
 _sections_unfolded = [ "Transform" ]
 
 [node name="MeshInstance" type="MeshInstance" parent="." index="0"]
@@ -85,7 +83,7 @@ lod_min_distance = 0.0
 lod_min_hysteresis = 0.0
 lod_max_distance = 0.0
 lod_max_hysteresis = 0.0
-mesh = ExtResource( 2 )
+mesh = ExtResource( 1 )
 skeleton = NodePath("..")
 material/0 = SubResource( 1 )
 _sections_unfolded = [ "Transform", "material" ]
