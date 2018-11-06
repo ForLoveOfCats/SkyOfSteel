@@ -55,7 +55,7 @@ public class Player : KinematicBody
 
 	public void ItemGive(Items.Instance ToGive)
 	{
-		foreach(int Slot in new int[10] {0,1,2,3,4,5,6,7,8,9})
+		for(int Slot = 0; Slot <= 9; Slot++)
 		{
 			if(!(Inventory[Slot] is null)) //If inventory item is not null
 			{
@@ -67,7 +67,7 @@ public class Player : KinematicBody
 			}
 		}
 
-		foreach(int Slot in new int[10] {0,1,2,3,4,5,6,7,8,9})
+		for(int Slot = 0; Slot <= 9; Slot++)
 		{
 			if(Inventory[Slot] is null)
 			{
