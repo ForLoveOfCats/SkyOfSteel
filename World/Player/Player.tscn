@@ -1,10 +1,11 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://World/Player.cs" type="Script" id=1]
+[ext_resource path="res://World/Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://meshes/Body.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://materials/PlayerMat.tres" type="Material" id=3]
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
 [ext_resource path="res://collision_shapes/PlayerCollisionShape.tres" type="Shape" id=5]
+
 
 [node name="Player" type="KinematicBody" index="0"]
 

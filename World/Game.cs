@@ -10,7 +10,7 @@ public class Game : Node
 	public static bool MouseLocked = false;
 	public static bool BindsEnabled = true;
 	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
-	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
+	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://World/Player/Player.tscn")).Instance() as Player;
 	                                       //Prevent crashes when player movement commands are run when world is not initalized
 
 	public static float MouseSensitivity = 1;
@@ -78,7 +78,7 @@ public class Game : Node
 
 	public static void SpawnPlayer(int Id, bool Possess)
 	{
-		Player Player = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
+		Player Player = ((PackedScene)GD.Load("res://World/Player/Player.tscn")).Instance() as Player;
 		Player.Possessed = Possess;
 		Player.SetName(Id.ToString());
 		PlayerList.Add(Id, (Spatial)Player);
@@ -97,7 +97,7 @@ public class Game : Node
 		{
 			SteelGame.GetNode("SkyScene").QueueFree();
 		}
-		PossessedPlayer = ((PackedScene)GD.Load("res://World/Player.tscn")).Instance() as Player;
+		PossessedPlayer = ((PackedScene)GD.Load("res://World/Player/Player.tscn")).Instance() as Player;
 		                  //Prevent crashes when player movement commands are run when world is not initalized
 	}
 
