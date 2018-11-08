@@ -128,7 +128,7 @@ public class Net : Node
 			switch(RecievedMessage)
 			{
 				case(MESSAGE.PLAYER_REQUEST_POS):{
-					Game.PlayerList[Sender].Translation = (Vector3)Args[0];
+					Perform.RemotePlayerMove(Events.INVOKER.SERVER, Sender, (Vector3)Args[0]);
 					foreach(int Peer in PeerList)
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
@@ -140,7 +140,7 @@ public class Net : Node
 				}
 
 				case(MESSAGE.PLAYER_REQUEST_ROT):{
-					Game.PlayerList[Sender].SetRotationDegrees(new Vector3(0, (float)Args[0], 0));
+					Perform.RemotePlayerRotate(Events.INVOKER.SERVER, Sender, (float)Args[0]);
 					foreach(int Peer in PeerList)
 					{
 						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
@@ -156,13 +156,12 @@ public class Net : Node
 		switch(RecievedMessage)
 		{
 			case(MESSAGE.PLAYER_UPDATE_POS):{
-				Spatial Player = (Spatial)Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Args[0].ToString());
-				Player.Translation = (Vector3)Args[1];
+				Perform.RemotePlayerMove(Events.INVOKER.CLIENT, (int)Args[0], (Vector3)Args[1]);
 				return;
 			}
 
 			case(MESSAGE.PLAYER_UPDATE_ROT):{
-				Game.PlayerList[(int)Args[0]].SetRotationDegrees(new Vector3(0, (float)Args[1], 0));
+				Perform.RemotePlayerRotate(Events.INVOKER.CLIENT, (int)Args[0], (float)Args[1]);
 				return;
 			}
 
