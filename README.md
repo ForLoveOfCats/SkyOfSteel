@@ -1,6 +1,6 @@
-#SkyOfSteel
+# SkyOfSteel
 
-###Welcome to the GitHub repository of the game SkyOfSteel!
+### Welcome to the GitHub repository of the game SkyOfSteel!
 
 SkyOfSteel is a work in progress game built on the Godot game engine with C# and Mono. Currently builds with Godot 3.0.6
 
@@ -15,7 +15,7 @@ Contribution is not expected but welcome!
 * A functioning installation of Godot Mono 3.0.6
 * A functioning installation of Mono as specified by the Godot version (currently 5.12.0)
 
-###Performing the Build
+### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
 * Open the Godot editor to the project and hit "Play" near the upper right corner (play icon)
@@ -39,7 +39,7 @@ The modding API is based around game events. Whenever something occurs ingame it
 
 
 
-##Player Input Handling
+## Player Input Handling
 
 All player input is routed through the binding system which depending on the input will call a console command passing in a `double` ranging between 0 and 1 (up to infinity in some cases such as mouse movement). Key input pass in a 1 for keydown and a 0 for keyup while analog inputs such as mouse motion pass in a 0 for no movement on the specified axis and a number greater than 0 for motion on that axis (the number is the amount of motion).
 
