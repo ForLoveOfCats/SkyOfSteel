@@ -35,7 +35,7 @@ The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturne
 
 SkyOfSteel has an innovative (and wip) modding API with full ECMAScript 5 support through the wonderful [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page") project. With both server and client side mod scripting much can be accomplished. Servers can run gamemode scripts and send client side scripts to connecting clients similar to a webpage's scripts. In addition there is a full REPL ingame console.
 
-The modding API is based around game events. Whenever something occurs ingame it is processed as an "event" which can be filtered, modified, or discarded but mod scripts. This allows for a great deal of flexibility even without the normal API for such things as setting player positions and the like.
+The modding API is based around game events. Whenever something occurs ingame it is processed as an "event" which can be filtered, modified, or discarded by mod scripts. This allows for a great deal of flexibility even without the normal API for such things as setting player positions and the like.
 
 
 
