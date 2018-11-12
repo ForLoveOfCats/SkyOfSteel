@@ -18,7 +18,8 @@ Contribution is not expected but welcome!
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Open the Godot editor to the project and hit "Play" near the upper right corner (play icon)
+* Open the Godot editor to the project and let it reimport all the assets then close it
+* Open the Godot editor to the project again and hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
 
