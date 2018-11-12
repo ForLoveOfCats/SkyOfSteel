@@ -25,6 +25,7 @@ Events="*res://Events/Events.cs"
 Perform="*res://Events/Perform.cs"
 Bindings="*res://Scripting/Bindings.cs"
 Items="*res://Items/Items.cs"
+Structures="*res://Building/Structures.cs"
 
 [debug]
 

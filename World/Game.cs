@@ -13,6 +13,8 @@ public class Game : Node
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://World/Player/Player.tscn")).Instance() as Player;
 	                                       //Prevent crashes when player movement commands are run when world is not initalized
 
+	public static Node StructureRoot;
+
 	public static float MouseSensitivity = 1;
 
 	private static Game Self;
@@ -99,23 +101,26 @@ public class Game : Node
 		}
 		PossessedPlayer = ((PackedScene)GD.Load("res://World/Player/Player.tscn")).Instance() as Player;
 		                  //Prevent crashes when player movement commands are run when world is not initalized
+		StructureRoot = null;
 	}
 
 
 	public static void StartWorld()
 	{
 		CloseWorld();
-		Node World = ((PackedScene)GD.Load("res://scenes/SkyScene.tscn")).Instance();
-		World.SetName("SkyScene");
-		SteelGame.AddChild(World);
+		Node SkyScene = ((PackedScene)GD.Load("res://scenes/SkyScene.tscn")).Instance();
+		SkyScene.SetName("SkyScene");
+		SteelGame.AddChild(SkyScene);
+
+		StructureRoot = new Node();
+		StructureRoot.SetName("StructureRoot");
+		SkyScene.AddChild(StructureRoot);
 
 		for(int X = 0; X <= 10; X++)
 		{
-			for(int Y = 0; Y <= 10; Y++)
+			for(int Z = 0; Z <= 10; Z++)
 			{
-				Spatial Platform = (Spatial)((PackedScene)GD.Load("res://scenes/structures/Platform.tscn")).Instance();
-				Platform.Translate(new Vector3(X*12,0,Y*12));
-				World.AddChild(Platform);
+				Structures.Place(Items.TYPE.PLATFORM, new Vector3(X*12,0,Z*12), new Vector3(), 0);
 			}
 		}
 	}
