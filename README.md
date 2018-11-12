@@ -19,7 +19,7 @@ Contribution is not expected but welcome!
 
 * Clone the git repo (or download as zip and extract)
 * Open the Godot editor to the project and let it reimport all the assets then close it
-* Open the Godot editor to the project again and hit "Play" near the upper right corner (play icon)
+* Open the editor again and hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
 
