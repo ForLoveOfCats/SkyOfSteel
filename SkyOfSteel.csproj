@@ -70,7 +70,7 @@
     <Compile Include="Building\Building.cs" />
     <Compile Include="World\Game.cs" />
     <Compile Include="Net\Net.cs" />
-    <Compile Include="World\Player\Player.cs" />
+    <Compile Include="Player\Player.cs" />
     <Compile Include="Items\Items.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

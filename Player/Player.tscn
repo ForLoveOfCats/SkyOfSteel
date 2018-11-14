@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://World/Player/Player.cs" type="Script" id=1]
-[ext_resource path="res://World/Player/Body.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://Player/Player.cs" type="Script" id=1]
+[ext_resource path="res://Player/Body.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://textures/dev_texture.png" type="Texture" id=3]
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
 

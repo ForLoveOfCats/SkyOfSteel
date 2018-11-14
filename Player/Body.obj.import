@@ -8,7 +8,7 @@ path="res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh"
 
 files=[ "res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh" ]
 
-source_file="res://World/Player/Body.obj"
+source_file="res://Player/Body.obj"
 dest_files=[ "res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh", "res://.import/Body.obj-4b13233629294eda69459eb236481af4.mesh" ]
 
 [params]
