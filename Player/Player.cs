@@ -26,6 +26,11 @@ public class Player : KinematicBody
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
 
+	public double ForwardSens = 0d;
+	public double BackwardSens = 0d;
+	public double RightSens = 0d;
+	public double LeftSens = 0d;
+
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
 
@@ -111,8 +116,10 @@ public class Player : KinematicBody
 
 	public void ForwardMove(double Sens)
 	{
+		ForwardSens = Sens;
 		if(Sens > 0d)
 		{
+			BackwardSens = 0d;
 			ForwardAxis = 1;
 			if(IsSprinting)
 			{
@@ -132,8 +139,10 @@ public class Player : KinematicBody
 
 	public void BackwardMove(double Sens)
 	{
+		BackwardSens = Sens;
 		if(Sens > 0d)
 		{
+			ForwardSens = 0d;
 			if(IsSprinting)
 			{
 				Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
@@ -153,8 +162,10 @@ public class Player : KinematicBody
 
 	public void RightMove(double Sens)
 	{
+		RightSens = Sens;
 		if(Sens > 0d)
 		{
+			LeftSens = 0d;
 			if(IsSprinting)
 			{
 				Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
@@ -174,8 +185,10 @@ public class Player : KinematicBody
 
 	public void LeftMove(double Sens)
 	{
+		LeftSens = Sens;
 		if(Sens > 0d)
 		{
+			RightSens = 0d;
 			if(IsSprinting)
 			{
 				Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);

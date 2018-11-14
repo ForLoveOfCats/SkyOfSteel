@@ -61,21 +61,32 @@ public class API : Node
 					Game.PossessedPlayer.ForwardMove(Sens);
 				})};
 
+			case "player_input_forward_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.ForwardSens;})};
 
 			case "player_input_backward_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.BackwardMove(Sens);
 				})};
 
+			case "player_input_backward_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.BackwardSens;})};
+
 			case "player_input_right_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.RightMove(Sens);
 				})};
 
+			case "player_input_right_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.RightSens;})};
+
 			case "player_input_left_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
+
+			case "player_input_left_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.LeftSens;})};
 
 			case "player_input_sprint_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
@@ -139,9 +150,13 @@ public class API : Node
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));
 				Output.Add(GetDelCall("player_input_forward_set"));
+				Output.Add(GetDelCall("player_input_forward_get"));
 				Output.Add(GetDelCall("player_input_backward_set"));
+				Output.Add(GetDelCall("player_input_backward_get"));
 				Output.Add(GetDelCall("player_input_right_set"));
+				Output.Add(GetDelCall("player_input_right_get"));
 				Output.Add(GetDelCall("player_input_left_set"));
+				Output.Add(GetDelCall("player_input_left_get"));
 				Output.Add(GetDelCall("player_input_sprint_set"));
 				Output.Add(GetDelCall("player_input_jump_set"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
