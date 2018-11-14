@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/alpha.png-d72aed91874356f86db88884a3bbc4b3.stex"
+path="res://.import/Crosshair.png-b9cbcb5ba29d6cf3156785544e1e9ef0.stex"
 
 [deps]
 
-source_file="res://textures/alpha.png"
-dest_files=[ "res://.import/alpha.png-d72aed91874356f86db88884a3bbc4b3.stex" ]
+source_file="res://UI/Crosshair.png"
+dest_files=[ "res://.import/Crosshair.png-b9cbcb5ba29d6cf3156785544e1e9ef0.stex" ]
 
 [params]
 
