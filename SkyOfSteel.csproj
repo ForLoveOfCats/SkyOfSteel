@@ -68,7 +68,7 @@
     <Compile Include="SteelMath.cs" />
     <Compile Include="UI\HUD.cs" />
     <Compile Include="Building\Building.cs" />
-    <Compile Include="World\Game.cs" />
+    <Compile Include="Game\Game.cs" />
     <Compile Include="Net\Net.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Items\Items.cs" />
