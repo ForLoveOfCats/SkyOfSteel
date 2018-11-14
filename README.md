@@ -54,8 +54,6 @@ SkyOfSteel is built up of a number of singleton "libraries". Each one of these l
 
 Beyond these "libraries" the project directory is split up into pretty self explanatory folders which are almost like "modules" in that they (under most conditions) contain everything related to the folder name (ex: the `UI` folder has alls GUI scenes, script, and textures). Note that these folders are not self contained but instead all source files are pretty much entwined though the folder names are a good indication of where to look when trying to find the implementation of a specific feature.
 
-**Note:** Currently the project is at the tail end of a refactorization and porting to C# so not all sources and files are properly placed in their sensible locations.
-
 
 
 ## Contributing
