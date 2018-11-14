@@ -278,7 +278,7 @@ public class Player : KinematicBody
 	}
 
 
-	public override void _Process(float Delta)
+	public override void _PhysicsProcess(float Delta)
 	{
 		if(ForwardAxis == 0 && IsOnFloor())
 		{
@@ -318,6 +318,7 @@ public class Player : KinematicBody
 
 		Vector3 OldPos = Translation;
 		MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), 0.05f, 4);
+		//MoveAndSlide multiplies by *physics* delta internally
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
 		if(NewPos != OldPos)

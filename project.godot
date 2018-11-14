@@ -27,10 +27,6 @@ Bindings="*res://Scripting/Bindings.cs"
 Items="*res://Items/Items.cs"
 Building="*res://Building/Building.cs"
 
-[debug]
-
-settings/fps/force_fps=60
-
 [display]
 
 window/vsync/use_vsync=false
