@@ -1,11 +1,11 @@
 using Godot;
 
 
-public class Structures : Node
+public class Building : Node
 {
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
-	Structures()
+	Building()
 	{
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
@@ -22,8 +22,19 @@ public class Structures : Node
 	}
 
 
+	public static void PositionCalculate()
+	{
+	}
+
+
+	public static void RotationCalculate()
+	{
+	}
+
+
 	public static void Place(Items.TYPE Type, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
+		System.Console.WriteLine(Type.ToString());
 		Spatial Structure = Scenes[Type].Instance() as Spatial;
 		Structure.Translation = Position;
 		Structure.RotationDegrees = Rotation;

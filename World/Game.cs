@@ -120,7 +120,7 @@ public class Game : Node
 		{
 			for(int Z = 0; Z <= 10; Z++)
 			{
-				Structures.Place(Items.TYPE.PLATFORM, new Vector3(X*12,0,Z*12), new Vector3(), 0);
+				Building.Place(Items.TYPE.PLATFORM, new Vector3(X*12,0,Z*12), new Vector3(), 0);
 			}
 		}
 	}
