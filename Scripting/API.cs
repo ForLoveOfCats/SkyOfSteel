@@ -56,63 +56,63 @@ public class API : Node
 					Bindings.UnBind(FunctionName);
 				})};
 
-			case "player_move_forward":
+			case "player_input_forward_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.ForwardMove(Sens);
 				})};
 
 
-			case "player_move_backward":
+			case "player_input_backward_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.BackwardMove(Sens);
 				})};
 
-			case "player_move_right":
+			case "player_input_right_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.RightMove(Sens);
 				})};
 
-			case "player_move_left":
+			case "player_input_left_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
 
-			case "player_sprint":
+			case "player_input_sprint_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
 
-			case "player_jump":
+			case "player_input_jump_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.Jump(Sens);
 				})};
 
-			case "player_inventory_up":
+			case "player_input_inventory_up":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.InventoryUp(Sens);
 				})};
 
-			case "player_inventory_down":
+			case "player_input_inventory_down":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.InventoryDown(Sens);
 				})};
 
-			case "player_look_up":
+			case "player_input_look_up_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookUp(Sens);
 				})};
 
-			case "player_look_down":
+			case "player_input_look_down_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookDown(Sens);
 				})};
 
-			case "player_look_right":
+			case "player_input_look_right_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookRight(Sens);
 				})};
 
-			case "player_look_left":
+			case "player_input_look_left_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookLeft(Sens);
 				})};
@@ -138,18 +138,18 @@ public class API : Node
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));
-				Output.Add(GetDelCall("player_move_forward"));
-				Output.Add(GetDelCall("player_move_backward"));
-				Output.Add(GetDelCall("player_move_right"));
-				Output.Add(GetDelCall("player_move_left"));
-				Output.Add(GetDelCall("player_sprint"));
-				Output.Add(GetDelCall("player_jump"));
-				Output.Add(GetDelCall("player_inventory_up"));
-				Output.Add(GetDelCall("player_inventory_down"));
-				Output.Add(GetDelCall("player_look_up"));
-				Output.Add(GetDelCall("player_look_down"));
-				Output.Add(GetDelCall("player_look_right"));
-				Output.Add(GetDelCall("player_look_left"));
+				Output.Add(GetDelCall("player_input_forward_set"));
+				Output.Add(GetDelCall("player_input_backward_set"));
+				Output.Add(GetDelCall("player_input_right_set"));
+				Output.Add(GetDelCall("player_input_left_set"));
+				Output.Add(GetDelCall("player_input_sprint_set"));
+				Output.Add(GetDelCall("player_input_jump_set"));
+				Output.Add(GetDelCall("player_input_inventory_up"));
+				Output.Add(GetDelCall("player_input_inventory_down"));
+				Output.Add(GetDelCall("player_input_look_up_set"));
+				Output.Add(GetDelCall("player_input_look_down_set"));
+				Output.Add(GetDelCall("player_input_look_right_set"));
+				Output.Add(GetDelCall("player_input_look_left_set"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
