@@ -66,6 +66,7 @@
     <Compile Include="Scripting\Console.cs" />
     <Compile Include="Events\Events.cs" />
     <Compile Include="Game\SteelMath.cs" />
+    <Compile Include="UI\ConsoleWindow.cs" />
     <Compile Include="UI\HUD.cs" />
     <Compile Include="Building\Building.cs" />
     <Compile Include="Game\Game.cs" />

@@ -56,7 +56,7 @@ public class Game : Node
 				Input.SetMouseMode(Input.MouseMode.Captured);
 				MouseLocked = true;
 				BindsEnabled = true;
-				SteelGame.GetNode("ConsoleWindow").Call("hide");
+				((ConsoleWindow)SteelGame.GetNode("ConsoleWindow")).WindowVisible(false);
 			}
 
 			else
@@ -64,7 +64,7 @@ public class Game : Node
 				Input.SetMouseMode(Input.MouseMode.Visible);
 				MouseLocked = false;
 				BindsEnabled = false;
-				SteelGame.GetNode("ConsoleWindow").Call("show");
+				((ConsoleWindow)SteelGame.GetNode("ConsoleWindow")).WindowVisible(true);
 			}
 		}
 	}
