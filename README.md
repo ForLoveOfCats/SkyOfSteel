@@ -13,8 +13,9 @@ Contribution is not expected but welcome!
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.0.6
-* A functioning installation of Mono as specified by the Godot version (currently 5.12.0)
+* A functioning installation of Godot Mono 3.0.6 with proper Mono version
+  * Currently Mono 5.12 for Godot 3.0.6. (Godot 3.1 should allow for most any mono version)
+
 
 ### Performing the Build
 
