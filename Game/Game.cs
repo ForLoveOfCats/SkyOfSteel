@@ -108,7 +108,7 @@ public class Game : Node
 	public static void StartWorld()
 	{
 		CloseWorld();
-		Node SkyScene = ((PackedScene)GD.Load("res://scenes/SkyScene.tscn")).Instance();
+		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
 		SkyScene.SetName("SkyScene");
 		SteelGame.AddChild(SkyScene);
 
