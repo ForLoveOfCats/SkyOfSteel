@@ -3,6 +3,9 @@ using Godot;
 
 public class Building : Node
 {
+	private static BuildPositions BuildPositionsInstance;
+	private static BuildRotations BuildRotationsInstance;
+
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
 	Building()
@@ -19,16 +22,21 @@ public class Building : Node
 				Scenes.Add(Type, GD.Load("res://Building/Scenes/ERROR.tscn") as PackedScene);
 			}
 		}
+
+		BuildPositionsInstance = new BuildPositions();
+		BuildRotationsInstance = new BuildRotations();
 	}
 
 
-	public static void PositionCalculate()
+	public static void PositionCalculate(Structure Base, Items.TYPE Branch)
 	{
+		BuildPositionsInstance.Calculate(Base, Branch);
 	}
 
 
-	public static void RotationCalculate()
+	public static void RotationCalculate(Structure Base, Items.TYPE Branch)
 	{
+		BuildRotationsInstance.Calculate(Base, Branch);
 	}
 
 

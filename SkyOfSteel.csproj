@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building\BuildPositions.cs" />
+    <Compile Include="Building\BuildRotations.cs" />
     <Compile Include="Building\Structure.cs" />
     <Compile Include="Events\EventObject.cs" />
     <Compile Include="Events\Perform.cs" />
