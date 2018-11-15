@@ -63,8 +63,13 @@ public class Console : Node
 	public static void Execute(string Command)
 	{
 		Console.Print("\n >>> " + Command);
-		History.Add(Command);
-		HistLocal = History.Count;
+
+		if(History.Count <= 0 || History[History.Count-1] != Command)
+		{
+			History.Add(Command);
+			HistLocal = History.Count;
+		}
+
 		Scripting.RunConsoleLine(Command);
 	}
 }
