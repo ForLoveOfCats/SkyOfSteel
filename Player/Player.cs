@@ -19,8 +19,8 @@ public class Player : KinematicBody
 
 	private int ForwardAxis = 0;
 	private int RightAxis = 0;
-	private bool IsSprinting = false;
-	private bool IsJumping = false;
+	public bool IsSprinting = false;
+	public bool IsJumping = false;
 	private float JumpTimer = 0f;
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;

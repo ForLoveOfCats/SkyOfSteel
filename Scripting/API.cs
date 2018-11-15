@@ -93,10 +93,16 @@ public class API : Node
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
 
+			case "player_input_sprint_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsSprinting ? 1d : 0d;})};
+
 			case "player_input_jump_set":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.Jump(Sens);
 				})};
+
+			case "player_input_jump_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsJumping ? 1d : 0d;})};
 
 			case "player_input_inventory_up":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
@@ -158,7 +164,9 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_left_set"));
 				Output.Add(GetDelCall("player_input_left_get"));
 				Output.Add(GetDelCall("player_input_sprint_set"));
+				Output.Add(GetDelCall("player_input_sprint_get"));
 				Output.Add(GetDelCall("player_input_jump_set"));
+				Output.Add(GetDelCall("player_input_jump_get"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
 				Output.Add(GetDelCall("player_input_inventory_down"));
 				Output.Add(GetDelCall("player_input_look_up_set"));
