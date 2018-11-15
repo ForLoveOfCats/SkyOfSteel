@@ -1,6 +1,7 @@
 using Godot;
 using System;
 
+
 public class Message : Node
 {
 	public static void PlayerRequestPos(Vector3 Position)
