@@ -8,6 +8,21 @@ Currently builds with Godot 3.0.6
 Contribution is not expected but welcome!
 
 
+# Table of Contents
+- [SkyOfSteel](#skyofsteel)
+        - [Welcome to the GitHub repository of the game SkyOfSteel!](#welcome-to-the-github-repository-of-the-game-skyofsteel)
+- [Table of Contents](#table-of-contents)
+    - [Building](#building)
+        - [Prerequisites](#prerequisites)
+        - [Performing the Build](#performing-the-build)
+    - [Gameplay](#gameplay)
+    - [Modding](#modding)
+    - [Player Input Handling](#player-input-handling)
+    - [Internal Structure](#internal-structure)
+    - [Contributing](#contributing)
+    - [Contact](#contact)
+    - [License](#license)
+
 
 ## Building
 
