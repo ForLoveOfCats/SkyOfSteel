@@ -34,7 +34,6 @@ public class Building : Node
 
 	public static void Place(Items.TYPE Type, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		System.Console.WriteLine(Type.ToString());
 		Spatial Structure = Scenes[Type].Instance() as Spatial;
 		Structure.Translation = Position;
 		Structure.RotationDegrees = Rotation;
