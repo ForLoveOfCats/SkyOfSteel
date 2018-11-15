@@ -8,7 +8,7 @@ bind("player_input_jump_set", "Space");
 bind("player_input_inventory_up", "WheelUp");
 bind("player_input_inventory_down", "WheelDown");
 
-bind("player_input_look_up_set", "MouseUp");
-bind("player_input_look_down_set", "MouseDown");
-bind("player_input_look_right_set", "MouseRight");
-bind("player_input_look_left_set", "MouseLeft");
+bind("player_input_look_up", "MouseUp");
+bind("player_input_look_down", "MouseDown");
+bind("player_input_look_right", "MouseRight");
+bind("player_input_look_left", "MouseLeft");

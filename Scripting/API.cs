@@ -114,22 +114,22 @@ public class API : Node
 					Game.PossessedPlayer.InventoryDown(Sens);
 				})};
 
-			case "player_input_look_up_set":
+			case "player_input_look_up":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookUp(Sens);
 				})};
 
-			case "player_input_look_down_set":
+			case "player_input_look_down":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookDown(Sens);
 				})};
 
-			case "player_input_look_right_set":
+			case "player_input_look_right":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookRight(Sens);
 				})};
 
-			case "player_input_look_left_set":
+			case "player_input_look_left":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LookLeft(Sens);
 				})};
@@ -169,10 +169,10 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_jump_get"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
 				Output.Add(GetDelCall("player_input_inventory_down"));
-				Output.Add(GetDelCall("player_input_look_up_set"));
-				Output.Add(GetDelCall("player_input_look_down_set"));
-				Output.Add(GetDelCall("player_input_look_right_set"));
-				Output.Add(GetDelCall("player_input_look_left_set"));
+				Output.Add(GetDelCall("player_input_look_up"));
+				Output.Add(GetDelCall("player_input_look_down"));
+				Output.Add(GetDelCall("player_input_look_right"));
+				Output.Add(GetDelCall("player_input_look_left"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
