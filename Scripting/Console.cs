@@ -50,19 +50,19 @@ public class Console : Node
 
 	public static void Print(string ToPrint)
 	{
-		((RichTextLabel)Window.GetNode("HBox/Console")).Text += ToPrint + "\n";
+		((RichTextLabel)Window.GetNode("HBox/Console")).Text += " " + ToPrint + "\n";
 	}
 
 
 	public static void Log(string ToLog)
 	{
-		((RichTextLabel)Window.GetNode("HBox/Log")).Text += ToLog + "\n";
+		((RichTextLabel)Window.GetNode("HBox/Log")).Text += " " + ToLog + "\n";
 	}
 
 
 	public static void Execute(string Command)
 	{
-		Console.Print("\n>>> " + Command);
+		Console.Print("\n >>> " + Command);
 		History.Add(Command);
 		HistLocal = History.Count;
 		Scripting.RunConsoleLine(Command);
