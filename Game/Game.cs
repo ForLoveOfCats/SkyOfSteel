@@ -4,7 +4,7 @@ using System;
 
 public class Game : Node
 {
-	private static Node SteelGame;
+	private static Node RuntimeRoot;
 
 	public static int MaxPlayers = 8;
 	public static bool MouseLocked = false;
@@ -26,7 +26,7 @@ public class Game : Node
 
 	public override void _Ready()
 	{
-		SteelGame = GetTree().GetRoot().GetNode("SteelGame");
+		RuntimeRoot = GetTree().GetRoot().GetNode("RuntimeRoot");
 		GetTree().SetAutoAcceptQuit(false);
 		Input.SetMouseMode(Input.MouseMode.Captured);
 		MouseLocked = true;
@@ -56,7 +56,7 @@ public class Game : Node
 				Input.SetMouseMode(Input.MouseMode.Captured);
 				MouseLocked = true;
 				BindsEnabled = true;
-				((ConsoleWindow)SteelGame.GetNode("ConsoleWindow")).WindowVisible(false);
+				((ConsoleWindow)RuntimeRoot.GetNode("ConsoleWindow")).WindowVisible(false);
 			}
 
 			else
@@ -64,7 +64,7 @@ public class Game : Node
 				Input.SetMouseMode(Input.MouseMode.Visible);
 				MouseLocked = false;
 				BindsEnabled = false;
-				((ConsoleWindow)SteelGame.GetNode("ConsoleWindow")).WindowVisible(true);
+				((ConsoleWindow)RuntimeRoot.GetNode("ConsoleWindow")).WindowVisible(true);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public class Game : Node
 		Player.Possessed = Possess;
 		Player.SetName(Id.ToString());
 		PlayerList.Add(Id, (Spatial)Player);
-		SteelGame.GetNode("SkyScene").AddChild(Player);
+		RuntimeRoot.GetNode("SkyScene").AddChild(Player);
 
 		if(Possess)
 		{
@@ -95,9 +95,9 @@ public class Game : Node
 
 	public static void CloseWorld()
 	{
-		if(SteelGame.HasNode("SkyScene"))
+		if(RuntimeRoot.HasNode("SkyScene"))
 		{
-			SteelGame.GetNode("SkyScene").QueueFree();
+			RuntimeRoot.GetNode("SkyScene").QueueFree();
 		}
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 		                  //Prevent crashes when player movement commands are run when world is not initalized
@@ -110,7 +110,7 @@ public class Game : Node
 		CloseWorld();
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
 		SkyScene.SetName("SkyScene");
-		SteelGame.AddChild(SkyScene);
+		RuntimeRoot.AddChild(SkyScene);
 
 		StructureRoot = new Node();
 		StructureRoot.SetName("StructureRoot");

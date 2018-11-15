@@ -61,7 +61,7 @@ public class Net : Node
 	public void _PlayerDisconnected(int Id)
 	{
 		Console.Log("Player '" + Id.ToString() + "' disconnected");
-		Self.GetTree().GetRoot().GetNode("SteelGame/SkyScene/" + Id.ToString()).QueueFree();
+		Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
 
 		if(Self.GetTree().IsNetworkServer())
 		{

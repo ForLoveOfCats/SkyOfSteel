@@ -11,7 +11,7 @@ config_version=3
 [application]
 
 config/name="SkyOfSteel"
-run/main_scene="res://Game/SteelGame.tscn"
+run/main_scene="res://Game/RuntimeRoot.tscn"
 config/icon="res://icon.png"
 
 [autoload]

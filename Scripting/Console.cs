@@ -19,7 +19,7 @@ public class Console : Node
 
 	public override void _Ready()
 	{
-		Window = GetTree().GetRoot().GetNode("SteelGame/ConsoleWindow");
+		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow");
 		Console.Print("");
 		Console.Log("");
 	}
