@@ -50,13 +50,13 @@ public class Console : Node
 
 	public static void Print(string ToPrint)
 	{
-		((TextEdit)Window.GetNode("HBox/Console")).Text += ToPrint + "\n";
+		((RichTextLabel)Window.GetNode("HBox/Console")).Text += ToPrint + "\n";
 	}
 
 
 	public static void Log(string ToLog)
 	{
-		((TextEdit)Window.GetNode("HBox/Log")).Text += ToLog + "\n";
+		((RichTextLabel)Window.GetNode("HBox/Log")).Text += ToLog + "\n";
 	}
 
 
