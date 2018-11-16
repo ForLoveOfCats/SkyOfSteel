@@ -28,25 +28,27 @@ public class Building : Node
 	}
 
 
-	public static void PositionCalculate(Structure Base, Items.TYPE Branch)
+	public static Vector3 PositionCalculate(Structure Base, Items.TYPE Branch)
 	{
-		BuildPositionsInstance.Calculate(Base, Branch);
+		return BuildPositionsInstance.Calculate(Base, Branch);
 	}
 
 
-	public static void RotationCalculate(Structure Base, Items.TYPE Branch)
+	public static Vector3 RotationCalculate(Structure Base, Items.TYPE Branch)
 	{
-		BuildRotationsInstance.Calculate(Base, Branch);
+		return BuildRotationsInstance.Calculate(Base, Branch);
 	}
 
 
 	public static void Place(Items.TYPE Type, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		Spatial Structure = Scenes[Type].Instance() as Spatial;
-		Structure.Translation = Position;
-		Structure.RotationDegrees = Rotation;
-		Structure.SetName(System.Guid.NewGuid().ToString()); //name can be used to reference a structure over network
+		Structure Branch = Scenes[Type].Instance() as Structure;
+		Branch.Type = Type;
+		Branch.OwnerId = OwnerId;
+		Branch.Translation = Position;
+		Branch.RotationDegrees = Rotation;
+		Branch.SetName(System.Guid.NewGuid().ToString()); //name can be used to reference a structure over network
 
-		Game.StructureRoot.AddChild(Structure);
+		Game.StructureRoot.AddChild(Branch);
 	}
 }

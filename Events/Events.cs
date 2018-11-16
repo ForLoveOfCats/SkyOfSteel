@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Events : Node
 {
-	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT, REMOTE_PLAYER_MOVE, REMOTE_PLAYER_ROT};
+	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT, REMOTE_PLAYER_MOVE, REMOTE_PLAYER_ROT, PLACE_REQUEST, PLACE_SYNC};
 	public enum INVOKER {CLIENT, SERVER};
 
 	private static Events Self;
@@ -39,6 +39,12 @@ public class Events : Node
 
 			case(TYPE.REMOTE_PLAYER_ROT):{
 				Game.PlayerList[(int)EventArg.Args[0]].SetRotationDegrees(new Vector3(0, (float)EventArg.Args[1], 0));
+				return;
+			}
+
+
+			case(TYPE.PLACE_REQUEST):{
+				//TODO Request structure place from server
 				return;
 			}
 

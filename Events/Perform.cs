@@ -26,4 +26,10 @@ public class Perform : Node
 	{
 		Events.Run(new EventObject(Invoker, Events.TYPE.REMOTE_PLAYER_ROT, new object[] {Id, Rotation}));
 	}
+
+
+	public static void PlaceRequest(Events.INVOKER Invoker, int Id, Structure Base, Items.TYPE Branch, Vector3 Position, Vector3 Rotation)
+	{
+		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE_REQUEST, new object[] {Id, Base, Branch, Position, Rotation}));
+	}
 }

@@ -25,6 +25,7 @@ public class Player : KinematicBody
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
+	private bool IsFiring = false;
 
 	public double ForwardSens = 0d;
 	public double BackwardSens = 0d;
@@ -288,6 +289,37 @@ public class Player : KinematicBody
 		}
 
 		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+	}
+
+
+
+	public void PrimaryFire(double Sens)
+	{
+		if(Sens > 0d && !IsFiring)
+		{
+			IsFiring = true;
+
+			if(Inventory[InventorySlot] != null)
+			{
+				//Assume for now that all primary fire opertations are to build
+				RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+				if(BuildRayCast.IsColliding())
+				{
+					Structure Hit = BuildRayCast.GetCollider() as Structure;
+					if(Hit != null)
+					{
+						Vector3 Position = Building.PositionCalculate(Hit, Inventory[InventorySlot].Type);
+						Vector3 Rotation = Building.RotationCalculate(Hit, Inventory[InventorySlot].Type);
+						Perform.PlaceRequest(Events.INVOKER.CLIENT, 1, Hit, Inventory[InventorySlot].Type, Position, Rotation);
+						//ID 1 for now so all client own all non-default structures
+					}
+				}
+			}
+		}
+		if(Sens <= 0d && IsFiring)
+		{
+			IsFiring = false;
+		}
 	}
 
 

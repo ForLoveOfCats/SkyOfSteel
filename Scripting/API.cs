@@ -134,6 +134,11 @@ public class API : Node
 					Game.PossessedPlayer.LookLeft(Sens);
 				})};
 
+			case "player_input_primary_fire":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.PrimaryFire(Sens);
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -173,6 +178,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_look_down"));
 				Output.Add(GetDelCall("player_input_look_right"));
 				Output.Add(GetDelCall("player_input_look_left"));
+				Output.Add(GetDelCall("player_input_primary_fire"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));

@@ -12,3 +12,5 @@ bind("player_input_look_up", "MouseUp");
 bind("player_input_look_down", "MouseDown");
 bind("player_input_look_right", "MouseRight");
 bind("player_input_look_left", "MouseLeft");
+
+bind("player_input_primary_fire", "MouseOne");
