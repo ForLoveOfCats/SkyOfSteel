@@ -105,13 +105,13 @@ public class API : Node
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsJumping ? 1d : 0d;})};
 
 			case "player_input_inventory_up":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
-					Game.PossessedPlayer.InventoryUp(Sens);
+				return new List<object> {Name, new Action(delegate(){
+					Game.PossessedPlayer.InventoryUp();
 				})};
 
 			case "player_input_inventory_down":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
-					Game.PossessedPlayer.InventoryDown(Sens);
+				return new List<object> {Name, new Action(delegate(){
+					Game.PossessedPlayer.InventoryDown();
 				})};
 
 			case "player_input_look_up":

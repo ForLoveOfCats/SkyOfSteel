@@ -87,31 +87,25 @@ public class Player : KinematicBody
 	}
 
 
-	public void InventoryUp(double Sens)
+	public void InventoryUp()
 	{
-		if(Sens > 0d)
+		InventorySlot--;
+		if(InventorySlot < 0)
 		{
-			InventorySlot--;
-			if(InventorySlot < 0)
-			{
-				InventorySlot = 9;
-			}
-			HUDInstance.HotbarUpdate();
+			InventorySlot = 9;
 		}
+		HUDInstance.HotbarUpdate();
 	}
 
 
-	public void InventoryDown(double Sens)
+	public void InventoryDown()
 	{
-		if(Sens > 0d)
+		InventorySlot++;
+		if(InventorySlot > 9)
 		{
-			InventorySlot++;
-			if(InventorySlot > 9)
-			{
-				InventorySlot = 0;
-			}
-			HUDInstance.HotbarUpdate();
+			InventorySlot = 0;
 		}
+		HUDInstance.HotbarUpdate();
 	}
 
 
