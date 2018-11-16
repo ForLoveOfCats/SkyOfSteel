@@ -7,6 +7,8 @@ public class Console : Node
 {
 	private static Node Window;
 	private static LineEdit InputLine;
+	private static RichTextLabel ConsoleLabel;
+	private static RichTextLabel LogLabel;
 	private static List<string> History = new List<string>();
 	private static int HistLocal = 0;
 
@@ -22,6 +24,8 @@ public class Console : Node
 	{
 		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow");
 		InputLine = Window.GetNode("LineEdit") as LineEdit;
+		ConsoleLabel = Window.GetNode("HBox/Console") as RichTextLabel;
+		LogLabel = Window.GetNode("HBox/Log") as RichTextLabel;
 		Console.Print("");
 		Console.Log("");
 	}
@@ -52,13 +56,13 @@ public class Console : Node
 
 	public static void Print(string ToPrint)
 	{
-		((RichTextLabel)Window.GetNode("HBox/Console")).Text += " " + ToPrint + "\n";
+		ConsoleLabel.Text += " " + ToPrint + "\n";
 	}
 
 
 	public static void Log(string ToLog)
 	{
-		((RichTextLabel)Window.GetNode("HBox/Log")).Text += " " + ToLog + "\n";
+		LogLabel.Text += " " + ToLog + "\n";
 	}
 
 
