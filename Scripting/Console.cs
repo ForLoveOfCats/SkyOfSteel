@@ -67,8 +67,8 @@ public class Console : Node
 		if(History.Count <= 0 || History[History.Count-1] != Command)
 		{
 			History.Add(Command);
-			HistLocal = History.Count;
 		}
+		HistLocal = History.Count;
 
 		Scripting.RunConsoleLine(Command);
 	}
