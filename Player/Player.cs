@@ -325,6 +325,11 @@ public class Player : KinematicBody
 
 	public override void _PhysicsProcess(float Delta)
 	{
+		if(!Possessed)
+		{
+			return;
+		}
+
 		if(ForwardAxis == 0 && IsOnFloor())
 		{
 			if(Momentum.z > 0)
