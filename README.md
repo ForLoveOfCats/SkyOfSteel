@@ -5,7 +5,7 @@
 SkyOfSteel is a work in progress game built on the Godot game engine with C# and Mono.
 Currently builds with Godot 3.0.6
 
-Contribution is not expected but welcome!
+Contributions are welcome!
 
 
 # Table of Contents
