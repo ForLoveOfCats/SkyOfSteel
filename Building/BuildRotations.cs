@@ -3,24 +3,10 @@ using Godot;
 
 public class BuildRotations
 {
-	private void MissingCaseError(Structure Base, Items.TYPE BranchType)
-	{
-		Console.Log("ERROR: Missing rotation case for branch '" + BranchType.ToString() + "' on base '" + Base.Type.ToString() + "'");
-	}
-
-
 	private Vector3 PlatformBranch(Structure Base, Items.TYPE BranchType)
 	{
-		switch(Base.Type)
-		{
-			case(Items.TYPE.PLATFORM):
-				return new Vector3(0,0,0);
-
-
-			default:
-				MissingCaseError(Base, BranchType);
-				return Base.RotationDegrees;
-		}
+		//No need for a switch statement, all platforms should have rotation of 0,0,0
+		return new Vector3();
 	}
 
 
@@ -33,8 +19,7 @@ public class BuildRotations
 
 
 			default:
-				Console.Log("ERROR: Missing rotation switch for branch '" + BranchType.ToString() + "'");
-				return Base.RotationDegrees;
+				return new Vector3();
 		}
 	}
 }

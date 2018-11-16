@@ -28,8 +28,8 @@ public class Perform : Node
 	}
 
 
-	public static void PlaceRequest(Events.INVOKER Invoker, int Id, Structure Base, Items.TYPE Branch, Vector3 Position, Vector3 Rotation)
+	public static void PlaceRequest(Events.INVOKER Invoker, int Id, Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
 	{
-		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE_REQUEST, new object[] {Id, Base, Branch, Position, Rotation}));
+		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE_REQUEST, new object[] {Id, BranchType, Position, Rotation}));
 	}
 }

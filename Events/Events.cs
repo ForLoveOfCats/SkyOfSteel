@@ -45,6 +45,7 @@ public class Events : Node
 
 			case(TYPE.PLACE_REQUEST):{
 				//TODO Request structure place from server
+				GD.Print(EventArg.Args[2].ToString());
 				return;
 			}
 

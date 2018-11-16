@@ -302,9 +302,7 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null)
 					{
-						Vector3 Position = Building.PositionCalculate(Hit, Inventory[InventorySlot].Type);
-						Vector3 Rotation = Building.RotationCalculate(Hit, Inventory[InventorySlot].Type);
-						Perform.PlaceRequest(Events.INVOKER.CLIENT, 1, Hit, Inventory[InventorySlot].Type, Position, Rotation);
+						Building.Request(Hit, Inventory[InventorySlot].Type, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}

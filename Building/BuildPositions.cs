@@ -3,13 +3,7 @@ using Godot;
 
 public class BuildPositions
 {
-	private void MissingCaseError(Structure Base, Items.TYPE BranchType)
-	{
-		Console.Log("ERROR: Missing position case for branch '" + BranchType.ToString() + "' on base '" + Base.Type.ToString() + "'");
-	}
-
-
-	private Vector3 PlatformBranch(Structure Base, Items.TYPE BranchType)
+	private System.Nullable<Vector3> PlatformBranch(Structure Base, Items.TYPE BranchType)
 	{
 		switch(Base.Type)
 		{
@@ -19,13 +13,12 @@ public class BuildPositions
 
 
 			default:
-				MissingCaseError(Base, BranchType);
-				return Base.Translation;
+				return null;
 		}
 	}
 
 
-	public Vector3 Calculate(Structure Base, Items.TYPE BranchType)
+	public System.Nullable<Vector3> Calculate(Structure Base, Items.TYPE BranchType)
 	{
 		switch(BranchType)
 		{
@@ -34,8 +27,8 @@ public class BuildPositions
 
 
 			default:
-				Console.Log("ERROR: Missing position switch for branch '" + BranchType.ToString() + "'");
-				return Base.Translation;
+				//Return null if unsuported, will be caught by Building.Request
+				return null;
 		}
 	}
 }

@@ -28,22 +28,22 @@ public class Building : Node
 	}
 
 
-	public static Vector3 PositionCalculate(Structure Base, Items.TYPE Branch)
+	public static void Request(Structure Base, Items.TYPE BranchType, int OwnerId)
 	{
-		return BuildPositionsInstance.Calculate(Base, Branch);
+		System.Nullable<Vector3> Position = BuildPositionsInstance.Calculate(Base, BranchType);
+		Vector3 Rotation = BuildRotationsInstance.Calculate(Base, BranchType);
+
+		if(Position != null)
+		{
+			Perform.PlaceRequest(Events.INVOKER.CLIENT, OwnerId, BranchType, (Vector3)Position, Rotation);
+		}
 	}
 
 
-	public static Vector3 RotationCalculate(Structure Base, Items.TYPE Branch)
+	public static void Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return BuildRotationsInstance.Calculate(Base, Branch);
-	}
-
-
-	public static void Place(Items.TYPE Type, Vector3 Position, Vector3 Rotation, int OwnerId)
-	{
-		Structure Branch = Scenes[Type].Instance() as Structure;
-		Branch.Type = Type;
+		Structure Branch = Scenes[BranchType].Instance() as Structure;
+		Branch.Type = BranchType;
 		Branch.OwnerId = OwnerId;
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
