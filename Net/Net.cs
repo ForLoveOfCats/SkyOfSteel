@@ -120,7 +120,8 @@ public class Net : Node
 		int Sender = Self.GetTree().GetRpcSenderId();
 		if(Sender == 0)
 		{
-			Sender = 1;
+			//When Sender it 0 that means that ReciveMessage was called locally
+			Sender = Self.GetTree().GetNetworkUniqueId();
 		}
 
 		if(Self.GetTree().IsNetworkServer())
