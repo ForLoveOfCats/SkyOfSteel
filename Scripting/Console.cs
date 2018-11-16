@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Console : Node
 {
 	private static Node Window;
+	private static LineEdit InputLine;
 	private static List<string> History = new List<string>();
 	private static int HistLocal = 0;
 
@@ -20,6 +21,7 @@ public class Console : Node
 	public override void _Ready()
 	{
 		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow");
+		InputLine = Window.GetNode("LineEdit") as LineEdit;
 		Console.Print("");
 		Console.Log("");
 	}
@@ -27,22 +29,22 @@ public class Console : Node
 
 	public override void _Process(float delta)
 	{
-		if(Input.IsActionJustPressed("ui_up") && HistLocal > 0)
+		if(Input.IsActionJustPressed("ui_up") && InputLine.HasFocus() && HistLocal > 0)
 		{
 			HistLocal -= 1;
-			((LineEdit)Window.GetNode("LineEdit")).Text = History[HistLocal];
+			InputLine.Text = History[HistLocal];
 		}
 
-		if(Input.IsActionJustPressed("ui_down") && HistLocal < History.Count)
+		if(Input.IsActionJustPressed("ui_down") && InputLine.HasFocus() && HistLocal < History.Count)
 		{
 			HistLocal += 1;
 			if(HistLocal == History.Count)
 			{
-				((LineEdit)Window.GetNode("LineEdit")).Text = "";
+				InputLine.Text = "";
 			}
 			else
 			{
-				((LineEdit)Window.GetNode("LineEdit")).Text = History[HistLocal];
+				InputLine.Text = History[HistLocal];
 			}
 		}
 	}
