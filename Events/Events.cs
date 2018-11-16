@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Events : Node
 {
-	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT, REMOTE_PLAYER_MOVE, REMOTE_PLAYER_ROT, PLACE_REQUEST, PLACE_SYNC};
+	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT, REMOTE_PLAYER_MOVE, REMOTE_PLAYER_ROT, PLACE_REQUEST, PLACE};
 	public enum INVOKER {CLIENT, SERVER};
 
 	private static Events Self;
@@ -44,8 +44,13 @@ public class Events : Node
 
 
 			case(TYPE.PLACE_REQUEST):{
-				//TODO Request structure place from server
-				GD.Print(EventArg.Args[2].ToString());
+				Message.NetPlaceRequest((int)EventArg.Args[0], (Items.TYPE)EventArg.Args[1], (Vector3)EventArg.Args[2], (Vector3)EventArg.Args[3]);
+				return;
+			}
+
+
+			case(TYPE.PLACE):{
+				Building.Place((Items.TYPE)EventArg.Args[1], (Vector3)EventArg.Args[2], (Vector3)EventArg.Args[3], (int)EventArg.Args[0]);
 				return;
 			}
 
