@@ -9,7 +9,8 @@ public class BuildPositions
 		{
 			case(Items.TYPE.PLATFORM):
 				float RotationDegrees = Mathf.Deg2Rad(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
-				return Base.Translation + (new Vector3(0,0,6)).Rotated(new Vector3(0,1,0), RotationDegrees);
+				Vector3 Position = Base.Translation + (new Vector3(0,0,6)).Rotated(new Vector3(0,1,0), RotationDegrees);
+				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
 
 
 			default:
