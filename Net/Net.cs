@@ -54,6 +54,12 @@ public class Net : Node
 					Message.ServerUpdatePeerList(Peer, PeerList.ToArray());
 				}
 			}
+
+			//Send world to new client
+			foreach(Structure Branch in Game.StructureRoot.GetChildren())
+			{
+				Message.NetPlaceSync(Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName());
+			}
 		}
 	}
 
