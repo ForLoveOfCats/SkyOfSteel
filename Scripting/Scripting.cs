@@ -75,7 +75,7 @@ public class Scripting : Node
 	}
 
 
-	public override void _Process(float Delta)
+	public override void _PhysicsProcess(float Delta)
 	{
 		try
 		{
