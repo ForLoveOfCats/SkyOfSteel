@@ -14,6 +14,26 @@ public class Building : Node
 	{
 		Self = this;
 
+		Directory StructureDir = new Directory();
+		StructureDir.Open("res://Building/Scenes/");
+		StructureDir.ListDirBegin(true, true);
+		string FileName = StructureDir.GetNext();
+		while(true)
+		{
+			if(FileName == "")
+			{
+				break;
+			}
+			GD.Print(FileName);
+			PackedScene Scene = GD.Load("res://Building/Scenes/"+FileName) as PackedScene;
+			if((Scene.Instance() as Structure) == null)
+			{
+				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
+			}
+
+			FileName = StructureDir.GetNext();
+		}
+
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
 			File ToLoad = new File();
