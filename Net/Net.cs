@@ -95,7 +95,7 @@ public class Net : Node
 	public static void Host()
 	{
 		PeerList.Clear();
-		Game.StartWorld();
+		Game.StartWorld(AsServer: true);
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);

@@ -105,7 +105,7 @@ public class Game : Node
 	}
 
 
-	public static void StartWorld()
+	public static void StartWorld(bool AsServer = false)
 	{
 		CloseWorld();
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
@@ -116,12 +116,9 @@ public class Game : Node
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
-		for(int X = 0; X <= 10; X++)
+		if(AsServer)
 		{
-			for(int Z = 0; Z <= 10; Z++)
-			{
-				Building.Place(Items.TYPE.PLATFORM, new Vector3(X*12,0,Z*12), new Vector3(), 0);
-			}
+			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 		}
 	}
 
