@@ -24,7 +24,6 @@ public class Building : Node
 			{
 				break;
 			}
-			GD.Print(FileName);
 			PackedScene Scene = GD.Load("res://Building/Scenes/"+FileName) as PackedScene;
 			if((Scene.Instance() as Structure) == null)
 			{
