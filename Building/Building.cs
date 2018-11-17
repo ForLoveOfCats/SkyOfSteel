@@ -8,8 +8,12 @@ public class Building : Node
 
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
+	private static Building Self;
+
 	Building()
 	{
+		Self = this;
+
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
 			File ToLoad = new File();
@@ -40,15 +44,25 @@ public class Building : Node
 	}
 
 
-	public static void Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public static void Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name = null)
 	{
 		Structure Branch = Scenes[BranchType].Instance() as Structure;
 		Branch.Type = BranchType;
 		Branch.OwnerId = OwnerId;
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
-		Branch.SetName(System.Guid.NewGuid().ToString()); //name can be used to reference a structure over network
 
+		if(Name == null)
+		{
+			Name = System.Guid.NewGuid().ToString();
+		}
+
+		Branch.SetName(Name); //name can be used to reference a structure over network
 		Game.StructureRoot.AddChild(Branch);
+
+		if(Self.GetTree().GetNetworkPeer() != null && Self.GetTree().GetNetworkUniqueId() == 1)
+		{
+			Message.NetPlaceSync(BranchType, Position, Rotation, OwnerId, Name);
+		}
 	}
 }

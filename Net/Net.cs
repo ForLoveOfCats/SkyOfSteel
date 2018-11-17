@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, PLAYER_UPDATE_POS, PLAYER_UPDATE_ROT, PEERLIST_UPDATE, PLACE_REQUEST};
+	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, PLAYER_UPDATE_POS, PLAYER_UPDATE_ROT, PEERLIST_UPDATE, PLACE_REQUEST, PLACE_SYNC};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -177,6 +177,11 @@ public class Net : Node
 				{
 					PeerList.Add(Peer);
 				}
+				return;
+			}
+
+			case(MESSAGE.PLACE_SYNC):{
+				Perform.Place(Events.INVOKER.CLIENT, (int)Args[0], (Items.TYPE)Args[1], (Vector3)Args[2], (Vector3)Args[3], (string)Args[4]);
 				return;
 			}
 

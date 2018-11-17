@@ -33,8 +33,8 @@ public class Perform : Node
 		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE_REQUEST, new object[] {OwnerId, BranchType, Position, Rotation}));
 	}
 
-	public static void Place(Events.INVOKER Invoker, int OwnerId, Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
+	public static void Place(Events.INVOKER Invoker, int OwnerId, Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, string Name = null)
 	{
-		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE, new object[] {OwnerId, BranchType, Position, Rotation}));
+		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE, new object[] {OwnerId, BranchType, Position, Rotation, Name}));
 	}
 }

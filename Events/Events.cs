@@ -50,7 +50,7 @@ public class Events : Node
 
 
 			case(TYPE.PLACE):{
-				Building.Place((Items.TYPE)EventArg.Args[1], (Vector3)EventArg.Args[2], (Vector3)EventArg.Args[3], (int)EventArg.Args[0]);
+				Building.Place((Items.TYPE)EventArg.Args[1], (Vector3)EventArg.Args[2], (Vector3)EventArg.Args[3], (int)EventArg.Args[0], (string)EventArg.Args[4]);
 				return;
 			}
 
