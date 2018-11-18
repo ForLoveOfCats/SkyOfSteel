@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Events : Node
 {
-	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT, REMOTE_PLAYER_MOVE, REMOTE_PLAYER_ROT, PLACE_REQUEST, PLACE};
+	public enum TYPE {LOCAL_PLAYER_MOVE, LOCAL_PLAYER_ROT, REMOTE_PLAYER_MOVE, REMOTE_PLAYER_ROT, PLACE_REQUEST, PLACE, REMOVE_REQUEST, REMOVE};
 	public enum INVOKER {CLIENT, SERVER};
 
 	private static Events Self;
@@ -53,6 +53,17 @@ public class Events : Node
 				Building.Place((Items.TYPE)EventArg.Args[1], (Vector3)EventArg.Args[2], (Vector3)EventArg.Args[3], (int)EventArg.Args[0], (string)EventArg.Args[4]);
 				return;
 			}
+
+
+			case(TYPE.REMOVE):{
+				Building.Remove((string)EventArg.Args[0]);
+				if(Self.GetTree().IsNetworkServer())
+				{
+					Message.NetRemoveSync((string)EventArg.Args[0]);
+				}
+				return;
+			}
+
 
 			default:
 				throw new System.ArgumentException("Invalid event type '" + EventArg.Type.ToString() + "'");

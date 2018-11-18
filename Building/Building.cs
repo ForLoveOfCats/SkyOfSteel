@@ -84,4 +84,12 @@ public class Building : Node
 			Message.NetPlaceSync(BranchType, Position, Rotation, OwnerId, Name);
 		}
 	}
+
+
+	//Name is the string GUID name of the structure to be removed
+	public static void Remove(string Name)
+	{
+		Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
+		Branch.QueueFree();
+	}
 }

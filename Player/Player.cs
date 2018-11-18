@@ -25,7 +25,8 @@ public class Player : KinematicBody
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
-	private bool IsFiring = false;
+	private bool IsPrimaryFiring = false;
+	private bool IsSecondaryFiring = false;
 
 	public double ForwardSens = 0d;
 	public double BackwardSens = 0d;
@@ -286,12 +287,11 @@ public class Player : KinematicBody
 	}
 
 
-
 	public void PrimaryFire(double Sens)
 	{
-		if(Sens > 0d && !IsFiring)
+		if(Sens > 0d && !IsPrimaryFiring)
 		{
-			IsFiring = true;
+			IsPrimaryFiring = true;
 
 			if(Inventory[InventorySlot] != null)
 			{
@@ -308,9 +308,34 @@ public class Player : KinematicBody
 				}
 			}
 		}
-		if(Sens <= 0d && IsFiring)
+		if(Sens <= 0d && IsPrimaryFiring)
 		{
-			IsFiring = false;
+			IsPrimaryFiring = false;
+		}
+	}
+
+
+	public void SecondaryFire(double Sens)
+	{
+		if(Sens > 0d && !IsSecondaryFiring)
+		{
+			IsSecondaryFiring = true;
+
+			//Assume for now that all secondary fire opertations are to remove
+			RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+			if(BuildRayCast.IsColliding())
+			{
+				Structure Hit = BuildRayCast.GetCollider() as Structure;
+				if(Hit != null)
+				{
+					Message.NetRemoveRequest(Hit.Name);
+					//Name is GUID used to reference individual structures over network
+				}
+			}
+		}
+		if(Sens <= 0d && IsSecondaryFiring)
+		{
+			IsSecondaryFiring = false;
 		}
 	}
 

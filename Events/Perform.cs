@@ -37,4 +37,9 @@ public class Perform : Node
 	{
 		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE, new object[] {OwnerId, BranchType, Position, Rotation, Name}));
 	}
+
+	public static void Remove(Events.INVOKER Invoker, string Name)
+	{
+		Events.Run(new EventObject(Invoker, Events.TYPE.REMOVE, new object[] {Name}));
+	}
 }
