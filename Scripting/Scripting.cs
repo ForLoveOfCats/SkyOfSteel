@@ -10,6 +10,8 @@ public class Scripting : Node
 	private static Jurassic.ScriptEngine ClientGmEngine;
 	public static Jurassic.ScriptEngine ConsoleEngine;
 
+	public static string GamemodeName;
+
 	private static Scripting Self;
 	Scripting()
 	{
@@ -21,16 +23,22 @@ public class Scripting : Node
 			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 
-		ServerGmEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, this))
-		{
-			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
+		SetupServerEngine();
 
 		ClientGmEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, this))
 		{
 			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
+	}
+
+
+	public static void SetupServerEngine()
+	{
+		ServerGmEngine = new Jurassic.ScriptEngine();
+		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
+		{
+			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 	}
 
@@ -94,13 +102,11 @@ public class Scripting : Node
 		Directory ModeDir = new Directory();
 		if(ModeDir.DirExists("user://GameModes/" + Name)) //Gamemode exists
 		{
+			GamemodeName = Name;
+
 			if(ModeDir.FileExists("user://GameModes/" + Name + "/Server.js")) //Has a server side script
 			{
-				ServerGmEngine = new Jurassic.ScriptEngine();
-				foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
-				{
-					ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-				}
+				SetupServerEngine();
 				File ServerScript = new File();
 				ServerScript.Open("user://GameModes/" + Name + "/Server.js", 1);
 				ServerGmEngine.Execute(ServerScript.GetAsText());

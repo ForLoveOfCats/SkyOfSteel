@@ -156,6 +156,9 @@ public class API : Node
 					}
 				})};
 
+			case "gamemode_get":
+				return new List<object> {Name, new Func<string>(() => {return Scripting.GamemodeName;})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -198,6 +201,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
 				Output.Add(GetDelCall("gamemode_set"));
+				Output.Add(GetDelCall("gamemode_get"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
