@@ -17,7 +17,7 @@ public class Game : Node
 
 	public static float MouseSensitivity = 1;
 
-	private static Game Self;
+	public static Game Self;
 	private Game()
 	{
 		Self = this;

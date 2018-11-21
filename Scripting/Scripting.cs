@@ -89,6 +89,31 @@ public class Scripting : Node
 	}
 
 
+	public static void LoadGameMode(string Name)
+	{
+		Directory ModeDir = new Directory();
+		if(ModeDir.DirExists("user://GameModes/" + Name)) //Gamemode exists
+		{
+			if(ModeDir.FileExists("user://GameModes/" + Name + "/Server.js")) //Has a server side script
+			{
+				ServerGmEngine = new Jurassic.ScriptEngine();
+				foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
+				{
+					ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+				}
+				File ServerScript = new File();
+				ServerScript.Open("user://GameModes/" + Name + "/Server.js", 1);
+				ServerGmEngine.Execute(ServerScript.GetAsText());
+				ServerScript.Close();
+			}
+
+			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a client side script
+			{
+			}
+		}
+	}
+
+
 	public static void RunConsoleLine(string Line)
 	{
 		object Returned;

@@ -144,6 +144,18 @@ public class API : Node
 					Game.PossessedPlayer.SecondaryFire(Sens);
 				})};
 
+			case "gamemode_set":
+				return new List<object> {Name, new Action<string>(delegate(string GameModeName){
+					if(Game.Self.GetTree().GetNetworkPeer() != null && Game.Self.GetTree().GetNetworkUniqueId() == 1)
+					{
+						Scripting.LoadGameMode(GameModeName);
+					}
+					else
+					{
+						Console.Print("Not hosting");
+					}
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -185,6 +197,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_look_left"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
+				Output.Add(GetDelCall("gamemode_set"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
