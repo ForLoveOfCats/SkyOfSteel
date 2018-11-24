@@ -398,7 +398,14 @@ public class Player : KinematicBody
 			Momentum.y = -1f;
 		}
 
-		Message.PlayerRequestPos(Translation);
-		Message.PlayerRequestRot(RotationDegrees.y);
+		Rpc(nameof(Update), Translation, RotationDegrees);
+	}
+
+
+	[Remote]
+	public void Update(Vector3 Position, Vector3 Rotation)
+	{
+		Translation = Position;
+		RotationDegrees = Rotation;
 	}
 }
