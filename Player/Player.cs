@@ -390,7 +390,11 @@ public class Player : KinematicBody
 		Translation = OldPos;
 		if(NewPos != OldPos)
 		{
-			Perform.LocalPlayerMove(Events.INVOKER.CLIENT, NewPos);
+			if(ShouldDo.LocalPlayerMove(NewPos))
+			{
+				Translation = NewPos;
+			}
+			//Perform.LocalPlayerMove(Events.INVOKER.CLIENT, NewPos);
 		}
 
 		if(IsOnFloor() && Momentum.y <= 0f)

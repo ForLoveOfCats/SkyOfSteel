@@ -6,7 +6,7 @@ using Jurassic;
 
 public class Scripting : Node
 {
-	private static Jurassic.ScriptEngine ServerGmEngine;
+	public static Jurassic.ScriptEngine ServerGmEngine;
 	private static Jurassic.ScriptEngine ClientGmEngine;
 	public static Jurassic.ScriptEngine ConsoleEngine;
 
@@ -30,6 +30,34 @@ public class Scripting : Node
 		{
 			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
+	}
+
+
+	public static object ToJs(object ToConvert)
+	{
+		if(ToConvert is Vector3)
+		{
+			Vector3 Vec = (Vector3)ToConvert;
+			Jurassic.Library.ArrayInstance ArrVec = Scripting.ConsoleEngine.Array.Construct();
+			ArrVec.Push((double)Vec.x);
+			ArrVec.Push((double)Vec.y);
+			ArrVec.Push((double)Vec.z);
+			return ArrVec;
+		}
+		return Jurassic.Undefined.Value;
+	}
+
+
+	public static object[] ToJs(object[] ConvertArray)
+	{
+		object[] Out = new object[ConvertArray.Length];
+		int Iteration = 0;
+		foreach(object ToConvert in ConvertArray)
+		{
+			Out[Iteration] = ToJs(ToConvert);
+			Iteration += 1;
+		}
+		return Out;
 	}
 
 
