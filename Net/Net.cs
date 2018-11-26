@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PLAYER_REQUEST_POS, PLAYER_REQUEST_ROT, PLAYER_UPDATE_POS, PLAYER_UPDATE_ROT, PEERLIST_UPDATE, PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
+	public enum MESSAGE {PLAYER_UPDATE_POS, PLAYER_UPDATE_ROT, PEERLIST_UPDATE, PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -134,30 +134,6 @@ public class Net : Node
 		{ //Runs on server, 100% trusted
 			switch(RecievedMessage)
 			{
-				case(MESSAGE.PLAYER_REQUEST_POS):{
-					Perform.RemotePlayerMove(Events.INVOKER.SERVER, Sender, (Vector3)Args[0]);
-					foreach(int Peer in PeerList)
-					{
-						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
-						{
-							Message.ServerUpdatePlayerPos(Peer, Sender, (Vector3)Args[0]);
-						}
-					}
-					return;
-				}
-
-				case(MESSAGE.PLAYER_REQUEST_ROT):{
-					Perform.RemotePlayerRotate(Events.INVOKER.SERVER, Sender, (float)Args[0]);
-					foreach(int Peer in PeerList)
-					{
-						if(Peer != Sender && Peer != Self.GetTree().GetNetworkUniqueId()) //Don't notify original client or server, both already know
-						{
-							Message.ServerUpdatePlayerRot(Peer, Sender, (float)Args[0]);
-						}
-					}
-					return;
-				}
-
 				case(MESSAGE.PLACE_REQUEST):{
 					Perform.Place(Events.INVOKER.SERVER, (int)Args[0], (Items.TYPE)Args[1], (Vector3)Args[2], (Vector3)Args[3]);
 					return;
