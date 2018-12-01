@@ -20,4 +20,16 @@ class ShouldDo
 	{
 		return CheckFunction("_local_player_move", Scripting.ToJs(new object[] {Position}));
 	}
+
+
+	public static bool LocalPlayerRotate(float Rotation)
+	{
+		return CheckFunction("_local_player_rotate", Scripting.ToJs(new object[] {Rotation}));
+	}
+
+
+	public static bool LocalPlayerYaw(float Rotation)
+	{
+		return CheckFunction("_local_player_yaw", Scripting.ToJs(new object[] {Rotation}));
+	}
 }

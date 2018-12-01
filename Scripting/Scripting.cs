@@ -44,6 +44,12 @@ public class Scripting : Node
 			ArrVec.Push((double)Vec.z);
 			return ArrVec;
 		}
+
+		if(ToConvert is float)
+		{
+			return Convert.ToDouble((float)ToConvert);
+		}
+
 		return Jurassic.Undefined.Value;
 	}
 

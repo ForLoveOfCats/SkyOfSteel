@@ -247,8 +247,13 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0d)
 		{
-			LookVertical = Mathf.Clamp(LookVertical+((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
-			GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+
+			if(ShouldDo.LocalPlayerYaw(Change))
+			{
+				LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
+				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			}
 		}
 	}
 
@@ -257,33 +262,44 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0d)
 		{
-			LookVertical = Mathf.Clamp(LookVertical-((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
-			GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+
+			if(ShouldDo.LocalPlayerYaw(-Change))
+			{
+				LookVertical = Mathf.Clamp(LookVertical-Change, -90, 90);
+				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			}
 		}
 	}
 
 
 	public void LookRight(double Sens)
 	{
-		LookHorizontal -= ((float)Sens/LookDivisor)*Game.MouseSensitivity;
-		if(LookHorizontal < 0)
+		if(Sens > 0d)
 		{
-			LookHorizontal = 360+LookHorizontal;
-		}
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
-		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+			if(ShouldDo.LocalPlayerRotate(-Change))
+			{
+				LookHorizontal -= Change;
+				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+			}
+		}
 	}
 
 
 	public void LookLeft(double Sens)
 	{
-		LookHorizontal += ((float)Sens/LookDivisor)*Game.MouseSensitivity;
-		if(LookHorizontal > 360)
+		if(Sens > 0d)
 		{
-			LookHorizontal = LookHorizontal-360;
-		}
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
-		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+			if(ShouldDo.LocalPlayerRotate(+Change))
+			{
+				LookHorizontal += Change;
+				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+			}
+		}
 	}
 
 
