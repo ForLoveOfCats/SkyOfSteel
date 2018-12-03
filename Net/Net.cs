@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PLAYER_UPDATE_POS, PLAYER_UPDATE_ROT, PEERLIST_UPDATE, PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
+	public enum MESSAGE {PLAYER_UPDATE_ROT, PEERLIST_UPDATE, PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -148,11 +148,6 @@ public class Net : Node
 
 		switch(RecievedMessage)
 		{
-			case(MESSAGE.PLAYER_UPDATE_POS):{
-				Perform.RemotePlayerMove(Events.INVOKER.CLIENT, (int)Args[0], (Vector3)Args[1]);
-				return;
-			}
-
 			case(MESSAGE.PLAYER_UPDATE_ROT):{
 				Perform.RemotePlayerRotate(Events.INVOKER.CLIENT, (int)Args[0], (float)Args[1]);
 				return;
