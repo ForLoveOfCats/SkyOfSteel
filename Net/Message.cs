@@ -4,12 +4,6 @@ using System;
 
 public class Message : Node
 {
-	public static void ServerUpdatePlayerRot(int Peer, int Id, float Rotation)
-	{
-		Net.SendUnreliableMessage(Peer, Net.MESSAGE.PLAYER_UPDATE_ROT, new object[] {Id, Rotation});
-	}
-
-
 	public static void ServerUpdatePeerList(int Peer, int[] PeerList)
 	{
 		Net.SendMessage(Peer, Net.MESSAGE.PEERLIST_UPDATE, new object[] {PeerList});
