@@ -4,12 +4,6 @@ using System;
 
 public class Perform : Node
 {
-	public static void RemotePlayerRotate(Events.INVOKER Invoker, int Id, float Rotation)
-	{
-		Events.Run(new EventObject(Invoker, Events.TYPE.REMOTE_PLAYER_ROT, new object[] {Id, Rotation}));
-	}
-
-
 	public static void PlaceRequest(Events.INVOKER Invoker, int OwnerId, Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
 	{
 		Events.Run(new EventObject(Invoker, Events.TYPE.PLACE_REQUEST, new object[] {OwnerId, BranchType, Position, Rotation}));
