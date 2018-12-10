@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PEERLIST_UPDATE, PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
+	public enum MESSAGE {PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -43,18 +43,10 @@ public class Net : Node
 		}
 
 		Game.SpawnPlayer(Id, false);
+		PeerList.Add(Id);
 
 		if(Self.GetTree().IsNetworkServer())
 		{
-			PeerList.Add(Id);
-			foreach(int Peer in PeerList)
-			{
-				if(Peer != ServerId)
-				{
-					Message.ServerUpdatePeerList(Peer, PeerList.ToArray());
-				}
-			}
-
 			//Send world to new client
 			foreach(Structure Branch in Game.StructureRoot.GetChildren())
 			{
@@ -68,18 +60,7 @@ public class Net : Node
 	{
 		Console.Log("Player '" + Id.ToString() + "' disconnected");
 		Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
-
-		if(Self.GetTree().IsNetworkServer())
-		{
-			PeerList.Remove(Id);
-			foreach(int Peer in PeerList)
-			{
-				if(Peer != ServerId)
-				{
-					Message.ServerUpdatePeerList(Peer, PeerList.ToArray());
-				}
-			}
-		}
+		PeerList.Remove(Id);
 	}
 
 
@@ -148,15 +129,6 @@ public class Net : Node
 
 		switch(RecievedMessage)
 		{
-			case(MESSAGE.PEERLIST_UPDATE):{
-				PeerList.Clear();
-				foreach(int Peer in (int[])(Args[0]))
-				{
-					PeerList.Add(Peer);
-				}
-				return;
-			}
-
 			case(MESSAGE.PLACE_SYNC):{
 				Perform.Place(Events.INVOKER.CLIENT, (int)Args[0], (Items.TYPE)Args[1], (Vector3)Args[2], (Vector3)Args[3], (string)Args[4]);
 				return;

@@ -4,12 +4,6 @@ using System;
 
 public class Message : Node
 {
-	public static void ServerUpdatePeerList(int Peer, int[] PeerList)
-	{
-		Net.SendMessage(Peer, Net.MESSAGE.PEERLIST_UPDATE, new object[] {PeerList});
-	}
-
-
 	public static void NetPlaceRequest(int OwnerId, Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
 	{
 		Net.SendMessage(Net.ServerId, Net.MESSAGE.PLACE_REQUEST, new object[] {OwnerId, BranchType, Position, Rotation});
