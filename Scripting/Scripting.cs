@@ -7,7 +7,7 @@ using Jurassic;
 public class Scripting : Node
 {
 	public static Jurassic.ScriptEngine ServerGmEngine;
-	private static Jurassic.ScriptEngine ClientGmEngine;
+	public static Jurassic.ScriptEngine ClientGmEngine;
 	public static Jurassic.ScriptEngine ConsoleEngine;
 
 	public static string GamemodeName;
