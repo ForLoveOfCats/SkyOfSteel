@@ -152,7 +152,7 @@ public class API : Node
 					}
 					else
 					{
-						Console.Print("Not hosting");
+						Console.Print("Error: Cannot set gamemode as client");
 					}
 				})};
 

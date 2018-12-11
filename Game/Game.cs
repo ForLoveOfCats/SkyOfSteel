@@ -117,10 +117,9 @@ public class Game : Node
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
-		Scripting.SetupServerEngine();
-
 		if(AsServer)
 		{
+			Scripting.SetupServerEngine();
 			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 		}
 	}
