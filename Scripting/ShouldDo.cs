@@ -9,6 +9,13 @@ class ShouldDo
 
 	private static bool CheckFunctionServer(string FunctionName, object[] Args)
 	{
+		if(!Game.Self.GetTree().IsNetworkServer())
+		{
+			return true;
+			//If we are not the server than just return true for any event so
+			  //that nothing is modified or affected
+		}
+
 		try
 		{
 			return Scripting.ServerGmEngine.CallGlobalFunction<bool>(FunctionName, Args);
