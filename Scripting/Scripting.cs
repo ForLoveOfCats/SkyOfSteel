@@ -50,7 +50,13 @@ public class Scripting : Node
 			return Convert.ToDouble((float)ToConvert);
 		}
 
-		return Jurassic.Undefined.Value;
+		if(ToConvert is int)
+		{
+			return Convert.ToDouble((int)ToConvert);
+		}
+
+		//*Should* be a supported type already
+		return ToConvert;
 	}
 
 

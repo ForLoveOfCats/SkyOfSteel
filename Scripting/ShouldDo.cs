@@ -70,4 +70,10 @@ class ShouldDo
 	{
 		return CheckFunctionServer("_local_player_pitch", Scripting.ToJs(new object[] {Rotation}));
 	}
+
+
+	public static bool StructurePlace(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	{
+		return CheckFunctionServer("_structure_place", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, (double)new decimal(OwnerId)}));
+	}
 }

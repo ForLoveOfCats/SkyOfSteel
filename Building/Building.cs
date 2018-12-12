@@ -76,13 +76,16 @@ public class Building : Node
 	[Remote]
 	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
-		Structure Branch = Scenes[BranchType].Instance() as Structure;
-		Branch.Type = BranchType;
-		Branch.OwnerId = OwnerId;
-		Branch.Translation = Position;
-		Branch.RotationDegrees = Rotation;
-		Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-		Game.StructureRoot.AddChild(Branch);
+		if(ShouldDo.StructurePlace(BranchType, Position, Rotation, OwnerId))
+		{
+			Structure Branch = Scenes[BranchType].Instance() as Structure;
+			Branch.Type = BranchType;
+			Branch.OwnerId = OwnerId;
+			Branch.Translation = Position;
+			Branch.RotationDegrees = Rotation;
+			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
+			Game.StructureRoot.AddChild(Branch);
+		}
 	}
 
 
