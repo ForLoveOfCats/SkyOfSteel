@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {REMOVE_REQUEST, REMOVE_SYNC};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -99,65 +98,5 @@ public class Net : Node
 		Peer.CreateClient(Ip, Port);
 		Self.GetTree().SetNetworkPeer(Peer);
 		Self.GetTree().SetMeta("network_peer", Peer);
-	}
-
-
-	[Remote]
-	public void ReceiveMessage(MESSAGE RecievedMessage, object[] Args)
-	{
-		int Sender = Self.GetTree().GetRpcSenderId();
-		if(Sender == 0)
-		{
-			//When Sender it 0 that means that ReciveMessage was called locally
-			Sender = Self.GetTree().GetNetworkUniqueId();
-		}
-
-		if(Self.GetTree().IsNetworkServer())
-		{ //Runs on server, 100% trusted
-			switch(RecievedMessage)
-			{
-				case(MESSAGE.REMOVE_REQUEST):{
-					Perform.Remove(Events.INVOKER.SERVER, (string)Args[0]);
-					return;
-				}
-			}
-		}
-
-		switch(RecievedMessage)
-		{
-			case(MESSAGE.REMOVE_SYNC):{
-				Perform.Remove(Events.INVOKER.CLIENT, (string)Args[0]);
-				return;
-			}
-
-			default:{
-				Console.Log("Invalid message '" + RecievedMessage.ToString() + "'");
-				return;
-			}
-		}
-	}
-
-
-	public static void SendMessage(int Id, MESSAGE Message, object[] Args)
-	{
-		if(Self.GetTree().GetNetworkUniqueId() == Id)
-		{
-			Self.ReceiveMessage(Message, Args);
-			return;
-		}
-
-		Self.RpcId(Id, "ReceiveMessage", new object[] {Message, Args});
-	}
-
-
-	public static void SendUnreliableMessage(int Id, MESSAGE Message, object[] Args)
-	{
-		if(Self.GetTree().GetNetworkUniqueId() == Id)
-		{
-			Self.ReceiveMessage(Message, Args);
-			return;
-		}
-
-		Self.RpcUnreliableId(Id, "ReceiveMessage", new object[] {Message, Args});
 	}
 }
