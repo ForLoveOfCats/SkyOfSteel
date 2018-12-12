@@ -9,11 +9,11 @@ class ShouldDo
 
 	private static bool CheckFunctionServer(string FunctionName, object[] Args)
 	{
-		if(!Game.Self.GetTree().IsNetworkServer())
+		if(Game.Self.GetTree().NetworkPeer == null || !Game.Self.GetTree().IsNetworkServer())
 		{
 			return true;
-			//If we are not the server than just return true for any event so
-			  //that nothing is modified or affected
+			//If we are not the server or the network is not ready then just return
+			  //true for any event so that nothing is modified or affected
 		}
 
 		try
@@ -50,7 +50,7 @@ class ShouldDo
 		{
 			return false;
 		}
-		return true; 
+		return true;
 	}
 
 

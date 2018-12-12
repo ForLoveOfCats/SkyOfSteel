@@ -318,7 +318,7 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null)
 					{
-						Building.Request(Hit, Inventory[InventorySlot].Type, 1);
+						Building.PlaceOn(Hit, Inventory[InventorySlot].Type, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}
@@ -344,8 +344,9 @@ public class Player : KinematicBody
 				Structure Hit = BuildRayCast.GetCollider() as Structure;
 				if(Hit != null)
 				{
-					Message.NetRemoveRequest(Hit.Name);
+					// Message.NetRemoveRequest(Hit.Name);
 					//Name is GUID used to reference individual structures over network
+					Hit.Remove();
 				}
 			}
 		}

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
-	public enum MESSAGE {PLACE_REQUEST, PLACE_SYNC, REMOVE_REQUEST, REMOVE_SYNC};
+	public enum MESSAGE {REMOVE_REQUEST, REMOVE_SYNC};
 	public static int ServerId = 1;
 
 	private static int Port = 7777;
@@ -50,7 +50,8 @@ public class Net : Node
 			//Send world to new client
 			foreach(Structure Branch in Game.StructureRoot.GetChildren())
 			{
-				Message.NetPlaceSync(Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName());
+				// Message.NetPlaceSync(Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName());
+				Building.Self.RpcId(Id, "PlaceWithName", new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 			}
 		}
 	}
@@ -115,11 +116,6 @@ public class Net : Node
 		{ //Runs on server, 100% trusted
 			switch(RecievedMessage)
 			{
-				case(MESSAGE.PLACE_REQUEST):{
-					Perform.Place(Events.INVOKER.SERVER, (int)Args[0], (Items.TYPE)Args[1], (Vector3)Args[2], (Vector3)Args[3]);
-					return;
-				}
-
 				case(MESSAGE.REMOVE_REQUEST):{
 					Perform.Remove(Events.INVOKER.SERVER, (string)Args[0]);
 					return;
@@ -129,11 +125,6 @@ public class Net : Node
 
 		switch(RecievedMessage)
 		{
-			case(MESSAGE.PLACE_SYNC):{
-				Perform.Place(Events.INVOKER.CLIENT, (int)Args[0], (Items.TYPE)Args[1], (Vector3)Args[2], (Vector3)Args[3], (string)Args[4]);
-				return;
-			}
-
 			case(MESSAGE.REMOVE_SYNC):{
 				Perform.Remove(Events.INVOKER.CLIENT, (string)Args[0]);
 				return;
