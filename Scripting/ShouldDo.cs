@@ -66,8 +66,8 @@ class ShouldDo
 	}
 
 
-	public static bool LocalPlayerYaw(float Rotation)
+	public static bool LocalPlayerPitch(float Rotation)
 	{
-		return CheckFunctionServer("_local_player_yaw", Scripting.ToJs(new object[] {Rotation}));
+		return CheckFunctionServer("_local_player_pitch", Scripting.ToJs(new object[] {Rotation}));
 	}
 }

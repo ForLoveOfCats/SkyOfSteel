@@ -249,7 +249,7 @@ public class Player : KinematicBody
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
-			if(ShouldDo.LocalPlayerYaw(Change))
+			if(ShouldDo.LocalPlayerPitch(Change))
 			{
 				LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
 				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
@@ -264,7 +264,7 @@ public class Player : KinematicBody
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
-			if(ShouldDo.LocalPlayerYaw(-Change))
+			if(ShouldDo.LocalPlayerPitch(-Change))
 			{
 				LookVertical = Mathf.Clamp(LookVertical-Change, -90, 90);
 				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
