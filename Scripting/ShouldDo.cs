@@ -74,12 +74,12 @@ class ShouldDo
 
 	public static bool StructurePlace(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return CheckFunctionServer("_structure_place", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, (double)new decimal(OwnerId)}));
+		return CheckFunctionServer("_structure_place", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
 	}
 
 
 	public static bool StructureRemove(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return CheckFunctionServer("_structure_remove", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, (double)new decimal(OwnerId)}));
+		return CheckFunctionServer("_structure_remove", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
 	}
 }
