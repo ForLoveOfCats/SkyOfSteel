@@ -9,8 +9,11 @@ public class Structure : StaticBody
 
 	public void Remove()
 	{
-		Rpc("NetRemove");
-		QueueFree();
+		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
+		{
+			Rpc("NetRemove");
+			QueueFree();
+		}
 	}
 
 

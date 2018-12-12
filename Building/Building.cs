@@ -93,6 +93,6 @@ public class Building : Node
 	public static void Remove(string Name)
 	{
 		Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
-		Branch.QueueFree();
+		Branch.Remove();
 	}
 }
