@@ -72,6 +72,18 @@ class ShouldDo
 	}
 
 
+	public static bool RemotePlayerMove(int PlayerId, Vector3 Position)
+	{
+		return CheckFunctionServer("_remote_player_move", Scripting.ToJs(new object[] {PlayerId, Position}));
+	}
+
+
+	public static bool RemotePlayerRotate(int PlayerId, Vector3 Rotation)
+	{
+		return CheckFunctionServer("_remote_player_rotate", Scripting.ToJs(new object[] {PlayerId, Rotation}));
+	}
+
+
 	public static bool StructurePlace(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		return CheckFunctionServer("_structure_place", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));

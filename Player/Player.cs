@@ -5,6 +5,7 @@ using System;
 public class Player : KinematicBody
 {
 	public bool Possessed = false;
+	public int Id = 0;
 
 	private const float BaseMovementSpeed = 16;
 	private const float MovementInputMultiplyer = BaseMovementSpeed;
@@ -425,7 +426,14 @@ public class Player : KinematicBody
 	[Remote]
 	public void Update(Vector3 Position, Vector3 Rotation)
 	{
-		Translation = Position;
-		RotationDegrees = Rotation;
+		if(ShouldDo.RemotePlayerMove(Id, Position))
+		{
+			Translation = Position;
+		}
+		
+		if(ShouldDo.RemotePlayerRotate(Id, Rotation))
+		{
+			RotationDegrees = Rotation;
+		}
 	}
 }
