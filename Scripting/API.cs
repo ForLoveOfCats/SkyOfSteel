@@ -33,6 +33,11 @@ public class API : Node
 					Net.ConnectTo(Ip);
 				})};
 
+			case "disconnect":
+				return new List<object> {Name, new Action(delegate(){
+					Net.Disconnect();
+				})};
+
 			case "ms_get":
 				return new List<object> {Name, new Func<int>(() => {return OS.GetTicksMsec();})};
 
@@ -177,6 +182,7 @@ public class API : Node
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
+				Output.Add(GetDelCall("disconnect"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));

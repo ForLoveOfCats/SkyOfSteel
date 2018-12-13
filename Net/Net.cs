@@ -52,7 +52,7 @@ public class Net : Node
 				// Message.NetPlaceSync(Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName());
 				Building.Self.RpcId(Id, "PlaceWithName", new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 			}
-			
+
 			//Send client gm script
 			if(Scripting.ClientGmScript != null)
 			{
@@ -73,14 +73,25 @@ public class Net : Node
 	public void _ServerDisconnected()
 	{
 		Console.Log("Lost connection to server at '" + Ip.ToString() + "'");
-		GetTree().SetNetworkPeer(null);
-		Game.CloseWorld();
-		PeerList.Clear();
+		Disconnect();
 	}
 
 
 	public static void Host()
 	{
+		if(Self.GetTree().NetworkPeer != null)
+		{
+			if(Self.GetTree().IsNetworkServer())
+			{
+				Console.Print("Error: Cannot host when already hosting");
+			}
+			else
+			{
+				Console.Print("Error: Cannot host when connected to a server");
+			}
+			return;
+		}
+
 		PeerList.Clear();
 		Game.StartWorld(AsServer: true);
 
@@ -98,11 +109,34 @@ public class Net : Node
 
 	public static void ConnectTo(string InIp)
 	{
+		if(Self.GetTree().NetworkPeer != null)
+		{
+			if(Self.GetTree().IsNetworkServer())
+			{
+				Console.Print("Error: Cannot connect when hosting");
+			}
+			else
+			{
+				Console.Print("Error: Cannot connect when already connected to a server");
+			}
+			return;
+		}
+
 		Ip = InIp;
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateClient(Ip, Port);
 		Self.GetTree().SetNetworkPeer(Peer);
 		Self.GetTree().SetMeta("network_peer", Peer);
+	}
+
+
+	public static void Disconnect()
+	{
+		Game.CloseWorld();
+		Self.GetTree().NetworkPeer.Dispose();
+		Self.GetTree().SetNetworkPeer(null);
+		PeerList.Clear();
+		Game.PlayerList.Clear();
 	}
 }

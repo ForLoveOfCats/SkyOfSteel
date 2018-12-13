@@ -11,7 +11,7 @@ public class Game : Node
 	public static bool BindsEnabled = true;
 	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
-	                                       //Prevent crashes when player movement commands are run when world is not initalized
+										   //Prevent crashes when player movement commands are run when world is not initalized
 
 	public static Node StructureRoot;
 
@@ -100,8 +100,9 @@ public class Game : Node
 		{
 			RuntimeRoot.GetNode("SkyScene").QueueFree();
 		}
+		PlayerList.Clear();
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
-		                  //Prevent crashes when player movement commands are run when world is not initalized
+						  //Prevent crashes when player movement commands are run when world is not initalized
 		StructureRoot = null;
 		Scripting.GamemodeName = null;
 		Scripting.SetupServerEngine();
