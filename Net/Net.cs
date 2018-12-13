@@ -50,13 +50,13 @@ public class Net : Node
 			foreach(Structure Branch in Game.StructureRoot.GetChildren())
 			{
 				// Message.NetPlaceSync(Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName());
-				Building.Self.RpcId(Id, "PlaceWithName", new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+				Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 			}
 
 			//Send client gm script
 			if(Scripting.ClientGmScript != null)
 			{
-				Scripting.Self.Rpc("NetLoadClientScript", new object[] {Scripting.ClientGmScript});
+				Scripting.Self.Rpc(nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
 			}
 		}
 	}

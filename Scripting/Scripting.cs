@@ -167,7 +167,7 @@ public class Scripting : Node
 				ClientGmScript = ClientScriptFile.GetAsText();
 				ClientScriptFile.Close();
 				ClientGmEngine.Execute(ClientGmScript);
-				Self.Rpc("NetLoadClientScript", new object[] {ClientGmScript});
+				Self.Rpc(nameof(NetLoadClientScript), new object[] {ClientGmScript});
 			}
 
 			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a client side script

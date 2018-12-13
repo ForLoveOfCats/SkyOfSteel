@@ -11,7 +11,7 @@ public class Structure : StaticBody
 	{
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
-			Rpc("NetRemove");
+			Rpc(nameof(NetRemove));
 			QueueFree();
 		}
 	}

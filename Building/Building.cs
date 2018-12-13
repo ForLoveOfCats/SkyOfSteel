@@ -68,7 +68,7 @@ public class Building : Node
 		Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
-			Self.Rpc("PlaceWithName", new object[] {BranchType, Position, Rotation, OwnerId, Name});
+			Self.Rpc(nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
 		}
 	}
 
