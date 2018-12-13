@@ -23,6 +23,7 @@ class ShouldDo
 		catch(System.InvalidOperationException)
 		{
 			return true;
+			//Also catches when the script is not running
 		}
 	}
 
@@ -36,6 +37,7 @@ class ShouldDo
 		catch(System.InvalidOperationException)
 		{
 			return true;
+			//Also catches when the script is not running
 		}
 	}
 
@@ -56,42 +58,42 @@ class ShouldDo
 
 	public static bool LocalPlayerMove(Vector3 Position)
 	{
-		return CheckFunctionServer("_local_player_move", Scripting.ToJs(new object[] {Position}));
+		return CheckFunctionClient("_local_player_move", Scripting.ToJs(new object[] {Position}));
 	}
 
 
 	public static bool LocalPlayerRotate(float Rotation)
 	{
-		return CheckFunctionServer("_local_player_rotate", Scripting.ToJs(new object[] {Rotation}));
+		return CheckFunctionClient("_local_player_rotate", Scripting.ToJs(new object[] {Rotation}));
 	}
 
 
 	public static bool LocalPlayerPitch(float Rotation)
 	{
-		return CheckFunctionServer("_local_player_pitch", Scripting.ToJs(new object[] {Rotation}));
+		return CheckFunctionClient("_local_player_pitch", Scripting.ToJs(new object[] {Rotation}));
 	}
 
 
 	public static bool RemotePlayerMove(int PlayerId, Vector3 Position)
 	{
-		return CheckFunctionServer("_remote_player_move", Scripting.ToJs(new object[] {PlayerId, Position}));
+		return CheckFunctionBoth("_remote_player_move", Scripting.ToJs(new object[] {PlayerId, Position}));
 	}
 
 
 	public static bool RemotePlayerRotate(int PlayerId, Vector3 Rotation)
 	{
-		return CheckFunctionServer("_remote_player_rotate", Scripting.ToJs(new object[] {PlayerId, Rotation}));
+		return CheckFunctionBoth("_remote_player_rotate", Scripting.ToJs(new object[] {PlayerId, Rotation}));
 	}
 
 
 	public static bool StructurePlace(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return CheckFunctionServer("_structure_place", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
+		return CheckFunctionBoth("_structure_place", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
 	}
 
 
 	public static bool StructureRemove(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return CheckFunctionServer("_structure_remove", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
+		return CheckFunctionBoth("_structure_remove", Scripting.ToJs(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
 	}
 }

@@ -104,6 +104,9 @@ public class Game : Node
 		                  //Prevent crashes when player movement commands are run when world is not initalized
 		StructureRoot = null;
 		Scripting.GamemodeName = null;
+		Scripting.SetupServerEngine();
+		Scripting.SetupClientEngine();
+		Scripting.ClientGmScript = null;
 	}
 
 

@@ -11,8 +11,9 @@ public class Scripting : Node
 	public static Jurassic.ScriptEngine ConsoleEngine;
 
 	public static string GamemodeName;
+	public static string ClientGmScript;
 
-	private static Scripting Self;
+	public static Scripting Self;
 	Scripting()
 	{
 		Self = this;
@@ -24,12 +25,7 @@ public class Scripting : Node
 		}
 
 		SetupServerEngine();
-
-		ClientGmEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, this))
-		{
-			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
+		SetupClientEngine();
 	}
 
 
@@ -79,6 +75,16 @@ public class Scripting : Node
 		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
 		{
 			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
+	}
+
+
+	public static void SetupClientEngine()
+	{
+		ClientGmEngine = new Jurassic.ScriptEngine();
+		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, Self))
+		{
+			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 	}
 
@@ -153,10 +159,29 @@ public class Scripting : Node
 				ServerScript.Close();
 			}
 
+			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a server side script
+			{
+				SetupClientEngine();
+				File ClientScriptFile = new File();
+				ClientScriptFile.Open("user://GameModes/" + Name + "/Client.js", 1);
+				ClientGmScript = ClientScriptFile.GetAsText();
+				ClientScriptFile.Close();
+				ClientGmEngine.Execute(ClientGmScript);
+				Self.Rpc("NetLoadClientScript", new object[] {ClientGmScript});
+			}
+
 			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a client side script
 			{
 			}
 		}
+	}
+
+
+	[Remote]
+	public void NetLoadClientScript(string Script)
+	{
+		SetupClientEngine();
+		ClientGmEngine.Execute(Script);
 	}
 
 
