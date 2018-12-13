@@ -419,7 +419,7 @@ public class Player : KinematicBody
 			Momentum.y = -1f;
 		}
 
-		Rpc(nameof(Update), Translation, RotationDegrees);
+		RpcUnreliable(nameof(Update), Translation, RotationDegrees);
 	}
 
 
