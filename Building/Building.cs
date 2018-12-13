@@ -8,7 +8,7 @@ public class Building : Node
 
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
-	private static Building Self;
+	public static Building Self;
 
 	Building()
 	{
@@ -51,37 +51,40 @@ public class Building : Node
 	}
 
 
-	public static void Request(Structure Base, Items.TYPE BranchType, int OwnerId)
+	public static void PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
 	{
 		System.Nullable<Vector3> Position = BuildPositionsInstance.Calculate(Base, BranchType);
-		Vector3 Rotation = BuildRotationsInstance.Calculate(Base, BranchType);
-
-		if(Position != null)
+		if(Position != null) //If null then unsupported branch/base combination
 		{
-			Perform.PlaceRequest(Events.INVOKER.CLIENT, OwnerId, BranchType, (Vector3)Position, Rotation);
+			Vector3 Rotation = BuildRotationsInstance.Calculate(Base, BranchType);
+			Place(BranchType, (Vector3)Position, Rotation, OwnerId);
 		}
 	}
 
 
-	public static void Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name = null)
+	public static void Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		Structure Branch = Scenes[BranchType].Instance() as Structure;
-		Branch.Type = BranchType;
-		Branch.OwnerId = OwnerId;
-		Branch.Translation = Position;
-		Branch.RotationDegrees = Rotation;
-
-		if(Name == null)
+		string Name = System.Guid.NewGuid().ToString();
+		Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
+		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
-			Name = System.Guid.NewGuid().ToString();
+			Self.Rpc("PlaceWithName", new object[] {BranchType, Position, Rotation, OwnerId, Name});
 		}
+	}
 
-		Branch.SetName(Name); //name can be used to reference a structure over network
-		Game.StructureRoot.AddChild(Branch);
 
-		if(Self.GetTree().GetNetworkPeer() != null && Self.GetTree().GetNetworkUniqueId() == 1)
+	[Remote]
+	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	{
+		if(ShouldDo.StructurePlace(BranchType, Position, Rotation, OwnerId))
 		{
-			Message.NetPlaceSync(BranchType, Position, Rotation, OwnerId, Name);
+			Structure Branch = Scenes[BranchType].Instance() as Structure;
+			Branch.Type = BranchType;
+			Branch.OwnerId = OwnerId;
+			Branch.Translation = Position;
+			Branch.RotationDegrees = Rotation;
+			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
+			Game.StructureRoot.AddChild(Branch);
 		}
 	}
 
@@ -90,6 +93,6 @@ public class Building : Node
 	public static void Remove(string Name)
 	{
 		Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
-		Branch.QueueFree();
+		Branch.Remove();
 	}
 }

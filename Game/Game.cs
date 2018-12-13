@@ -17,7 +17,7 @@ public class Game : Node
 
 	public static float MouseSensitivity = 1;
 
-	private static Game Self;
+	public static Game Self;
 	private Game()
 	{
 		Self = this;
@@ -82,6 +82,7 @@ public class Game : Node
 	{
 		Player Player = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 		Player.Possessed = Possess;
+		Player.Id = Id;
 		Player.SetName(Id.ToString());
 		PlayerList.Add(Id, (Spatial)Player);
 		RuntimeRoot.GetNode("SkyScene").AddChild(Player);
@@ -102,6 +103,7 @@ public class Game : Node
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 		                  //Prevent crashes when player movement commands are run when world is not initalized
 		StructureRoot = null;
+		Scripting.GamemodeName = null;
 	}
 
 
@@ -118,6 +120,7 @@ public class Game : Node
 
 		if(AsServer)
 		{
+			Scripting.SetupServerEngine();
 			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 		}
 	}

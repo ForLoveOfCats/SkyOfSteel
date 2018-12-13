@@ -5,6 +5,7 @@ using System;
 public class Player : KinematicBody
 {
 	public bool Possessed = false;
+	public int Id = 0;
 
 	private const float BaseMovementSpeed = 16;
 	private const float MovementInputMultiplyer = BaseMovementSpeed;
@@ -247,8 +248,13 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0d)
 		{
-			LookVertical = Mathf.Clamp(LookVertical+((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
-			GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+
+			if(ShouldDo.LocalPlayerPitch(Change))
+			{
+				LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
+				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			}
 		}
 	}
 
@@ -257,33 +263,44 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0d)
 		{
-			LookVertical = Mathf.Clamp(LookVertical-((float)Sens/LookDivisor)*Game.MouseSensitivity, -90, 90);
-			GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+
+			if(ShouldDo.LocalPlayerPitch(-Change))
+			{
+				LookVertical = Mathf.Clamp(LookVertical-Change, -90, 90);
+				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+			}
 		}
 	}
 
 
 	public void LookRight(double Sens)
 	{
-		LookHorizontal -= ((float)Sens/LookDivisor)*Game.MouseSensitivity;
-		if(LookHorizontal < 0)
+		if(Sens > 0d)
 		{
-			LookHorizontal = 360+LookHorizontal;
-		}
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
-		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+			if(ShouldDo.LocalPlayerRotate(-Change))
+			{
+				LookHorizontal -= Change;
+				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+			}
+		}
 	}
 
 
 	public void LookLeft(double Sens)
 	{
-		LookHorizontal += ((float)Sens/LookDivisor)*Game.MouseSensitivity;
-		if(LookHorizontal > 360)
+		if(Sens > 0d)
 		{
-			LookHorizontal = LookHorizontal-360;
-		}
+			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
-		Perform.LocalPlayerRotate(Events.INVOKER.CLIENT, LookHorizontal);
+			if(ShouldDo.LocalPlayerRotate(+Change))
+			{
+				LookHorizontal += Change;
+				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+			}
+		}
 	}
 
 
@@ -302,7 +319,7 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null)
 					{
-						Building.Request(Hit, Inventory[InventorySlot].Type, 1);
+						Building.PlaceOn(Hit, Inventory[InventorySlot].Type, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}
@@ -328,8 +345,9 @@ public class Player : KinematicBody
 				Structure Hit = BuildRayCast.GetCollider() as Structure;
 				if(Hit != null)
 				{
-					Message.NetRemoveRequest(Hit.Name);
+					// Message.NetRemoveRequest(Hit.Name);
 					//Name is GUID used to reference individual structures over network
+					Hit.Remove();
 				}
 			}
 		}
@@ -390,7 +408,10 @@ public class Player : KinematicBody
 		Translation = OldPos;
 		if(NewPos != OldPos)
 		{
-			Perform.LocalPlayerMove(Events.INVOKER.CLIENT, NewPos);
+			if(ShouldDo.LocalPlayerMove(NewPos))
+			{
+				Translation = NewPos;
+			}
 		}
 
 		if(IsOnFloor() && Momentum.y <= 0f)
@@ -398,7 +419,21 @@ public class Player : KinematicBody
 			Momentum.y = -1f;
 		}
 
-		Message.PlayerRequestPos(Translation);
-		Message.PlayerRequestRot(RotationDegrees.y);
+		Rpc(nameof(Update), Translation, RotationDegrees);
+	}
+
+
+	[Remote]
+	public void Update(Vector3 Position, Vector3 Rotation)
+	{
+		if(ShouldDo.RemotePlayerMove(Id, Position))
+		{
+			Translation = Position;
+		}
+		
+		if(ShouldDo.RemotePlayerRotate(Id, Rotation))
+		{
+			RotationDegrees = Rotation;
+		}
 	}
 }

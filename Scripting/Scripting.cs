@@ -6,9 +6,11 @@ using Jurassic;
 
 public class Scripting : Node
 {
-	private static Jurassic.ScriptEngine ServerGmEngine;
-	private static Jurassic.ScriptEngine ClientGmEngine;
+	public static Jurassic.ScriptEngine ServerGmEngine;
+	public static Jurassic.ScriptEngine ClientGmEngine;
 	public static Jurassic.ScriptEngine ConsoleEngine;
+
+	public static string GamemodeName;
 
 	private static Scripting Self;
 	Scripting()
@@ -21,16 +23,62 @@ public class Scripting : Node
 			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 
-		ServerGmEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, this))
-		{
-			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
+		SetupServerEngine();
 
 		ClientGmEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, this))
 		{
 			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
+	}
+
+
+	public static object ToJs(object ToConvert)
+	{
+		if(ToConvert is Vector3)
+		{
+			Vector3 Vec = (Vector3)ToConvert;
+			Jurassic.Library.ArrayInstance ArrVec = Scripting.ConsoleEngine.Array.Construct();
+			ArrVec.Push((double)Vec.x);
+			ArrVec.Push((double)Vec.y);
+			ArrVec.Push((double)Vec.z);
+			return ArrVec;
+		}
+
+		if(ToConvert is float)
+		{
+			return Convert.ToDouble((float)ToConvert);
+		}
+
+		if(ToConvert is int)
+		{
+			return Convert.ToDouble((int)ToConvert);
+		}
+
+		//*Should* be a supported type already
+		return ToConvert;
+	}
+
+
+	public static object[] ToJs(object[] ConvertArray)
+	{
+		object[] Out = new object[ConvertArray.Length];
+		int Iteration = 0;
+		foreach(object ToConvert in ConvertArray)
+		{
+			Out[Iteration] = ToJs(ToConvert);
+			Iteration += 1;
+		}
+		return Out;
+	}
+
+
+	public static void SetupServerEngine()
+	{
+		ServerGmEngine = new Jurassic.ScriptEngine();
+		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
+		{
+			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
 	}
 
@@ -85,6 +133,29 @@ public class Scripting : Node
 		catch(JavaScriptException Error)
 		{
 			Console.Print(Error.Message);
+		}
+	}
+
+
+	public static void LoadGameMode(string Name)
+	{
+		Directory ModeDir = new Directory();
+		if(ModeDir.DirExists("user://GameModes/" + Name)) //Gamemode exists
+		{
+			GamemodeName = Name;
+
+			if(ModeDir.FileExists("user://GameModes/" + Name + "/Server.js")) //Has a server side script
+			{
+				SetupServerEngine();
+				File ServerScript = new File();
+				ServerScript.Open("user://GameModes/" + Name + "/Server.js", 1);
+				ServerGmEngine.Execute(ServerScript.GetAsText());
+				ServerScript.Close();
+			}
+
+			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a client side script
+			{
+			}
 		}
 	}
 
