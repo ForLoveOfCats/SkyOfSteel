@@ -58,15 +58,15 @@ public class Player : KinematicBody
 			GetNode<MeshInstance>("FPSMesh").Hide();
 			HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
 			AddChild(HUDInstance);
+
+			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
+			GetParent().AddChild(GhostInstance);
+			GhostInstance.Hide();
 		}
 		else
 		{
 			SetProcess(false);
 		}
-
-		GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
-		GetParent().AddChild(GhostInstance);
-		GhostInstance.Hide();
 	}
 
 
