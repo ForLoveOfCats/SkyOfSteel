@@ -3,9 +3,6 @@ using Godot;
 
 public class Building : Node
 {
-	private static BuildPositions BuildPositionsInstance;
-	private static BuildRotations BuildRotationsInstance;
-
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
 	public static Building Self;
@@ -45,18 +42,15 @@ public class Building : Node
 				Scenes.Add(Type, GD.Load("res://Building/Scenes/ERROR.tscn") as PackedScene);
 			}
 		}
-
-		BuildPositionsInstance = new BuildPositions();
-		BuildRotationsInstance = new BuildRotations();
 	}
 
 
 	public static void PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
 	{
-		System.Nullable<Vector3> Position = BuildPositionsInstance.Calculate(Base, BranchType);
+		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
-			Vector3 Rotation = BuildRotationsInstance.Calculate(Base, BranchType);
+			Vector3 Rotation = BuildRotations.Calculate(Base, BranchType);
 			Place(BranchType, (Vector3)Position, Rotation, OwnerId);
 		}
 	}

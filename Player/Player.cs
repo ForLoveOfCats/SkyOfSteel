@@ -39,6 +39,8 @@ public class Player : KinematicBody
 
 	private HUD HUDInstance;
 
+	private Ghost GhostInstance;
+
 	Player()
 	{
 		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
@@ -61,6 +63,10 @@ public class Player : KinematicBody
 		{
 			SetProcess(false);
 		}
+
+		GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
+		GetParent().AddChild(GhostInstance);
+		GhostInstance.Hide();
 	}
 
 
@@ -317,7 +323,7 @@ public class Player : KinematicBody
 				if(BuildRayCast.IsColliding())
 				{
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
-					if(Hit != null)
+					if(Hit != null && GhostInstance.CanBuild)
 					{
 						Building.PlaceOn(Hit, Inventory[InventorySlot].Type, 1);
 						//ID 1 for now so all client own all non-default structures
@@ -430,7 +436,7 @@ public class Player : KinematicBody
 		{
 			Translation = Position;
 		}
-		
+
 		if(ShouldDo.RemotePlayerRotate(Id, Rotation))
 		{
 			RotationDegrees = Rotation;

@@ -4,7 +4,7 @@ using System;
 
 public class Game : Node
 {
-	private static Node RuntimeRoot;
+	public static Node RuntimeRoot;
 
 	public static int MaxPlayers = 8;
 	public static bool MouseLocked = false;

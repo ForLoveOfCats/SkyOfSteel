@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Building\BuildPositions.cs" />
     <Compile Include="Building\BuildRotations.cs" />
+    <Compile Include="Building\Ghost.cs" />
     <Compile Include="Building\Structure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\API.cs" />

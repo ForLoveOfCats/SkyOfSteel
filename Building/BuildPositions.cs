@@ -3,7 +3,7 @@ using Godot;
 
 public class BuildPositions
 {
-	private System.Nullable<Vector3> PlatformBranch(Structure Base, Items.TYPE BranchType)
+	private static System.Nullable<Vector3> PlatformBranch(Structure Base)
 	{
 		switch(Base.Type)
 		{
@@ -19,12 +19,12 @@ public class BuildPositions
 	}
 
 
-	public System.Nullable<Vector3> Calculate(Structure Base, Items.TYPE BranchType)
+	public static System.Nullable<Vector3> Calculate(Structure Base, Items.TYPE BranchType)
 	{
 		switch(BranchType)
 		{
 			case(Items.TYPE.PLATFORM):
-				return PlatformBranch(Base, BranchType);
+				return PlatformBranch(Base);
 
 
 			default:
