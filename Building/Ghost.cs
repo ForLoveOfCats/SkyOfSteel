@@ -111,6 +111,11 @@ public class Ghost : Area
 				}
 			}
 		}
+		if(OldVisible[1] == false)
+		{
+			OldVisible[0] = false;
+			GhostMesh.Visible = false;
+		}
 
 		OldCanBuild.RemoveAt(0);
 		if(GetOverlappingBodies().Count > 0)
