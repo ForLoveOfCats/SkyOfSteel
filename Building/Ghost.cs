@@ -7,7 +7,7 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	private static Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
+	private static Dictionary<Items.TYPE, Mesh> Meshes = null;
 	Items.TYPE CurrentMeshType;
 
 
@@ -23,18 +23,8 @@ public class Ghost : Area
 		GreenMat = GD.Load("res://Building/Materials/GreenGhost.tres") as Material;
 		RedMat = GD.Load("res://Building/Materials/RedGhost.tres") as Material;
 
-		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
-		{
-			File ToLoad = new File();
-			if(ToLoad.FileExists("res://Building/Meshes/" + Type.ToString() + ".obj"))
-			{
-				Meshes.Add(Type, GD.Load("res://Building/Meshes/" + Type.ToString() + ".obj") as Mesh);
-			}
-			else
-			{
-				Meshes.Add(Type, GD.Load("res://Building/Meshes/ERROR.obj") as Mesh);
-			}
-		}
+		if (Meshes == null)
+			LoadMeshes();
 
 		//Godot's `Area` object likes to not register body entry's for several
 		  //physics ticks so these postion, rotation, and visibility queues
@@ -59,6 +49,23 @@ public class Ghost : Area
 				false,
 				false,
 			};
+	}
+
+	private static void LoadMeshes()
+	{
+		Meshes = new Dictionary<Items.TYPE, Mesh>();
+		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
+		{
+			File ToLoad = new File();
+			if(ToLoad.FileExists("res://Building/Meshes/" + Type.ToString() + ".obj"))
+			{
+				Meshes.Add(Type, GD.Load("res://Building/Meshes/" + Type.ToString() + ".obj") as Mesh);
+			}
+			else
+			{
+				Meshes.Add(Type, GD.Load("res://Building/Meshes/ERROR.obj") as Mesh);
+			}
+		}
 	}
 
 
