@@ -1,9 +1,15 @@
 using Godot;
+using System;
 
 
 public class Building : Node
 {
+	public const int ChunkSize = 9*12; //every 12 units is a new platform and the chunk size is 9x9 platforms
+
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
+
+	//Godot's dictionary has strangeness...  This line sucks
+	static System.Collections.Generic.Dictionary<Tuple<int,int>, System.Collections.Generic.List<Structure>> Chunks = new System.Collections.Generic.Dictionary<Tuple<int,int>, System.Collections.Generic.List<Structure>>();
 
 	public static Building Self;
 
@@ -45,6 +51,41 @@ public class Building : Node
 	}
 
 
+	static Tuple<int,int> GetChunkPos(Vector3 Position)
+	{
+		return new Tuple<int,int>(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
+	}
+
+	
+	static bool ChunkExists(Vector3 Position)
+	{
+		return Chunks.ContainsKey(GetChunkPos(Position));
+	}
+
+	static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
+	{
+		if(ChunkExists(Position))
+		{
+			return Chunks[GetChunkPos(Position)];
+		}
+		return null; //uggggh whyyyyyyyy
+	}
+
+	static void AddToChunk(Structure Branch)
+	{		
+		if(ChunkExists(Branch.Translation))
+		{
+			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkPos(Branch.Translation)];
+			Chunk.Add(Branch);
+			Chunks[GetChunkPos(Branch.Translation)] = Chunk;
+		}
+		else
+		{
+			Chunks.Add(GetChunkPos(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
+		}
+	}
+
+
 	public static void PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
 	{
 		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
@@ -60,6 +101,7 @@ public class Building : Node
 	{
 		string Name = System.Guid.NewGuid().ToString();
 		Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
+
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
 			Self.Rpc(nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
@@ -79,6 +121,8 @@ public class Building : Node
 			Branch.RotationDegrees = Rotation;
 			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
 			Game.StructureRoot.AddChild(Branch);
+
+			AddToChunk(Branch);
 		}
 	}
 
