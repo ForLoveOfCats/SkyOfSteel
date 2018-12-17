@@ -7,7 +7,7 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	private static Dictionary<Items.TYPE, Mesh> Meshes = null;
+	private static Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
 	Items.TYPE CurrentMeshType;
 
 
@@ -23,7 +23,7 @@ public class Ghost : Area
 		GreenMat = GD.Load("res://Building/Materials/GreenGhost.tres") as Material;
 		RedMat = GD.Load("res://Building/Materials/RedGhost.tres") as Material;
 
-		if (Meshes == null)
+		if(Meshes.Count <= 0)
 			LoadMeshes();
 
 		//Godot's `Area` object likes to not register body entry's for several
@@ -53,7 +53,6 @@ public class Ghost : Area
 
 	private static void LoadMeshes()
 	{
-		Meshes = new Dictionary<Items.TYPE, Mesh>();
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
 			File ToLoad = new File();
