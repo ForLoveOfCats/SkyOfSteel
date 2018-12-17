@@ -51,6 +51,7 @@ public class Ghost : Area
 			};
 	}
 
+
 	private static void LoadMeshes()
 	{
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
