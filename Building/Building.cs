@@ -8,9 +8,6 @@ public class Building : Node
 
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
-	//Godot's dictionary has strangeness...  This line sucks
-	static System.Collections.Generic.Dictionary<Tuple<int,int>, System.Collections.Generic.List<Structure>> Chunks = new System.Collections.Generic.Dictionary<Tuple<int,int>, System.Collections.Generic.List<Structure>>();
-
 	public static Building Self;
 
 	Building()
@@ -59,14 +56,14 @@ public class Building : Node
 	
 	static bool ChunkExists(Vector3 Position)
 	{
-		return Chunks.ContainsKey(GetChunkPos(Position));
+		return Game.StructureRoot.Chunks.ContainsKey(GetChunkPos(Position));
 	}
 
 	static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
 	{
 		if(ChunkExists(Position))
 		{
-			return Chunks[GetChunkPos(Position)];
+			return Game.StructureRoot.Chunks[GetChunkPos(Position)];
 		}
 		return null; //uggggh whyyyyyyyy
 	}
@@ -75,13 +72,13 @@ public class Building : Node
 	{		
 		if(ChunkExists(Branch.Translation))
 		{
-			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkPos(Branch.Translation)];
+			System.Collections.Generic.List<Structure> Chunk = Game.StructureRoot.Chunks[GetChunkPos(Branch.Translation)];
 			Chunk.Add(Branch);
-			Chunks[GetChunkPos(Branch.Translation)] = Chunk;
+			Game.StructureRoot.Chunks[GetChunkPos(Branch.Translation)] = Chunk;
 		}
 		else
 		{
-			Chunks.Add(GetChunkPos(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
+			Game.StructureRoot.Chunks.Add(GetChunkPos(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
 		}
 	}
 

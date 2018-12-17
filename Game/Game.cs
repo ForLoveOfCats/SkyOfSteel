@@ -13,7 +13,7 @@ public class Game : Node
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
-	public static Node StructureRoot;
+	public static StructureRootClass StructureRoot;
 
 	public static float MouseSensitivity = 1;
 
@@ -118,7 +118,7 @@ public class Game : Node
 		SkyScene.SetName("SkyScene");
 		RuntimeRoot.AddChild(SkyScene);
 
-		StructureRoot = new Node();
+		StructureRoot = new StructureRootClass();
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 

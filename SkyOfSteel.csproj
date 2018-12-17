@@ -72,6 +72,7 @@
     <Compile Include="Net\Net.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Items\Items.cs" />
+    <Compile Include="World\StructureRoot.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
