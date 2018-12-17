@@ -7,7 +7,7 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	private static Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
+	private Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
 	Items.TYPE CurrentMeshType;
 
 
