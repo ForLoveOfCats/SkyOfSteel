@@ -49,5 +49,7 @@ public class HUD : Node
 	public override void _Process(float Delta)
 	{
 		((Label)(GetNode("CLayer").GetNode("FPSLabel"))).SetText(Engine.GetFramesPerSecond().ToString() + " fps");
+		((Label)(GetNode("CLayer").GetNode("PlayerPosition"))).SetText("Player Position: " + Game.PossessedPlayer.Translation.Round().ToString());
+		((Label)(GetNode("CLayer").GetNode("ChunkInfo"))).SetText("Current Chunk: (" + Game.PossessedPlayer.CurrentChunk.Item1 + ", 0, " + Game.PossessedPlayer.CurrentChunk.Item2 + ")");
 	}
 }

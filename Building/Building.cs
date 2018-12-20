@@ -4,7 +4,8 @@ using System;
 
 public class Building : Node
 {
-	public const int ChunkSize = 9*12; //every 12 units is a new platform and the chunk size is 9x9 platforms
+	public const int PlatformSize = 12;
+	public const int ChunkSize = 9*PlatformSize;
 
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
@@ -48,7 +49,7 @@ public class Building : Node
 	}
 
 
-	static Tuple<int,int> GetChunkPos(Vector3 Position)
+	public static Tuple<int,int> GetChunkPos(Vector3 Position)
 	{
 		return new Tuple<int,int>(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
 	}

@@ -16,6 +16,7 @@ public class Game : Node
 	public static StructureRootClass StructureRoot;
 
 	public static float MouseSensitivity = 1;
+	public static int ChunkRenderDistance = 1;
 
 	public static Game Self;
 	private Game()

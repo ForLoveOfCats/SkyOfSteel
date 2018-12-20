@@ -1,5 +1,5 @@
 using Godot;
-using System;
+using Collections = System.Collections.Generic;
 
 
 public class Player : KinematicBody
@@ -17,6 +17,8 @@ public class Player : KinematicBody
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
 	private const float LookDivisor = 6;
+
+	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
 	private int ForwardAxis = 0;
 	private int RightAxis = 0;
@@ -38,7 +40,6 @@ public class Player : KinematicBody
 	public int InventorySlot = 0;
 
 	private HUD HUDInstance;
-
 	private Ghost GhostInstance;
 
 	Player()
@@ -372,6 +373,29 @@ public class Player : KinematicBody
 	}
 
 
+	void LoadNearChunks()
+	{
+		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Game.StructureRoot.Chunks)
+		{
+			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
+			if(ChunkPos.DistanceTo(Translation) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			{
+				foreach(Structure CurrentStructure in Chunk.Value)
+				{
+					CurrentStructure.Show();
+				}
+			}
+			else
+			{
+				foreach(Structure CurrentStructure in Chunk.Value)
+				{
+					CurrentStructure.Hide();
+				}
+			}
+		}
+	}
+
+
 	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Possessed)
@@ -434,6 +458,12 @@ public class Player : KinematicBody
 		}
 
 		RpcUnreliable(nameof(Update), Translation, RotationDegrees);
+
+		if(!Building.GetChunkPos(Translation).Equals(CurrentChunk))
+		{
+			CurrentChunk = Building.GetChunkPos(Translation);
+			LoadNearChunks();
+		}
 	}
 
 

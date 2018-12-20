@@ -4,7 +4,7 @@
 [ext_resource path="res://UI/Crosshair.png" type="Texture" id=2]
 [ext_resource path="res://Items/Thumbnails/ERROR.png" type="Texture" id=3]
 
-[node name="HUD" type="Node"]
+[node name="HUD" type="Node" index="0"]
 
 script = ExtResource( 1 )
 
@@ -501,16 +501,17 @@ size_flags_vertical = 0
 texture = ExtResource( 3 )
 _sections_unfolded = [ "Patch Margin", "Rect", "Size Flags" ]
 
-[node name="FPSLabel" type="Label" parent="CLayer" index="2"]
+[node name="ChunkInfo" type="Label" parent="CLayer" index="2"]
 
 anchor_left = 1.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 0.0
 margin_left = -114.0
-margin_top = 6.0
+margin_top = 7.0
 margin_right = -4.0
-margin_bottom = 20.0
+margin_bottom = 21.0
+grow_horizontal = 0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 mouse_filter = 2
@@ -518,6 +519,56 @@ mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
 size_flags_vertical = 4
 custom_colors/font_color = Color( 1, 0, 1, 1 )
+text = "ChunkInfo"
+align = 2
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Theme", "custom_colors" ]
+
+[node name="PlayerPosition" type="Label" parent="CLayer" index="3"]
+
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_left = -114.0
+margin_top = 23.0
+margin_right = -4.0
+margin_bottom = 37.0
+grow_horizontal = 0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_colors/font_color = Color( 1, 0, 1, 1 )
+text = "PlayerPosition"
+align = 2
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
+_sections_unfolded = [ "Anchor", "Grow Direction", "Margin", "Rect", "Theme", "custom_colors" ]
+
+[node name="FPSLabel" type="Label" parent="CLayer" index="4"]
+
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+margin_left = -114.0
+margin_top = 39.0
+margin_right = -4.0
+margin_bottom = 53.0
+rect_pivot_offset = Vector2( 0, 0 )
+rect_clip_content = false
+mouse_filter = 2
+mouse_default_cursor_shape = 0
+size_flags_horizontal = 1
+size_flags_vertical = 4
+custom_colors/font_color = Color( 1, 0, 1, 1 )
+text = "FPSLabel"
 align = 2
 percent_visible = 1.0
 lines_skipped = 0
