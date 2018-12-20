@@ -164,6 +164,14 @@ public class API : Node
 			case "gamemode_get":
 				return new List<object> {Name, new Func<string>(() => {return Scripting.GamemodeName;})};
 
+			case "chunk_render_distance_set":
+				return new List<object> {Name, new Action<double>(delegate(double Distance){
+					Game.ChunkRenderDistance = (int)Distance;
+				})};
+
+			case "chunk_render_distance_get":
+				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Game.ChunkRenderDistance);})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -208,6 +216,8 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_secondary_fire"));
 				Output.Add(GetDelCall("gamemode_set"));
 				Output.Add(GetDelCall("gamemode_get"));
+				Output.Add(GetDelCall("chunk_render_distance_set"));
+				Output.Add(GetDelCall("chunk_render_distance_get"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
