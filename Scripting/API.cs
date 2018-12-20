@@ -167,6 +167,7 @@ public class API : Node
 			case "chunk_render_distance_set":
 				return new List<object> {Name, new Action<double>(delegate(double Distance){
 					Game.ChunkRenderDistance = (int)Distance;
+					Game.PossessedPlayer.LoadNearChunks();
 				})};
 
 			case "chunk_render_distance_get":

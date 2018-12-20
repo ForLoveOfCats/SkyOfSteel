@@ -373,8 +373,15 @@ public class Player : KinematicBody
 	}
 
 
-	void LoadNearChunks()
+	public void LoadNearChunks()
 	{
+		if(Game.StructureRoot == null)
+		{
+			//World is not setup yet
+			//Prevents NullReferenceException
+			return;
+		}
+
 		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Game.StructureRoot.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
