@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Collections = System.Collections.Generic;
 
 
 public class Building : Node
@@ -57,17 +58,31 @@ public class Building : Node
 	
 	static bool ChunkExists(Vector3 Position)
 	{
-		return Game.StructureRoot.Chunks.ContainsKey(GetChunkPos(Position));
+		return ChunkExists(GetChunkPos(Position));
 	}
+
+
+	static bool ChunkExists(Tuple<int, int> Position)
+	{
+		return Game.StructureRoot.Chunks.ContainsKey(Position);
+	}
+
 
 	static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
 	{
+		return GetChunk(GetChunkPos(Position));
+	}
+
+
+	static System.Collections.Generic.List<Structure> GetChunk(Tuple<int, int> Position)
+	{
 		if(ChunkExists(Position))
 		{
-			return Game.StructureRoot.Chunks[GetChunkPos(Position)];
+			return Game.StructureRoot.Chunks[Position];
 		}
 		return null; //uggggh whyyyyyyyy
 	}
+
 
 	static void AddToChunk(Structure Branch)
 	{		
@@ -103,6 +118,54 @@ public class Building : Node
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
 			Self.Rpc(nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
+		}
+	}
+
+
+	[Remote]
+	public void RequestChunks(int Id, Vector3 PlayerPosition, int RenderDistance)
+	{
+		if(!GetTree().IsNetworkServer())
+		{
+			RpcId(Net.ServerId, nameof(RequestChunks), new object[] {Id, PlayerPosition, RenderDistance});
+			return;
+		}
+
+		Collections.List<Tuple<int,int>> LoadedChunks = Game.StructureRoot.RemoteLoadedChunks[Id];
+		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Game.StructureRoot.Chunks)
+		{
+			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
+			Tuple<int,int> ChunkTuple = GetChunkPos(ChunkPos);
+			if(ChunkPos.DistanceTo(PlayerPosition) <= RenderDistance*(Building.PlatformSize*9))
+			{
+				//This chunk is close enough to the player that we should send it along
+				if(!LoadedChunks.Contains(ChunkTuple))
+				{
+					//If not already in the list of loaded chunks for this client then add it
+					Game.StructureRoot.RemoteLoadedChunks[Id].Add(ChunkTuple);
+					//And send it
+					SendChunk(Id, ChunkTuple);
+				}
+				//If already loaded then don't send it
+			}
+			else
+			{
+				//This chunk is to far away
+				if(LoadedChunks.Contains(ChunkTuple))
+				{
+					//If it is in the list of loaded chunks for this client then remove
+					Game.StructureRoot.RemoteLoadedChunks[Id].Remove(ChunkTuple);
+				}
+			}
+		}
+	}
+
+
+	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
+	{
+		foreach(Structure Branch in Game.StructureRoot.Chunks[ChunkLocation])
+		{
+			Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
 	}
 

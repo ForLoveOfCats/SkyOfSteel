@@ -63,6 +63,7 @@ public class Player : KinematicBody
 			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
 			GetParent().AddChild(GhostInstance);
 			GhostInstance.Hide();
+			UnloadAndRequestChunks();
 		}
 		else
 		{
@@ -373,7 +374,7 @@ public class Player : KinematicBody
 	}
 
 
-	public void LoadNearChunks()
+	public void UnloadAndRequestChunks()
 	{
 		if(Game.StructureRoot == null)
 		{
@@ -387,18 +388,33 @@ public class Player : KinematicBody
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			if(ChunkPos.DistanceTo(Translation) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
 			{
-				foreach(Structure CurrentStructure in Chunk.Value)
+				if(GetTree().IsNetworkServer())
 				{
-					CurrentStructure.Show();
+					foreach(Structure CurrentStructure in Chunk.Value)
+					{
+						CurrentStructure.Show();
+					}
 				}
 			}
 			else
 			{
 				foreach(Structure CurrentStructure in Chunk.Value)
 				{
-					CurrentStructure.Hide();
+					if(GetTree().IsNetworkServer())
+					{
+						CurrentStructure.Hide();
+					}
+					else
+					{
+						CurrentStructure.QueueFree();
+					}
 				}
 			}
+		}
+
+		if(!GetTree().IsNetworkServer())
+		{
+			Building.Self.RequestChunks(GetTree().GetNetworkUniqueId(), Translation, Game.ChunkRenderDistance);
 		}
 	}
 
@@ -469,7 +485,7 @@ public class Player : KinematicBody
 		if(!Building.GetChunkPos(Translation).Equals(CurrentChunk))
 		{
 			CurrentChunk = Building.GetChunkPos(Translation);
-			LoadNearChunks();
+			UnloadAndRequestChunks();
 		}
 	}
 
