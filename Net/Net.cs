@@ -44,7 +44,7 @@ public class Net : Node
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
 
-		Game.StructureRoot.RemoteLoadedChunks.Add(Id, new List<Tuple<int,int>>());
+		Building.RemoteLoadedChunks.Add(Id, new List<Tuple<int,int>>());
 	}
 
 

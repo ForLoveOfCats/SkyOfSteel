@@ -109,6 +109,9 @@ public class Game : Node
 		Scripting.SetupServerEngine();
 		Scripting.SetupClientEngine();
 		Scripting.ClientGmScript = null;
+
+		Building.Chunks.Clear();
+		Building.RemoteLoadedChunks.Clear();
 	}
 
 

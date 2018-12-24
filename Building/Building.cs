@@ -10,6 +10,9 @@ public class Building : Node
 
 	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
+	public static Collections.Dictionary<Tuple<int,int>, Collections.List<Structure>> Chunks = new Collections.Dictionary<Tuple<int,int>, Collections.List<Structure>>();
+	public static Collections.Dictionary<int, Collections.List<Tuple<int,int>>> RemoteLoadedChunks = new Collections.Dictionary<int, Collections.List<Tuple<int,int>>>();
+
 	public static Building Self;
 
 	Building()
@@ -64,7 +67,7 @@ public class Building : Node
 
 	static bool ChunkExists(Tuple<int, int> Position)
 	{
-		return Game.StructureRoot.Chunks.ContainsKey(Position);
+		return Chunks.ContainsKey(Position);
 	}
 
 
@@ -78,7 +81,7 @@ public class Building : Node
 	{
 		if(ChunkExists(Position))
 		{
-			return Game.StructureRoot.Chunks[Position];
+			return Chunks[Position];
 		}
 		return null; //uggggh whyyyyyyyy
 	}
@@ -88,13 +91,13 @@ public class Building : Node
 	{		
 		if(ChunkExists(Branch.Translation))
 		{
-			System.Collections.Generic.List<Structure> Chunk = Game.StructureRoot.Chunks[GetChunkPos(Branch.Translation)];
+			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkPos(Branch.Translation)];
 			Chunk.Add(Branch);
-			Game.StructureRoot.Chunks[GetChunkPos(Branch.Translation)] = Chunk;
+			Chunks[GetChunkPos(Branch.Translation)] = Chunk;
 		}
 		else
 		{
-			Game.StructureRoot.Chunks.Add(GetChunkPos(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
+			Chunks.Add(GetChunkPos(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
 		}
 	}
 
@@ -131,8 +134,8 @@ public class Building : Node
 			return;
 		}
 
-		Collections.List<Tuple<int,int>> LoadedChunks = Game.StructureRoot.RemoteLoadedChunks[Id];
-		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Game.StructureRoot.Chunks)
+		Collections.List<Tuple<int,int>> LoadedChunks = RemoteLoadedChunks[Id];
+		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkPos(ChunkPos);
@@ -142,7 +145,7 @@ public class Building : Node
 				if(!LoadedChunks.Contains(ChunkTuple))
 				{
 					//If not already in the list of loaded chunks for this client then add it
-					Game.StructureRoot.RemoteLoadedChunks[Id].Add(ChunkTuple);
+					RemoteLoadedChunks[Id].Add(ChunkTuple);
 					//And send it
 					SendChunk(Id, ChunkTuple);
 				}
@@ -154,7 +157,7 @@ public class Building : Node
 				if(LoadedChunks.Contains(ChunkTuple))
 				{
 					//If it is in the list of loaded chunks for this client then remove
-					Game.StructureRoot.RemoteLoadedChunks[Id].Remove(ChunkTuple);
+					RemoteLoadedChunks[Id].Remove(ChunkTuple);
 				}
 			}
 		}
@@ -163,7 +166,7 @@ public class Building : Node
 
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
-		foreach(Structure Branch in Game.StructureRoot.Chunks[ChunkLocation])
+		foreach(Structure Branch in Chunks[ChunkLocation])
 		{
 			Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}

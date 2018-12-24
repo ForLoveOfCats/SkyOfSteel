@@ -383,7 +383,7 @@ public class Player : KinematicBody
 			return;
 		}
 
-		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Game.StructureRoot.Chunks)
+		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Building.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			if(ChunkPos.DistanceTo(Translation) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
