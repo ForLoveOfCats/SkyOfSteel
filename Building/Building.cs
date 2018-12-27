@@ -53,6 +53,12 @@ public class Building : Node
 	}
 
 
+	public static Vector3 GetChunkPos(Vector3 Position)
+	{
+		return new Vector3(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, 0, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
+	}
+
+
 	public static Tuple<int,int> GetChunkTuple(Vector3 Position)
 	{
 		return new Tuple<int,int>(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
@@ -176,6 +182,17 @@ public class Building : Node
 	[Remote]
 	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
+		//Nested if to prevent very long line
+		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
+		{
+			if(GetChunkPos(Position).DistanceTo(Game.PossessedPlayer.Translation) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			{
+				GD.Print("PlaceWithName return");
+				//If network is inited, not the server, and platform it to far away then...
+				return; //...don't place
+			}
+		}
+
 		if(ShouldDo.StructurePlace(BranchType, Position, Rotation, OwnerId))
 		{
 			Structure Branch = Scenes[BranchType].Instance() as Structure;
@@ -187,6 +204,17 @@ public class Building : Node
 			Game.StructureRoot.AddChild(Branch);
 
 			AddToChunk(Branch);
+
+			//Nested if to prevent very long line
+			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
+			{
+				if(GetChunkPos(Position).DistanceTo(Game.PossessedPlayer.Translation) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+				{
+					GD.Print("PlaceWithName hide");
+					//If network is inited, are the server, and platform is to far away then...
+					Branch.Hide(); //...make it not visible but allow it to remain in the world
+				}
+			}
 		}
 	}
 
