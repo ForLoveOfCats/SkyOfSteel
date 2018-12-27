@@ -482,9 +482,9 @@ public class Player : KinematicBody
 
 		RpcUnreliable(nameof(Update), Translation, RotationDegrees);
 
-		if(!Building.GetChunkPos(Translation).Equals(CurrentChunk))
+		if(!Building.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
-			CurrentChunk = Building.GetChunkPos(Translation);
+			CurrentChunk = Building.GetChunkTuple(Translation);
 			UnloadAndRequestChunks();
 		}
 	}

@@ -53,7 +53,7 @@ public class Building : Node
 	}
 
 
-	public static Tuple<int,int> GetChunkPos(Vector3 Position)
+	public static Tuple<int,int> GetChunkTuple(Vector3 Position)
 	{
 		return new Tuple<int,int>(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
 	}
@@ -61,7 +61,7 @@ public class Building : Node
 	
 	static bool ChunkExists(Vector3 Position)
 	{
-		return ChunkExists(GetChunkPos(Position));
+		return ChunkExists(GetChunkTuple(Position));
 	}
 
 
@@ -73,7 +73,7 @@ public class Building : Node
 
 	static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
 	{
-		return GetChunk(GetChunkPos(Position));
+		return GetChunk(GetChunkTuple(Position));
 	}
 
 
@@ -91,13 +91,13 @@ public class Building : Node
 	{		
 		if(ChunkExists(Branch.Translation))
 		{
-			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkPos(Branch.Translation)];
+			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)];
 			Chunk.Add(Branch);
-			Chunks[GetChunkPos(Branch.Translation)] = Chunk;
+			Chunks[GetChunkTuple(Branch.Translation)] = Chunk;
 		}
 		else
 		{
-			Chunks.Add(GetChunkPos(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
+			Chunks.Add(GetChunkTuple(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
 		}
 	}
 
@@ -138,7 +138,7 @@ public class Building : Node
 		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			Tuple<int,int> ChunkTuple = GetChunkPos(ChunkPos);
+			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
 			if(ChunkPos.DistanceTo(PlayerPosition) <= RenderDistance*(Building.PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
