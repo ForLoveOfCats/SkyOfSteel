@@ -12,7 +12,7 @@ public class Structure : StaticBody
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
 			Rpc(nameof(NetRemove));
-			QueueFree();
+			NetRemove();
 		}
 	}
 
@@ -20,6 +20,9 @@ public class Structure : StaticBody
 	[Remote]
 	public void NetRemove()
 	{
+		System.Collections.Generic.List<Structure> Structures = Building.Chunks[Building.GetChunkTuple(Translation)];
+		Structures.Remove(this);
+		Building.Chunks[Building.GetChunkTuple(Translation)] = Structures;
 		QueueFree();
 	}
 }
