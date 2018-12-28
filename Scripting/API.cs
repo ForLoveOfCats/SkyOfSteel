@@ -178,6 +178,11 @@ public class API : Node
 			case "chunk_render_distance_get":
 				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Game.ChunkRenderDistance);})};
 
+			case "save":
+				return new List<object> {Name, new Action(delegate(){
+							Building.SaveChunk(Building.GetChunkTuple(new Vector3(0,0,0)));
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -224,6 +229,7 @@ public class API : Node
 				Output.Add(GetDelCall("gamemode_get"));
 				Output.Add(GetDelCall("chunk_render_distance_set"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
+				Output.Add(GetDelCall("save"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));

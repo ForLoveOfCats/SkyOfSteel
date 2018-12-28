@@ -1,0 +1,6 @@
+using Godot;
+
+
+class SavedChunk
+{
+}

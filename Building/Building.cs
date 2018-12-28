@@ -8,7 +8,7 @@ public class Building : Node
 	public const int PlatformSize = 12;
 	public const int ChunkSize = 9*PlatformSize;
 
-	private static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
+	public static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
 	public static Collections.Dictionary<Tuple<int,int>, Collections.List<Structure>> Chunks = new Collections.Dictionary<Tuple<int,int>, Collections.List<Structure>>();
 	public static Collections.Dictionary<int, Collections.List<Tuple<int,int>>> RemoteLoadedChunks = new Collections.Dictionary<int, Collections.List<Tuple<int,int>>>();
@@ -175,6 +175,20 @@ public class Building : Node
 		foreach(Structure Branch in Chunks[ChunkLocation])
 		{
 			Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+		}
+	}
+
+
+	public static void SaveChunk(Tuple<int,int> ChunkTuple)
+	{
+		Collections.List<Structure> Structures = GetChunk(ChunkTuple);
+		foreach(Structure Branch in Structures)
+		{
+			string Serialized = new SavedStructure(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson();
+			GD.Print(Serialized);
+			SavedStructure Retrieved = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedStructure>(Serialized);
+			Structure RetrievedBranch = Retrieved.ToStructureOrNull();
+			GD.Print(RetrievedBranch.Translation);
 		}
 	}
 

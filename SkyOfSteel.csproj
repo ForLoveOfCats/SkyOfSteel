@@ -51,11 +51,16 @@
       <HintPath>$(ProjectDir)/Scripting/Jurassic.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building\BuildPositions.cs" />
     <Compile Include="Building\BuildRotations.cs" />
     <Compile Include="Building\Ghost.cs" />
+    <Compile Include="Building\SavedChunk.cs" />
+    <Compile Include="Building\SavedStructure.cs" />
     <Compile Include="Building\Structure.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\API.cs" />
@@ -73,6 +78,9 @@
     <Compile Include="Player\Player.cs" />
     <Compile Include="Items\Items.cs" />
     <Compile Include="World\StructureRoot.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
