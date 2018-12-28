@@ -386,7 +386,7 @@ public class Player : KinematicBody
 		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Building.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			if(ChunkPos.DistanceTo(Translation) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(Translation.x,0,Translation.z)) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
 			{
 				if(GetTree().IsNetworkServer())
 				{

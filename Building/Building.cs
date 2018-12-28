@@ -145,7 +145,7 @@ public class Building : Node
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(PlayerPosition) <= RenderDistance*(Building.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(Building.PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(!LoadedChunks.Contains(ChunkTuple))
@@ -182,10 +182,12 @@ public class Building : Node
 	[Remote]
 	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
+		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
+
 		//Nested if to prevent very long line
 		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
 		{
-			if(GetChunkPos(Position).DistanceTo(Game.PossessedPlayer.Translation) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
 			{
 				GD.Print("PlaceWithName return");
 				//If network is inited, not the server, and platform it to far away then...
@@ -208,7 +210,7 @@ public class Building : Node
 			//Nested if to prevent very long line
 			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 			{
-				if(GetChunkPos(Position).DistanceTo(Game.PossessedPlayer.Translation) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
 				{
 					GD.Print("PlaceWithName hide");
 					//If network is inited, are the server, and platform is to far away then...
