@@ -189,7 +189,6 @@ public class Building : Node
 		{
 			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
 			{
-				GD.Print("PlaceWithName return");
 				//If network is inited, not the server, and platform it to far away then...
 				return; //...don't place
 			}
@@ -212,7 +211,6 @@ public class Building : Node
 			{
 				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
 				{
-					GD.Print("PlaceWithName hide");
 					//If network is inited, are the server, and platform is to far away then...
 					Branch.Hide(); //...make it not visible but allow it to remain in the world
 				}
