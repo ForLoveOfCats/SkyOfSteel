@@ -180,7 +180,7 @@ public class API : Node
 
 			case "save":
 				return new List<object> {Name, new Action(delegate(){
-							Building.SaveChunk(Building.GetChunkTuple(new Vector3(0,0,0)));
+					Building.SaveWorld("TestSave");
 				})};
 
 			default:

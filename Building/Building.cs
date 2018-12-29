@@ -64,7 +64,7 @@ public class Building : Node
 		return new Tuple<int,int>(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
 	}
 
-	
+
 	static bool ChunkExists(Vector3 Position)
 	{
 		return ChunkExists(GetChunkTuple(Position));
@@ -77,13 +77,13 @@ public class Building : Node
 	}
 
 
-	static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
+	public static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
 	{
 		return GetChunk(GetChunkTuple(Position));
 	}
 
 
-	static System.Collections.Generic.List<Structure> GetChunk(Tuple<int, int> Position)
+	public static System.Collections.Generic.List<Structure> GetChunk(Tuple<int, int> Position)
 	{
 		if(ChunkExists(Position))
 		{
@@ -94,7 +94,7 @@ public class Building : Node
 
 
 	static void AddToChunk(Structure Branch)
-	{		
+	{
 		if(ChunkExists(Branch.Translation))
 		{
 			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)];
@@ -179,17 +179,31 @@ public class Building : Node
 	}
 
 
-	public static void SaveChunk(Tuple<int,int> ChunkTuple)
+	public static void SaveWorld(string SaveName)
 	{
-		Collections.List<Structure> Structures = GetChunk(ChunkTuple);
-		foreach(Structure Branch in Structures)
+		Directory SaveDir = new Directory();
+		if(SaveDir.DirExists("user://saves/" + SaveName))
 		{
-			string Serialized = new SavedStructure(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson();
-			GD.Print(Serialized);
-			SavedStructure Retrieved = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedStructure>(Serialized);
-			Structure RetrievedBranch = Retrieved.ToStructureOrNull();
-			GD.Print(RetrievedBranch.Translation);
+			System.IO.Directory.Delete(OS.GetUserDataDir() + "/saves/" + SaveName, true);
 		}
+
+		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Chunks)
+		{
+			SaveChunk(Chunk.Key, SaveName);
+		}
+	}
+
+
+	public static void SaveChunk(Tuple<int,int> ChunkTuple, string SaveName)
+	{
+		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
+
+		Directory SaveDir = new Directory();
+		if(!SaveDir.DirExists("user://saves/"+SaveName))
+		{
+			SaveDir.MakeDirRecursive("user://saves/"+SaveName);
+		}
+		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
 	}
 
 
