@@ -240,10 +240,10 @@ public class Building : Node
 				SavedChunk LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
 				foreach(SavedStructure SavedBranch in LoadedChunk.S)
 				{
-					Structure Branch = SavedBranch.ToStructureOrNull();
-					if(Branch != null)
+					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
+					if(Info != null)
 					{
-						Place(Branch.Type, Branch.Translation, Branch.RotationDegrees, 0);
+						Place(Info.Item1, Info.Item2, Info.Item3, 0);
 						PlaceCount++;
 					}
 				}

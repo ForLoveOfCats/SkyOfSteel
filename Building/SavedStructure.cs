@@ -1,9 +1,10 @@
 using Godot;
+using System;
 
 
 public class SavedStructure
 {
-	public int T;
+	public int T = (int)Items.TYPE.ERROR;
 	public float[] P;
 	public float[] R;
 
@@ -21,25 +22,22 @@ public class SavedStructure
 	}
 
 
-	public Structure ToStructureOrNull()
+	public Tuple<Items.TYPE,Vector3,Vector3> GetInfoOrNull()
 	{
-		//If cannot make a valid instance then return null
-		Structure Branch = Building.Scenes[(Items.TYPE)T].Instance() as Structure;
-
-		Branch.Type = (Items.TYPE)T;
+		//Returns null if data is invalid
 
 		if(P.Length != 3)
 		{
 			return null;
 		}
-		Branch.Translation = new Vector3(P[0], P[1], P[2]);
+		Vector3 Pos = new Vector3(P[0], P[1], P[2]);
 
 		if(R.Length != 3)
 		{
 			return null;
 		}
-		Branch.RotationDegrees = new Vector3(R[0], R[1], R[2]);
+		Vector3 Rot = new Vector3(R[0], R[1], R[2]);
 
-		return Branch;
+		return new Tuple<Items.TYPE,Vector3,Vector3>((Items.TYPE)T, Pos, Rot);
 	}
 }
