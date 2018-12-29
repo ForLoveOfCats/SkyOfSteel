@@ -187,14 +187,16 @@ public class Building : Node
 			System.IO.Directory.Delete(OS.GetUserDataDir() + "/saves/" + SaveName, true);
 		}
 
+		int SaveCount = 0;
 		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Chunks)
 		{
-			SaveChunk(Chunk.Key, SaveName);
+			SaveCount += SaveChunk(Chunk.Key, SaveName);
 		}
+		Console.Print($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
 	}
 
 
-	public static void SaveChunk(Tuple<int,int> ChunkTuple, string SaveName)
+	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveName)
 	{
 		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
 
@@ -204,6 +206,54 @@ public class Building : Node
 			SaveDir.MakeDirRecursive("user://saves/"+SaveName);
 		}
 		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
+
+		return Chunks[ChunkTuple].Count;
+	}
+
+
+	public static void LoadWorld(string SaveName)
+	{
+		Directory SaveDir = new Directory();
+		if(SaveDir.DirExists("user://saves/"+SaveName))
+		{
+			Chunks.Clear();
+			RemoteLoadedChunks.Clear();
+			foreach(Node Branch in Game.StructureRoot.GetChildren())
+			{
+				Branch.QueueFree();
+			}
+
+			SaveDir.Open("user://saves/"+SaveName);
+			SaveDir.ListDirBegin(true, true);
+
+			int PlaceCount = 0;
+			while(true)
+			{
+				string FileName = SaveDir.GetNext();
+				if(FileName.Empty())
+				{
+					//Iterated through all files
+					break;
+				}
+
+				string LoadedFile = System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/saves/{SaveName}/{FileName}");
+				SavedChunk LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
+				foreach(SavedStructure SavedBranch in LoadedChunk.S)
+				{
+					Structure Branch = SavedBranch.ToStructureOrNull();
+					if(Branch != null)
+					{
+						Place(Branch.Type, Branch.Translation, Branch.RotationDegrees, 0);
+						PlaceCount++;
+					}
+				}
+			}
+			Console.Print($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
+		}
+		else
+		{
+			Console.Print($"ERROR: Save '{SaveName}' does not exist");
+		}
 	}
 
 

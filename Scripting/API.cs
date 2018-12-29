@@ -183,6 +183,11 @@ public class API : Node
 					Building.SaveWorld("TestSave");
 				})};
 
+			case "load":
+				return new List<object> {Name, new Action(delegate(){
+					Building.LoadWorld("TestSave");
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -230,6 +235,7 @@ public class API : Node
 				Output.Add(GetDelCall("chunk_render_distance_set"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("save"));
+				Output.Add(GetDelCall("load"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));

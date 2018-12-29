@@ -26,6 +26,8 @@ public class SavedStructure
 		//If cannot make a valid instance then return null
 		Structure Branch = Building.Scenes[(Items.TYPE)T].Instance() as Structure;
 
+		Branch.Type = (Items.TYPE)T;
+
 		if(P.Length != 3)
 		{
 			return null;
