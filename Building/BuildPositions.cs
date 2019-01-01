@@ -19,12 +19,32 @@ public class BuildPositions
 	}
 
 
+	private static System.Nullable<Vector3> WallBranch(Structure Base)
+	{
+		switch(Base.Type)
+		{
+			case(Items.TYPE.PLATFORM):
+				float RotationDegrees = Mathf.Deg2Rad(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
+				Vector3 Position = Base.Translation + (new Vector3(0,6,12)).Rotated(new Vector3(0,1,0), RotationDegrees);
+				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
+
+
+			default:
+				return null;
+		}
+	}
+
+
 	public static System.Nullable<Vector3> Calculate(Structure Base, Items.TYPE BranchType)
 	{
 		switch(BranchType)
 		{
 			case(Items.TYPE.PLATFORM):
 				return PlatformBranch(Base);
+
+
+			case(Items.TYPE.WALL):
+				return WallBranch(Base);
 
 
 			default:
