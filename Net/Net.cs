@@ -108,12 +108,12 @@ public class Net : Node
 			return;
 		}
 
+		//Set static string Ip
 		Ip = InIp;
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateClient(Ip, Port);
 		Self.GetTree().SetNetworkPeer(Peer);
-		Self.GetTree().SetMeta("network_peer", Peer);
 	}
 
 
