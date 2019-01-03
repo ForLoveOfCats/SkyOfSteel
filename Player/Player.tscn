@@ -118,7 +118,7 @@ _sections_unfolded = [ "Transform" ]
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0 )
 enabled = true
 exclude_parent = true
-cast_to = Vector3( 0, 0, 18 )
+cast_to = Vector3( 0, 0, 24 )
 collision_mask = 1
 _sections_unfolded = [ "Transform", "Visibility" ]
 
