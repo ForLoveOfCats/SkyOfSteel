@@ -10,6 +10,12 @@ public class BuildRotations
 	}
 
 
+	private static Vector3 WallBranch(Structure Base)
+	{
+		return new Vector3(0, SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
+	}
+
+
 	public static Vector3 Calculate(Structure Base, Items.TYPE BranchType)
 	{
 		switch(BranchType)
@@ -17,6 +23,8 @@ public class BuildRotations
 			case(Items.TYPE.PLATFORM):
 				return PlatformBranch(Base);
 
+			case(Items.TYPE.WALL):
+				return WallBranch(Base);
 
 			default:
 				return new Vector3();

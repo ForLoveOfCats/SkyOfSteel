@@ -5,7 +5,7 @@
 
 [sub_resource type="BoxShape" id=1]
 
-extents = Vector3( 6, 0.3, 6 )
+extents = Vector3( 6, 5.7, 0.3 )
 
 [node name="WALL" type="StaticBody"]
 
@@ -33,7 +33,7 @@ lod_max_hysteresis = 0.0
 mesh = ExtResource( 2 )
 skeleton = NodePath("..")
 material/0 = null
-_sections_unfolded = [ "material" ]
+_sections_unfolded = [ "Transform", "material" ]
 
 [node name="CollisionShape" type="CollisionShape" parent="." index="1"]
 
