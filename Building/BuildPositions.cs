@@ -10,13 +10,13 @@ public class BuildPositions
 		switch(Base.Type)
 		{
 			case(Items.TYPE.PLATFORM):{
-				float Rotation = Mathf.Deg2Rad(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
+				float Rotation = Mathf.Deg2Rad(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
 				Vector3 Position = Base.Translation + (new Vector3(0,0,12)).Rotated(new Vector3(0,1,0), Rotation);
 				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
 			}
 
 			case(Items.TYPE.WALL):{
-				float RotationDegrees = LoopRotation(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4) + 180);
+				float RotationDegrees = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4) + 180);
 
 				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 				{
@@ -39,7 +39,7 @@ public class BuildPositions
 		{
 			case(Items.TYPE.PLATFORM):
 			{
-				float Rotation = Mathf.Deg2Rad(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
+				float Rotation = Mathf.Deg2Rad(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
 				Vector3 Position = Base.Translation + (new Vector3(0,6,6)).Rotated(new Vector3(0,1,0), Rotation);
 				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
 			}

@@ -1,4 +1,5 @@
 using Godot;
+using static SteelMath;
 
 
 public class BuildRotations
@@ -12,7 +13,7 @@ public class BuildRotations
 
 	private static Vector3 WallBranch(Structure Base)
 	{
-		return new Vector3(0, SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
+		return new Vector3(0, SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
 	}
 
 
