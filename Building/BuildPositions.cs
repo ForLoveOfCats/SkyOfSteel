@@ -1,4 +1,6 @@
 using Godot;
+using static System.Math;
+using static SteelMath;
 
 
 public class BuildPositions
@@ -14,9 +16,9 @@ public class BuildPositions
 			}
 
 			case(Items.TYPE.WALL):{
-				float RotationDegrees = SteelMath.LoopRotation(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4) + 180);
+				float RotationDegrees = LoopRotation(SteelMath.SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4) + 180);
 
-				if(RotationDegrees != Base.RotationDegrees.y && SteelMath.LoopRotation(RotationDegrees+180) != Base.RotationDegrees.y)
+				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 				{
 					return null;
 				}
