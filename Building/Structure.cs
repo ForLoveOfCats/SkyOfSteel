@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 
 public class Structure : StaticBody
@@ -20,9 +21,20 @@ public class Structure : StaticBody
 	[Remote]
 	public void NetRemove()
 	{
-		System.Collections.Generic.List<Structure> Structures = Building.Chunks[Building.GetChunkTuple(Translation)];
+		Tuple<int,int> ChunkTuple = Building.GetChunkTuple(Translation);
+		System.Collections.Generic.List<Structure> Structures = Building.Chunks[ChunkTuple];
 		Structures.Remove(this);
-		Building.Chunks[Building.GetChunkTuple(Translation)] = Structures;
+		//After removing `this` from the Structure list, the chunk might be empty
+		if(Structures.Count > 0)
+		{
+			Building.Chunks[ChunkTuple] = Structures;
+		}
+		else
+		{
+			//If the chunk *is* empty then remove it
+			Building.Chunks.Remove(ChunkTuple);
+		}
+
 		QueueFree();
 	}
 }
