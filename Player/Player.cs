@@ -463,7 +463,7 @@ public class Player : KinematicBody
 		}
 
 		Vector3 OldPos = Translation;
-		MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), 0.05f, 4);
+		MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), 0.05f, 4, Mathf.Deg2Rad(60));
 		//MoveAndSlide multiplies by *physics* delta internally
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
