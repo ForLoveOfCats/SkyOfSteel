@@ -45,6 +45,11 @@ public class Net : Node
 		PeerList.Add(Id);
 
 		Building.RemoteLoadedChunks.Add(Id, new List<Tuple<int,int>>());
+
+		if(GetTree().IsNetworkServer() && Scripting.ClientGmScript != null)
+		{
+			Scripting.Self.RpcId(Id, nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
+		}
 	}
 
 
