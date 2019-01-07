@@ -237,7 +237,18 @@ public class Building : Node
 				}
 
 				string LoadedFile = System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/saves/{SaveName}/{FileName}");
-				SavedChunk LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
+
+				SavedChunk LoadedChunk;
+				try
+				{
+					LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
+				}
+				catch(Newtonsoft.Json.JsonReaderException e)
+				{
+					Console.Log($"ERROR: Invalid chunk file {FileName} loading save '{SaveName}'");
+					continue;
+				}
+
 				foreach(SavedStructure SavedBranch in LoadedChunk.S)
 				{
 					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
