@@ -14,6 +14,12 @@ public class SavedStructure
 		this.T = (int)Type;
 		this.P = new float[3] {Position.x, Position.y, Position.z};
 		this.R = new float[3] {Rotation.x, Rotation.y, Rotation.z};
+
+		for(int i = 0; i <= 2; i++)
+		{
+			P[i] = (float)Math.Round(P[i]);
+			R[i] = (float)Math.Round(R[i]);
+		}
 	}
 
 
