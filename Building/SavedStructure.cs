@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 
 
 public class SavedStructure
@@ -18,7 +19,14 @@ public class SavedStructure
 
 	public string ToJson()
 	{
-		return $"{{\"T\":{T},\"P\":[{string.Join(",", P)}],\"R\":[{string.Join(",", R)}]}}";
+		if(Enumerable.SequenceEqual(R, new float[] {0f,0f,0f}))
+		{
+			return $"{{\"T\":{T},\"P\":[{string.Join(",", P)}]}}";
+		}
+		else
+		{
+			return $"{{\"T\":{T},\"P\":[{string.Join(",", P)}],\"R\":[{string.Join(",", R)}]}}";
+		}
 	}
 
 
