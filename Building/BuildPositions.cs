@@ -27,6 +27,26 @@ public class BuildPositions
 				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
 			}
 
+			case(Items.TYPE.SLOPE):{
+				float RotationDegrees = SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4);
+				
+				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
+				{
+					return null;
+				}
+
+				Vector3 Position;
+				if(RotationDegrees == LoopRotation((float)Round(Base.RotationDegrees.y)))
+				{
+					Position = Base.Translation + (new Vector3(0,6,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
+				}
+				else
+				{
+					Position = Base.Translation + (new Vector3(0,-6,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
+				}
+				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
+			}
+
 			default:
 				return null;
 		}
