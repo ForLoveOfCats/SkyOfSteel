@@ -58,6 +58,9 @@ public class Player : KinematicBody
 		if(Possessed)
 		{
 			GetNode<Camera>("SteelCamera").MakeCurrent();
+
+			GetNode<RayCast>("SteelCamera/RayCast").AddException(this);
+
 			GetNode<MeshInstance>("FPSMesh").Hide();
 			HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
 			AddChild(HUDInstance);
