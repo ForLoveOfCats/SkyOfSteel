@@ -37,7 +37,7 @@ _sections_unfolded = [ "material" ]
 
 [node name="CollisionShape" type="CollisionShape" parent="." index="1"]
 
-transform = Transform( 1, 0, 0, 0, 0.697415, 0.716667, 0, -0.716667, 0.697415, 0, 6.29606, 0.134224 )
+transform = Transform( 1, 0, 0, 0, 0.697415, 0.716667, 0, -0.716667, 0.697415, 0, 0.296062, 0.134224 )
 shape = SubResource( 1 )
 disabled = false
 _sections_unfolded = [ "Transform" ]
