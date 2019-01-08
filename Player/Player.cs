@@ -39,6 +39,8 @@ public class Player : KinematicBody
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
 
+	private int BuildRotation = 0;
+
 	private HUD HUDInstance;
 	private Ghost GhostInstance;
 
@@ -99,6 +101,8 @@ public class Player : KinematicBody
 
 	public void InventoryUp()
 	{
+		BuildRotation = 0;
+
 		InventorySlot--;
 		if(InventorySlot < 0)
 		{
@@ -114,6 +118,8 @@ public class Player : KinematicBody
 
 	public void InventoryDown()
 	{
+		BuildRotation = 0;
+
 		InventorySlot++;
 		if(InventorySlot > 9)
 		{
@@ -123,6 +129,27 @@ public class Player : KinematicBody
 		if(HUDInstance != null)
 		{
 			HUDInstance.HotbarUpdate();
+		}
+	}
+
+
+	public void BuildRotate(double Sens)
+	{
+		if(Sens > 0d && Inventory[InventorySlot] != null)
+		{
+			switch(Inventory[InventorySlot].Type)
+			{
+				case(Items.TYPE.SLOPE):
+					if(BuildRotation == 0)
+					{
+						BuildRotation = 1;
+					}
+					else
+					{
+						BuildRotation = 0;
+					}
+					break;
+			}
 		}
 	}
 

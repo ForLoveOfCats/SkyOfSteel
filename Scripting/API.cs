@@ -139,6 +139,11 @@ public class API : Node
 					Game.PossessedPlayer.LookLeft(Sens);
 				})};
 
+			case "player_input_build_rotate":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.BuildRotate(Sens);
+				})};
+
 			case "player_input_primary_fire":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.PrimaryFire(Sens);
@@ -228,6 +233,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_look_down"));
 				Output.Add(GetDelCall("player_input_look_right"));
 				Output.Add(GetDelCall("player_input_look_left"));
+				Output.Add(GetDelCall("player_input_build_rotate"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
 				Output.Add(GetDelCall("gamemode_set"));
