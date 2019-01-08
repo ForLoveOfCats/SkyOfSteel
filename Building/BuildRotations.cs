@@ -19,7 +19,14 @@ public class BuildRotations
 
 	private static Vector3 SlopeBranch(Structure Base)
 	{
-		return new Vector3(0, SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
+		if(Game.PossessedPlayer.BuildRotation == 0)
+		{
+			return new Vector3(0, SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
+		}
+		else
+		{
+			return new Vector3(0, LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4)+180), 0);
+		}
 	}
 
 

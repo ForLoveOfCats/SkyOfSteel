@@ -57,7 +57,17 @@ public class BuildPositions
 			case(Items.TYPE.PLATFORM):
 			{
 				float Rotation = Mathf.Deg2Rad(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
-				Vector3 Position = Base.Translation + (new Vector3(0,6,12)).Rotated(new Vector3(0,1,0), Rotation);
+
+				Vector3 Position;
+				if(Game.PossessedPlayer.BuildRotation == 0)
+				{
+					Position = Base.Translation + (new Vector3(0,6,12)).Rotated(new Vector3(0,1,0), Rotation);
+				}
+				else
+				{
+					Position = Base.Translation + (new Vector3(0,-6,12)).Rotated(new Vector3(0,1,0), Rotation);
+				}
+
 				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
 			}
 

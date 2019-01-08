@@ -39,7 +39,7 @@ public class Player : KinematicBody
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
 
-	private int BuildRotation = 0;
+	public int BuildRotation = 0;
 
 	private HUD HUDInstance;
 	private Ghost GhostInstance;
