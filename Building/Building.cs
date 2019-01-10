@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using Collections = System.Collections.Generic;
+using System.Collections.Generic;
 
 
 public class Building : Node
