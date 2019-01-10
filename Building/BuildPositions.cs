@@ -28,7 +28,7 @@ public class BuildPositions
 			}
 
 			case(Items.TYPE.SLOPE):{
-				float RotationDegrees = SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4);
+				float RotationDegrees = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
 				
 				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 				{
