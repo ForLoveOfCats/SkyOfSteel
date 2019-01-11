@@ -49,11 +49,8 @@ Contributions are welcome!
 
 ## Gameplay
 
-Currently not much :(
-
 The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
-multiplayer private server setting. This section will expand as more gameplay items are
-implemented. This should not take long as most of the ground work has already been laid.
+multiplayer private server setting. As of now multiplayer is fully functional and the building is about 90% functional with proper chunk loading/unloading over network as well as world saving and loading to/from file.
 
 
 
