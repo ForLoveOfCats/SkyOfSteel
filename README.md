@@ -33,13 +33,14 @@ Contributions are welcome!
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.0.6 with proper Mono version
-  * Currently Mono 5.12 for Godot 3.0.6. (Godot 3.1 should allow for most any mono version)
+* A functioning installation of Godot Mono 3.1 Beta 1
+  * Decently recent versions of both MSBuild and Nuget must be installed.
 
 
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
+* Cd into the project root and run `nuget restore SkyOfSteel.sln`
 * Open the Godot editor to the project and let it reimport all the assets then close it
 * Open the editor again and hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
