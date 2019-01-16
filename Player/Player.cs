@@ -493,7 +493,8 @@ public class Player : KinematicBody
 		}
 
 		Vector3 OldPos = Translation;
-		MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 4, Mathf.Deg2Rad(60));
+		//100 bounces in order to allow players to go up slopes more quickly
+		MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 		//MoveAndSlide multiplies by *physics* delta internally
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
