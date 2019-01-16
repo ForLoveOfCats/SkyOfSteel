@@ -277,7 +277,7 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0d)
 		{
-			if(IsOnFloor())
+			if(IsOnFloor() && ShouldDo.LocalPlayerJump())
 			{
 				Momentum.y = JumpStartForce;
 				IsJumping = true;

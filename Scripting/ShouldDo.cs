@@ -62,6 +62,12 @@ class ShouldDo
 	}
 
 
+	public static bool LocalPlayerJump()
+	{
+		return CheckFunctionClient("_local_player_jump", new object[] {});
+	}
+
+
 	public static bool LocalPlayerRotate(float Rotation)
 	{
 		return CheckFunctionClient("_local_player_rotate", Scripting.ToJs(new object[] {Rotation}));
