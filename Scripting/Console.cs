@@ -31,24 +31,40 @@ public class Console : Node
 	}
 
 
-	public override void _Process(float delta)
+	public override void _Input(InputEvent Event)
 	{
-		if(Input.IsActionJustPressed("ui_up") && InputLine.HasFocus() && HistLocal > 0)
+		if(Event.IsAction("ui_up"))
 		{
-			HistLocal -= 1;
-			InputLine.Text = History[HistLocal];
+			GetTree().SetInputAsHandled();
+			InputLine.GrabFocus();
+
+			if(Input.IsActionJustPressed("ui_up") && HistLocal > 0)
+			{
+				HistLocal -= 1;
+				InputLine.Text = History[HistLocal];
+
+				InputLine.CaretPosition = InputLine.Text.Length;
+			}
 		}
 
-		if(Input.IsActionJustPressed("ui_down") && InputLine.HasFocus() && HistLocal < History.Count)
+		if(Event.IsAction("ui_down"))
 		{
-			HistLocal += 1;
-			if(HistLocal == History.Count)
+			GetTree().SetInputAsHandled();
+			InputLine.GrabFocus();
+
+			if(Input.IsActionJustPressed("ui_down") && HistLocal < History.Count)
 			{
-				InputLine.Text = "";
-			}
-			else
-			{
-				InputLine.Text = History[HistLocal];
+				HistLocal += 1;
+				if(HistLocal == History.Count)
+				{
+					InputLine.Text = "";
+				}
+				else
+				{
+					InputLine.Text = History[HistLocal];
+				}
+
+				InputLine.CaretPosition = InputLine.Text.Length;
 			}
 		}
 	}
