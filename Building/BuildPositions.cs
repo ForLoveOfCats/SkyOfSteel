@@ -84,6 +84,10 @@ public class BuildPositions
 				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));
 			}
 
+			case(Items.TYPE.WALL):{
+				return Base.Translation + new Vector3(0,12,0);
+			}
+
 			default:
 				return null;
 		}

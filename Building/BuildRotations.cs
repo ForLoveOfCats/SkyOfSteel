@@ -14,6 +14,11 @@ public class BuildRotations
 
 	private static Vector3 WallBranch(Structure Base)
 	{
+		if(Base.Type == Items.TYPE.WALL)
+		{
+			return Base.RotationDegrees;
+		}
+
 		return new Vector3(0, SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
 	}
 
