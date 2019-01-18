@@ -46,9 +46,14 @@ public class Net : Node
 
 		Building.RemoteLoadedChunks.Add(Id, new List<Tuple<int,int>>());
 
-		if(GetTree().IsNetworkServer() && Scripting.ClientGmScript != null)
+		if(GetTree().IsNetworkServer())
 		{
-			Scripting.Self.RpcId(Id, nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
+			if(Scripting.ClientGmScript != null)
+			{
+				Scripting.Self.RpcId(Id, nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
+			}
+
+			RpcId(Id, nameof(ReadyToRequestWorld), new object[] {});
 		}
 	}
 
@@ -129,6 +134,13 @@ public class Net : Node
 		Self.GetTree().SetNetworkPeer(null);
 		PeerList.Clear();
 		Game.PlayerList.Clear();
+	}
+
+
+	[Remote]
+	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
+	{
+		UnloadAndRequestChunks();
 	}
 
 

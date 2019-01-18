@@ -68,7 +68,7 @@ public class Player : KinematicBody
 			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
 			GetParent().AddChild(GhostInstance);
 			GhostInstance.Hide();
-			Net.UnloadAndRequestChunks();
+			// Net.UnloadAndRequestChunks();
 		}
 		else
 		{
