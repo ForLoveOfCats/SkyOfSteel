@@ -68,7 +68,7 @@ public class Player : KinematicBody
 			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
 			GetParent().AddChild(GhostInstance);
 			GhostInstance.Hide();
-			UnloadAndRequestChunks();
+			Net.UnloadAndRequestChunks();
 		}
 		else
 		{
@@ -404,51 +404,6 @@ public class Player : KinematicBody
 	}
 
 
-	public void UnloadAndRequestChunks()
-	{
-		if(Game.StructureRoot == null)
-		{
-			//World is not setup yet
-			//Prevents NullReferenceException
-			return;
-		}
-
-		foreach(Collections.KeyValuePair<System.Tuple<int, int>, Collections.List<Structure>> Chunk in Building.Chunks)
-		{
-			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			if(ChunkPos.DistanceTo(new Vector3(Translation.x,0,Translation.z)) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
-			{
-				if(GetTree().IsNetworkServer())
-				{
-					foreach(Structure CurrentStructure in Chunk.Value)
-					{
-						CurrentStructure.Show();
-					}
-				}
-			}
-			else
-			{
-				foreach(Structure CurrentStructure in Chunk.Value)
-				{
-					if(GetTree().IsNetworkServer())
-					{
-						CurrentStructure.Hide();
-					}
-					else
-					{
-						CurrentStructure.QueueFree();
-					}
-				}
-			}
-		}
-
-		if(!GetTree().IsNetworkServer())
-		{
-			Building.Self.RequestChunks(GetTree().GetNetworkUniqueId(), Translation, Game.ChunkRenderDistance);
-		}
-	}
-
-
 	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Possessed)
@@ -516,7 +471,7 @@ public class Player : KinematicBody
 		if(!Building.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
 			CurrentChunk = Building.GetChunkTuple(Translation);
-			UnloadAndRequestChunks();
+			Net.UnloadAndRequestChunks();
 		}
 	}
 

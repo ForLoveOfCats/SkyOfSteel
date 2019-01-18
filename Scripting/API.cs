@@ -177,7 +177,7 @@ public class API : Node
 						return;
 					}
 					Game.ChunkRenderDistance = (int)Distance;
-					Game.PossessedPlayer.UnloadAndRequestChunks();
+					Net.UnloadAndRequestChunks();
 				})};
 
 			case "chunk_render_distance_get":

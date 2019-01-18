@@ -130,4 +130,49 @@ public class Net : Node
 		PeerList.Clear();
 		Game.PlayerList.Clear();
 	}
+
+
+	public static void UnloadAndRequestChunks()
+	{
+		if(Game.StructureRoot == null)
+		{
+			//World is not setup yet
+			//Prevents NullReferenceException
+			return;
+		}
+
+		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Building.Chunks)
+		{
+			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
+			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			{
+				if(Self.GetTree().IsNetworkServer())
+				{
+					foreach(Structure CurrentStructure in Chunk.Value)
+					{
+						CurrentStructure.Show();
+					}
+				}
+			}
+			else
+			{
+				foreach(Structure CurrentStructure in Chunk.Value)
+				{
+					if(Self.GetTree().IsNetworkServer())
+					{
+						CurrentStructure.Hide();
+					}
+					else
+					{
+						CurrentStructure.QueueFree();
+					}
+				}
+			}
+		}
+
+		if(!Self.GetTree().IsNetworkServer())
+		{
+			Building.Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+		}
+	}
 }
