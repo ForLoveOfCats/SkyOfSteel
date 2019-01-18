@@ -153,6 +153,7 @@ public class Net : Node
 			return;
 		}
 
+		List<Tuple<int,int>> ToRemove = new List<Tuple<int,int>>();
 		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Building.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
@@ -179,7 +180,15 @@ public class Net : Node
 						CurrentStructure.QueueFree();
 					}
 				}
+				if(!Self.GetTree().IsNetworkServer())
+				{
+					ToRemove.Add(Chunk.Key);
+				}
 			}
+		}
+		foreach(Tuple<int,int> Chunk in ToRemove)
+		{
+			Building.Chunks.Remove(Chunk);
 		}
 
 		if(!Self.GetTree().IsNetworkServer())
