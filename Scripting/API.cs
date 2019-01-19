@@ -190,6 +190,11 @@ public class API : Node
 
 			case "load":
 				return new List<object> {Name, new Action(delegate(){
+					if(Game.StructureRoot == null)
+					{
+						Console.Print("ERROR: Cannot load savegame when not hosting");
+						return;
+					}
 					Building.LoadWorld("TestSave");
 				})};
 
