@@ -244,7 +244,7 @@ public class Building : Node
 				{
 					LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
 				}
-				catch(Newtonsoft.Json.JsonReaderException e)
+				catch(Newtonsoft.Json.JsonReaderException)
 				{
 					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveName}'");
 					continue;
