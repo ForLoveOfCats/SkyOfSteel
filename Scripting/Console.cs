@@ -82,6 +82,18 @@ public class Console : Node
 	}
 
 
+	public static void ThrowPrint(string ToThrow)
+	{
+		Print($"ERROR: {ToThrow}");
+	}
+
+
+	public static void ThrowLog(string ToThrow)
+	{
+		Log($"ERROR: {ToThrow}");
+	}
+
+
 	public static void Execute(string Command)
 	{
 		Console.Print("\n >>> " + Command);

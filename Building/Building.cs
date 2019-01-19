@@ -246,7 +246,7 @@ public class Building : Node
 				}
 				catch(Newtonsoft.Json.JsonReaderException e)
 				{
-					Console.Log($"ERROR: Invalid chunk file {FileName} loading save '{SaveName}'");
+					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveName}'");
 					continue;
 				}
 
@@ -264,7 +264,7 @@ public class Building : Node
 		}
 		else
 		{
-			Console.Print($"ERROR: Save '{SaveName}' does not exist");
+			Console.ThrowPrint($"Save '{SaveName}' does not exist");
 		}
 	}
 

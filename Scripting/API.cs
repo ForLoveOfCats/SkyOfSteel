@@ -162,7 +162,7 @@ public class API : Node
 					}
 					else
 					{
-						Console.Print("Error: Cannot set gamemode as client");
+						Console.ThrowPrint("Cannot set gamemode as client");
 					}
 				})};
 
@@ -173,7 +173,7 @@ public class API : Node
 				return new List<object> {Name, new Action<double>(delegate(double Distance){
 					if(Distance < 2d)
 					{
-						Console.Print("Cannot set render distance value lower than two chunks");
+						Console.ThrowPrint("Cannot set render distance value lower than two chunks");
 						return;
 					}
 					Game.ChunkRenderDistance = (int)Distance;
@@ -192,7 +192,7 @@ public class API : Node
 				return new List<object> {Name, new Action(delegate(){
 					if(Game.StructureRoot == null)
 					{
-						Console.Print("ERROR: Cannot load savegame when not hosting");
+						Console.ThrowPrint("Cannot load savegame when not hosting");
 						return;
 					}
 					Building.LoadWorld("TestSave");

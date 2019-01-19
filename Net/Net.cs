@@ -79,11 +79,11 @@ public class Net : Node
 		{
 			if(Self.GetTree().IsNetworkServer())
 			{
-				Console.Print("Error: Cannot host when already hosting");
+				Console.ThrowPrint("Cannot host when already hosting");
 			}
 			else
 			{
-				Console.Print("Error: Cannot host when connected to a server");
+				Console.ThrowPrint("Cannot host when connected to a server");
 			}
 			return;
 		}
@@ -109,11 +109,11 @@ public class Net : Node
 		{
 			if(Self.GetTree().IsNetworkServer())
 			{
-				Console.Print("Error: Cannot connect when hosting");
+				Console.ThrowPrint("Cannot connect when hosting");
 			}
 			else
 			{
-				Console.Print("Error: Cannot connect when already connected to a server");
+				Console.ThrowPrint("Cannot connect when already connected to a server");
 			}
 			return;
 		}
