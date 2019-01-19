@@ -12,7 +12,7 @@ Contributions are welcome!
 - [SkyOfSteel](#skyofsteel)
         - [Welcome to the GitHub repository of the game SkyOfSteel!](#welcome-to-the-github-repository-of-the-game-skyofsteel)
 - [Table of Contents](#table-of-contents)
-    - [Introductory Video](#introductory-video)
+    - [Videos](#videos)
     - [Building](#building)
         - [Prerequisites](#prerequisites)
         - [Performing the Build](#performing-the-build)
@@ -25,8 +25,10 @@ Contributions are welcome!
     - [License](#license)
 
 
-## Introductory Video
-[View the video on Youtube](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Introductory videp link")
+## Videos
+[View the devlog one video on Youtube](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
+
+[View the introductory video on Youtube(Out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
 
 
 ## Building
