@@ -479,7 +479,7 @@ public class Player : KinematicBody
 			}
 		}
 
-		if(SprintSens > 0d)
+		if(SprintSens > 0d && !IsSprinting)
 		{
 			IsSprinting = true;
 
@@ -493,7 +493,7 @@ public class Player : KinematicBody
 				Momentum.x = Momentum.x*SprintMultiplyer;
 			}
 		}
-		else if(IsSprinting)
+		else if(SprintSens <= 0d && IsSprinting)
 		{
 			IsSprinting = false;
 
