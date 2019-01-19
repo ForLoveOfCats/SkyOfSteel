@@ -24,6 +24,7 @@ public class Player : KinematicBody
 	private int RightAxis = 0;
 	public bool IsSprinting = false;
 	public bool IsJumping = false;
+	public bool WasOnFloor = false;
 	private float JumpTimer = 0f;
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
@@ -35,6 +36,7 @@ public class Player : KinematicBody
 	public double BackwardSens = 0d;
 	public double RightSens = 0d;
 	public double LeftSens = 0d;
+	public double SprintSens = 0d;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -164,13 +166,17 @@ public class Player : KinematicBody
 		{
 			BackwardSens = 0d;
 			ForwardAxis = 1;
-			if(IsSprinting)
+
+			if(IsOnFloor())
 			{
-				Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-			}
-			else
-			{
-				Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+				if(IsSprinting)
+				{
+					Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+				}
+				else
+				{
+					Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+				}
 			}
 		}
 		else if(ForwardAxis > 0)
@@ -186,15 +192,19 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			ForwardSens = 0d;
-			if(IsSprinting)
-			{
-				Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-			}
-			else
-			{
-				Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-			}
 			ForwardAxis = -1;
+
+			if(IsOnFloor())
+			{
+				if(IsSprinting)
+				{
+					Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+				}
+				else
+				{
+					Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+				}
+			}
 		}
 		else if(ForwardAxis < 0)
 		{
@@ -209,15 +219,19 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			LeftSens = 0d;
-			if(IsSprinting)
-			{
-				Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-			}
-			else
-			{
-				Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-			}
 			RightAxis = 1;
+
+			if(IsOnFloor())
+			{
+				if(IsSprinting)
+				{
+					Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+				}
+				else
+				{
+					Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+				}
+			}
 		}
 		else if(RightAxis > 0)
 		{
@@ -232,15 +246,19 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			RightSens = 0d;
-			if(IsSprinting)
-			{
-				Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-			}
-			else
-			{
-				Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-			}
 			RightAxis = -1;
+
+			if(IsOnFloor())
+			{
+				if(IsSprinting)
+				{
+					Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+				}
+				else
+				{
+					Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+				}
+			}
 		}
 		else if(RightAxis < 0)
 		{
@@ -251,24 +269,33 @@ public class Player : KinematicBody
 
 	public void Sprint(double Sens)
 	{
+		SprintSens = Sens;
 		if(Sens > 0d)
 		{
-			IsSprinting = true;
-			if(ForwardAxis != 0)
+			if(IsOnFloor())
 			{
-				Momentum.z = Momentum.z*SprintMultiplyer;
-			}
+				IsSprinting = true;
 
-			if(RightAxis != 0)
-			{
-				Momentum.x = Momentum.x*SprintMultiplyer;
+				if(ForwardAxis != 0)
+				{
+					Momentum.z = Momentum.z*SprintMultiplyer;
+				}
+
+				if(RightAxis != 0)
+				{
+					Momentum.x = Momentum.x*SprintMultiplyer;
+				}
 			}
 		}
 		else
 		{
-			IsSprinting = false;
-			Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
-			Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
+			if(IsOnFloor())
+			{
+				IsSprinting = false;
+
+				Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
+				Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
+			}
 		}
 	}
 
@@ -404,12 +431,90 @@ public class Player : KinematicBody
 	}
 
 
+	private void OnLand()
+	{
+		if(ForwardAxis == 1)
+		{
+			if(IsSprinting)
+			{
+				Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+			}
+			else
+			{
+				Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+			}
+		}
+		else if(ForwardAxis == -1)
+		{
+			if(IsSprinting)
+			{
+				Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+			}
+			else
+			{
+				Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+			}
+		}
+
+		if(RightAxis == 1)
+		{
+			if(IsSprinting)
+			{
+				Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+			}
+			else
+			{
+				Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+			}
+		}
+		else if(RightAxis == -1)
+		{
+			if(IsSprinting)
+			{
+				Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+			}
+			else
+			{
+				Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+			}
+		}
+
+		if(SprintSens > 0d)
+		{
+			IsSprinting = true;
+
+			if(ForwardAxis != 0)
+			{
+				Momentum.z = Momentum.z*SprintMultiplyer;
+			}
+
+			if(RightAxis != 0)
+			{
+				Momentum.x = Momentum.x*SprintMultiplyer;
+			}
+		}
+		else if(IsSprinting)
+		{
+			IsSprinting = false;
+
+			Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
+			Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);	
+		}
+	}
+
+
 	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Possessed)
 		{
 			return;
 		}
+
+		if(!WasOnFloor && IsOnFloor())
+		{
+			OnLand();
+		}
+		WasOnFloor = IsOnFloor();
 
 		if(ForwardAxis == 0 && IsOnFloor())
 		{
