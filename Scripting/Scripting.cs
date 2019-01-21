@@ -180,6 +180,7 @@ public class Scripting : Node
 	[Remote]
 	public void NetLoadClientScript(string Script)
 	{
+		Console.Log("Recieved client.js from server, executing");
 		SetupClientEngine();
 		ClientGmEngine.Execute(Script);
 	}
