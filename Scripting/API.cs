@@ -35,6 +35,11 @@ public class API : Node
 
 			case "disconnect":
 				return new List<object> {Name, new Action(delegate(){
+					if(Game.StructureRoot == null)
+					{
+						Console.ThrowPrint("Neither connected nor hosting");
+						return;
+					}
 					Net.Disconnect();
 				})};
 
