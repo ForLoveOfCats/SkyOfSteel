@@ -161,108 +161,120 @@ public class Player : KinematicBody
 
 	public void ForwardMove(double Sens)
 	{
-		ForwardSens = Sens;
-		if(Sens > 0d)
+		if(ShouldDo.LocalPlayerForward(Sens))
 		{
-			BackwardSens = 0d;
-			ForwardAxis = 1;
-
-			if(IsOnFloor())
+			ForwardSens = Sens;
+			if(Sens > 0d)
 			{
-				if(IsSprinting)
+				BackwardSens = 0d;
+				ForwardAxis = 1;
+
+				if(IsOnFloor())
 				{
-					Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-				}
-				else
-				{
-					Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+					if(IsSprinting)
+					{
+						Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+					}
+					else
+					{
+						Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+					}
 				}
 			}
-		}
-		else if(ForwardAxis > 0)
-		{
-			ForwardAxis = 0;
+			else if(ForwardAxis > 0)
+			{
+				ForwardAxis = 0;
+			}
 		}
 	}
 
 
 	public void BackwardMove(double Sens)
 	{
-		BackwardSens = Sens;
-		if(Sens > 0d)
+		if(ShouldDo.LocalPlayerBackward(Sens))
 		{
-			ForwardSens = 0d;
-			ForwardAxis = -1;
-
-			if(IsOnFloor())
+			BackwardSens = Sens;
+			if(Sens > 0d)
 			{
-				if(IsSprinting)
+				ForwardSens = 0d;
+				ForwardAxis = -1;
+
+				if(IsOnFloor())
 				{
-					Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-				}
-				else
-				{
-					Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+					if(IsSprinting)
+					{
+						Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+					}
+					else
+					{
+						Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+					}
 				}
 			}
-		}
-		else if(ForwardAxis < 0)
-		{
-			ForwardAxis = 0;
+			else if(ForwardAxis < 0)
+			{
+				ForwardAxis = 0;
+			}
 		}
 	}
 
 
 	public void RightMove(double Sens)
 	{
-		RightSens = Sens;
-		if(Sens > 0d)
+		if(ShouldDo.LocalPlayerRight(Sens))
 		{
-			LeftSens = 0d;
-			RightAxis = 1;
-
-			if(IsOnFloor())
+			RightSens = Sens;
+			if(Sens > 0d)
 			{
-				if(IsSprinting)
+				LeftSens = 0d;
+				RightAxis = 1;
+
+				if(IsOnFloor())
 				{
-					Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-				}
-				else
-				{
-					Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+					if(IsSprinting)
+					{
+						Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+					}
+					else
+					{
+						Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+					}
 				}
 			}
-		}
-		else if(RightAxis > 0)
-		{
-			RightAxis = 0;
+			else if(RightAxis > 0)
+			{
+				RightAxis = 0;
+			}
 		}
 	}
 
 
 	public void LeftMove(double Sens)
 	{
-		LeftSens = Sens;
-		if(Sens > 0d)
+		if(ShouldDo.LocalPlayerLeft(Sens))
 		{
-			RightSens = 0d;
-			RightAxis = -1;
-
-			if(IsOnFloor())
+			LeftSens = Sens;
+			if(Sens > 0d)
 			{
-				if(IsSprinting)
+				RightSens = 0d;
+				RightAxis = -1;
+
+				if(IsOnFloor())
 				{
-					Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-				}
-				else
-				{
-					Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+					if(IsSprinting)
+					{
+						Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+					}
+					else
+					{
+						Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+					}
 				}
 			}
-		}
-		else if(RightAxis < 0)
-		{
-			RightAxis = 0;
+			else if(RightAxis < 0)
+			{
+				RightAxis = 0;
+			}
 		}
 	}
 
