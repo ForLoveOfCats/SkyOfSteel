@@ -66,7 +66,7 @@ public class API : Node
 					Bindings.UnBind(FunctionName);
 				})};
 
-			case "player_input_forward_set":
+			case "player_input_forward":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.ForwardMove(Sens);
 				})};
@@ -74,7 +74,7 @@ public class API : Node
 			case "player_input_forward_get":
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.ForwardSens;})};
 
-			case "player_input_backward_set":
+			case "player_input_backward":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.BackwardMove(Sens);
 				})};
@@ -82,7 +82,7 @@ public class API : Node
 			case "player_input_backward_get":
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.BackwardSens;})};
 
-			case "player_input_right_set":
+			case "player_input_right":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.RightMove(Sens);
 				})};
@@ -90,7 +90,7 @@ public class API : Node
 			case "player_input_right_get":
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.RightSens;})};
 
-			case "player_input_left_set":
+			case "player_input_left":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
@@ -98,7 +98,7 @@ public class API : Node
 			case "player_input_left_get":
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.LeftSens;})};
 
-			case "player_input_sprint_set":
+			case "player_input_sprint":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
@@ -106,7 +106,7 @@ public class API : Node
 			case "player_input_sprint_get":
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsSprinting ? 1d : 0d;})};
 
-			case "player_input_jump_set":
+			case "player_input_jump":
 				return new List<object> {Name, new Action<double>(delegate(double Sens){
 					Game.PossessedPlayer.Jump(Sens);
 				})};
@@ -159,7 +159,7 @@ public class API : Node
 					Game.PossessedPlayer.SecondaryFire(Sens);
 				})};
 
-			case "gamemode_set":
+			case "gamemode":
 				return new List<object> {Name, new Action<string>(delegate(string GameModeName){
 					if(Game.Self.GetTree().GetNetworkPeer() != null && Game.Self.GetTree().GetNetworkUniqueId() == 1)
 					{
@@ -174,7 +174,7 @@ public class API : Node
 			case "gamemode_get":
 				return new List<object> {Name, new Func<string>(() => {return Scripting.GamemodeName;})};
 
-			case "chunk_render_distance_set":
+			case "chunk_render_distance":
 				return new List<object> {Name, new Action<double>(delegate(double Distance){
 					if(Distance < 2d)
 					{
@@ -225,17 +225,17 @@ public class API : Node
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));
-				Output.Add(GetDelCall("player_input_forward_set"));
+				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));
-				Output.Add(GetDelCall("player_input_backward_set"));
+				Output.Add(GetDelCall("player_input_backward"));
 				Output.Add(GetDelCall("player_input_backward_get"));
-				Output.Add(GetDelCall("player_input_right_set"));
+				Output.Add(GetDelCall("player_input_right"));
 				Output.Add(GetDelCall("player_input_right_get"));
-				Output.Add(GetDelCall("player_input_left_set"));
+				Output.Add(GetDelCall("player_input_left"));
 				Output.Add(GetDelCall("player_input_left_get"));
-				Output.Add(GetDelCall("player_input_sprint_set"));
+				Output.Add(GetDelCall("player_input_sprint"));
 				Output.Add(GetDelCall("player_input_sprint_get"));
-				Output.Add(GetDelCall("player_input_jump_set"));
+				Output.Add(GetDelCall("player_input_jump"));
 				Output.Add(GetDelCall("player_input_jump_get"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
 				Output.Add(GetDelCall("player_input_inventory_down"));
@@ -246,9 +246,9 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_build_rotate"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
-				Output.Add(GetDelCall("gamemode_set"));
+				Output.Add(GetDelCall("gamemode"));
 				Output.Add(GetDelCall("gamemode_get"));
-				Output.Add(GetDelCall("chunk_render_distance_set"));
+				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("save"));
 				Output.Add(GetDelCall("load"));

@@ -1,9 +1,9 @@
-bind("player_input_forward_set", "W");
-bind("player_input_backward_set", "S");
-bind("player_input_right_set", "D");
-bind("player_input_left_set", "A");
-bind("player_input_sprint_set", "Shift");
-bind("player_input_jump_set", "Space");
+bind("player_input_forward", "W");
+bind("player_input_backward", "S");
+bind("player_input_right", "D");
+bind("player_input_left", "A");
+bind("player_input_sprint", "Shift");
+bind("player_input_jump", "Space");
 
 bind("player_input_inventory_up", "WheelUp");
 bind("player_input_inventory_down", "WheelDown");
@@ -18,4 +18,4 @@ bind("player_input_build_rotate", "R");
 bind("player_input_primary_fire", "MouseOne");
 bind("player_input_secondary_fire", "MouseTwo");
 
-chunk_render_distance_set(5);
+chunk_render_distance(5);
