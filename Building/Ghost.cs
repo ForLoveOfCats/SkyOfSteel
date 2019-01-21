@@ -128,8 +128,20 @@ public class Ghost : Area
 		OldCanBuild.RemoveAt(0);
 		if(GetOverlappingBodies().Count > 0)
 		{
-			GhostMesh.MaterialOverride = RedMat;
-			OldCanBuild.Add(false);
+			bool _CanBuild = true;
+			foreach(Node Body in GetOverlappingBodies())
+			{
+				if(Body is Structure && ((Structure)Body).Type == Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot].Type)
+				{
+					GhostMesh.MaterialOverride = RedMat;
+					_CanBuild = false;
+				}
+			}
+			OldCanBuild.Add(_CanBuild);
+			if(_CanBuild)
+			{
+				GhostMesh.MaterialOverride = GreenMat;
+			}
 		}
 		else
 		{
