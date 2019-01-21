@@ -392,7 +392,7 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null && GhostInstance.CanBuild)
 					{
-						Building.PlaceOn(Hit, Inventory[InventorySlot].Type, 1);
+						Building.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}

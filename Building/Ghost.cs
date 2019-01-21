@@ -9,15 +9,15 @@ public class Ghost : Area
 	MeshInstance GhostMesh;
 
 	private static Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
-	Items.TYPE CurrentMeshType;
 
-
+	public Items.TYPE CurrentMeshType;
 	public bool CanBuild = false;
 
-	System.Collections.Generic.List<Vector3> OldPositions;
-	System.Collections.Generic.List<Vector3> OldRotations;
-	System.Collections.Generic.List<bool> OldVisible;
-	System.Collections.Generic.List<bool> OldCanBuild;
+	List<Items.TYPE> OldType;	
+	List<Vector3> OldPositions;
+	List<Vector3> OldRotations;
+	List<bool> OldVisible;
+	List<bool> OldCanBuild;
 
 	Ghost()
 	{
@@ -30,22 +30,27 @@ public class Ghost : Area
 		//Godot's `Area` object likes to not register body entry's for several
 		  //physics ticks so these postion, rotation, and visibility queues
 		  //are required to prevent flashes of the incorrect color/build abilty
-		OldPositions = new System.Collections.Generic.List<Vector3>()
+		OldType = new List<Items.TYPE>()
+			{
+				Items.TYPE.ERROR,
+				Items.TYPE.ERROR
+			};
+		OldPositions = new List<Vector3>()
 			{
 				new Vector3(0,0,0),
 				new Vector3(0,0,0)
 			};
-		OldRotations = new System.Collections.Generic.List<Vector3>()
+		OldRotations = new List<Vector3>()
 			{
 				new Vector3(0,0,0),
 				new Vector3(0,0,0)
 			};
-		OldVisible = new System.Collections.Generic.List<bool>()
+		OldVisible = new List<bool>()
 			{
 				false,
 				false,
 			};
-		OldCanBuild = new System.Collections.Generic.List<bool>()
+		OldCanBuild = new List<bool>()
 			{
 				false,
 				false,
@@ -86,16 +91,12 @@ public class Ghost : Area
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-		if(Item != null && Item.Type != CurrentMeshType) //null means no item in slot
-		{
-			GhostMesh.Mesh = Meshes[Item.Type];
-			CurrentMeshType = Item.Type;
-		}
-
 		GhostMesh.Translation = OldPositions[0];
 		GhostMesh.RotationDegrees = OldRotations[0];
 		GhostMesh.Visible = OldVisible[0];
+
+		GhostMesh.Mesh = Meshes[OldType[0]];
+		CurrentMeshType = OldType[0];
 
 		Player Plr = Game.PossessedPlayer;
 		OldVisible.RemoveAt(0);
@@ -154,5 +155,12 @@ public class Ghost : Area
 		OldPositions.Add(Translation);
 		OldRotations.RemoveAt(0);
 		OldRotations.Add(RotationDegrees);
+
+		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
+		if(Item != null && Item.Type != CurrentMeshType) //null means no item in slot
+		{
+			OldType.RemoveAt(0);
+			OldType.Add(Item.Type);
+		}
 	}
 }
