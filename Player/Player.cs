@@ -28,6 +28,7 @@ public class Player : KinematicBody
 	private float JumpTimer = 0f;
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
+	private float AirLookHorizontal = 0;
 	private float LookVertical = 0;
 	private bool IsPrimaryFiring = false;
 	private bool IsSecondaryFiring = false;
@@ -522,9 +523,13 @@ public class Player : KinematicBody
 			return;
 		}
 
-		if(!WasOnFloor && IsOnFloor())
+		if(IsOnFloor())
 		{
-			OnLand();
+			AirLookHorizontal = LookHorizontal;
+			if(!WasOnFloor)
+			{
+				OnLand();
+			}
 		}
 		WasOnFloor = IsOnFloor();
 
@@ -566,8 +571,15 @@ public class Player : KinematicBody
 
 		Vector3 OldPos = Translation;
 		//100 bounces in order to allow players to go up slopes more quickly
-		MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 		//MoveAndSlide multiplies by *physics* delta internally
+		if(IsOnFloor())
+		{
+			MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+		}
+		else
+		{
+			MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(AirLookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
 		if(NewPos != OldPos)
