@@ -13,7 +13,7 @@ public class Ghost : Area
 	public Items.TYPE CurrentMeshType;
 	public bool CanBuild = false;
 
-	List<Items.TYPE> OldType;	
+	List<Items.TYPE> OldType;
 	List<Vector3> OldPositions;
 	List<Vector3> OldRotations;
 	List<bool> OldVisible;
@@ -132,7 +132,8 @@ public class Ghost : Area
 			bool _CanBuild = true;
 			foreach(Node Body in GetOverlappingBodies())
 			{
-				if(Body is Structure && ((Structure)Body).Type == Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot].Type)
+				Items.Instance SelectedItem = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
+				if(SelectedItem != null && Body is Structure && ((Structure)Body).Type == SelectedItem.Type)
 				{
 					GhostMesh.MaterialOverride = RedMat;
 					_CanBuild = false;
