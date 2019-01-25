@@ -89,6 +89,11 @@ public class GridClass
 	{
 		List<Structure> Branches;
 		Dict.TryGetValue(Position, out Branches);
+
+		if(Branches == null)
+		{
+			return new List<Structure>() {};
+		}
 		return Branches;
 	}
 }
