@@ -59,6 +59,7 @@
     <Compile Include="Building\BuildPositions.cs" />
     <Compile Include="Building\BuildRotations.cs" />
     <Compile Include="Building\Ghost.cs" />
+    <Compile Include="Building\Grid.cs" />
     <Compile Include="Building\SavedChunk.cs" />
     <Compile Include="Building\SavedStructure.cs" />
     <Compile Include="Building\Structure.cs" />

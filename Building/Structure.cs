@@ -35,6 +35,7 @@ public class Structure : StaticBody
 			Building.Chunks.Remove(ChunkTuple);
 		}
 
+		Building.Grid.Remove(this);
 		QueueFree();
 	}
 }
