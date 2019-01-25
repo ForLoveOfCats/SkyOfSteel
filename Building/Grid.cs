@@ -9,7 +9,7 @@ public class GridClass
 	private Dictionary<Vector3, List<Structure>> Dict = new Dictionary<Vector3, List<Structure>>();
 
 
-	private Vector3 GetGridArea(Vector3 Position)
+	private Vector3 GetArea(Vector3 Position)
 	{
 		return new Vector3(FloorToInt(Position.x/PlatformSize)*PlatformSize,
 						   FloorToInt(Position.y/PlatformSize)*PlatformSize,
@@ -17,18 +17,18 @@ public class GridClass
 	}
 
 
-	private List<Vector3> GetGridAreas(Vector3 Position)
+	private List<Vector3> GetAreas(Vector3 Position)
 	{
 		List<Vector3> Out = new List<Vector3>();
-		Out.Add(GetGridArea(Position));
+		Out.Add(GetArea(Position));
 
 		if(Position.x % PlatformSize != 0)
 		{
-			Out.Add(GetGridArea(Position + new Vector3(PlatformSize/2,0,0)));
+			Out.Add(GetArea(Position + new Vector3(PlatformSize/2,0,0)));
 		}
 		else if(Position.z % PlatformSize != 0)
 		{
-			Out.Add(GetGridArea(Position + new Vector3(0,0,PlatformSize/2)));
+			Out.Add(GetArea(Position + new Vector3(0,0,PlatformSize/2)));
 		}
 
 		return Out;
@@ -52,7 +52,7 @@ public class GridClass
 	{
 		List<Structure> Branches;
 
-		foreach(Vector3 Area in GetGridAreas(Branch.Translation))
+		foreach(Vector3 Area in GetAreas(Branch.Translation))
 		{
 			Dict.TryGetValue(Area, out Branches);
 			AddBranch(ref Branches, Branch);
@@ -63,7 +63,7 @@ public class GridClass
 
 	public void Remove(Structure Branch)
 	{
-		foreach(Vector3 Area in GetGridAreas(Branch.Translation))
+		foreach(Vector3 Area in GetAreas(Branch.Translation))
 		{
 			List<Structure> Branches;
 			Dict.TryGetValue(Area, out Branches);
