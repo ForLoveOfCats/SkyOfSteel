@@ -85,6 +85,12 @@ public class GridClass
 	}
 
 
+	public void Clear()
+	{
+		Dict.Clear();
+	}
+
+
 	public List<Structure> Get(Vector3 Position)
 	{
 		List<Structure> Branches;
