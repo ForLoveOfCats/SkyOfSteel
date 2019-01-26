@@ -16,6 +16,8 @@ public class Scripting : Node
 	public static Scripting Self;
 	Scripting()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 
 		ConsoleEngine = new Jurassic.ScriptEngine();

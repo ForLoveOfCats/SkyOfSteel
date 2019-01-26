@@ -19,6 +19,8 @@ public class Building : Node
 
 	Building()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 
 		Directory StructureDir = new Directory();

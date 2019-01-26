@@ -49,6 +49,8 @@ public class Player : KinematicBody
 
 	Player()
 	{
+		if(Engine.EditorHint) {return;}
+
 		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
 		ItemGive(new Items.Instance(Items.TYPE.WALL));
 		ItemGive(new Items.Instance(Items.TYPE.SLOPE));

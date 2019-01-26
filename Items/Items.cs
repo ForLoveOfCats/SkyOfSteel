@@ -25,6 +25,8 @@ public class Items : Node
 
 	Items()
 	{
+		if(Engine.EditorHint) {return;}
+
 		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{
 			object Loaded = GD.Load("res://Items/Thumbnails/" + Type.ToString() + ".png");

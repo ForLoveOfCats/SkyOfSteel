@@ -15,6 +15,8 @@ public class Net : Node
 	public static Net Self;
 	Net()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 	}
 

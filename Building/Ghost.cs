@@ -21,6 +21,8 @@ public class Ghost : Area
 
 	Ghost()
 	{
+		if(Engine.EditorHint) {return;}
+
 		GreenMat = GD.Load("res://Building/Materials/GreenGhost.tres") as Material;
 		RedMat = GD.Load("res://Building/Materials/RedGhost.tres") as Material;
 
