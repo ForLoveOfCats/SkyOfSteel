@@ -65,13 +65,13 @@ public class Ghost : Area
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
 			File ToLoad = new File();
-			if(ToLoad.FileExists("res://Building/Meshes/" + Type.ToString() + ".obj"))
+			if(ToLoad.FileExists("res://Items/Meshes/" + Type.ToString() + ".obj"))
 			{
-				Meshes.Add(Type, GD.Load("res://Building/Meshes/" + Type.ToString() + ".obj") as Mesh);
+				Meshes.Add(Type, GD.Load("res://Items/Meshes/" + Type.ToString() + ".obj") as Mesh);
 			}
 			else
 			{
-				Meshes.Add(Type, GD.Load("res://Building/Meshes/ERROR.obj") as Mesh);
+				Meshes.Add(Type, GD.Load("res://Items/Meshes/ERROR.obj") as Mesh);
 			}
 		}
 	}
