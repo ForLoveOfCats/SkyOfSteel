@@ -399,7 +399,7 @@ public class Player : KinematicBody
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
 
-				if(!IsOnFloor())
+				if(!IsOnFloor() && RightAxis > 0)
 				{
 					float Multiplyer = AirStrafeChangeMultiplyer();
 					if(Multiplyer < 1)
@@ -427,7 +427,7 @@ public class Player : KinematicBody
 				LookHorizontal += Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
 
-				if(!IsOnFloor())
+				if(!IsOnFloor() && RightAxis < 0)
 				{
 					float Multiplyer = AirStrafeChangeMultiplyer();
 					if(Multiplyer < 1)
