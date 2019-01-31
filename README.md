@@ -42,7 +42,7 @@ Contributions are welcome!
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Cd into the project root and run `nuget restore SkyOfSteel.sln`
+* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json as the only dependency)
 * Open the Godot editor to the project and let it reimport all the assets then hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
@@ -134,6 +134,7 @@ Also feel free to follow me (ForLoveOfCats) on
 
 ## License
 
-SkyOfSteel is licensed under the MIT license and utilizes the wonderful
-[Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page") project which
-is also under the MIT license
+SkyOfSteel is licensed under the MIT license and utilizes both
+[Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
+and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
+which are both under the MIT license as well.
