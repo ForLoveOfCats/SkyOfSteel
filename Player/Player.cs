@@ -1,6 +1,6 @@
 using Godot;
+using System;
 using static SteelMath;
-using Collections = System.Collections.Generic;
 
 
 public class Player : KinematicBody
@@ -88,7 +88,7 @@ public class Player : KinematicBody
 
 
 	//Returns a float difference between the momentum direction and AirLookHorizontal as a percentage 1.0-0.0 (0 when on floor)
-	private float AirLookVelSimilarityPercent()
+	private float AirStrafeChangeMultiplyer()
 	{
 		if(AirStrafeSpatial != null && !IsOnFloor() && (Momentum.x+Momentum.z) != 0f)
 		{
@@ -101,6 +101,7 @@ public class Player : KinematicBody
 			{
 				SimilarityPercent = 1; //This is so that it prefers snapping to 100%
 			}
+			SimilarityPercent = SimilarityPercent*SimilarityPercent;
 			return SimilarityPercent;
 		}
 		return 0f;
@@ -397,6 +398,19 @@ public class Player : KinematicBody
 			{
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+
+				if(!IsOnFloor())
+				{
+					float Multiplyer = AirStrafeChangeMultiplyer();
+					if(Multiplyer < 1)
+					{
+						AirLookHorizontal -= Change*Multiplyer;
+					}
+					else
+					{
+						AirLookHorizontal = LookHorizontal;
+					}
+				}
 			}
 		}
 	}
@@ -412,6 +426,19 @@ public class Player : KinematicBody
 			{
 				LookHorizontal += Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+
+				if(!IsOnFloor())
+				{
+					float Multiplyer = AirStrafeChangeMultiplyer();
+					if(Multiplyer < 1)
+					{
+						AirLookHorizontal += Change*Multiplyer;
+					}
+					else
+					{
+						AirLookHorizontal = LookHorizontal;
+					}
+				}
 			}
 		}
 	}
@@ -549,7 +576,6 @@ public class Player : KinematicBody
 		{
 			return;
 		}
-		GD.Print(LoopRotation(LookHorizontal), " ", AirLookVelSimilarityPercent());
 
 		if(IsOnFloor())
 		{
