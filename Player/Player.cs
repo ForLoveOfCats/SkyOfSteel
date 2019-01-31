@@ -1,4 +1,5 @@
 using Godot;
+using static SteelMath;
 using Collections = System.Collections.Generic;
 
 
@@ -46,6 +47,7 @@ public class Player : KinematicBody
 
 	private HUD HUDInstance;
 	private Ghost GhostInstance;
+	private Spatial AirStrafeSpatial = null;
 
 	Player()
 	{
@@ -74,11 +76,29 @@ public class Player : KinematicBody
 			GetParent().AddChild(GhostInstance);
 			GhostInstance.Hide();
 			// Net.UnloadAndRequestChunks();
+
+			AirStrafeSpatial = GetParent().GetNode<Spatial>("AirStrafeSpatial");
 		}
 		else
 		{
 			SetProcess(false);
 		}
+	}
+
+
+	//Returns a float difference between the momentum direction and AirLookHorizontal as a percentage 1.0-0.0 (0 when on floor)
+	private float AirLookVelPercentDiff()
+	{
+		if(AirStrafeSpatial != null && !IsOnFloor() && (Momentum.x+Momentum.z) != 0f)
+		{
+			Vector3 ToLookAt = Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(AirLookHorizontal));
+			ToLookAt.y = 0f;
+			AirStrafeSpatial.LookAt(ToLookAt, new Vector3(0,1,0));
+
+			float VelDirection = LoopRotation(AirStrafeSpatial.RotationDegrees.y+180);
+			return Mathf.Abs(LoopRotation(LookHorizontal)-VelDirection);
+		}
+		return 0f;
 	}
 
 
@@ -372,6 +392,7 @@ public class Player : KinematicBody
 			{
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+				GD.Print(LoopRotation(LookHorizontal), " ", AirLookVelPercentDiff());
 			}
 		}
 	}
@@ -513,7 +534,7 @@ public class Player : KinematicBody
 			IsSprinting = false;
 
 			Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
-			Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);	
+			Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
 		}
 	}
 
