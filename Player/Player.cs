@@ -18,6 +18,7 @@ public class Player : KinematicBody
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
 	private const float LookDivisor = 6;
+	private const float MinAirStrafeRotationSnap = 0.99f;
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
@@ -87,7 +88,7 @@ public class Player : KinematicBody
 
 
 	//Returns a float difference between the momentum direction and AirLookHorizontal as a percentage 1.0-0.0 (0 when on floor)
-	private float AirLookVelPercentDiff()
+	private float AirLookVelSimilarityPercent()
 	{
 		if(AirStrafeSpatial != null && !IsOnFloor() && (Momentum.x+Momentum.z) != 0f)
 		{
@@ -95,8 +96,12 @@ public class Player : KinematicBody
 			ToLookAt.y = 0f;
 			AirStrafeSpatial.LookAt(ToLookAt, new Vector3(0,1,0));
 
-			float VelDirection = LoopRotation(AirStrafeSpatial.RotationDegrees.y+180);
-			return Mathf.Abs(LoopRotation(LookHorizontal)-VelDirection);
+			float SimilarityPercent = 1-(Mathf.Abs(LoopRotation(LookHorizontal)-LoopRotation(AirStrafeSpatial.RotationDegrees.y+180))/360);
+			if(SimilarityPercent >= MinAirStrafeRotationSnap)
+			{
+				SimilarityPercent = 1; //This is so that it prefers snapping to 100%
+			}
+			return SimilarityPercent;
 		}
 		return 0f;
 	}
@@ -392,7 +397,6 @@ public class Player : KinematicBody
 			{
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
-				GD.Print(LoopRotation(LookHorizontal), " ", AirLookVelPercentDiff());
 			}
 		}
 	}
@@ -545,6 +549,7 @@ public class Player : KinematicBody
 		{
 			return;
 		}
+		GD.Print(LoopRotation(LookHorizontal), " ", AirLookVelSimilarityPercent());
 
 		if(IsOnFloor())
 		{
