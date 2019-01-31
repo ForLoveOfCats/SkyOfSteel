@@ -1,5 +1,5 @@
 using Godot;
-using System;
+using static Godot.Mathf;
 using static SteelMath;
 
 
@@ -90,7 +90,7 @@ public class Player : KinematicBody
 	//Returns a float difference between the momentum direction and AirLookHorizontal as a percentage 1.0-0.0 (0 when on floor)
 	private float AirStrafeChangeMultiplyer()
 	{
-		if(AirStrafeSpatial != null && !IsOnFloor() && (Momentum.x+Momentum.z) != 0f)
+		if(AirStrafeSpatial != null && !IsOnFloor() && (Abs(Momentum.x)+Abs(Momentum.z)) != 0f)
 		{
 			Vector3 ToLookAt = Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(AirLookHorizontal));
 			ToLookAt.y = 0f;
