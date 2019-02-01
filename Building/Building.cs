@@ -255,9 +255,29 @@ public class Building : Node
 
 
 	//Name is the string GUID name of the structure to be removed
-	public static void Remove(string Name)
+	[Remote]
+	public void Remove(string Name)
 	{
-		Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
-		Branch.Remove();
+		if(Game.StructureRoot.HasNode(Name))
+		{
+			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
+			Tuple<int,int> ChunkTuple = Building.GetChunkTuple(Branch.Translation);
+			List<Structure> Structures = Building.Chunks[ChunkTuple];
+			Structures.Remove(Branch);
+			//After removing `this` from the Structure list, the chunk might be empty
+			if(Structures.Count > 0)
+			{
+				Building.Chunks[ChunkTuple] = Structures;
+			}
+			else
+			{
+				//If the chunk *is* empty then remove it
+				Building.Chunks.Remove(ChunkTuple);
+			}
+
+			Building.Grid.Remove(Branch);
+			Branch.QueueFree();
+		}
+
 	}
 }

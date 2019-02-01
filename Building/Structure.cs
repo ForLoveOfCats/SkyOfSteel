@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 
 public class Structure : StaticBody
@@ -12,30 +11,8 @@ public class Structure : StaticBody
 	{
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
-			Rpc(nameof(NetRemove));
-			NetRemove();
+			Building.Self.Rpc(nameof(Building.Remove), GetName());
+			Building.Self.Remove(GetName());
 		}
-	}
-
-
-	[Remote]
-	public void NetRemove()
-	{
-		Tuple<int,int> ChunkTuple = Building.GetChunkTuple(Translation);
-		System.Collections.Generic.List<Structure> Structures = Building.Chunks[ChunkTuple];
-		Structures.Remove(this);
-		//After removing `this` from the Structure list, the chunk might be empty
-		if(Structures.Count > 0)
-		{
-			Building.Chunks[ChunkTuple] = Structures;
-		}
-		else
-		{
-			//If the chunk *is* empty then remove it
-			Building.Chunks.Remove(ChunkTuple);
-		}
-
-		Building.Grid.Remove(this);
-		QueueFree();
 	}
 }
