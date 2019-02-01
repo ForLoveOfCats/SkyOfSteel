@@ -95,6 +95,25 @@ public class Game : Node
 	}
 
 
+	public static void StartWorld(bool AsServer = false)
+	{
+		CloseWorld();
+		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
+		SkyScene.SetName("SkyScene");
+		RuntimeRoot.AddChild(SkyScene);
+
+		StructureRoot = new StructureRootClass();
+		StructureRoot.SetName("StructureRoot");
+		SkyScene.AddChild(StructureRoot);
+
+		if(AsServer)
+		{
+			Scripting.SetupServerEngine();
+			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+		}
+	}
+
+
 	public static void CloseWorld()
 	{
 		if(RuntimeRoot.HasNode("SkyScene"))
@@ -117,24 +136,4 @@ public class Game : Node
 
 		Console.ClearLog();
 	}
-
-
-	public static void StartWorld(bool AsServer = false)
-	{
-		CloseWorld();
-		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
-		SkyScene.SetName("SkyScene");
-		RuntimeRoot.AddChild(SkyScene);
-
-		StructureRoot = new StructureRootClass();
-		StructureRoot.SetName("StructureRoot");
-		SkyScene.AddChild(StructureRoot);
-
-		if(AsServer)
-		{
-			Scripting.SetupServerEngine();
-			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
-		}
-	}
-
 }
