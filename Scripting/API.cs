@@ -190,7 +190,7 @@ public class API : Node
 
 			case "save":
 				return new List<object> {Name, new Action(delegate(){
-					Building.SaveWorld("TestSave");
+					Game.SaveWorld("TestSave");
 				})};
 
 			case "load":
@@ -200,7 +200,7 @@ public class API : Node
 						Console.ThrowPrint("Cannot load savegame when not hosting");
 						return;
 					}
-					Building.LoadWorld("TestSave");
+					Game.LoadWorld("TestSave");
 				})};
 
 			default:
