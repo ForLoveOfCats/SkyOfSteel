@@ -18,7 +18,7 @@ public class Player : KinematicBody
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
 	private const float LookDivisor = 6;
-	private const float MinAirStrafeRotationSnap = 0.99f;
+	private const float MinAirStrafeRotationSnap = 0.8f;
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
@@ -396,21 +396,14 @@ public class Player : KinematicBody
 
 			if(ShouldDo.LocalPlayerRotate(-Change))
 			{
-				LookHorizontal -= Change;
-				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
-
 				if(!IsOnFloor() && RightAxis > 0)
 				{
 					float Multiplyer = AirStrafeChangeMultiplyer();
-					if(Multiplyer < 1)
-					{
-						AirLookHorizontal -= Change*Multiplyer;
-					}
-					else
-					{
-						AirLookHorizontal = LookHorizontal;
-					}
+					AirLookHorizontal -= Change*Multiplyer;
 				}
+
+				LookHorizontal -= Change;
+				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
 			}
 		}
 	}
@@ -424,21 +417,14 @@ public class Player : KinematicBody
 
 			if(ShouldDo.LocalPlayerRotate(+Change))
 			{
-				LookHorizontal += Change;
-				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
-
 				if(!IsOnFloor() && RightAxis < 0)
 				{
 					float Multiplyer = AirStrafeChangeMultiplyer();
-					if(Multiplyer < 1)
-					{
-						AirLookHorizontal += Change*Multiplyer;
-					}
-					else
-					{
-						AirLookHorizontal = LookHorizontal;
-					}
+					AirLookHorizontal += Change*Multiplyer;
 				}
+
+				LookHorizontal += Change;
+				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
 			}
 		}
 	}
