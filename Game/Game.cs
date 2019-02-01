@@ -99,7 +99,8 @@ public class Game : Node
 	{
 		if(RuntimeRoot.HasNode("SkyScene"))
 		{
-			RuntimeRoot.GetNode("SkyScene").QueueFree();
+			RuntimeRoot.GetNode("SkyScene").Free();
+			//Free instead of QueueFree to prevent crash when starting new world in same frame
 		}
 		PlayerList.Clear();
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
