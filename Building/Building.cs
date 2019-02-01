@@ -175,6 +175,7 @@ public class Building : Node
 
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
+		Building.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 		foreach(Structure Branch in Chunks[ChunkLocation])
 		{
 			Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
@@ -194,6 +195,21 @@ public class Building : Node
 		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
 
 		return Chunks[ChunkTuple].Count;
+	}
+
+
+	[Remote]
+	public void FreeChunk(Vector2 Pos)
+	{
+		GD.Print("FreeChunk called");
+		List<Structure> Branches;
+		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out Branches))
+		{
+			foreach(Structure Branch in Branches)
+			{
+				Branch.Free();
+			}
+		}
 	}
 
 
