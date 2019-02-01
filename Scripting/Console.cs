@@ -106,4 +106,10 @@ public class Console : Node
 
 		Scripting.RunConsoleLine(Command);
 	}
+
+
+	public static void ClearLog()
+	{
+		LogLabel.Text = "";
+	}
 }

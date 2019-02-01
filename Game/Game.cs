@@ -113,6 +113,8 @@ public class Game : Node
 		Building.Chunks.Clear();
 		Building.RemoteLoadedChunks.Clear();
 		Building.Grid.Clear();
+
+		Console.ClearLog();
 	}
 
 
