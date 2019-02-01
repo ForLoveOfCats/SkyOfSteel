@@ -201,7 +201,6 @@ public class Building : Node
 	[Remote]
 	public void FreeChunk(Vector2 Pos)
 	{
-		GD.Print("FreeChunk called");
 		List<Structure> Branches;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out Branches))
 		{
