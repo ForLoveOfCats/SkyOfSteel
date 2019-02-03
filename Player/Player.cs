@@ -24,6 +24,7 @@ public class Player : KinematicBody
 
 	private int ForwardAxis = 0;
 	private int RightAxis = 0;
+	private int JumpAxis = 0;
 	public bool IsSprinting = false;
 	public bool IsJumping = false;
 	public bool WasOnFloor = false;
@@ -39,6 +40,7 @@ public class Player : KinematicBody
 	public double RightSens = 0d;
 	public double LeftSens = 0d;
 	public double SprintSens = 0d;
+	public double JumpSens = 0d;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -326,8 +328,10 @@ public class Player : KinematicBody
 
 	public void Jump(double Sens)
 	{
+		JumpSens = Sens;
 		if(Sens > 0d)
 		{
+			JumpAxis = 1;
 			if(IsOnFloor() && ShouldDo.LocalPlayerJump())
 			{
 				Momentum.y = JumpStartForce;
@@ -336,6 +340,7 @@ public class Player : KinematicBody
 		}
 		else
 		{
+			JumpAxis = 0;
 			IsJumping = false;
 		}
 	}
@@ -556,28 +561,35 @@ public class Player : KinematicBody
 		}
 		WasOnFloor = IsOnFloor();
 
-		if(ForwardAxis == 0 && IsOnFloor())
+		if(JumpAxis < 1)
 		{
-			if(Momentum.z > 0)
+			if(ForwardAxis == 0 && IsOnFloor())
 			{
-				Momentum.z = Mathf.Clamp(Momentum.z-Friction*Delta, 0f, MaxMovementSpeed);
+				if(Momentum.z > 0)
+				{
+					Momentum.z = Mathf.Clamp(Momentum.z-Friction*Delta, 0f, MaxMovementSpeed);
+				}
+				else if (Momentum.z < 0)
+				{
+					Momentum.z = Mathf.Clamp(Momentum.z+Friction*Delta, -MaxMovementSpeed, 0f);
+				}
 			}
-			else if (Momentum.z < 0)
+
+			if(RightAxis == 0 && IsOnFloor())
 			{
-				Momentum.z = Mathf.Clamp(Momentum.z+Friction*Delta, -MaxMovementSpeed, 0f);
+				if(Momentum.x > 0)
+				{
+					Momentum.x = Mathf.Clamp(Momentum.x-Friction*Delta, 0f, MaxMovementSpeed);
+				}
+				else if (Momentum.x < 0)
+				{
+					Momentum.x = Mathf.Clamp(Momentum.x+Friction*Delta, -MaxMovementSpeed, 0f);
+				}
 			}
 		}
-
-		if(RightAxis == 0 && IsOnFloor())
+		else
 		{
-			if(Momentum.x > 0)
-			{
-				Momentum.x = Mathf.Clamp(Momentum.x-Friction*Delta, 0f, MaxMovementSpeed);
-			}
-			else if (Momentum.x < 0)
-			{
-				Momentum.x = Mathf.Clamp(Momentum.x+Friction*Delta, -MaxMovementSpeed, 0f);
-			}
+			Jump(JumpSens);
 		}
 
 		if(IsJumping && JumpTimer <= MaxJumpLength)
