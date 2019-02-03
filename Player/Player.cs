@@ -12,14 +12,13 @@ public class Player : KinematicBody
 	private const float MovementInputMultiplyer = BaseMovementSpeed;
 	private const float SprintMultiplyer = 2;
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
-	private const float AirAcceleration = 50;
+	private const float AirAcceleration = MaxMovementSpeed; //How many units per second to accelerate
 	private const float Friction = BaseMovementSpeed*10;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
 	private const float LookDivisor = 6;
-	private const float MinAirStrafeRotationSnap = 0.8f;
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
@@ -31,8 +30,6 @@ public class Player : KinematicBody
 	private float JumpTimer = 0f;
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
-	private float LookChange = 0;
-	private float AirLookHorizontal = 0; //TODO remove
 	private float LookVertical = 0;
 	private bool IsPrimaryFiring = false;
 	private bool IsSecondaryFiring = false;
@@ -50,7 +47,6 @@ public class Player : KinematicBody
 
 	private HUD HUDInstance;
 	private Ghost GhostInstance;
-	private Spatial AirStrafeSpatial = null;
 
 	Player()
 	{
@@ -78,8 +74,6 @@ public class Player : KinematicBody
 			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
 			GetParent().AddChild(GhostInstance);
 			GhostInstance.Hide();
-
-			AirStrafeSpatial = GetParent().GetNode<Spatial>("AirStrafeSpatial");
 		}
 		else
 		{
@@ -88,40 +82,11 @@ public class Player : KinematicBody
 	}
 
 
-	//Returns a float difference between the momentum direction and AirLookHorizontal as a percentage 1.0-0.0 (0 when on floor)
-	private float AirStrafeChangeMultiplyer()
-	{
-		if(AirStrafeSpatial != null && !IsOnFloor() && (Abs(Momentum.x)+Abs(Momentum.z)) != 0f)
-		{
-			Vector3 ToLookAt = Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(AirLookHorizontal));
-			ToLookAt.y = 0f;
-			AirStrafeSpatial.LookAt(ToLookAt, new Vector3(0,1,0));
-
-			float SimilarityPercent = 1-(Mathf.Abs(LoopRotation(LookHorizontal)-LoopRotation(AirStrafeSpatial.RotationDegrees.y+180))/360);
-			if(SimilarityPercent >= MinAirStrafeRotationSnap)
-			{
-				SimilarityPercent = 1; //This is so that it prefers snapping to 100%
-			}
-			SimilarityPercent = SimilarityPercent*SimilarityPercent;
-			return SimilarityPercent;
-		}
-		return 0f;
-	}
-
-
-	/*private Vector3 Accelerate(Vector3 accelDir, Vector3 prevVelocity, float accelerate, float Delta)
-	{
-		float projVel = prevVelocity.Dot(accelDir); // Vector projection of Current velocity onto accelDir.
-		float accelVel = accelerate * Delta; // Time.fixedDeltaTime; // Accelerated velocity in direction of movment
-		Vector3 Out = prevVelocity + accelDir * accelVel;
-
-		return Out;
-	}*/
 	private Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
 	{
 		float CurrentSpeed = Vel.Dot(WishDir);
 		float AddSpeed = MaxMovementSpeed - CurrentSpeed;
-		AddSpeed = Clamp(AddSpeed, 0, MaxMovementSpeed*Delta);
+		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*Delta);
 		return Vel + WishDir * AddSpeed;
 	}
 
@@ -396,7 +361,6 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
-			LookChange = Change;
 
 			if(ShouldDo.LocalPlayerPitch(-Change))
 			{
@@ -412,16 +376,9 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
-			LookChange = Change;
 
 			if(ShouldDo.LocalPlayerRotate(-Change))
 			{
-				/*if(!IsOnFloor() && RightAxis > 0)
-				{
-					float Multiplyer = AirStrafeChangeMultiplyer();
-					AirLookHorizontal -= Change*Multiplyer;
-				}*/
-
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
 			}
@@ -437,12 +394,6 @@ public class Player : KinematicBody
 
 			if(ShouldDo.LocalPlayerRotate(+Change))
 			{
-				/*if(!IsOnFloor() && RightAxis < 0)
-				{
-					float Multiplyer = AirStrafeChangeMultiplyer();
-					AirLookHorizontal += Change*Multiplyer;
-				}*/
-
 				LookHorizontal += Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
 			}
@@ -506,7 +457,6 @@ public class Player : KinematicBody
 
 	private void OnFly()
 	{
-		// InitialAirLookHorizontal = LookHorizontal;
 		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 	}
 
@@ -595,14 +545,11 @@ public class Player : KinematicBody
 
 		if(!IsOnFloor())
 		{
-			// Momentum = Accelerate(new Vector3(Abs(RightAxis), 0, 0).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Momentum, -AirAcceleration*RightAxis*100, Delta);
 			Momentum = AirAccelerate(Momentum, new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
 		}
-		LookChange = 0f;
 
 		if(IsOnFloor())
 		{
-			AirLookHorizontal = LookHorizontal;
 			if(!WasOnFloor)
 			{
 				OnLand();
