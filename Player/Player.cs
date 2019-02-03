@@ -543,11 +543,6 @@ public class Player : KinematicBody
 		}
 
 
-		if(!IsOnFloor())
-		{
-			Momentum = AirAccelerate(Momentum, new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
-		}
-
 		if(IsOnFloor())
 		{
 			if(!WasOnFloor)
@@ -595,6 +590,11 @@ public class Player : KinematicBody
 			JumpTimer = 0f;
 			IsJumping = false;
 			Momentum.y = Mathf.Clamp(Momentum.y-Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
+		}
+
+		if(!IsOnFloor())
+		{
+			Momentum = AirAccelerate(Momentum, new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
 		}
 
 		Vector3 OldPos = Translation;
