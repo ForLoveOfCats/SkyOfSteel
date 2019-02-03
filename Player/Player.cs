@@ -12,6 +12,7 @@ public class Player : KinematicBody
 	private const float MovementInputMultiplyer = BaseMovementSpeed;
 	private const float SprintMultiplyer = 2;
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
+	private const float AirAcceleration = 50;
 	private const float Friction = BaseMovementSpeed*10;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
@@ -30,7 +31,8 @@ public class Player : KinematicBody
 	private float JumpTimer = 0f;
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
-	private float AirLookHorizontal = 0;
+	private float LookChange = 0;
+	private float AirLookHorizontal = 0; //TODO remove
 	private float LookVertical = 0;
 	private bool IsPrimaryFiring = false;
 	private bool IsSecondaryFiring = false;
@@ -104,6 +106,23 @@ public class Player : KinematicBody
 			return SimilarityPercent;
 		}
 		return 0f;
+	}
+
+
+	/*private Vector3 Accelerate(Vector3 accelDir, Vector3 prevVelocity, float accelerate, float Delta)
+	{
+		float projVel = prevVelocity.Dot(accelDir); // Vector projection of Current velocity onto accelDir.
+		float accelVel = accelerate * Delta; // Time.fixedDeltaTime; // Accelerated velocity in direction of movment
+		Vector3 Out = prevVelocity + accelDir * accelVel;
+
+		return Out;
+	}*/
+	private Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
+	{
+		float CurrentSpeed = Vel.Dot(WishDir);
+		float AddSpeed = MaxMovementSpeed - CurrentSpeed;
+		AddSpeed = Clamp(AddSpeed, 0, MaxMovementSpeed*Delta);
+		return Vel + WishDir * AddSpeed;
 	}
 
 
@@ -377,6 +396,7 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+			LookChange = Change;
 
 			if(ShouldDo.LocalPlayerPitch(-Change))
 			{
@@ -392,14 +412,15 @@ public class Player : KinematicBody
 		if(Sens > 0d)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+			LookChange = Change;
 
 			if(ShouldDo.LocalPlayerRotate(-Change))
 			{
-				if(!IsOnFloor() && RightAxis > 0)
+				/*if(!IsOnFloor() && RightAxis > 0)
 				{
 					float Multiplyer = AirStrafeChangeMultiplyer();
 					AirLookHorizontal -= Change*Multiplyer;
-				}
+				}*/
 
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
@@ -416,11 +437,11 @@ public class Player : KinematicBody
 
 			if(ShouldDo.LocalPlayerRotate(+Change))
 			{
-				if(!IsOnFloor() && RightAxis < 0)
+				/*if(!IsOnFloor() && RightAxis < 0)
 				{
 					float Multiplyer = AirStrafeChangeMultiplyer();
 					AirLookHorizontal += Change*Multiplyer;
-				}
+				}*/
 
 				LookHorizontal += Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
@@ -483,8 +504,17 @@ public class Player : KinematicBody
 	}
 
 
+	private void OnFly()
+	{
+		// InitialAirLookHorizontal = LookHorizontal;
+		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+	}
+
+
 	private void OnLand()
 	{
+		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal)));
+
 		if(ForwardAxis == 1)
 		{
 			if(IsSprinting)
@@ -562,6 +592,14 @@ public class Player : KinematicBody
 			return;
 		}
 
+
+		if(!IsOnFloor())
+		{
+			// Momentum = Accelerate(new Vector3(Abs(RightAxis), 0, 0).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Momentum, -AirAcceleration*RightAxis*100, Delta);
+			Momentum = AirAccelerate(Momentum, new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
+		}
+		LookChange = 0f;
+
 		if(IsOnFloor())
 		{
 			AirLookHorizontal = LookHorizontal;
@@ -569,6 +607,10 @@ public class Player : KinematicBody
 			{
 				OnLand();
 			}
+		}
+		else if(WasOnFloor)
+		{
+			OnFly();
 		}
 		WasOnFloor = IsOnFloor();
 
@@ -617,7 +659,7 @@ public class Player : KinematicBody
 		}
 		else
 		{
-			MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(AirLookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+			MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;

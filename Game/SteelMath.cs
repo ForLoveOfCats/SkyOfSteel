@@ -9,7 +9,7 @@ public class SteelMath
 	}
 
 
-	public static float LoopRotation(float Rot) 
+	public static float LoopRotation(float Rot)
 	{
 		while(Rot > 360)
 		{
