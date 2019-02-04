@@ -62,7 +62,8 @@ public class Player : KinematicBody
 
 	public override void _Ready()
 	{
-		Translation = new Vector3(0,1,0);
+		PositionReset();
+
 		if(Possessed)
 		{
 			GetNode<Camera>("SteelCamera").MakeCurrent();
@@ -81,6 +82,12 @@ public class Player : KinematicBody
 		{
 			SetProcess(false);
 		}
+	}
+
+
+	public void PositionReset()
+	{
+		Translation = new Vector3(0,1,0);
 	}
 
 

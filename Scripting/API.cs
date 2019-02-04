@@ -159,6 +159,11 @@ public class API : Node
 					Game.PossessedPlayer.SecondaryFire(Sens);
 				})};
 
+			case "player_position_reset":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.PositionReset();
+				})};
+
 			case "gamemode":
 				return new List<object> {Name, new Action<string>(delegate(string GameModeName){
 					if(Game.Self.GetTree().GetNetworkPeer() != null && Game.Self.GetTree().GetNetworkUniqueId() == 1)
@@ -246,6 +251,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_build_rotate"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
+				Output.Add(GetDelCall("player_position_reset"));
 				Output.Add(GetDelCall("gamemode"));
 				Output.Add(GetDelCall("gamemode_get"));
 				Output.Add(GetDelCall("chunk_render_distance"));
@@ -278,6 +284,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_build_rotate"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
+				Output.Add(GetDelCall("player_position_reset"));
 				Output.Add(GetDelCall("gamemode_get"));
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
@@ -309,6 +316,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_build_rotate"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
+				Output.Add(GetDelCall("player_position_reset"));
 				Output.Add(GetDelCall("gamemode_get"));
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
