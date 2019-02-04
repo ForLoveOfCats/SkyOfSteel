@@ -12,7 +12,7 @@ public class Player : KinematicBody
 	private const float MovementInputMultiplyer = BaseMovementSpeed;
 	private const float SprintMultiplyer = 2;
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
-	private const float AirAcceleration = MaxMovementSpeed; //How many units per second to accelerate
+	private const float AirAcceleration = 24; //How many units per second to accelerate
 	private const float Friction = BaseMovementSpeed*10;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
