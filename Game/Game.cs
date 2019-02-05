@@ -9,7 +9,7 @@ public class Game : Node
 
 	public static int MaxPlayers = 8;
 	public static bool MouseLocked = false;
-	public static bool BindsEnabled = true;
+	public static bool BindsEnabled = false;
 	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 										   //Prevent crashes when player movement commands are run when world is not initalized
@@ -30,8 +30,6 @@ public class Game : Node
 	{
 		RuntimeRoot = GetTree().GetRoot().GetNode("RuntimeRoot");
 		GetTree().SetAutoAcceptQuit(false);
-		Input.SetMouseMode(Input.MouseMode.Captured);
-		MouseLocked = true;
 	}
 
 

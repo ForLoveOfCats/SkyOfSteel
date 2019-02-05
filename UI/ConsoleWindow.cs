@@ -30,7 +30,7 @@ class ConsoleWindow : VBoxContainer
 	public override void _Ready()
 	{
 		InputLine = GetNode("LineEdit") as LineEdit;
-		WindowVisible(false);
+		WindowVisible(true);
 	}
 
 
