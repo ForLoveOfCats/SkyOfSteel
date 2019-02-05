@@ -159,12 +159,21 @@ public class Game : Node
 		Directory SaveDir = new Directory();
 		if(SaveDir.DirExists("user://saves/"+SaveName))
 		{
+			List<Structure> Branches = new List<Structure>();
+			foreach(KeyValuePair<Tuple<int,int>, List<Structure>> Chunk in Building.Chunks)
+			{
+				foreach(Structure Branch in Chunk.Value)
+				{
+					Branches.Add(Branch);
+				}
+			}
+			foreach(Structure Branch in Branches)
+			{
+				Branch.Remove();
+			}
 			Building.Chunks.Clear();
 			Building.RemoteLoadedChunks.Clear();
-			foreach(Node Branch in Game.StructureRoot.GetChildren())
-			{
-				Branch.QueueFree();
-			}
+			Building.Grid.Clear();
 
 			SaveDir.Open("user://saves/"+SaveName);
 			SaveDir.ListDirBegin(true, true);
