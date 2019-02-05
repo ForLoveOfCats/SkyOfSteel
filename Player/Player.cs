@@ -625,7 +625,7 @@ public class Player : KinematicBody
 		}
 		else
 		{
-			MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
