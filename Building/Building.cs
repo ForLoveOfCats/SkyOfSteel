@@ -143,6 +143,8 @@ public class Building : Node
 			return;
 		}
 
+		if(!Net.PeerList.Contains(Id)) {return;}
+
 		List<Tuple<int,int>> LoadedChunks = RemoteLoadedChunks[Id];
 		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Chunks)
 		{
