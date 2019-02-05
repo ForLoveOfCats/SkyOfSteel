@@ -160,7 +160,7 @@ public class API : Node
 				})};
 
 			case "player_position_reset":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action(delegate(){
 					Game.PossessedPlayer.PositionReset();
 				})};
 
