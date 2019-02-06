@@ -1,6 +1,7 @@
 using Godot;
 using static Godot.Mathf;
 using static SteelMath;
+using System;
 
 
 public class Player : KinematicBody
@@ -19,6 +20,8 @@ public class Player : KinematicBody
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
 	private const float LookDivisor = 6;
+
+	private bool Frozen = true;
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
@@ -81,6 +84,27 @@ public class Player : KinematicBody
 		else
 		{
 			SetProcess(false);
+			return;
+		}
+
+		if(GetTree().IsNetworkServer())
+		{
+			SetFreeze(false);
+		}
+	}
+
+	[Remote]
+	public void SetFreeze(bool NewFrozen)
+	{
+		if(GetName() == GetTree().GetNetworkUniqueId().ToString())
+		{
+			Frozen = NewFrozen;
+		}
+		else
+		{
+			int Id = 0;
+			Int32.TryParse(GetName(), out Id);
+			RpcId(Id, nameof(SetFreeze), NewFrozen);
 		}
 	}
 
@@ -549,7 +573,7 @@ public class Player : KinematicBody
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(!Possessed)
+		if(!Possessed || Frozen)
 		{
 			return;
 		}

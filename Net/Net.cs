@@ -142,7 +142,7 @@ public class Net : Node
 	[Remote]
 	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
 	{
-		UnloadAndRequestChunks();
+		Building.Self.RpcId(ServerId, nameof(Building.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
 	}
 
 

@@ -135,6 +135,14 @@ public class Building : Node
 
 
 	[Remote]
+	public void InitialNetWorldLoad(int Id, Vector3 PlayerPosition, int RenderDistance)
+	{
+		RequestChunks(Id, PlayerPosition, RenderDistance);
+		((Player)Game.RuntimeRoot.GetNode("SkyScene").GetNode(Id.ToString())).SetFreeze(false); //I hate casting syntax
+	}
+
+
+	[Remote]
 	public void RequestChunks(int Id, Vector3 PlayerPosition, int RenderDistance)
 	{
 		if(!GetTree().IsNetworkServer())
