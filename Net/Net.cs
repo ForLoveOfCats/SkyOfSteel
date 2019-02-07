@@ -7,7 +7,7 @@ public class Net : Node
 {
 	public static int ServerId = 1;
 
-	private static int Port = 7777;
+	private static int Port = 27015;
 	private static string Ip;
 
 	public static List<int> PeerList = new List<int>();
