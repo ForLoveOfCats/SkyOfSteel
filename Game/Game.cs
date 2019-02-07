@@ -30,6 +30,9 @@ public class Game : Node
 	{
 		RuntimeRoot = GetTree().GetRoot().GetNode("RuntimeRoot");
 		GetTree().SetAutoAcceptQuit(false);
+
+		Menu.Setup();
+		Menu.BuildMain();
 	}
 
 
