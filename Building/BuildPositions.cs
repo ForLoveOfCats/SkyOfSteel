@@ -29,7 +29,7 @@ public class BuildPositions
 
 			case(Items.TYPE.SLOPE):{
 				float RotationDegrees = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
-				
+
 				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 				{
 					return null;
@@ -66,7 +66,7 @@ public class BuildPositions
 
 			case(Items.TYPE.SLOPE):{
 				float RotationDegrees = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
-				
+
 				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 				{
 					return null;
@@ -117,7 +117,7 @@ public class BuildPositions
 
 			case(Items.TYPE.SLOPE):{
 				float RotationDegrees = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
-				
+
 				if(RotationDegrees != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(RotationDegrees+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 				{
 					return null;
@@ -134,7 +134,7 @@ public class BuildPositions
 					{
 						Position = Base.Translation + (new Vector3(0,0,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
 					}
-					
+
 				}
 				else
 				{
