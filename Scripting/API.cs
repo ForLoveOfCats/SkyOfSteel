@@ -211,13 +211,27 @@ public class API : Node
 				})};
 
 			case "load":
-				return new List<object> {Name, new Action(delegate(){
+				return new List<object> {Name, new Action<string>(delegate(string SaveName){
 					if(Game.StructureRoot == null)
 					{
 						Console.ThrowPrint("Cannot load savegame when not hosting");
 						return;
 					}
-					Game.LoadWorld("TestSave");
+
+					if(SaveName == "undefined")
+					{
+						Console.ThrowPrint("Please provide the name of a save to load");
+						return;
+					}
+
+					if(Game.LoadWorld(SaveName))
+					{
+						Console.Print($"Loaded save '{SaveName}' successfully");
+					}
+					else
+					{
+						Console.Print($"Failed to load save '{SaveName}");
+					}
 				})};
 
 			default:

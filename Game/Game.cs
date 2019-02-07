@@ -157,7 +157,7 @@ public class Game : Node
 	}
 
 
-	public static void LoadWorld(string SaveName)
+	public static bool LoadWorld(string SaveName)
 	{
 		Directory SaveDir = new Directory();
 		if(SaveDir.DirExists("user://saves/"+SaveName))
@@ -214,11 +214,13 @@ public class Game : Node
 					}
 				}
 			}
-			Console.Print($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
+			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
+			return true;
 		}
 		else
 		{
-			Console.ThrowPrint($"Save '{SaveName}' does not exist");
+			Console.ThrowLog($"Failed to load save '{SaveName}' as it does not exist");
+			return false;
 		}
 	}
 }
