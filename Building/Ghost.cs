@@ -8,8 +8,6 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	private static Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
-
 	public Items.TYPE CurrentMeshType;
 	public bool CanBuild = false;
 
@@ -25,9 +23,6 @@ public class Ghost : Area
 
 		GreenMat = GD.Load("res://Building/Materials/GreenGhost.tres") as Material;
 		RedMat = GD.Load("res://Building/Materials/RedGhost.tres") as Material;
-
-		if(Meshes.Count <= 0)
-			LoadMeshes();
 
 		//Godot's `Area` object likes to not register body entry's for several
 		  //physics ticks so these postion, rotation, and visibility queues
@@ -60,23 +55,6 @@ public class Ghost : Area
 	}
 
 
-	private static void LoadMeshes()
-	{
-		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
-		{
-			File ToLoad = new File();
-			if(ToLoad.FileExists("res://Items/Meshes/" + Type.ToString() + ".obj"))
-			{
-				Meshes.Add(Type, GD.Load("res://Items/Meshes/" + Type.ToString() + ".obj") as Mesh);
-			}
-			else
-			{
-				Meshes.Add(Type, GD.Load("res://Items/Meshes/ERROR.obj") as Mesh);
-			}
-		}
-	}
-
-
 	public override void _Ready()
 	{
 		GhostMesh = ((PackedScene)(GD.Load("res://Building/GhostMesh.tscn"))).Instance() as MeshInstance;
@@ -85,7 +63,7 @@ public class Ghost : Area
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
 		if(Item != null) //null means no item in slot
 		{
-			GhostMesh.Mesh = Meshes[Item.Type];
+			GhostMesh.Mesh = Items.Meshes[Item.Type];
 			CurrentMeshType = Item.Type;
 		}
 	}
@@ -97,7 +75,7 @@ public class Ghost : Area
 		GhostMesh.RotationDegrees = OldRotations[0];
 		GhostMesh.Visible = OldVisible[0];
 
-		GhostMesh.Mesh = Meshes[OldType[0]];
+		GhostMesh.Mesh = Items.Meshes[OldType[0]];
 		CurrentMeshType = OldType[0];
 
 		Player Plr = Game.PossessedPlayer;
