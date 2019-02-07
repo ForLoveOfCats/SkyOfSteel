@@ -161,7 +161,7 @@ public class Scripting : Node
 				ServerScript.Close();
 			}
 
-			if(ModeDir.FileExists("user://gamemodes/" + Name + "/client.js")) //Has a server side script
+			if(ModeDir.FileExists("user://gamemodes/" + Name + "/client.js")) //Has a client side script
 			{
 				SetupClientEngine();
 				File ClientScriptFile = new File();
@@ -170,10 +170,6 @@ public class Scripting : Node
 				ClientScriptFile.Close();
 				ClientGmEngine.Execute(ClientGmScript);
 				Self.Rpc(nameof(NetLoadClientScript), new object[] {ClientGmScript});
-			}
-
-			if(ModeDir.FileExists("user://gamemodes/" + Name + "/client.js")) //Has a client side script
-			{
 			}
 		}
 	}
