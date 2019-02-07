@@ -206,8 +206,21 @@ public class API : Node
 				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Game.ChunkRenderDistance);})};
 
 			case "save":
-				return new List<object> {Name, new Action(delegate(){
-					Game.SaveWorld("TestSave");
+				return new List<object> {Name, new Action<string>(delegate(string SaveName){
+					if(Game.StructureRoot == null)
+					{
+						Console.ThrowPrint("Cannot save world when not hosting");
+						return;
+					}
+
+					if(SaveName == "undefined")
+					{
+						Console.ThrowPrint("Please provide a name to save under");
+						return;
+					}
+
+					Game.SaveWorld(SaveName);
+					Console.Print($"Saved world to save '{SaveName}' successfully");
 				})};
 
 			case "load":

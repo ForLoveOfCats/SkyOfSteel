@@ -153,7 +153,7 @@ public class Game : Node
 		{
 			SaveCount += Building.SaveChunk(Chunk.Key, SaveName);
 		}
-		Console.Print($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
+		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
 	}
 
 
