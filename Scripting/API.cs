@@ -179,6 +179,18 @@ public class API : Node
 			case "gamemode_get":
 				return new List<object> {Name, new Func<string>(() => {return Scripting.GamemodeName;})};
 
+			case "reload":
+				return new List<object> {Name, new Action(delegate(){
+					if(Game.Self.GetTree().GetNetworkPeer() != null && Game.Self.GetTree().GetNetworkUniqueId() == 1)
+					{
+						Scripting.LoadGameMode(Scripting.GamemodeName);
+					}
+					else
+					{
+						Console.ThrowPrint("Cannot reload gamemode as client");
+					}
+				})};
+
 			case "chunk_render_distance":
 				return new List<object> {Name, new Action<double>(delegate(double Distance){
 					if(Distance < 2d)
@@ -254,6 +266,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_position_reset"));
 				Output.Add(GetDelCall("gamemode"));
 				Output.Add(GetDelCall("gamemode_get"));
+				Output.Add(GetDelCall("reload"));
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("save"));
