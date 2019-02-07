@@ -501,72 +501,75 @@ public class Player : KinematicBody
 	{
 		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal)));
 
-		if(ForwardAxis == 1)
+		if(JumpAxis < 1)
 		{
-			if(IsSprinting)
+			if(ForwardAxis == 1)
 			{
-				Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+				if(IsSprinting)
+				{
+					Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+				}
+				else
+				{
+					Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+				}
 			}
-			else
+			else if(ForwardAxis == -1)
 			{
-				Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-			}
-		}
-		else if(ForwardAxis == -1)
-		{
-			if(IsSprinting)
-			{
-				Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-			}
-			else
-			{
-				Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-			}
-		}
-
-		if(RightAxis == 1)
-		{
-			if(IsSprinting)
-			{
-				Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-			}
-			else
-			{
-				Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-			}
-		}
-		else if(RightAxis == -1)
-		{
-			if(IsSprinting)
-			{
-				Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-			}
-			else
-			{
-				Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-			}
-		}
-
-		if(SprintSens > 0d && !IsSprinting)
-		{
-			IsSprinting = true;
-
-			if(ForwardAxis != 0)
-			{
-				Momentum.z = Momentum.z*SprintMultiplyer;
+				if(IsSprinting)
+				{
+					Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+				}
+				else
+				{
+					Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+				}
 			}
 
-			if(RightAxis != 0)
+			if(RightAxis == 1)
 			{
-				Momentum.x = Momentum.x*SprintMultiplyer;
+				if(IsSprinting)
+				{
+					Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
+				}
+				else
+				{
+					Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
+				}
 			}
-		}
-		else if(SprintSens <= 0d && IsSprinting)
-		{
-			IsSprinting = false;
+			else if(RightAxis == -1)
+			{
+				if(IsSprinting)
+				{
+					Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
+				}
+				else
+				{
+					Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
+				}
+			}
 
-			Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
-			Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
+			if(SprintSens > 0d && !IsSprinting)
+			{
+				IsSprinting = true;
+
+				if(ForwardAxis != 0)
+				{
+					Momentum.z = Momentum.z*SprintMultiplyer;
+				}
+
+				if(RightAxis != 0)
+				{
+					Momentum.x = Momentum.x*SprintMultiplyer;
+				}
+			}
+			else if(SprintSens <= 0d && IsSprinting)
+			{
+				IsSprinting = false;
+
+				Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
+				Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
+			}
 		}
 	}
 
