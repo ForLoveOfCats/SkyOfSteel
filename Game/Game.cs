@@ -137,6 +137,7 @@ public class Game : Node
 		Building.Grid.Clear();
 
 		Console.ClearLog();
+		Console.Log("");
 	}
 
 
