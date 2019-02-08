@@ -27,7 +27,7 @@ material/0 = SubResource( 1 )
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 5.7223, 0 )
 environment = ExtResource( 4 )
 fov = 100.0
-far = 1000.0
+far = 8000.0
 
 [node name="RayCast" type="RayCast" parent="SteelCamera"]
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0 )
