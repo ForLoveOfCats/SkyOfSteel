@@ -41,6 +41,32 @@ public class HUD : Node
 	}
 
 
+	public void Hide()
+	{
+		GetNode<TextureRect>("CLayer/CrossCenter/TextureRect").Hide();
+
+		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox").Hide();
+		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox2").Hide();
+
+		GetNode<Label>("CLayer/ChunkInfo").Hide();
+		GetNode<Label>("CLayer/PlayerPosition").Hide();
+		GetNode<Label>("CLayer/FPSLabel").Hide();
+	}
+
+
+	public void Show()
+	{
+		GetNode<TextureRect>("CLayer/CrossCenter/TextureRect").Show();
+
+		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox").Show();
+		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox2").Show();
+
+		GetNode<Label>("CLayer/ChunkInfo").Show();
+		GetNode<Label>("CLayer/PlayerPosition").Show();
+		GetNode<Label>("CLayer/FPSLabel").Show();
+	}
+
+
 	public override void _Ready()
 	{
 		GetTree().Connect("screen_resized", this, "OnScreenResized");

@@ -247,6 +247,16 @@ public class API : Node
 					}
 				})};
 
+			case "hud_hide": //TODO error check this
+				return new List<object> {Name, new Action(delegate(){
+					Game.PossessedPlayer.HUDInstance.Hide();
+				})};
+
+			case "hud_show": //TODO error check this
+				return new List<object> {Name, new Action(delegate(){
+					Game.PossessedPlayer.HUDInstance.Show();
+				})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
@@ -298,6 +308,8 @@ public class API : Node
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("save"));
 				Output.Add(GetDelCall("load"));
+				Output.Add(GetDelCall("hud_hide"));
+				Output.Add(GetDelCall("hud_show"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
@@ -330,6 +342,8 @@ public class API : Node
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("save"));
 				Output.Add(GetDelCall("load"));
+				Output.Add(GetDelCall("hud_hide"));
+				Output.Add(GetDelCall("hud_show"));
 				break;
 			case LEVEL.CLIENT_GM:
 				Output.Add(GetDelCall("log"));
@@ -360,6 +374,8 @@ public class API : Node
 				Output.Add(GetDelCall("gamemode_get"));
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
+				Output.Add(GetDelCall("hud_hide"));
+				Output.Add(GetDelCall("hud_show"));
 				break;
 		}
 

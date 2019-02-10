@@ -50,7 +50,7 @@ public class Player : KinematicBody
 
 	public int BuildRotation = 0;
 
-	private HUD HUDInstance;
+	public HUD HUDInstance;
 	private Ghost GhostInstance;
 
 	Player()
@@ -60,6 +60,8 @@ public class Player : KinematicBody
 		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
 		ItemGive(new Items.Instance(Items.TYPE.WALL));
 		ItemGive(new Items.Instance(Items.TYPE.SLOPE));
+
+		HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
 	}
 
 
@@ -74,7 +76,7 @@ public class Player : KinematicBody
 			GetNode<RayCast>("SteelCamera/RayCast").AddException(this);
 
 			GetNode<MeshInstance>("FPSMesh").Hide();
-			HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
+
 			AddChild(HUDInstance);
 
 			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
