@@ -216,7 +216,7 @@ public class Player : KinematicBody
 				BackwardSens = 0d;
 				ForwardAxis = 1;
 
-				if(IsOnFloor())
+				if(IsOnFloor() && JumpAxis < 1)
 				{
 					if(IsSprinting)
 					{
@@ -246,7 +246,7 @@ public class Player : KinematicBody
 				ForwardSens = 0d;
 				ForwardAxis = -1;
 
-				if(IsOnFloor())
+				if(IsOnFloor() && JumpAxis < 1)
 				{
 					if(IsSprinting)
 					{
@@ -276,7 +276,7 @@ public class Player : KinematicBody
 				LeftSens = 0d;
 				RightAxis = 1;
 
-				if(IsOnFloor())
+				if(IsOnFloor() && JumpAxis < 1)
 				{
 					if(IsSprinting)
 					{
@@ -306,7 +306,7 @@ public class Player : KinematicBody
 				RightSens = 0d;
 				RightAxis = -1;
 
-				if(IsOnFloor())
+				if(IsOnFloor() && JumpAxis < 1)
 				{
 					if(IsSprinting)
 					{
