@@ -136,6 +136,8 @@ public class Net : Node
 		Self.GetTree().SetNetworkPeer(null);
 		PeerList.Clear();
 		Game.PlayerList.Clear();
+
+		Menu.BuildIntro();
 	}
 
 

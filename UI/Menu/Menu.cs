@@ -7,6 +7,7 @@ public class Menu : Node
 
 
 	private static ScrollContainer Center;
+	private static Node Contents = null;
 
 	private static PackedScene Intro;
 
@@ -26,11 +27,15 @@ public class Menu : Node
 
 	private static void Reset()
 	{
-		if(Center.GetChildCount() > 2) //ScrollContainer spawns two scrollbar children
+		if(Contents != null)
 		{
-			//However the actual contents are the first item for some reason
-			Center.GetChild(0).Free(); //Could be dangerous to Free instead of QueueFree
+			Contents.QueueFree();
+			Contents = null;
 		}
+
+		IsOpen = true;
+		Game.BindsEnabled = false;
+		Input.SetMouseMode(Input.MouseMode.Visible);
 	}
 
 
@@ -47,19 +52,11 @@ public class Menu : Node
 	}
 
 
-	private static void ResetBools()
-	{
-		IsOpen = true;
-		Game.BindsEnabled = false;
-		Input.SetMouseMode(Input.MouseMode.Visible);
-	}
-
-
 	public static void BuildIntro()
 	{
 		Reset();
-		ResetBools();
 
-		Center.AddChild(Intro.Instance());
+		Contents = Intro.Instance();
+		Center.AddChild(Contents);
 	}
 }
