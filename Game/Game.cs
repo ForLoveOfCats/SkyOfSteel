@@ -8,7 +8,6 @@ public class Game : Node
 	public static Node RuntimeRoot;
 
 	public static int MaxPlayers = 8;
-	public static bool MouseLocked = false;
 	public static bool BindsEnabled = false;
 	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
@@ -52,22 +51,15 @@ public class Game : Node
 			Game.Quit();
 		}
 
-		if(Input.IsActionJustPressed("MouseLock"))
+		if(Input.IsActionJustPressed("ConsoleToggle"))
 		{
-			if(Input.GetMouseMode() == 0)
+			if(Console.IsOpen)
 			{
-				Input.SetMouseMode(Input.MouseMode.Captured);
-				MouseLocked = true;
-				BindsEnabled = true;
-				((ConsoleWindow)RuntimeRoot.GetNode("ConsoleWindow")).WindowVisible(false);
+				Console.Hide();
 			}
-
 			else
 			{
-				Input.SetMouseMode(Input.MouseMode.Visible);
-				MouseLocked = false;
-				BindsEnabled = false;
-				((ConsoleWindow)RuntimeRoot.GetNode("ConsoleWindow")).WindowVisible(true);
+				Console.Show();
 			}
 		}
 	}

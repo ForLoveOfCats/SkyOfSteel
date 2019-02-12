@@ -3,6 +3,9 @@ using Godot;
 
 public class Menu : Node
 {
+	public static bool IsOpen = true;
+
+
 	private static ScrollContainer Center;
 
 	private static PackedScene Intro;

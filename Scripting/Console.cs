@@ -5,7 +5,9 @@ using System.Collections.Generic;
 
 public class Console : Node
 {
-	private static Node Window;
+	public static bool IsOpen = false;
+
+	private static ConsoleWindow Window;
 	private static LineEdit InputLine;
 	private static RichTextLabel ConsoleLabel;
 	private static RichTextLabel LogLabel;
@@ -22,7 +24,7 @@ public class Console : Node
 
 	public override void _Ready()
 	{
-		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow");
+		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow") as ConsoleWindow;
 		InputLine = Window.GetNode("LineEdit") as LineEdit;
 		ConsoleLabel = Window.GetNode("HBox/Console") as RichTextLabel;
 		LogLabel = Window.GetNode("HBox/Log") as RichTextLabel;
@@ -111,5 +113,26 @@ public class Console : Node
 	public static void ClearLog()
 	{
 		LogLabel.Text = "";
+	}
+
+
+	public static void Hide()
+	{
+		Window.WindowVisible(false);
+		IsOpen = false;
+
+		if(!Menu.IsOpen)
+		{
+			Input.SetMouseMode(Input.MouseMode.Captured);
+		}
+	}
+
+
+	public static void Show()
+	{
+		Window.WindowVisible(true);
+		IsOpen = true;
+
+		Input.SetMouseMode(Input.MouseMode.Visible);
 	}
 }
