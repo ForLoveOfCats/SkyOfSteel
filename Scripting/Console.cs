@@ -116,7 +116,7 @@ public class Console : Node
 	}
 
 
-	public static void Hide()
+	public static void Close()
 	{
 		Window.WindowVisible(false);
 		IsOpen = false;
@@ -124,15 +124,17 @@ public class Console : Node
 		if(!Menu.IsOpen)
 		{
 			Input.SetMouseMode(Input.MouseMode.Captured);
+			Game.BindsEnabled = true;
 		}
 	}
 
 
-	public static void Show()
+	public static void Open()
 	{
 		Window.WindowVisible(true);
 		IsOpen = true;
 
 		Input.SetMouseMode(Input.MouseMode.Visible);
+		Game.BindsEnabled = false;
 	}
 }

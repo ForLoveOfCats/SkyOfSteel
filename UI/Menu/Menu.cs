@@ -26,17 +26,40 @@ public class Menu : Node
 
 	private static void Reset()
 	{
-		//ScrollContainer spawns two scrollbar children so any contents would be the third child
-		if(Center.GetChildCount() > 2)
+		if(Center.GetChildCount() > 2) //ScrollContainer spawns two scrollbar children
 		{
-			Center.GetChild(2).Free(); //Could be dangerous to Free instead of QueueFree
+			//However the actual contents are the first item for some reason
+			Center.GetChild(0).Free(); //Could be dangerous to Free instead of QueueFree
 		}
+	}
+
+
+	public static void Close()
+	{
+		Reset();
+		IsOpen = false;
+
+		if(!Console.IsOpen)
+		{
+			Game.BindsEnabled = true;
+			Input.SetMouseMode(Input.MouseMode.Captured);
+		}
+	}
+
+
+	private static void ResetBools()
+	{
+		IsOpen = true;
+		Game.BindsEnabled = false;
+		Input.SetMouseMode(Input.MouseMode.Visible);
 	}
 
 
 	public static void BuildIntro()
 	{
 		Reset();
+		ResetBools();
+
 		Center.AddChild(Intro.Instance());
 	}
 }

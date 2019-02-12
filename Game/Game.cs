@@ -55,11 +55,11 @@ public class Game : Node
 		{
 			if(Console.IsOpen)
 			{
-				Console.Hide();
+				Console.Close();
 			}
 			else
 			{
-				Console.Show();
+				Console.Open();
 			}
 		}
 	}
@@ -105,6 +105,8 @@ public class Game : Node
 			Scripting.SetupServerEngine();
 			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 		}
+
+		Menu.Close();
 	}
 
 
