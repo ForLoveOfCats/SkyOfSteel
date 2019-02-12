@@ -16,20 +16,35 @@ size_flags_vertical = 3
 alignment = 1
 
 [node name="Welcome" type="Label" parent="."]
-margin_top = 262.0
+margin_top = 236.0
 margin_right = 1024.0
-margin_bottom = 309.0
+margin_bottom = 283.0
 custom_fonts/font = SubResource( 1 )
 text = "Welcome to SkyOfSteel!"
 align = 1
 autowrap = true
 
 [node name="Message" type="Label" parent="."]
-margin_top = 313.0
+margin_top = 287.0
 margin_right = 1024.0
-margin_bottom = 337.0
+margin_bottom = 311.0
 custom_fonts/font = ExtResource( 2 )
-text = "This is the message"
+text = "SkyOfSteel is extremely early alpha. As a result it may be buggy and have issues. Thank you for your understanding."
 align = 1
 autowrap = true
+
+[node name="SpacerLabel" type="Label" parent="."]
+margin_top = 315.0
+margin_right = 1024.0
+margin_bottom = 339.0
+custom_fonts/font = ExtResource( 2 )
+align = 1
+autowrap = true
+
+[node name="Button" type="Button" parent="."]
+margin_top = 343.0
+margin_right = 1024.0
+margin_bottom = 363.0
+custom_fonts/font = ExtResource( 2 )
+text = "Continue"
 
