@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://UI/HUD.cs" type="Script" id=1]
 [ext_resource path="res://UI/Crosshair.png" type="Texture" id=2]
 [ext_resource path="res://Items/Thumbnails/ERROR.png" type="Texture" id=3]
+[ext_resource path="res://UI/Fonts/DebugFont.tres" type="DynamicFont" id=4]
 
 [node name="HUD" type="Node"]
 script = ExtResource( 1 )
@@ -233,6 +234,7 @@ margin_top = 7.0
 margin_right = -4.0
 margin_bottom = 21.0
 grow_horizontal = 0
+custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 1, 0, 1, 1 )
 text = "ChunkInfo"
 align = 2
@@ -245,6 +247,7 @@ margin_top = 23.0
 margin_right = -4.0
 margin_bottom = 37.0
 grow_horizontal = 0
+custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 1, 0, 1, 1 )
 text = "PlayerPosition"
 align = 2
@@ -256,6 +259,7 @@ margin_left = -114.0
 margin_top = 39.0
 margin_right = -4.0
 margin_bottom = 53.0
+custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 1, 0, 1, 1 )
 text = "FPSLabel"
 align = 2
