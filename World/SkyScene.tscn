@@ -10,3 +10,6 @@ environment = ExtResource( 1 )
 fov = 100.0
 far = 1000.0
 
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+light_energy = 0.0
+
