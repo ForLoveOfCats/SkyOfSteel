@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Crosshair.png-b9cbcb5ba29d6cf3156785544e1e9ef0.stex"
+path="res://.import/Triangle.png-6b461654435a6f61cb5e7e7a58aea18a.stex"
 
 [deps]
 
-source_file="res://UI/Crosshair.png"
-dest_files=[ "res://.import/Crosshair.png-b9cbcb5ba29d6cf3156785544e1e9ef0.stex" ]
+source_file="res://UI/Textures/Triangle.png"
+dest_files=[ "res://.import/Triangle.png-6b461654435a6f61cb5e7e7a58aea18a.stex" ]
 
 [params]
 

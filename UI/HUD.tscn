@@ -1,9 +1,10 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://UI/HUD.cs" type="Script" id=1]
-[ext_resource path="res://UI/Crosshair.png" type="Texture" id=2]
+[ext_resource path="res://UI/Textures/Crosshair.png" type="Texture" id=2]
 [ext_resource path="res://Items/Thumbnails/ERROR.png" type="Texture" id=3]
 [ext_resource path="res://UI/Fonts/DebugFont.tres" type="DynamicFont" id=4]
+
 
 [node name="HUD" type="Node"]
 script = ExtResource( 1 )

@@ -10,8 +10,8 @@ public class HUD : Node
 	{
 		if(Engine.EditorHint) {return;}
 
-		Alpha = GD.Load("res://UI/Alpha.png") as Texture;
-		Triangle = GD.Load("res://UI/Triangle.png") as Texture;
+		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;
+		Triangle = GD.Load("res://UI/Textures/Triangle.png") as Texture;
 	}
 
 

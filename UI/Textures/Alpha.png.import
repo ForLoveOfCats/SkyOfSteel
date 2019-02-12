@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Triangle.png-6fca879fcd78e8faed57c84f0204d5f2.stex"
+path="res://.import/Alpha.png-bfd319a14040ef15017e97efe91428e3.stex"
 
 [deps]
 
-source_file="res://UI/Triangle.png"
-dest_files=[ "res://.import/Triangle.png-6fca879fcd78e8faed57c84f0204d5f2.stex" ]
+source_file="res://UI/Textures/Alpha.png"
+dest_files=[ "res://.import/Alpha.png-bfd319a14040ef15017e97efe91428e3.stex" ]
 
 [params]
 
