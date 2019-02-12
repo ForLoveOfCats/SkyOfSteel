@@ -79,7 +79,6 @@
     <Compile Include="Player\Player.cs" />
     <Compile Include="Items\Items.cs" />
     <Compile Include="UI\Menu\Menu.cs" />
-    <Compile Include="UI\Menu\MenuRoot.cs" />
     <Compile Include="World\StructureRoot.cs" />
   </ItemGroup>
   <ItemGroup>

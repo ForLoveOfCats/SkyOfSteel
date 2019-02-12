@@ -3,35 +3,37 @@ using Godot;
 
 public class Menu : Node
 {
-	private static MenuRoot Root;
+	private static ScrollContainer Center;
 
-	private static PackedScene MButton;
+	private static PackedScene Intro;
 
 	static Menu()
 	{
 		if(Engine.EditorHint) {return;}
 
-		MButton = GD.Load<PackedScene>("res://UI/Menu/MButton.tscn");
+		//All menu scene files are loaded on game startup
+		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
 	}
 
-	public static void Setup()
+	public static void Setup() //Called from Game.cs before this class's _Ready would
 	{
-		Root = Game.RuntimeRoot.GetNode("MenuRoot") as MenuRoot;
-		Root.Center = Root.GetNode<VBoxContainer>("HBox/VCenter");
+		Center = Game.RuntimeRoot.GetNode("MenuRoot").GetNode("HBox/Center") as ScrollContainer;
 	}
 
 
 	private static void Reset()
 	{
-		foreach(Node Child in Root.Center.GetChildren())
+		//ScrollContainer spawns two scrollbar children so any contents would be the third child
+		if(Center.GetChildCount() > 2)
 		{
-			Child.QueueFree();
+			Center.GetChild(2).Free(); //Could be dangerous to Free instead of QueueFree
 		}
 	}
 
 
-	public static void BuildMain()
+	public static void BuildIntro()
 	{
 		Reset();
+		Center.AddChild(Intro.Instance());
 	}
 }

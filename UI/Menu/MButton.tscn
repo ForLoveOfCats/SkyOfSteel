@@ -1,6 +1,0 @@
-[gd_scene format=2]
-
-[node name="MButton" type="MenuButton"]
-margin_right = 12.0
-margin_bottom = 20.0
-

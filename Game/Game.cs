@@ -32,7 +32,7 @@ public class Game : Node
 		GetTree().SetAutoAcceptQuit(false);
 
 		Menu.Setup();
-		Menu.BuildMain();
+		Menu.BuildIntro();
 	}
 
 

@@ -1,0 +1,15 @@
+[gd_scene format=2]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="."]
+margin_right = 1024.0
+margin_bottom = 14.0
+text = "Welcome to SkyOfSteel!"
+align = 1
+autowrap = true
+
