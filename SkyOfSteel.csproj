@@ -78,6 +78,7 @@
     <Compile Include="Net\Net.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Items\Items.cs" />
+    <Compile Include="UI\Menu\Intro\Intro.cs" />
     <Compile Include="UI\Menu\Menu.cs" />
     <Compile Include="World\StructureRoot.cs" />
   </ItemGroup>

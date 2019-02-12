@@ -10,6 +10,7 @@ public class Menu : Node
 	private static Node Contents = null;
 
 	private static PackedScene Intro;
+	private static PackedScene Main;
 
 	static Menu()
 	{
@@ -17,6 +18,7 @@ public class Menu : Node
 
 		//All menu scene files are loaded on game startup
 		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
+		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
 	}
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
@@ -57,6 +59,15 @@ public class Menu : Node
 		Reset();
 
 		Contents = Intro.Instance();
+		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildMain()
+	{
+		Reset();
+
+		Contents = Main.Instance();
 		Center.AddChild(Contents);
 	}
 }
