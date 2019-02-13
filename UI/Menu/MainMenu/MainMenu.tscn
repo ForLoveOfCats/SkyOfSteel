@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=2]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -14,11 +15,74 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 
-[node name="Label" type="Label" parent="."]
-margin_top = 274.0
+[node name="Title" type="Label" parent="."]
+margin_top = 135.0
 margin_right = 1024.0
-margin_bottom = 326.0
+margin_bottom = 187.0
 custom_fonts/font = SubResource( 1 )
 text = "SkyOfSteel"
 align = 1
+
+[node name="SpacerLabel" type="Label" parent="."]
+margin_top = 191.0
+margin_right = 1024.0
+margin_bottom = 215.0
+custom_fonts/font = ExtResource( 2 )
+align = 1
+
+[node name="HostButton" type="Button" parent="."]
+margin_top = 219.0
+margin_right = 1024.0
+margin_bottom = 239.0
+custom_fonts/font = ExtResource( 2 )
+text = "Host"
+
+[node name="ConnectButton" type="Button" parent="."]
+margin_top = 243.0
+margin_right = 1024.0
+margin_bottom = 273.0
+custom_fonts/font = ExtResource( 2 )
+text = "Connect"
+
+[node name="SpacerLabel2" type="Label" parent="."]
+margin_top = 277.0
+margin_right = 1024.0
+margin_bottom = 301.0
+custom_fonts/font = ExtResource( 2 )
+align = 1
+
+[node name="DiscordButton" type="Button" parent="."]
+margin_top = 305.0
+margin_right = 1024.0
+margin_bottom = 335.0
+custom_fonts/font = ExtResource( 2 )
+text = "Discord"
+
+[node name="TwitterButton" type="Button" parent="."]
+margin_top = 339.0
+margin_right = 1024.0
+margin_bottom = 369.0
+custom_fonts/font = ExtResource( 2 )
+text = "Twitter"
+
+[node name="GithubButton" type="Button" parent="."]
+margin_top = 373.0
+margin_right = 1024.0
+margin_bottom = 403.0
+custom_fonts/font = ExtResource( 2 )
+text = "Github"
+
+[node name="SpacerLabel3" type="Label" parent="."]
+margin_top = 407.0
+margin_right = 1024.0
+margin_bottom = 431.0
+custom_fonts/font = ExtResource( 2 )
+align = 1
+
+[node name="QuitButton" type="Button" parent="."]
+margin_top = 435.0
+margin_right = 1024.0
+margin_bottom = 465.0
+custom_fonts/font = ExtResource( 2 )
+text = "Quit"
 
