@@ -57,7 +57,6 @@ public class Net : Node
 				Scripting.Self.RpcId(Id, nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
 			}
 
-			RpcId(ServerId, nameof(NotifyVersion), Game.Version);
 			RpcId(Id, nameof(ReadyToRequestWorld), new object[] {});
 		}
 	}
