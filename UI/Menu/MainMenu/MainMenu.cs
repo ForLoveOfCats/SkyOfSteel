@@ -3,6 +3,12 @@ using System;
 
 public class MainMenu : VBoxContainer
 {
+	public void HostPressed()
+	{
+		Menu.BuildHost();
+	}
+
+
 	public void DiscordPressed()
 	{
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");
