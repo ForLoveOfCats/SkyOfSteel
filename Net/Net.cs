@@ -37,6 +37,8 @@ public class Net : Node
 			Game.StartWorld();
 			PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 			Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+
+			RpcId(ServerId, nameof(NotifyVersion), Game.Version);
 		}
 		else
 		{
@@ -55,7 +57,26 @@ public class Net : Node
 				Scripting.Self.RpcId(Id, nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
 			}
 
+			RpcId(ServerId, nameof(NotifyVersion), Game.Version);
 			RpcId(Id, nameof(ReadyToRequestWorld), new object[] {});
+		}
+	}
+
+
+	[Remote]
+	public void NotifyVersion(string Version)
+	{
+		if(GetTree().GetNetworkUniqueId() == ServerId)
+		{
+			//The client sent its version and we are running on the server
+			if(Version != Game.Version)
+			{
+				((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(GetTree().GetRpcSenderId());
+			}
+		}
+		else
+		{
+			//The server sent its version and we are running on the client
 		}
 	}
 

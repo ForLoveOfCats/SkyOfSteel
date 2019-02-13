@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class Game : Node
 {
+	public const string Version = "0.1-dev"; //Yes it's a string shush
+
 	public static Node RuntimeRoot;
 
 	public static int MaxPlayers = 8;
