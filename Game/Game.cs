@@ -170,8 +170,11 @@ public class Game : Node
 				Branch.Remove();
 			}
 			Building.Chunks.Clear();
-			Building.RemoteLoadedChunks.Clear();
 			Building.Grid.Clear();
+			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in Building.RemoteLoadedChunks)
+			{
+				Building.RemoteLoadedChunks[Pair.Key].Clear();
+			}
 
 			SaveDir.Open("user://saves/"+SaveName);
 			SaveDir.ListDirBegin(true, true);
