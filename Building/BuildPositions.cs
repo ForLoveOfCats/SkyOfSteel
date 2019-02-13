@@ -140,11 +140,11 @@ public class BuildPositions
 				{
 					if(Game.PossessedPlayer.BuildRotation == 0)
 					{
-						Position = Base.Translation + (new Vector3(0,-12,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
+						Position = Base.Translation + (new Vector3(0,0,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
 					}
 					else
 					{
-						Position = Base.Translation + (new Vector3(0,0,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
+						Position = Base.Translation + (new Vector3(0,-12,12)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(RotationDegrees));
 					}
 				}
 				return new Vector3(Mathf.Round(Position.x), Mathf.Round(Position.y), Mathf.Round(Position.z));

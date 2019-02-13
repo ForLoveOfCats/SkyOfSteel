@@ -28,18 +28,6 @@ public class BuildRotations
 		int BuildRotation = Game.PossessedPlayer.BuildRotation;
 		int PlayerDirection = (int)LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
 
-		if(Base.Type == Items.TYPE.SLOPE && PlayerDirection != LoopRotation((float)Round(Base.RotationDegrees.y)))
-		{
-			if(BuildRotation == 0)
-			{
-				BuildRotation = 1;
-			}
-			else if(BuildRotation == 1)
-			{
-				BuildRotation = 0;
-			}
-		}
-
 		if(BuildRotation == 0)
 		{
 			return new Vector3(0, SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4), 0);
