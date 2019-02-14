@@ -20,4 +20,4 @@ bind("player_position_reset", "K");
 bind("player_input_primary_fire", "MouseOne");
 bind("player_input_secondary_fire", "MouseTwo");
 
-chunk_render_distance(5);
+chunk_render_distance(10);
