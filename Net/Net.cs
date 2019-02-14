@@ -65,7 +65,7 @@ public class Net : Node
 	{
 		if(Id == 1) //Running on client and connected to server
 		{
-			// RpcId(ServerId, nameof(ProvideVersion), Game.Version);
+			RpcId(ServerId, nameof(ProvideVersion), Game.Version);
 		}
 		else //Connected to a client OR server
 		{
