@@ -169,7 +169,7 @@ public class Scripting : Node
 				ClientGmScript = ClientScriptFile.GetAsText();
 				ClientScriptFile.Close();
 				ClientGmEngine.Execute(ClientGmScript);
-				Self.Rpc(nameof(NetLoadClientScript), new object[] {ClientGmScript});
+				Net.SteelRpc(Self, nameof(NetLoadClientScript), new object[] {ClientGmScript});
 			}
 		}
 	}

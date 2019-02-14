@@ -671,7 +671,7 @@ public class Player : KinematicBody
 			Momentum.y = -1f;
 		}
 
-		RpcUnreliable(nameof(Update), Translation, RotationDegrees);
+		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees);
 
 		if(!Building.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{

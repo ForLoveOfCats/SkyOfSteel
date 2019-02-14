@@ -129,7 +129,7 @@ public class Building : Node
 
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
-			Self.Rpc(nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
+			Net.SteelRpc(Self, nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
 		}
 	}
 
@@ -143,7 +143,7 @@ public class Building : Node
 
 
 	[Remote]
-	public void RequestChunks(int Id, Vector3 PlayerPosition, int RenderDistance)
+	public void RequestChunks(int Id, Vector3 PlayerPosition, int RenderDistance) //Can be called non-rpc by passing int id
 	{
 		if(!GetTree().IsNetworkServer())
 		{

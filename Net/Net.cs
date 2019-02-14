@@ -1,16 +1,22 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 
 public class Net : Node
 {
+	private const double VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
+														their version before disconnecting from a client which refuses
+														to identify their version*/
+
 	public static int ServerId = 1;
 
 	private static int Port = 27015;
 	private static string Ip;
 
 	public static List<int> PeerList = new List<int>();
+	public static Dictionary<int, double> WaitingForVersion = new Dictionary<int, double>();
 
 	public static Net Self;
 	Net()
@@ -29,62 +35,124 @@ public class Net : Node
 	}
 
 
+	public static void SteelRpc(Node Instance, string Method, params object[] Args) //Doesn't rpc clients which are not ready
+	{
+		foreach(int Id in PeerList)
+		{
+			if(Id == Self.GetTree().GetNetworkUniqueId())
+			{
+				continue;
+			}
+			Instance.RpcId(Id, Method, Args);
+		}
+	}
+
+
+	public static void SteelRpcUnreliable(Node Instance, string Method, params object[] Args) //Doesn't rpc clients which are not ready
+	{
+		foreach(int Id in PeerList)
+		{
+			if(Id == Self.GetTree().GetNetworkUniqueId())
+			{
+				continue;
+			}
+			Instance.RpcUnreliableId(Id, Method, Args);
+		}
+	}
+
+
 	public void _PlayerConnected(int Id)
 	{
-		if(Id == 1)
+		if(Id == 1) //Running on client and connected to server
 		{
-			Console.Log("Connected to server at '" + Ip.ToString() + "'");
-			Game.StartWorld();
-			PeerList.Add(Self.GetTree().GetNetworkUniqueId());
-			Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
-
-			RpcId(ServerId, nameof(NotifyVersion), Game.Version);
+			// RpcId(ServerId, nameof(ProvideVersion), Game.Version);
 		}
-		else
+		else //Connected to a client OR server
 		{
 			Console.Log("Player '" + Id.ToString() + "' connected");
 		}
 
-		Game.SpawnPlayer(Id, false);
-		PeerList.Add(Id);
-
-		Building.RemoteLoadedChunks.Add(Id, new List<Tuple<int,int>>());
-
 		if(GetTree().IsNetworkServer())
 		{
-			if(Scripting.ClientGmScript != null)
-			{
-				Scripting.Self.RpcId(Id, nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
-			}
-
-			RpcId(Id, nameof(ReadyToRequestWorld), new object[] {});
+			//If we are the server
+			WaitingForVersion.Add(Id, 0d); //then add new client to WaitingForVersion
 		}
 	}
 
 
 	[Remote]
-	public void NotifyVersion(string Version)
+	public void ProvideVersion(string Version) //Run on server
 	{
-		if(GetTree().GetNetworkUniqueId() == ServerId)
+		if(!GetTree().IsNetworkServer())
 		{
-			//The client sent its version and we are running on the server
-			if(Version != Game.Version)
+			return; //Make sure we really are the server
+		}
+
+		//The client sent its version and we are running on the server
+		if(Version != Game.Version) //Version mismatch
+		{
+			((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(GetTree().GetRpcSenderId());
+			WaitingForVersion.Remove(GetTree().GetRpcSenderId());
+			return;
+		}
+
+		WaitingForVersion.Remove(GetTree().GetRpcSenderId());
+
+		Building.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
+
+		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
+		SetupNewPeer(GetTree().GetRpcSenderId());
+		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
+		foreach(int Id in PeerList)
+		{
+			if(Id == GetTree().GetRpcSenderId())
 			{
-				((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(GetTree().GetRpcSenderId());
+				continue;
 			}
+			RpcId(GetTree().GetRpcSenderId(), nameof(SetupNewPeer), Id);
 		}
-		else
+
+		if(Scripting.ClientGmScript != null)
 		{
-			//The server sent its version and we are running on the client
+			Scripting.Self.RpcId(GetTree().GetRpcSenderId(), nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
 		}
+
+		RpcId(GetTree().GetRpcSenderId(), nameof(ReadyToRequestWorld), new object[] {});
+	}
+
+
+	[Remote]
+	public void NotifySuccessConnect() //Run on client
+	{
+		Console.Log("Connected to server at '" + Ip.ToString() + "'");
+		Game.StartWorld();
+		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+	}
+
+
+	[Remote]
+	public void SetupNewPeer(int Id) //Run on all clients except for the new client
+	{
+		if(Id == GetTree().GetNetworkUniqueId())
+		{
+			return; //Make sure we are not the new peer
+		}
+
+		Game.SpawnPlayer(Id, false);
+		PeerList.Add(Id);
 	}
 
 
 	public void _PlayerDisconnected(int Id)
 	{
 		Console.Log("Player '" + Id.ToString() + "' disconnected");
-		Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
-		PeerList.Remove(Id);
+
+		if(PeerList.Contains(Id)) //May be disconnecting from a client which did not fully connect
+		{
+			Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
+			PeerList.Remove(Id);
+		}
 	}
 
 
@@ -218,6 +286,21 @@ public class Net : Node
 		if(!Self.GetTree().IsNetworkServer())
 		{
 			Building.Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+		}
+	}
+
+
+	public override void _Process(float Delta)
+	{
+		foreach(int Id in WaitingForVersion.Keys.ToArray())
+		{
+			WaitingForVersion[Id] += Delta;
+			if(WaitingForVersion[Id] >= VersionDisconnectDelay)
+			{
+				Console.ThrowLog($"Player '{Id}' did not provide their client version and was kicked");
+				((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(Id); //Disconnect clients which didn't send their version in time
+				WaitingForVersion.Remove(Id);
+			}
 		}
 	}
 }
