@@ -29,6 +29,7 @@ Bindings="*res://Scripting/Bindings.cs"
 Items="*res://Items/Items.cs"
 Building="*res://Building/Building.cs"
 Menu="*res://UI/Menu/Menu.cs"
+Arguments="*res://Game/Arguments.cs"
 
 [display]
 

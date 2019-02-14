@@ -63,6 +63,7 @@
     <Compile Include="Building\SavedChunk.cs" />
     <Compile Include="Building\SavedStructure.cs" />
     <Compile Include="Building\Structure.cs" />
+    <Compile Include="Game\Arguments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripting\API.cs" />
     <Compile Include="Scripting\BindingObject.cs" />
