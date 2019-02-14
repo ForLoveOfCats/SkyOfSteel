@@ -12,6 +12,7 @@ public class Menu : Node
 	private static PackedScene Intro;
 	private static PackedScene Main;
 	private static PackedScene Host;
+	private static PackedScene ConnectMenu;
 
 	static Menu()
 	{
@@ -21,6 +22,7 @@ public class Menu : Node
 		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
 		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
+		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 	}
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
@@ -79,6 +81,15 @@ public class Menu : Node
 		Reset();
 
 		Contents = Host.Instance();
+		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildConnect()
+	{
+		Reset();
+
+		Contents = ConnectMenu.Instance();
 		Center.AddChild(Contents);
 	}
 }

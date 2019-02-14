@@ -9,6 +9,12 @@ public class MainMenu : VBoxContainer
 	}
 
 
+	public void ConnectPressed()
+	{
+		Menu.BuildConnect();
+	}
+
+
 	public void DiscordPressed()
 	{
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");

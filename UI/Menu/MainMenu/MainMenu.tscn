@@ -89,6 +89,7 @@ custom_fonts/font = ExtResource( 3 )
 text = "Quit"
 
 [connection signal="pressed" from="HostButton" to="." method="HostPressed"]
+[connection signal="pressed" from="ConnectButton" to="." method="ConnectPressed"]
 [connection signal="pressed" from="DiscordButton" to="." method="DiscordPressed"]
 [connection signal="pressed" from="TwitterButton" to="." method="TwitterPressed"]
 [connection signal="pressed" from="GithubButton" to="." method="GithubPressed"]

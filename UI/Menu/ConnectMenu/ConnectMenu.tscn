@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://UI/Menu/ConnectMenu/ConnectMenu.cs" type="Script" id=1]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+
+size = 36
+font_data = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="Title" type="Label" parent="."]
+margin_top = 212.0
+margin_right = 1024.0
+margin_bottom = 259.0
+custom_fonts/font = SubResource( 1 )
+text = "Connect to IP"
+align = 1
+
+[node name="SpacerLabel" type="Label" parent="."]
+margin_top = 263.0
+margin_right = 1024.0
+margin_bottom = 287.0
+custom_fonts/font = ExtResource( 3 )
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 291.0
+margin_right = 1024.0
+margin_bottom = 325.0
+
+[node name="IpEdit" type="LineEdit" parent="HBoxContainer"]
+margin_right = 784.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+custom_fonts/font = ExtResource( 3 )
+align = 1
+
+[node name="ConnectButton" type="Button" parent="HBoxContainer"]
+margin_left = 788.0
+margin_right = 1024.0
+margin_bottom = 34.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+custom_fonts/font = ExtResource( 3 )
+text = "Connect to IP"
+
+[node name="SpacerLabel2" type="Label" parent="."]
+margin_top = 329.0
+margin_right = 1024.0
+margin_bottom = 353.0
+custom_fonts/font = ExtResource( 3 )
+align = 1
+
+[node name="BackButton" type="Button" parent="."]
+margin_top = 357.0
+margin_right = 1024.0
+margin_bottom = 387.0
+custom_fonts/font = ExtResource( 3 )
+text = "Back"
+
+[connection signal="pressed" from="HBoxContainer/ConnectButton" to="." method="ConnectPressed"]
+[connection signal="pressed" from="BackButton" to="." method="BackPressed"]
