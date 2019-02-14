@@ -21,4 +21,4 @@ bind("player_input_primary_fire", "MouseOne");
 bind("player_input_secondary_fire", "MouseTwo");
 
 chunk_render_distance(10);
-fps_target(200)
+fps_max(200)

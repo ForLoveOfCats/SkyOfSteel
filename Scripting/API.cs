@@ -194,17 +194,17 @@ public class API : Node
 			case "fps_get":
 				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Engine.GetFramesPerSecond());})};
 
-			case "fps_target":
+			case "fps_max":
 				return new List<object> {Name, new Action<double>(delegate(double TargetFps){
 					if(Double.IsNaN(TargetFps) || Double.IsInfinity(TargetFps) || TargetFps < 0)
 					{
-						Console.ThrowPrint($"Please provide a valid positive target fps which is less than Infinity");
+						Console.ThrowPrint($"Please provide a valid positive max fps value which is less than Infinity");
 						return;
 					}
 					Engine.SetTargetFps(Convert.ToInt32(TargetFps));
 				})};
 
-			case "fps_target_get":
+			case "fps_max_get":
 				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Engine.GetTargetFps());})};
 
 			case "chunk_render_distance":
@@ -323,8 +323,8 @@ public class API : Node
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("fps_get"));
-				Output.Add(GetDelCall("fps_target"));
-				Output.Add(GetDelCall("fps_target_get"));
+				Output.Add(GetDelCall("fps_max"));
+				Output.Add(GetDelCall("fps_max_get"));
 				Output.Add(GetDelCall("save"));
 				Output.Add(GetDelCall("load"));
 				Output.Add(GetDelCall("hud_hide"));
@@ -360,7 +360,7 @@ public class API : Node
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("fps_get"));
-				Output.Add(GetDelCall("fps_target_get"));
+				Output.Add(GetDelCall("fps_max_get"));
 				Output.Add(GetDelCall("save"));
 				Output.Add(GetDelCall("load"));
 				Output.Add(GetDelCall("hud_hide"));
@@ -396,7 +396,7 @@ public class API : Node
 				Output.Add(GetDelCall("chunk_render_distance"));
 				Output.Add(GetDelCall("chunk_render_distance_get"));
 				Output.Add(GetDelCall("fps_get"));
-				Output.Add(GetDelCall("fps_target_get"));
+				Output.Add(GetDelCall("fps_max_get"));
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
 				break;
