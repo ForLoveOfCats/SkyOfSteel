@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public class Net : Node
 {
 	private const double VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
-														their version before disconnecting from a client which refuses
-														to identify their version*/
+	                                                    their version before disconnecting from a client which refuses
+	                                                    to identify their version*/
 
 	public static int ServerId = 1;
 
