@@ -1,7 +1,7 @@
 using Godot;
 
 
-public class Arguments : Node
+public class Startup : Node
 {
 	public override void _Ready()
 	{
