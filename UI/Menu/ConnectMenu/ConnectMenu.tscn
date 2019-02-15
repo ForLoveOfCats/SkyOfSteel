@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Menu/ConnectMenu/ConnectMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
-[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=4]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 anchor_right = 1.0
@@ -19,12 +20,10 @@ margin_right = 1024.0
 margin_bottom = 262.0
 text = "Connect to IP"
 
-[node name="SpacerLabel" type="Label" parent="."]
+[node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
 margin_top = 266.0
 margin_right = 1024.0
 margin_bottom = 290.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_top = 294.0
@@ -35,10 +34,10 @@ margin_bottom = 328.0
 margin_right = 784.0
 margin_bottom = 34.0
 size_flags_horizontal = 3
-custom_fonts/font = ExtResource( 3 )
+custom_fonts/font = ExtResource( 4 )
 align = 1
 
-[node name="ConnectButton" parent="HBoxContainer" instance=ExtResource( 4 )]
+[node name="ConnectButton" parent="HBoxContainer" instance=ExtResource( 5 )]
 margin_left = 788.0
 margin_right = 1024.0
 margin_bottom = 34.0
@@ -46,14 +45,12 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
 text = "Connect to IP"
 
-[node name="SpacerLabel2" type="Label" parent="."]
+[node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
 margin_top = 332.0
 margin_right = 1024.0
 margin_bottom = 356.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
 
-[node name="BackButton" parent="." instance=ExtResource( 4 )]
+[node name="BackButton" parent="." instance=ExtResource( 5 )]
 margin_top = 360.0
 margin_right = 1024.0
 margin_bottom = 390.0

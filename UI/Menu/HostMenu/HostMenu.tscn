@@ -2,7 +2,7 @@
 
 [ext_resource path="res://UI/Menu/HostMenu/HostMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [node name="VBoxContainer" type="VBoxContainer"]
@@ -19,13 +19,10 @@ margin_right = 1024.0
 margin_bottom = 264.0
 text = "Host a game"
 
-[node name="SpacerLabel" type="Label" parent="."]
+[node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
 margin_top = 268.0
 margin_right = 1024.0
 margin_bottom = 292.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
-autowrap = true
 
 [node name="HostButton" parent="." instance=ExtResource( 4 )]
 margin_top = 296.0
@@ -33,13 +30,10 @@ margin_right = 1024.0
 margin_bottom = 326.0
 text = "Host"
 
-[node name="SpacerLabel2" type="Label" parent="."]
+[node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
 margin_top = 330.0
 margin_right = 1024.0
 margin_bottom = 354.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
-autowrap = true
 
 [node name="BackButton" parent="." instance=ExtResource( 4 )]
 margin_top = 358.0

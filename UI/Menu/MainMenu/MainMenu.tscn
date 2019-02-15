@@ -2,7 +2,7 @@
 
 [ext_resource path="res://UI/Menu/MainMenu/MainMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
@@ -26,12 +26,10 @@ custom_fonts/font = SubResource( 1 )
 text = "SkyOfSteel"
 align = 1
 
-[node name="SpacerLabel" type="Label" parent="."]
+[node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
 margin_top = 217.0
 margin_right = 1024.0
 margin_bottom = 241.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
 
 [node name="HostButton" parent="." instance=ExtResource( 4 )]
 margin_top = 245.0
@@ -45,12 +43,10 @@ margin_right = 1024.0
 margin_bottom = 309.0
 text = "Connect"
 
-[node name="SpacerLabel2" type="Label" parent="."]
+[node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
 margin_top = 313.0
 margin_right = 1024.0
 margin_bottom = 337.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
 
 [node name="DiscordButton" parent="." instance=ExtResource( 4 )]
 margin_top = 341.0
@@ -70,12 +66,10 @@ margin_right = 1024.0
 margin_bottom = 439.0
 text = "Github"
 
-[node name="SpacerLabel3" type="Label" parent="."]
+[node name="SpacerLabel3" parent="." instance=ExtResource( 3 )]
 margin_top = 443.0
 margin_right = 1024.0
 margin_bottom = 467.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
 
 [node name="QuitButton" parent="." instance=ExtResource( 4 )]
 margin_top = 471.0

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Menu/Intro/Intro.cs" type="Script" id=1]
 [ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
-[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 anchor_right = 1.0
@@ -28,15 +29,12 @@ text = "SkyOfSteel is extremely early alpha. As a result it may be buggy and hav
 align = 1
 autowrap = true
 
-[node name="SpacerLabel" type="Label" parent="."]
+[node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
 margin_top = 313.0
 margin_right = 1024.0
 margin_bottom = 337.0
-custom_fonts/font = ExtResource( 3 )
-align = 1
-autowrap = true
 
-[node name="ContinueButton" parent="." instance=ExtResource( 4 )]
+[node name="ContinueButton" parent="." instance=ExtResource( 5 )]
 margin_top = 341.0
 margin_right = 1024.0
 margin_bottom = 371.0
