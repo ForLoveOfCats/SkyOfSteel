@@ -4,6 +4,7 @@ bind("player_input_right", "D");
 bind("player_input_left", "A");
 bind("player_input_sprint", "Shift");
 bind("player_input_jump", "Space");
+bind("player_input_crouch", "Control");
 
 bind("player_input_inventory_up", "WheelUp");
 bind("player_input_inventory_down", "WheelDown");

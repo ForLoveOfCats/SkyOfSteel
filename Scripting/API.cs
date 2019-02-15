@@ -114,6 +114,14 @@ public class API : Node
 			case "player_input_jump_get":
 				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsJumping ? 1d : 0d;})};
 
+			case "player_input_crouch":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.Crouch(Sens);
+				})};
+
+			case "player_input_crouch_get":
+				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsCrouching ? 1d : 0d;})};
+
 			case "player_input_inventory_up":
 				return new List<object> {Name, new Action(delegate(){
 					Game.PossessedPlayer.InventoryUp();
@@ -163,6 +171,14 @@ public class API : Node
 				return new List<object> {Name, new Action(delegate(){
 					Game.PossessedPlayer.PositionReset();
 				})};
+
+			case "fly":
+				return new List<object> {Name, new Action<bool>(delegate(bool NewFly){
+					Game.PossessedPlayer.SetFly(NewFly);
+				})};
+
+			case "fly_get":
+				return new List<object> {Name, new Func<bool>(() => {return Game.PossessedPlayer.FlyMode;})};
 
 			case "gamemode":
 				return new List<object> {Name, new Action<string>(delegate(string GameModeName){
@@ -307,6 +323,8 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_sprint_get"));
 				Output.Add(GetDelCall("player_input_jump"));
 				Output.Add(GetDelCall("player_input_jump_get"));
+				Output.Add(GetDelCall("player_input_crouch"));
+				Output.Add(GetDelCall("player_input_crouch_get"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
 				Output.Add(GetDelCall("player_input_inventory_down"));
 				Output.Add(GetDelCall("player_input_look_up"));
@@ -329,6 +347,8 @@ public class API : Node
 				Output.Add(GetDelCall("load"));
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
+				Output.Add(GetDelCall("fly"));
+				Output.Add(GetDelCall("fly_get"));
 				break;
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
@@ -346,6 +366,8 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_sprint_get"));
 				Output.Add(GetDelCall("player_input_jump"));
 				Output.Add(GetDelCall("player_input_jump_get"));
+				Output.Add(GetDelCall("player_input_crouch"));
+				Output.Add(GetDelCall("player_input_crouch_get"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
 				Output.Add(GetDelCall("player_input_inventory_down"));
 				Output.Add(GetDelCall("player_input_look_up"));
@@ -365,6 +387,8 @@ public class API : Node
 				Output.Add(GetDelCall("load"));
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
+				Output.Add(GetDelCall("fly"));
+				Output.Add(GetDelCall("fly_get"));
 				break;
 			case LEVEL.CLIENT_GM:
 				Output.Add(GetDelCall("log"));
@@ -382,6 +406,8 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_sprint_get"));
 				Output.Add(GetDelCall("player_input_jump"));
 				Output.Add(GetDelCall("player_input_jump_get"));
+				Output.Add(GetDelCall("player_input_crouch"));
+				Output.Add(GetDelCall("player_input_crouch_get"));
 				Output.Add(GetDelCall("player_input_inventory_up"));
 				Output.Add(GetDelCall("player_input_inventory_down"));
 				Output.Add(GetDelCall("player_input_look_up"));
@@ -399,6 +425,8 @@ public class API : Node
 				Output.Add(GetDelCall("fps_max_get"));
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
+				Output.Add(GetDelCall("fly"));
+				Output.Add(GetDelCall("fly_get"));
 				break;
 		}
 
