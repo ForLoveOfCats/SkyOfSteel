@@ -1,14 +1,9 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://UI/Menu/Intro/Intro.cs" type="Script" id=1]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
+[ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
-
-[sub_resource type="DynamicFont" id=1]
-
-size = 36
-font_data = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer"]
 anchor_right = 1.0
@@ -18,14 +13,11 @@ size_flags_vertical = 3
 alignment = 1
 script = ExtResource( 1 )
 
-[node name="Welcome" type="Label" parent="."]
+[node name="Welcome" parent="." instance=ExtResource( 2 )]
 margin_top = 231.0
 margin_right = 1024.0
 margin_bottom = 278.0
-custom_fonts/font = SubResource( 1 )
 text = "Welcome to SkyOfSteel!"
-align = 1
-autowrap = true
 
 [node name="Message" type="Label" parent="."]
 margin_top = 282.0
