@@ -35,7 +35,7 @@ Contributions are welcome!
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.1 Beta 2
+* A functioning installation of Godot Mono 3.1 Beta 4
   * Decently recent versions of both MSBuild and Nuget must be installed.
 
 
