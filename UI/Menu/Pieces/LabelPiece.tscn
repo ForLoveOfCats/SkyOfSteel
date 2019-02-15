@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=1]
+
+[node name="Label" type="Label"]
+margin_right = 40.0
+margin_bottom = 14.0
+custom_fonts/font = ExtResource( 1 )
+text = "Default Label Text"
+align = 1
+
