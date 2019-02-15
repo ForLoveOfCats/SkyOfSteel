@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Menu/ConnectMenu/ConnectMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -44,13 +45,12 @@ size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 3 )
 align = 1
 
-[node name="ConnectButton" type="Button" parent="HBoxContainer"]
+[node name="ConnectButton" parent="HBoxContainer" instance=ExtResource( 4 )]
 margin_left = 788.0
 margin_right = 1024.0
 margin_bottom = 34.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
-custom_fonts/font = ExtResource( 3 )
 text = "Connect to IP"
 
 [node name="SpacerLabel2" type="Label" parent="."]
@@ -60,11 +60,10 @@ margin_bottom = 353.0
 custom_fonts/font = ExtResource( 3 )
 align = 1
 
-[node name="BackButton" type="Button" parent="."]
+[node name="BackButton" parent="." instance=ExtResource( 4 )]
 margin_top = 357.0
 margin_right = 1024.0
 margin_bottom = 387.0
-custom_fonts/font = ExtResource( 3 )
 text = "Back"
 
 [connection signal="pressed" from="HBoxContainer/ConnectButton" to="." method="ConnectPressed"]

@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Menu/MainMenu/MainMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -32,18 +33,16 @@ margin_bottom = 210.0
 custom_fonts/font = ExtResource( 3 )
 align = 1
 
-[node name="HostButton" type="Button" parent="."]
+[node name="HostButton" parent="." instance=ExtResource( 4 )]
 margin_top = 214.0
 margin_right = 1024.0
 margin_bottom = 244.0
-custom_fonts/font = ExtResource( 3 )
 text = "Host"
 
-[node name="ConnectButton" type="Button" parent="."]
+[node name="ConnectButton" parent="." instance=ExtResource( 4 )]
 margin_top = 248.0
 margin_right = 1024.0
 margin_bottom = 278.0
-custom_fonts/font = ExtResource( 3 )
 text = "Connect"
 
 [node name="SpacerLabel2" type="Label" parent="."]
@@ -53,25 +52,22 @@ margin_bottom = 306.0
 custom_fonts/font = ExtResource( 3 )
 align = 1
 
-[node name="DiscordButton" type="Button" parent="."]
+[node name="DiscordButton" parent="." instance=ExtResource( 4 )]
 margin_top = 310.0
 margin_right = 1024.0
 margin_bottom = 340.0
-custom_fonts/font = ExtResource( 3 )
 text = "Discord"
 
-[node name="TwitterButton" type="Button" parent="."]
+[node name="TwitterButton" parent="." instance=ExtResource( 4 )]
 margin_top = 344.0
 margin_right = 1024.0
 margin_bottom = 374.0
-custom_fonts/font = ExtResource( 3 )
 text = "Twitter"
 
-[node name="GithubButton" type="Button" parent="."]
+[node name="GithubButton" parent="." instance=ExtResource( 4 )]
 margin_top = 378.0
 margin_right = 1024.0
 margin_bottom = 408.0
-custom_fonts/font = ExtResource( 3 )
 text = "Github"
 
 [node name="SpacerLabel3" type="Label" parent="."]
@@ -81,11 +77,10 @@ margin_bottom = 436.0
 custom_fonts/font = ExtResource( 3 )
 align = 1
 
-[node name="QuitButton" type="Button" parent="."]
+[node name="QuitButton" parent="." instance=ExtResource( 4 )]
 margin_top = 440.0
 margin_right = 1024.0
 margin_bottom = 470.0
-custom_fonts/font = ExtResource( 3 )
 text = "Quit"
 
 [connection signal="pressed" from="HostButton" to="." method="HostPressed"]

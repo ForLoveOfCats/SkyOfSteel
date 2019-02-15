@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Menu/HostMenu/HostMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -34,11 +35,10 @@ custom_fonts/font = ExtResource( 3 )
 align = 1
 autowrap = true
 
-[node name="HostButton" type="Button" parent="."]
+[node name="HostButton" parent="." instance=ExtResource( 4 )]
 margin_top = 293.0
 margin_right = 1024.0
 margin_bottom = 323.0
-custom_fonts/font = ExtResource( 3 )
 text = "Host"
 
 [node name="SpacerLabel2" type="Label" parent="."]
@@ -49,11 +49,10 @@ custom_fonts/font = ExtResource( 3 )
 align = 1
 autowrap = true
 
-[node name="BackButton" type="Button" parent="."]
+[node name="BackButton" parent="." instance=ExtResource( 4 )]
 margin_top = 355.0
 margin_right = 1024.0
 margin_bottom = 385.0
-custom_fonts/font = ExtResource( 3 )
 text = "Back"
 
 [connection signal="pressed" from="HostButton" to="." method="HostPressed"]

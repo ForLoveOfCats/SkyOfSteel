@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://UI/Menu/Intro/Intro.cs" type="Script" id=1]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=2]
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -43,12 +44,10 @@ custom_fonts/font = ExtResource( 3 )
 align = 1
 autowrap = true
 
-[node name="Button" type="Button" parent="."]
+[node name="ContinueButton" parent="." instance=ExtResource( 4 )]
 margin_top = 338.0
 margin_right = 1024.0
 margin_bottom = 368.0
-hint_tooltip = "Continue to main menu"
-custom_fonts/font = ExtResource( 3 )
 text = "Continue"
 
-[connection signal="pressed" from="Button" to="." method="ContinuePressed"]
+[connection signal="pressed" from="ContinueButton" to="." method="ContinuePressed"]
