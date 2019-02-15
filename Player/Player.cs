@@ -80,8 +80,8 @@ public class Player : KinematicBody
 			AddChild(HUDInstance);
 
 			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
-			GetParent().AddChild(GhostInstance);
 			GhostInstance.Hide();
+			GetParent().CallDeferred("add_child", GhostInstance);
 		}
 		else
 		{
