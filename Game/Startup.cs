@@ -1,10 +1,13 @@
 using Godot;
+using Jurassic;
 
 
 public class Startup : Node
 {
+	//Processes command line arguments and runs autoexec.js
 	public override void _Ready()
 	{
+		//Command line arguments are processed first
 		string[] CmdArgs = OS.GetCmdlineArgs();
 		foreach(string CurrentArg in CmdArgs)
 		{
@@ -28,5 +31,28 @@ public class Startup : Node
 		{
 			Console.Log("");
 		}
+
+
+		//autoexec.js is executed afterwards
+		File Autoexec = new File();
+		if(Autoexec.FileExists("user://autoexec.js"))
+		{
+			Autoexec.Open("user://autoexec.js", 1);
+			Console.Print("Autoexec loaded 'autoexec.js'");
+			try
+			{
+				Scripting.ConsoleEngine.Execute(Autoexec.GetAsText());
+			}
+			catch(JavaScriptException Error)
+			{
+				Console.Print(Error.Message + " @ line " + Error.LineNumber.ToString());
+				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
+			}
+		}
+		else
+		{
+			Console.Print("Autoexec not found 'autoexec.js'");
+		}
+		Autoexec.Close();
 	}
 }

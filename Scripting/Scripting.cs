@@ -97,27 +97,6 @@ public class Scripting : Node
 		SetupScript.Open("res://Scripting/SetupScript.js", 1);
 		ConsoleEngine.Execute(SetupScript.GetAsText());
 		SetupScript.Close();
-
-		File Autoexec = new File();
-		if(Autoexec.FileExists("user://autoexec.js"))
-		{
-			Autoexec.Open("user://autoexec.js", 1);
-			Console.Print("Autoexec loaded 'autoexec.js'");
-			try
-			{
-				ConsoleEngine.Execute(Autoexec.GetAsText());
-			}
-			catch(JavaScriptException Error)
-			{
-				Console.Print(Error.Message + " @ line " + Error.LineNumber.ToString());
-				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
-			}
-		}
-		else
-		{
-			Console.Print("Autoexec not found 'autoexec.js'");
-		}
-		Autoexec.Close();
 	}
 
 
