@@ -35,7 +35,7 @@ public class API : Node
 
 			case "disconnect":
 				return new List<object> {Name, new Action(delegate(){
-					if(Game.StructureRoot == null)
+					if(!Game.WorldOpen)
 					{
 						Console.ThrowPrint("Neither connected nor hosting");
 						return;
@@ -239,7 +239,7 @@ public class API : Node
 
 			case "save":
 				return new List<object> {Name, new Action<string>(delegate(string SaveName){
-					if(Game.StructureRoot == null)
+					if(!Game.WorldOpen)
 					{
 						Console.ThrowPrint("Cannot save world when not hosting");
 						return;
@@ -257,7 +257,7 @@ public class API : Node
 
 			case "load":
 				return new List<object> {Name, new Action<string>(delegate(string SaveName){
-					if(Game.StructureRoot == null)
+					if(!Game.WorldOpen)
 					{
 						Console.ThrowPrint("Cannot load savegame when not hosting");
 						return;
