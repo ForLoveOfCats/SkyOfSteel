@@ -2,7 +2,7 @@
 
 [ext_resource path="res://UI/Menu/Intro/Intro.cs" type="Script" id=1]
 [ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=3]
+[ext_resource path="res://UI/Menu/Pieces/LabelPiece.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=4]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
 
@@ -20,14 +20,11 @@ margin_right = 1024.0
 margin_bottom = 281.0
 text = "Welcome to SkyOfSteel!"
 
-[node name="Message" type="Label" parent="."]
+[node name="Message" parent="." instance=ExtResource( 3 )]
 margin_top = 285.0
 margin_right = 1024.0
 margin_bottom = 309.0
-custom_fonts/font = ExtResource( 3 )
 text = "SkyOfSteel is extremely early alpha. As a result it may be buggy and have issues. Thank you for your understanding."
-align = 1
-autowrap = true
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
 margin_top = 313.0

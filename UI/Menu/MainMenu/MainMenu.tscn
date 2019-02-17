@@ -6,7 +6,6 @@
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
 
 [sub_resource type="DynamicFont" id=1]
-
 size = 90
 font_data = ExtResource( 2 )
 

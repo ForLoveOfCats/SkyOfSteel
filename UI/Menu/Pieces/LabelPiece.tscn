@@ -8,4 +8,5 @@ margin_bottom = 14.0
 custom_fonts/font = ExtResource( 1 )
 text = "Default Label Text"
 align = 1
+autowrap = true
 
