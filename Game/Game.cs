@@ -75,6 +75,15 @@ public class Game : Node
 	}
 
 
+	public override void _Input(InputEvent Event)
+	{
+		if(Event.IsAction("ConsoleToggle") && Input.IsActionJustPressed("ConsoleToggle"))
+		{
+			GetTree().SetInputAsHandled();
+		}
+	}
+
+
 	public static void Quit()
 	{
 		CloseWorld();
