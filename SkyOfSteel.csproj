@@ -84,6 +84,7 @@
     <Compile Include="UI\Menu\Intro\Intro.cs" />
     <Compile Include="UI\Menu\MainMenu\MainMenu.cs" />
     <Compile Include="UI\Menu\Menu.cs" />
+    <Compile Include="UI\Menu\PauseMenu\PauseMenu.cs" />
     <Compile Include="World\StructureRoot.cs" />
   </ItemGroup>
   <ItemGroup>

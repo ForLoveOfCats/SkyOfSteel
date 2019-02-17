@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://UI/Menu/PauseMenu/PauseMenu.cs" type="Script" id=1]
+[ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="Title" parent="." instance=ExtResource( 2 )]
+margin_top = 226.0
+margin_right = 1024.0
+margin_bottom = 278.0
+text = "SkyOfSteel"
+
+[node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
+margin_top = 282.0
+margin_right = 1024.0
+margin_bottom = 306.0
+
+[node name="DisconnectButton" parent="." instance=ExtResource( 4 )]
+margin_top = 310.0
+margin_right = 1024.0
+margin_bottom = 340.0
+text = "Disconnect"
+
+[node name="QuitButton" parent="." instance=ExtResource( 4 )]
+margin_top = 344.0
+margin_right = 1024.0
+margin_bottom = 374.0
+text = "Quit"
+
+[connection signal="pressed" from="DisconnectButton" to="." method="DisconnectPressed"]
+[connection signal="pressed" from="QuitButton" to="." method="QuitPressed"]

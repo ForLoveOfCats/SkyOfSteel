@@ -15,6 +15,7 @@ public class Game : Node
 	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
+	public static bool WorldOpen = false;
 	public static StructureRootClass StructureRoot;
 
 	public static float MouseSensitivity = 1;
@@ -50,7 +51,14 @@ public class Game : Node
 	{
 		if(Input.IsActionJustPressed("ui_cancel"))
 		{
-			Game.Quit();
+			if(Menu.PauseOpen)
+			{
+				Menu.Close();
+			}
+			else if(WorldOpen)
+			{
+				Menu.BuildPause();
+			}
 		}
 
 		if(Input.IsActionJustPressed("ConsoleToggle"))
@@ -94,6 +102,8 @@ public class Game : Node
 	public static void StartWorld(bool AsServer = false)
 	{
 		CloseWorld();
+		Menu.Close();
+
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
 		SkyScene.SetName("SkyScene");
 		RuntimeRoot.AddChild(SkyScene);
@@ -108,7 +118,7 @@ public class Game : Node
 			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 		}
 
-		Menu.Close();
+		WorldOpen = true;
 	}
 
 
@@ -134,6 +144,8 @@ public class Game : Node
 
 		Console.ClearLog();
 		Console.Log("");
+
+		WorldOpen = false;
 	}
 
 

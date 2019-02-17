@@ -4,7 +4,7 @@ using Godot;
 public class Menu : Node
 {
 	public static bool IsOpen = true;
-
+	public static bool PauseOpen = false;
 
 	private static ScrollContainer Center;
 	private static Node Contents = null;
@@ -13,6 +13,7 @@ public class Menu : Node
 	private static PackedScene Main;
 	private static PackedScene Host;
 	private static PackedScene ConnectMenu;
+	private static PackedScene PauseMenu;
 
 	static Menu()
 	{
@@ -23,6 +24,7 @@ public class Menu : Node
 		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
+		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
 	}
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
@@ -31,7 +33,7 @@ public class Menu : Node
 	}
 
 
-	private static void Reset()
+	public static void Reset()
 	{
 		if(Contents != null)
 		{
@@ -49,6 +51,7 @@ public class Menu : Node
 	{
 		Reset();
 		IsOpen = false;
+		PauseOpen = false;
 
 		if(!Console.IsOpen)
 		{
@@ -91,5 +94,15 @@ public class Menu : Node
 
 		Contents = ConnectMenu.Instance();
 		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildPause()
+	{
+		Reset();
+
+		Contents = PauseMenu.Instance();
+		Center.AddChild(Contents);
+		PauseOpen = true;
 	}
 }
