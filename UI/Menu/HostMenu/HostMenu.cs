@@ -3,9 +3,15 @@ using System;
 
 public class HostMenu : VBoxContainer
 {
-	public void HostPressed()
+	public void HostBlankPressed()
 	{
 		Net.Host();
+	}
+
+
+	public void HostSavedPressed()
+	{
+		Menu.BuildSavedHost();
 	}
 
 

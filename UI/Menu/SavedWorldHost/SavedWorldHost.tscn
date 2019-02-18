@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://UI/Menu/HostMenu/HostMenu.cs" type="Script" id=1]
+[ext_resource path="res://UI/Menu/SavedWorldHost/SavedWorldHost.cs" type="Script" id=1]
 [ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=3]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=4]
@@ -13,40 +13,28 @@ size_flags_vertical = 3
 alignment = 1
 script = ExtResource( 1 )
 
-[node name="Title" parent="." instance=ExtResource( 2 )]
-margin_top = 195.0
+[node name="Label" parent="." instance=ExtResource( 2 )]
+margin_top = 229.0
 margin_right = 1024.0
-margin_bottom = 247.0
-text = "Host a game"
+margin_bottom = 281.0
+text = "Select a save to host"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
-margin_top = 251.0
-margin_right = 1024.0
-margin_bottom = 275.0
-
-[node name="HostBlankButton" parent="." instance=ExtResource( 4 )]
-margin_top = 279.0
+margin_top = 285.0
 margin_right = 1024.0
 margin_bottom = 309.0
-text = "Host a new blank world"
 
-[node name="HostSavedButton" parent="." instance=ExtResource( 4 )]
-margin_top = 313.0
-margin_right = 1024.0
-margin_bottom = 343.0
-text = "Host a saved world"
+[node name="ButtonsBelow" type="Node" parent="."]
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
-margin_top = 347.0
+margin_top = 313.0
 margin_right = 1024.0
-margin_bottom = 371.0
+margin_bottom = 337.0
 
 [node name="BackButton" parent="." instance=ExtResource( 4 )]
-margin_top = 375.0
+margin_top = 341.0
 margin_right = 1024.0
-margin_bottom = 405.0
+margin_bottom = 371.0
 text = "Back"
 
-[connection signal="pressed" from="HostBlankButton" to="." method="HostBlankPressed"]
-[connection signal="pressed" from="HostSavedButton" to="." method="HostSavedPressed"]
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]
