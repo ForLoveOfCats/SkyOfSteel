@@ -46,6 +46,7 @@ public class Menu : Node
 		}
 
 		IsOpen = true;
+		PauseOpen = false;
 		Game.BindsEnabled = false;
 		Input.SetMouseMode(Input.MouseMode.Visible);
 	}
