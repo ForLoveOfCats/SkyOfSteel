@@ -14,27 +14,39 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" parent="." instance=ExtResource( 2 )]
-margin_top = 226.0
+margin_top = 195.0
 margin_right = 1024.0
-margin_bottom = 278.0
+margin_bottom = 247.0
 text = "SkyOfSteel"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
-margin_top = 282.0
+margin_top = 251.0
 margin_right = 1024.0
-margin_bottom = 306.0
+margin_bottom = 275.0
+
+[node name="SaveButton" parent="." instance=ExtResource( 4 )]
+margin_top = 279.0
+margin_right = 1024.0
+margin_bottom = 309.0
+text = "Save"
+
+[node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
+margin_top = 313.0
+margin_right = 1024.0
+margin_bottom = 337.0
 
 [node name="DisconnectButton" parent="." instance=ExtResource( 4 )]
-margin_top = 310.0
+margin_top = 341.0
 margin_right = 1024.0
-margin_bottom = 340.0
+margin_bottom = 371.0
 text = "Disconnect"
 
 [node name="QuitButton" parent="." instance=ExtResource( 4 )]
-margin_top = 344.0
+margin_top = 375.0
 margin_right = 1024.0
-margin_bottom = 374.0
+margin_bottom = 405.0
 text = "Quit"
 
+[connection signal="pressed" from="SaveButton" to="." method="SavePressed"]
 [connection signal="pressed" from="DisconnectButton" to="." method="DisconnectPressed"]
 [connection signal="pressed" from="QuitButton" to="." method="QuitPressed"]

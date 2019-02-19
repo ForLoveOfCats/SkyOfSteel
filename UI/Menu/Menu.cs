@@ -15,6 +15,7 @@ public class Menu : Node
 	private static PackedScene SavedHost;
 	private static PackedScene ConnectMenu;
 	private static PackedScene PauseMenu;
+	private static PackedScene SaveMenu;
 
 	static Menu()
 	{
@@ -27,6 +28,7 @@ public class Menu : Node
 		SavedHost = GD.Load<PackedScene>("res://UI/Menu/SavedWorldHost/SavedWorldHost.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
+		SaveMenu = GD.Load<PackedScene>("res://UI/Menu/SaveMenu/SaveMenu.tscn");
 	}
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
@@ -115,5 +117,14 @@ public class Menu : Node
 		Contents = PauseMenu.Instance();
 		Center.AddChild(Contents);
 		PauseOpen = true;
+	}
+
+
+	public static void BuildSave()
+	{
+		Reset();
+
+		Contents = SaveMenu.Instance();
+		Center.AddChild(Contents);
 	}
 }
