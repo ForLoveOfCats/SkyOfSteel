@@ -17,6 +17,7 @@ bind("player_input_look_left", "MouseLeft");
 bind("player_input_build_rotate", "R");
 
 bind("player_position_reset", "K");
+bind("fly_toggle", "T");
 
 bind("player_input_primary_fire", "MouseOne");
 bind("player_input_secondary_fire", "MouseTwo");

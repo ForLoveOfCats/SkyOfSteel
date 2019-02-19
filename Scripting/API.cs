@@ -177,6 +177,11 @@ public class API : Node
 					Game.PossessedPlayer.SetFly(NewFly);
 				})};
 
+			case "fly_toggle":
+				return new List<object> {Name, new Action(delegate(){
+					Game.PossessedPlayer.SetFly(!Game.PossessedPlayer.FlyMode);
+				})};
+
 			case "fly_get":
 				return new List<object> {Name, new Func<bool>(() => {return Game.PossessedPlayer.FlyMode;})};
 
@@ -348,6 +353,7 @@ public class API : Node
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
 				Output.Add(GetDelCall("fly"));
+				Output.Add(GetDelCall("fly_toggle"));
 				Output.Add(GetDelCall("fly_get"));
 				break;
 			case LEVEL.SERVER_GM:
@@ -388,6 +394,7 @@ public class API : Node
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
 				Output.Add(GetDelCall("fly"));
+				Output.Add(GetDelCall("fly_toggle"));
 				Output.Add(GetDelCall("fly_get"));
 				break;
 			case LEVEL.CLIENT_GM:
@@ -426,6 +433,7 @@ public class API : Node
 				Output.Add(GetDelCall("hud_hide"));
 				Output.Add(GetDelCall("hud_show"));
 				Output.Add(GetDelCall("fly"));
+				Output.Add(GetDelCall("fly_toggle"));
 				Output.Add(GetDelCall("fly_get"));
 				break;
 		}
