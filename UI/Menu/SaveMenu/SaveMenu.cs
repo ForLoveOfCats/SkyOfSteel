@@ -51,4 +51,10 @@ public class SaveMenu : VBoxContainer
 
 		Menu.BuildPause();
 	}
+
+
+	public void BackPressed()
+	{
+		Menu.BuildPause();
+	}
 }
