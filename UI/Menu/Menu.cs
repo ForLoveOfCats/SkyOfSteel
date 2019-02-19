@@ -12,7 +12,7 @@ public class Menu : Node
 	private static PackedScene Intro;
 	private static PackedScene Main;
 	private static PackedScene Host;
-	private static PackedScene SavedHost;
+	private static PackedScene LoadHost;
 	private static PackedScene ConnectMenu;
 	private static PackedScene PauseMenu;
 	private static PackedScene SaveMenu;
@@ -25,7 +25,7 @@ public class Menu : Node
 		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
 		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
-		SavedHost = GD.Load<PackedScene>("res://UI/Menu/SavedWorldHost/SavedWorldHost.tscn");
+		LoadHost = GD.Load<PackedScene>("res://UI/Menu/LoadWorldHost/LoadWorldHost.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
 		SaveMenu = GD.Load<PackedScene>("res://UI/Menu/SaveMenu/SaveMenu.tscn");
@@ -92,11 +92,11 @@ public class Menu : Node
 	}
 
 
-	public static void BuildSavedHost()
+	public static void BuildLoadHost()
 	{
 		Reset();
 
-		Contents = SavedHost.Instance();
+		Contents = LoadHost.Instance();
 		Center.AddChild(Contents);
 	}
 

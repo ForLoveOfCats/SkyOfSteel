@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LoadSaveHostButton : Button
+public class LoadHostButton : Button
 {
 	public string SaveName = "";
 

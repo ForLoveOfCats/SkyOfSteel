@@ -11,7 +11,7 @@ public class HostMenu : VBoxContainer
 
 	public void HostSavedPressed()
 	{
-		Menu.BuildSavedHost();
+		Menu.BuildLoadHost();
 	}
 
 

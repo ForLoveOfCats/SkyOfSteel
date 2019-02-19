@@ -1,14 +1,14 @@
 using Godot;
 using System.Collections.Generic;
 
-public class SavedWorldHost : VBoxContainer
+public class LoadWorldHost : VBoxContainer
 {
 	PackedScene LoadButtonScene;
 	PackedScene LabelPieceScene;
 
 	public override void _Ready()
 	{
-		LoadButtonScene = GD.Load<PackedScene>("res://UI/Menu/SavedWorldHost/LoadSaveHostButton.tscn");
+		LoadButtonScene = GD.Load<PackedScene>("res://UI/Menu/LoadWorldHost/LoadHostButton.tscn");
 		LabelPieceScene = GD.Load<PackedScene>("res://UI/Menu/Pieces/LabelPiece.tscn");
 
 		Directory SaveDir = new Directory();
@@ -29,7 +29,7 @@ public class SavedWorldHost : VBoxContainer
 
 			foreach(string Name in Names)
 			{
-				LoadSaveHostButton Instanced = LoadButtonScene.Instance() as LoadSaveHostButton;
+				LoadHostButton Instanced = LoadButtonScene.Instance() as LoadHostButton;
 				Instanced.Text = Name;
 				Instanced.SaveName = Name;
 				AddChildBelowNode(GetNode("ButtonsBelow"), Instanced);
