@@ -6,6 +6,8 @@ public class HUD : Node
 	private Texture Alpha;
 	private Texture Triangle;
 
+	private TextureRect Crosshair;
+
 	HUD()
 	{
 		if(Engine.EditorHint) {return;}
@@ -69,6 +71,8 @@ public class HUD : Node
 
 	public override void _Ready()
 	{
+		Crosshair = GetNode<TextureRect>("CLayer/CrossCenter/TextureRect");
+
 		GetTree().Connect("screen_resized", this, "OnScreenResized");
 		HotbarUpdate();
 	}
@@ -76,6 +80,9 @@ public class HUD : Node
 
 	public override void _Process(float Delta)
 	{
+		Crosshair.Visible = !Menu.IsOpen;
+
+		//TODO save these to private members in _Ready and clear up this mess
 		((Label)(GetNode("CLayer").GetNode("FPSLabel"))).SetText(Engine.GetFramesPerSecond().ToString() + " fps");
 		((Label)(GetNode("CLayer").GetNode("PlayerPosition"))).SetText("Player Position: " + Game.PossessedPlayer.Translation.Round().ToString());
 		((Label)(GetNode("CLayer").GetNode("ChunkInfo"))).SetText("Current Chunk: (" + Game.PossessedPlayer.CurrentChunk.Item1 + ", 0, " + Game.PossessedPlayer.CurrentChunk.Item2 + ")");

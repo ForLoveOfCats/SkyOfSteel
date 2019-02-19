@@ -5,7 +5,6 @@
 [ext_resource path="res://Items/Thumbnails/ERROR.png" type="Texture" id=3]
 [ext_resource path="res://UI/Fonts/DebugFont.tres" type="DynamicFont" id=4]
 
-
 [node name="HUD" type="Node"]
 script = ExtResource( 1 )
 
@@ -13,7 +12,6 @@ script = ExtResource( 1 )
 layer = -1
 
 [node name="CrossCenter" type="CenterContainer" parent="CLayer"]
-editor/display_folded = true
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
