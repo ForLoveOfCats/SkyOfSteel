@@ -41,7 +41,7 @@ margin_right = 784.0
 margin_bottom = 30.0
 size_flags_horizontal = 3
 
-[node name="Button" parent="HBoxContainer" instance=ExtResource( 5 )]
+[node name="SaveButton" parent="HBoxContainer" instance=ExtResource( 5 )]
 margin_left = 788.0
 margin_right = 1024.0
 margin_bottom = 30.0
@@ -62,3 +62,4 @@ text = "or select a savefile to overwrite"
 
 [node name="ButtonsBelow" type="Node" parent="."]
 
+[connection signal="pressed" from="HBoxContainer/SaveButton" to="." method="SavePressed"]

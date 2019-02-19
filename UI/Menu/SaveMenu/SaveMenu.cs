@@ -42,4 +42,13 @@ public class SaveMenu : VBoxContainer
 			AddChildBelowNode(GetNode("ButtonsBelow"), Message);
 		}
 	}
+
+
+	public void SavePressed()
+	{
+		LineEdit NameInput = GetNode<LineEdit>("HBoxContainer/LineEdit");
+		Game.SaveWorld(NameInput.Text);
+
+		Menu.BuildPause();
+	}
 }
