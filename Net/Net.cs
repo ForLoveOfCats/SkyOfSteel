@@ -220,6 +220,7 @@ public class Net : Node
 	public static void Disconnect()
 	{
 		Game.CloseWorld();
+		((NetworkedMultiplayerENet)Self.GetTree().GetNetworkPeer()).CloseConnection();
 		Self.GetTree().SetNetworkPeer(null);
 		PeerList.Clear();
 		Game.PlayerList.Clear();
