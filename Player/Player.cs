@@ -116,11 +116,7 @@ public class Player : KinematicBody
 	public void SetFly(bool NewFly) //because custom setters are weird
 	{
 		FlyMode = NewFly;
-
-		if(!IsOnFloor())
-		{
-			OnAir();
-		}
+		Momentum = new Vector3(0,0,0);
 	}
 
 
