@@ -21,6 +21,8 @@ public class Game : Node
 	public static float MouseSensitivity = 1;
 	public static int ChunkRenderDistance = 1;
 
+	public static string Nickname = "ErrorName";
+
 	public static Game Self;
 	private Game()
 	{
