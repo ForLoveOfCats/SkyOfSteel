@@ -32,6 +32,12 @@ public class MainMenu : VBoxContainer
 	}
 
 
+	public void CreditsPressed()
+	{
+		Menu.BuildCredits();
+	}
+
+
 	public void QuitPressed()
 	{
 		Game.Quit();

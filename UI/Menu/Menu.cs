@@ -11,6 +11,7 @@ public class Menu : Node
 
 	private static PackedScene Intro;
 	private static PackedScene Main;
+	private static PackedScene Credits;
 	private static PackedScene Host;
 	private static PackedScene LoadHost;
 	private static PackedScene ConnectMenu;
@@ -24,6 +25,7 @@ public class Menu : Node
 		//All menu scene files are loaded on game startup
 		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
 		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
+		Credits = GD.Load<PackedScene>("res://UI/Menu/CreditsMenu/CreditsMenu.tscn");
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
 		LoadHost = GD.Load<PackedScene>("res://UI/Menu/LoadWorldHost/LoadWorldHost.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
@@ -80,6 +82,15 @@ public class Menu : Node
 		Reset();
 
 		Contents = Main.Instance();
+		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildCredits()
+	{
+		Reset();
+
+		Contents = Credits.Instance();
 		Center.AddChild(Contents);
 	}
 
