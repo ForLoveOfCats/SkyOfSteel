@@ -21,16 +21,30 @@ public class API : Node
 
 			case "host":
 				return new List<object> {Name, new Action(delegate(){
-					Net.Host();
+					if(Game.Nickname == "")
+					{
+						Console.ThrowPrint("Please set a multiplayer nickname before hosting");
+					}
+					else
+					{
+						Net.Host();
+					}
 				})};
 
 			case "connect":
 				return new List<object> {Name, new Action<string>(delegate(string Ip){
-					if(Ip == "" || Ip == "localhost" || Ip == "undefined")
+					if(Game.Nickname == "")
 					{
-						Ip = "127.0.0.1";
+						Console.ThrowPrint("Please set a multiplayer nickname before connecting");
 					}
-					Net.ConnectTo(Ip);
+					else
+					{
+						if(Ip == "" || Ip == "localhost" || Ip == "undefined")
+						{
+							Ip = "127.0.0.1";
+						}
+						Net.ConnectTo(Ip);
+					}
 				})};
 
 			case "disconnect":
