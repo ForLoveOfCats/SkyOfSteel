@@ -18,6 +18,8 @@ public class Net : Node
 	public static List<int> PeerList = new List<int>();
 	public static Dictionary<int, double> WaitingForVersion = new Dictionary<int, double>();
 
+	public static Dictionary<int, string> Nicknames = new Dictionary<int, string>();
+
 	public static Net Self;
 	Net()
 	{
@@ -100,8 +102,8 @@ public class Net : Node
 
 		Building.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
-		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
 		SetupNewPeer(GetTree().GetRpcSenderId());
+		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
 		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
 		foreach(int Id in PeerList)
 		{
@@ -128,6 +130,8 @@ public class Net : Node
 		Game.StartWorld();
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+
+		RpcId(ServerId, nameof(RecieveNick), GetTree().GetNetworkUniqueId(),  Game.Nickname);
 	}
 
 
@@ -144,6 +148,21 @@ public class Net : Node
 	}
 
 
+	[Remote]
+	public void RecieveNick(int Id, string NickArg)
+	{
+		Nicknames[Id] = NickArg;
+
+		if(GetTree().IsNetworkServer())
+		{
+			foreach(KeyValuePair<int, string> Entry in Nicknames)
+			{
+				SteelRpc(this, nameof(RecieveNick), Entry.Key, Entry.Value);
+			}
+		}
+	}
+
+
 	public void _PlayerDisconnected(int Id)
 	{
 		Console.Log("Player '" + Id.ToString() + "' disconnected");
@@ -152,6 +171,10 @@ public class Net : Node
 		{
 			Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
 			PeerList.Remove(Id);
+		}
+		if(Nicknames.ContainsKey(Id))
+		{
+			Nicknames.Remove(Id);
 		}
 	}
 
@@ -189,6 +212,7 @@ public class Net : Node
 		Console.Log("Started hosting on port '" + Port.ToString()+ "'");
 
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+		Nicknames[ServerId] = Game.Nickname;
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 	}
 
@@ -223,6 +247,7 @@ public class Net : Node
 		((NetworkedMultiplayerENet)Self.GetTree().GetNetworkPeer()).CloseConnection();
 		Self.GetTree().SetNetworkPeer(null);
 		PeerList.Clear();
+		Nicknames.Clear();
 		Game.PlayerList.Clear();
 
 		Menu.BuildIntro();
