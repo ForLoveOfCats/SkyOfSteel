@@ -47,6 +47,29 @@ public class API : Node
 					}
 				})};
 
+			case "nickname":
+				return new List<object> {Name, new Action<string>(delegate(string NickArg){
+					if(Game.WorldOpen)
+					{
+						Console.ThrowPrint("Cannot set nickname while hosting or connected");
+						return;
+					}
+					Game.Nickname = NickArg;
+				})};
+
+			case "nickname_get":
+				return new List<object> {Name, new Func<string>(() => {return Game.Nickname;})};
+
+			case "remote_nickname_get":
+				return new List<object> {Name, new Func<double, string>((double Id) => {
+					string Nick;
+					if(Net.Nicknames.TryGetValue((int)Id, out Nick))
+					{
+						return Nick;
+					}
+					return "";
+				})};
+
 			case "disconnect":
 				return new List<object> {Name, new Action(delegate(){
 					if(!Game.WorldOpen)
@@ -326,6 +349,9 @@ public class API : Node
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
+				Output.Add(GetDelCall("nickname"));
+				Output.Add(GetDelCall("nickname_get"));
+				Output.Add(GetDelCall("remote_nickname_get"));
 				Output.Add(GetDelCall("disconnect"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
@@ -373,6 +399,8 @@ public class API : Node
 			case LEVEL.SERVER_GM:
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
+				Output.Add(GetDelCall("nickname_get"));
+				Output.Add(GetDelCall("remote_nickname_get"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));
@@ -414,6 +442,8 @@ public class API : Node
 			case LEVEL.CLIENT_GM:
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
+				Output.Add(GetDelCall("nickname_get"));
+				Output.Add(GetDelCall("remote_nickname_get"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));
