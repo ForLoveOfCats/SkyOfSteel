@@ -43,29 +43,41 @@ public class HUD : Node
 	}
 
 
+	private void HideNodes(Godot.Collections.Array Nodes)
+	{
+		foreach(Node ToHide in Nodes)
+		{
+			if(ToHide is CanvasItem)
+			{
+				((CanvasItem)ToHide).Hide();
+			}
+			HideNodes(ToHide.GetChildren());
+		}
+	}
+
+
 	public void Hide()
 	{
-		GetNode<TextureRect>("CLayer/CrossCenter/TextureRect").Hide();
+		HideNodes(GetChildren());
+	}
 
-		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox").Hide();
-		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox2").Hide();
 
-		GetNode<Label>("CLayer/ChunkInfo").Hide();
-		GetNode<Label>("CLayer/PlayerPosition").Hide();
-		GetNode<Label>("CLayer/FPSLabel").Hide();
+	private void ShowNodes(Godot.Collections.Array Nodes)
+	{
+		foreach(Node ToShow in Nodes)
+		{
+			if(ToShow is CanvasItem)
+			{
+				((CanvasItem)ToShow).Show();
+			}
+			ShowNodes(ToShow.GetChildren());
+		}
 	}
 
 
 	public void Show()
 	{
-		GetNode<TextureRect>("CLayer/CrossCenter/TextureRect").Show();
-
-		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox").Show();
-		GetNode<VBoxContainer>("CLayer/HotBarCenter/HBoxContainer/Vbox2").Show();
-
-		GetNode<Label>("CLayer/ChunkInfo").Show();
-		GetNode<Label>("CLayer/PlayerPosition").Show();
-		GetNode<Label>("CLayer/FPSLabel").Show();
+		ShowNodes(GetChildren());
 	}
 
 
