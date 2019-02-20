@@ -3,6 +3,14 @@ using System.Net;
 
 public class ConnectMenu : VBoxContainer
 {
+	private Label AlertLabel;
+
+	public override void _Ready()
+	{
+		AlertLabel = GetNode<Label>("AlertLabel");
+	}
+
+
 	public void ConnectPressed()
 	{
 		string Ip = GetNode<LineEdit>("HBoxContainer/IpEdit").GetText();
@@ -16,6 +24,8 @@ public class ConnectMenu : VBoxContainer
 		if(!IPAddress.TryParse(Ip, out Address))
 		{
 			//Invalid ip
+			AlertLabel.Visible = true;
+			AlertLabel.Text = "Please enter a valid IP address";
 			return;
 		}
 
