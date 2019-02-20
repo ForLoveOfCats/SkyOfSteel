@@ -38,10 +38,11 @@ public class Startup : Node
 		if(Autoexec.FileExists("user://autoexec.js"))
 		{
 			Autoexec.Open("user://autoexec.js", 1);
-			Console.Print("Autoexec loaded 'autoexec.js'");
+			Console.Print("Autoexec loaded");
 			try
 			{
 				Scripting.ConsoleEngine.Execute(Autoexec.GetAsText());
+				Console.Print("Successfully executed autoexec");
 			}
 			catch(JavaScriptException Error)
 			{
@@ -51,7 +52,8 @@ public class Startup : Node
 		}
 		else
 		{
-			Console.Print("Autoexec not found 'autoexec.js'");
+			Console.Print("Autoexec not found, creating a default one");
+			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/autoexec.js", "//This is your autoexec\n//It is executed directly after command line arugments are");
 		}
 		Autoexec.Close();
 	}
