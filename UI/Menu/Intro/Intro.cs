@@ -7,4 +7,10 @@ public class Intro : VBoxContainer
 	{
 		Menu.BuildNick();
 	}
+
+
+	public void QuitPressed()
+	{
+		Game.Quit();
+	}
 }

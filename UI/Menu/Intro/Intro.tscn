@@ -15,26 +15,33 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Welcome" parent="." instance=ExtResource( 2 )]
-margin_top = 229.0
+margin_top = 212.0
 margin_right = 1024.0
-margin_bottom = 281.0
+margin_bottom = 264.0
 text = "Welcome to SkyOfSteel!"
 
 [node name="Message" parent="." instance=ExtResource( 3 )]
-margin_top = 285.0
+margin_top = 268.0
 margin_right = 1024.0
-margin_bottom = 309.0
+margin_bottom = 292.0
 text = "SkyOfSteel is extremely early alpha. As a result it may be buggy and have issues. Thank you for your understanding."
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 313.0
+margin_top = 296.0
 margin_right = 1024.0
-margin_bottom = 337.0
+margin_bottom = 320.0
 
 [node name="ContinueButton" parent="." instance=ExtResource( 5 )]
-margin_top = 341.0
+margin_top = 324.0
 margin_right = 1024.0
-margin_bottom = 371.0
+margin_bottom = 354.0
 text = "Continue"
 
+[node name="QuitButton" parent="." instance=ExtResource( 5 )]
+margin_top = 358.0
+margin_right = 1024.0
+margin_bottom = 388.0
+text = "Quit"
+
 [connection signal="pressed" from="ContinueButton" to="." method="ContinuePressed"]
+[connection signal="pressed" from="QuitButton" to="." method="QuitPressed"]
