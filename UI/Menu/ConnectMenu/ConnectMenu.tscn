@@ -64,5 +64,6 @@ margin_right = 1024.0
 margin_bottom = 390.0
 text = "Back"
 
+[connection signal="text_entered" from="HBoxContainer/IpEdit" to="." method="EnterPressed"]
 [connection signal="pressed" from="HBoxContainer/ConnectButton" to="." method="ConnectPressed"]
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]

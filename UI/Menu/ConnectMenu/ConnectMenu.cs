@@ -11,6 +11,12 @@ public class ConnectMenu : VBoxContainer
 	}
 
 
+	public void EnterPressed(string Text)
+	{
+		ConnectPressed();
+	}
+
+
 	public void ConnectPressed()
 	{
 		string Ip = GetNode<LineEdit>("HBoxContainer/IpEdit").GetText();
