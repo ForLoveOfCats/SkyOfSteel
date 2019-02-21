@@ -153,6 +153,11 @@ public class Net : Node
 	{
 		Nicknames[Id] = NickArg;
 
+		if(Id != GetTree().GetNetworkUniqueId())
+		{
+			Game.PossessedPlayer.HUDInstance.AddNickLabel(Id, NickArg);
+		}
+
 		if(GetTree().IsNetworkServer())
 		{
 			foreach(KeyValuePair<int, string> Entry in Nicknames)
@@ -175,6 +180,7 @@ public class Net : Node
 		if(Nicknames.ContainsKey(Id))
 		{
 			Nicknames.Remove(Id);
+			Game.PossessedPlayer.HUDInstance.RemoveNickLabel(Id);
 		}
 	}
 

@@ -52,6 +52,8 @@ public class Player : KinematicBody
 
 	public int BuildRotation = 0;
 
+	public Camera Cam;
+
 	public HUD HUDInstance;
 	private Ghost GhostInstance;
 
@@ -69,6 +71,8 @@ public class Player : KinematicBody
 
 	public override void _Ready()
 	{
+		Cam = GetNode<Camera>("SteelCamera");
+
 		PositionReset();
 
 		if(Possessed)

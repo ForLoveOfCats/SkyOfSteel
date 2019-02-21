@@ -11,8 +11,8 @@ public class Game : Node
 
 	public static int MaxPlayers = 8;
 	public static bool BindsEnabled = false;
-	public static System.Collections.Generic.Dictionary<int, Spatial> PlayerList = new System.Collections.Generic.Dictionary<int, Spatial>();
-	public static Player PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
+	public static Dictionary<int, Spatial> PlayerList = new Dictionary<int, Spatial>();
+	public static Player PossessedPlayer = GD.Load<PackedScene>("res://Player/Player.tscn").Instance() as Player;
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
 	public static bool WorldOpen = false;
