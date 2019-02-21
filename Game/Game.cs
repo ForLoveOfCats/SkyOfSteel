@@ -53,13 +53,20 @@ public class Game : Node
 	{
 		if(Input.IsActionJustPressed("ui_cancel"))
 		{
-			if(Menu.PauseOpen)
+			if(Console.IsOpen)
 			{
-				Menu.Close();
+				Console.Close();
 			}
-			else if(WorldOpen)
+			else
 			{
-				Menu.BuildPause();
+				if(Menu.PauseOpen)
+				{
+					Menu.Close();
+				}
+				else if(WorldOpen)
+				{
+					Menu.BuildPause();
+				}
 			}
 		}
 
