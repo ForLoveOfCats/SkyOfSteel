@@ -4,10 +4,14 @@ using System.Net;
 public class ConnectMenu : VBoxContainer
 {
 	private Label AlertLabel;
+	private LineEdit IpEdit;
 
 	public override void _Ready()
 	{
 		AlertLabel = GetNode<Label>("AlertLabel");
+		IpEdit = GetNode<LineEdit>("HBoxContainer/IpEdit");
+
+		IpEdit.GrabFocus();
 	}
 
 
@@ -19,7 +23,7 @@ public class ConnectMenu : VBoxContainer
 
 	public void ConnectPressed()
 	{
-		string Ip = GetNode<LineEdit>("HBoxContainer/IpEdit").GetText();
+		string Ip = IpEdit.GetText();
 
 		if(Ip == "localhost")
 		{

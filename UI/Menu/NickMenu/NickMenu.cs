@@ -15,6 +15,8 @@ public class NickMenu : VBoxContainer
 
 		NameEdit = GetNode<LineEdit>("HBoxContainer/NameEdit");
 		AlertLabel = GetNode<Label>("AlertLabel");
+
+		NameEdit.GrabFocus();
 	}
 
 
