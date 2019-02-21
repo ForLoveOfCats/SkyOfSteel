@@ -22,6 +22,16 @@ public class HUD : Node
 	}
 
 
+	public override void _Ready()
+	{
+		Crosshair = GetNode<TextureRect>("CLayer/CrossCenter/TextureRect");
+		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
+
+		GetTree().Connect("screen_resized", this, "OnScreenResized");
+		HotbarUpdate();
+	}
+
+
 	public void HotbarUpdate()
 	{
 		for(int Slot = 0; Slot <= 9; Slot++)
@@ -83,16 +93,6 @@ public class HUD : Node
 	public void Show()
 	{
 		ShowNodes(GetChildren());
-	}
-
-
-	public override void _Ready()
-	{
-		Crosshair = GetNode<TextureRect>("CLayer/CrossCenter/TextureRect");
-		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
-
-		GetTree().Connect("screen_resized", this, "OnScreenResized");
-		HotbarUpdate();
 	}
 
 
