@@ -95,8 +95,7 @@ public class Game : Node
 
 	public static void Quit()
 	{
-		CloseWorld();
-		Self.GetTree().SetNetworkPeer(null);
+		Net.Disconnect();
 		Self.GetTree().Quit();
 	}
 
