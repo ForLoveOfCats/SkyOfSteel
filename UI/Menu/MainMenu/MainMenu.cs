@@ -15,12 +15,6 @@ public class MainMenu : VBoxContainer
 	}
 
 
-	public void HelpPressed()
-	{
-		Menu.BuildHelp();
-	}
-
-
 	public void DiscordPressed()
 	{
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");
@@ -35,6 +29,18 @@ public class MainMenu : VBoxContainer
 	public void GithubPressed()
 	{
 		OS.ShellOpen("https://github.com/ForLoveOfCats/SkyOfSteel");
+	}
+
+
+	public void HelpPressed()
+	{
+		Menu.BuildHelp();
+	}
+
+
+	public void FilesPressed()
+	{
+		OS.ShellOpen(OS.GetUserDataDir());
 	}
 
 
