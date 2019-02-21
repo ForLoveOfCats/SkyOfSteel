@@ -27,6 +27,12 @@ public class NickMenu : VBoxContainer
 	}
 
 
+	public void EnterPressed(string Text)
+	{
+		ConfirmPressed();
+	}
+
+
 	public void ConfirmPressed()
 	{
 		if(NameEdit.Text == "")

@@ -54,4 +54,5 @@ margin_right = 1024.0
 margin_bottom = 373.0
 text = ""
 
+[connection signal="text_entered" from="HBoxContainer/NameEdit" to="." method="EnterPressed"]
 [connection signal="pressed" from="HBoxContainer/ConfirmButton" to="." method="ConfirmPressed"]
