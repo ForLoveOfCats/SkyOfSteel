@@ -3,6 +3,12 @@ using System;
 
 public class PauseMenu : VBoxContainer
 {
+	public void ReturnPressed()
+	{
+		Menu.Close();
+	}
+
+
 	public void SavePressed()
 	{
 		Menu.BuildSave();
