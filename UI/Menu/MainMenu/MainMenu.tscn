@@ -18,77 +18,89 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" type="Label" parent="."]
-margin_top = 67.0
+margin_top = 36.0
 margin_right = 1024.0
-margin_bottom = 182.0
+margin_bottom = 151.0
 custom_fonts/font = SubResource( 1 )
 text = "SkyOfSteel"
 align = 1
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
-margin_top = 186.0
+margin_top = 155.0
 margin_right = 1024.0
-margin_bottom = 210.0
+margin_bottom = 179.0
 
 [node name="HostButton" parent="." instance=ExtResource( 4 )]
-margin_top = 214.0
+margin_top = 183.0
 margin_right = 1024.0
-margin_bottom = 244.0
+margin_bottom = 213.0
 text = "Host"
 
 [node name="ConnectButton" parent="." instance=ExtResource( 4 )]
-margin_top = 248.0
+margin_top = 217.0
 margin_right = 1024.0
-margin_bottom = 278.0
+margin_bottom = 247.0
 text = "Connect"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
-margin_top = 282.0
+margin_top = 251.0
 margin_right = 1024.0
-margin_bottom = 306.0
+margin_bottom = 275.0
+
+[node name="HelpButton" parent="." instance=ExtResource( 4 )]
+margin_top = 279.0
+margin_right = 1024.0
+margin_bottom = 309.0
+text = "Help"
+
+[node name="SpacerLabel3" parent="." instance=ExtResource( 3 )]
+margin_top = 313.0
+margin_right = 1024.0
+margin_bottom = 337.0
 
 [node name="DiscordButton" parent="." instance=ExtResource( 4 )]
-margin_top = 310.0
+margin_top = 341.0
 margin_right = 1024.0
-margin_bottom = 340.0
+margin_bottom = 371.0
 text = "Discord"
 
 [node name="TwitterButton" parent="." instance=ExtResource( 4 )]
-margin_top = 344.0
+margin_top = 375.0
 margin_right = 1024.0
-margin_bottom = 374.0
+margin_bottom = 405.0
 text = "Twitter"
 
 [node name="GithubButton" parent="." instance=ExtResource( 4 )]
-margin_top = 378.0
+margin_top = 409.0
 margin_right = 1024.0
-margin_bottom = 408.0
+margin_bottom = 439.0
 text = "Github"
 
-[node name="SpacerLabel3" parent="." instance=ExtResource( 3 )]
-margin_top = 412.0
+[node name="SpacerLabel5" parent="." instance=ExtResource( 3 )]
+margin_top = 443.0
 margin_right = 1024.0
-margin_bottom = 436.0
+margin_bottom = 467.0
 
 [node name="CreditsButton" parent="." instance=ExtResource( 4 )]
-margin_top = 440.0
+margin_top = 471.0
 margin_right = 1024.0
-margin_bottom = 470.0
+margin_bottom = 501.0
 text = "Credits"
 
 [node name="SpacerLabel4" parent="." instance=ExtResource( 3 )]
-margin_top = 474.0
+margin_top = 505.0
 margin_right = 1024.0
-margin_bottom = 498.0
+margin_bottom = 529.0
 
 [node name="QuitButton" parent="." instance=ExtResource( 4 )]
-margin_top = 502.0
+margin_top = 533.0
 margin_right = 1024.0
-margin_bottom = 532.0
+margin_bottom = 563.0
 text = "Quit"
 
 [connection signal="pressed" from="HostButton" to="." method="HostPressed"]
 [connection signal="pressed" from="ConnectButton" to="." method="ConnectPressed"]
+[connection signal="pressed" from="HelpButton" to="." method="HelpPressed"]
 [connection signal="pressed" from="DiscordButton" to="." method="DiscordPressed"]
 [connection signal="pressed" from="TwitterButton" to="." method="TwitterPressed"]
 [connection signal="pressed" from="GithubButton" to="." method="GithubPressed"]

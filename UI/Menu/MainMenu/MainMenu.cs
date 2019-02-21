@@ -15,6 +15,12 @@ public class MainMenu : VBoxContainer
 	}
 
 
+	public void HelpPressed()
+	{
+		Menu.BuildHelp();
+	}
+
+
 	public void DiscordPressed()
 	{
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");

@@ -81,6 +81,7 @@
     <Compile Include="Items\Items.cs" />
     <Compile Include="UI\Menu\ConnectMenu\ConnectMenu.cs" />
     <Compile Include="UI\Menu\CreditsMenu\CreditsMenu.cs" />
+    <Compile Include="UI\Menu\HelpMenu\HelpMenu.cs" />
     <Compile Include="UI\Menu\HostMenu\HostMenu.cs" />
     <Compile Include="UI\Menu\Intro\Intro.cs" />
     <Compile Include="UI\Menu\MainMenu\MainMenu.cs" />
