@@ -20,7 +20,7 @@ class ConsoleWindow : VBoxContainer
 		else
 		{
 			Hide();
-			IsWindowVisible = true;
+			IsWindowVisible = false;
 			InputLine.SetEditable(false);
 			InputLine.Text = "";
 		}
