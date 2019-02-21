@@ -13,6 +13,11 @@ public class API : Node
 	{
 		switch(Name)
 		{
+			case "quit":
+				return new List<object> {Name, new Action(delegate(){
+					Game.Quit();
+				})};
+
 			case "print":
 				return new List<object> {Name, new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
 
@@ -344,6 +349,7 @@ public class API : Node
 		switch(ApiLevel)
 		{
 			case LEVEL.CONSOLE:
+				Output.Add(GetDelCall("quit"));
 				Output.Add(GetDelCall("print"));
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
