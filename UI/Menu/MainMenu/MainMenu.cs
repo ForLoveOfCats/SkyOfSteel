@@ -1,8 +1,14 @@
 using Godot;
-using System;
+
 
 public class MainMenu : VBoxContainer
 {
+	public override void _Ready()
+	{
+		GetNode<Label>("Version").Text = $"Version: {Game.Version}";
+	}
+
+
 	public void HostPressed()
 	{
 		Menu.BuildHost();
