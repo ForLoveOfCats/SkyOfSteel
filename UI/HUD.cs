@@ -11,6 +11,9 @@ public class HUD : Node
 	private Dictionary<int, Label> NickLabels = new Dictionary<int, Label>();
 
 	private TextureRect Crosshair;
+	private Label ChunkInfoLabel;
+	private Label PlayerPositionLabel;
+	private Label FPSLabel;
 
 	HUD()
 	{
@@ -25,6 +28,10 @@ public class HUD : Node
 	public override void _Ready()
 	{
 		Crosshair = GetNode<TextureRect>("CLayer/CrossCenter/TextureRect");
+		ChunkInfoLabel = GetNode<Label>("CLayer/ChunkInfo");
+		PlayerPositionLabel = GetNode<Label>("CLayer/PlayerPosition");
+		FPSLabel = GetNode<Label>("CLayer/FPSLabel");
+
 		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
 
 		GetTree().Connect("screen_resized", this, "OnScreenResized");
@@ -134,9 +141,8 @@ public class HUD : Node
 			}
 		}
 
-		//TODO save these to private members in _Ready and clear up this mess
-		((Label)(GetNode("CLayer").GetNode("FPSLabel"))).SetText(Engine.GetFramesPerSecond().ToString() + " fps");
-		((Label)(GetNode("CLayer").GetNode("PlayerPosition"))).SetText("Player Position: " + Game.PossessedPlayer.Translation.Round().ToString());
-		((Label)(GetNode("CLayer").GetNode("ChunkInfo"))).SetText("Current Chunk: (" + Game.PossessedPlayer.CurrentChunk.Item1 + ", 0, " + Game.PossessedPlayer.CurrentChunk.Item2 + ")");
+		ChunkInfoLabel.Text = $"Current Chunk: ({Game.PossessedPlayer.CurrentChunk.Item1}, 0, {Game.PossessedPlayer.CurrentChunk.Item2})";
+		PlayerPositionLabel.Text = $"Player Position: {Game.PossessedPlayer.Translation.Round()}";
+		FPSLabel.Text = $"{Engine.GetFramesPerSecond()} fps";
 	}
 }
