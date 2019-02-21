@@ -3,40 +3,39 @@ using Godot;
 
 class ConsoleWindow : VBoxContainer
 {
-	bool IsWindowVisible;
+	bool IsOpen;
 	LineEdit InputLine;
 
 
-	public void WindowVisible(bool ShouldBeVisible)
+	public void Open()
 	{
-		if(ShouldBeVisible)
-		{
-			Show();
-			IsWindowVisible = true;
-			InputLine.SetEditable(true);
-			InputLine.Text = "";
-			InputLine.GrabFocus();
-		}
-		else
-		{
-			Hide();
-			IsWindowVisible = false;
-			InputLine.SetEditable(false);
-			InputLine.Text = "";
-		}
+		Show();
+		IsOpen = true;
+		InputLine.SetEditable(true);
+		InputLine.Text = "";
+		InputLine.GrabFocus();
+	}
+
+
+	public void Close()
+	{
+		Hide();
+		IsOpen = false;
+		InputLine.SetEditable(false);
+		InputLine.Text = "";
 	}
 
 
 	public override void _Ready()
 	{
 		InputLine = GetNode("LineEdit") as LineEdit;
-		WindowVisible(false); //Console.IsOpen should already be false
+		Close(); //Console.IsOpen should already be false
 	}
 
 
 	public override void _Process(float Delta)
 	{
-		if(Input.IsActionJustPressed("Enter") && IsWindowVisible)
+		if(Input.IsActionJustPressed("Enter") && IsOpen)
 		{
 			Console.Execute(InputLine.Text);
 			InputLine.Text = "";

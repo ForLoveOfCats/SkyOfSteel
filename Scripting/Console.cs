@@ -118,7 +118,7 @@ public class Console : Node
 
 	public static void Close()
 	{
-		Window.WindowVisible(false);
+		Window.Close();
 		IsOpen = false;
 
 		if(!Menu.IsOpen)
@@ -131,7 +131,7 @@ public class Console : Node
 
 	public static void Open()
 	{
-		Window.WindowVisible(true);
+		Window.Open();
 		IsOpen = true;
 
 		Input.SetMouseMode(Input.MouseMode.Visible);
