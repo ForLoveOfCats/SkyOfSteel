@@ -362,6 +362,7 @@ public class Net : Node
 			if(WaitingForServerTimer <= 0)
 			{
 				Self.EmitSignal(nameof(ConnectToFailed), Ip);
+				Console.ThrowLog($"Failed to connect to '{Ip}'");
 				Disconnect(BuildMenu:false);
 			}
 		}

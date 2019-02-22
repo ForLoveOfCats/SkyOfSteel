@@ -159,9 +159,6 @@ public class Game : Node
 		Building.RemoteLoadedChunks.Clear();
 		Building.Grid.Clear();
 
-		Console.ClearLog();
-		Console.Log("");
-
 		WorldOpen = false;
 	}
 
