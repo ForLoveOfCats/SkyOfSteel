@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
+	private const int MaxWaitForServerDelay = 10;
 	private const double VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
 	                                                    their version before disconnecting from a client which refuses
 	                                                    to identify their version*/
@@ -17,6 +18,8 @@ public class Net : Node
 
 	public static List<int> PeerList = new List<int>();
 	public static Dictionary<int, double> WaitingForVersion = new Dictionary<int, double>();
+	private static bool IsWaitingForServer = false;
+	private static float WaitingForServerTimer = MaxWaitForServerDelay;
 
 	public static Dictionary<int, string> Nicknames = new Dictionary<int, string>();
 
@@ -223,6 +226,10 @@ public class Net : Node
 	}
 
 
+	[Signal]
+	delegate void ConnectToFailed(string Ip);
+
+
 	public static void ConnectTo(string InIp)
 	{
 		if(Self.GetTree().NetworkPeer != null)
@@ -244,6 +251,8 @@ public class Net : Node
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateClient(Ip, Port);
 		Self.GetTree().SetNetworkPeer(Peer);
+
+		IsWaitingForServer = true;
 	}
 
 
@@ -262,6 +271,9 @@ public class Net : Node
 		Game.PlayerList.Clear();
 		Nicknames.Clear();
 		Game.PlayerList.Clear();
+
+		IsWaitingForServer = false;
+		WaitingForServerTimer = MaxWaitForServerDelay;
 
 		Menu.BuildIntro();
 	}
@@ -338,6 +350,16 @@ public class Net : Node
 				Console.ThrowLog($"Player '{Id}' did not provide their client version and was kicked");
 				((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(Id); //Disconnect clients which didn't send their version in time
 				WaitingForVersion.Remove(Id);
+			}
+		}
+
+		if(IsWaitingForServer)
+		{
+			WaitingForServerTimer -= Delta;
+			if(WaitingForServerTimer <= 0)
+			{
+				Self.EmitSignal(nameof(ConnectToFailed), Ip);
+				Disconnect();
 			}
 		}
 	}

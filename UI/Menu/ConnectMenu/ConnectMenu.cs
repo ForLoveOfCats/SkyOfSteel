@@ -12,6 +12,14 @@ public class ConnectMenu : VBoxContainer
 		IpEdit = GetNode<LineEdit>("HBoxContainer/IpEdit");
 
 		IpEdit.GrabFocus();
+
+		Net.Self.Connect("ConnectToFailed", this, nameof(ConnectFailed));
+	}
+
+
+	public void ConnectFailed(string Ip)
+	{
+		//TODO Show warning to user that connection failed
 	}
 
 
