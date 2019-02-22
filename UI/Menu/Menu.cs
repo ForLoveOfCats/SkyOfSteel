@@ -17,6 +17,7 @@ public class Menu : Node
 	private static PackedScene Host;
 	private static PackedScene LoadHost;
 	private static PackedScene ConnectMenu;
+	private static PackedScene WaitConnecting;
 	private static PackedScene PauseMenu;
 	private static PackedScene SaveMenu;
 
@@ -33,6 +34,7 @@ public class Menu : Node
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
 		LoadHost = GD.Load<PackedScene>("res://UI/Menu/LoadWorldHost/LoadWorldHost.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
+		WaitConnecting = GD.Load<PackedScene>("res://UI/Menu/WaitConnectingMenu/WaitConnectingMenu.tscn");
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
 		SaveMenu = GD.Load<PackedScene>("res://UI/Menu/SaveMenu/SaveMenu.tscn");
 	}
@@ -140,6 +142,16 @@ public class Menu : Node
 		Reset();
 
 		Contents = ConnectMenu.Instance();
+		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildWaitConnecting()
+	{
+		Reset();
+
+		Contents = WaitConnecting.Instance();
+		Net.Self.Connect("ConnectToFailed", Contents, "ConnectFailed");
 		Center.AddChild(Contents);
 	}
 

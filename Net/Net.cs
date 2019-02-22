@@ -14,12 +14,12 @@ public class Net : Node
 	public static int ServerId = 1;
 
 	private static int Port = 27015;
-	private static string Ip;
+	public static string Ip { get; private set; }
 
 	public static List<int> PeerList = new List<int>();
 	public static Dictionary<int, double> WaitingForVersion = new Dictionary<int, double>();
-	private static bool IsWaitingForServer = false;
-	private static float WaitingForServerTimer = MaxWaitForServerDelay;
+	public static bool IsWaitingForServer { get; private set; } = false;
+	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
 
 	public static Dictionary<int, string> Nicknames = new Dictionary<int, string>();
 

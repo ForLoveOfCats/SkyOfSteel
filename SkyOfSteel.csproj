@@ -92,6 +92,7 @@
     <Compile Include="UI\Menu\LoadWorldHost\LoadWorldHost.cs" />
     <Compile Include="UI\Menu\SaveMenu\SaveButton.cs" />
     <Compile Include="UI\Menu\SaveMenu\SaveMenu.cs" />
+    <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs" />
     <Compile Include="World\StructureRoot.cs" />
   </ItemGroup>
   <ItemGroup>
