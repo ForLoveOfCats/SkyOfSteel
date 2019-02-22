@@ -256,7 +256,7 @@ public class Net : Node
 	}
 
 
-	public static void Disconnect()
+	public static void Disconnect(bool BuildMenu = true)
 	{
 		Game.CloseWorld();
 
@@ -275,7 +275,10 @@ public class Net : Node
 		IsWaitingForServer = false;
 		WaitingForServerTimer = MaxWaitForServerDelay;
 
-		Menu.BuildIntro();
+		if(BuildMenu)
+		{
+			Menu.BuildMain();
+		}
 	}
 
 
@@ -359,7 +362,7 @@ public class Net : Node
 			if(WaitingForServerTimer <= 0)
 			{
 				Self.EmitSignal(nameof(ConnectToFailed), Ip);
-				Disconnect();
+				Disconnect(BuildMenu:false);
 			}
 		}
 	}
