@@ -7,9 +7,9 @@ public class Structure : StaticBody
 	public int OwnerId = 0;
 
 
-	public void Remove()
+	public void Remove(bool Force=false)
 	{
-		if(OwnerId == 0)
+		if(!Force && OwnerId == 0)
 		{
 			return; //Prevents removing default structures
 		}

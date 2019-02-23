@@ -116,6 +116,12 @@ public class Game : Node
 	}
 
 
+	private static void SetupWorld()
+	{
+		Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+	}
+
+
 	public static void StartWorld(bool AsServer = false)
 	{
 		CloseWorld();
@@ -132,7 +138,7 @@ public class Game : Node
 		if(AsServer)
 		{
 			Scripting.SetupServerEngine();
-			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+			SetupWorld();
 		}
 
 		WorldOpen = true;
@@ -195,7 +201,7 @@ public class Game : Node
 			}
 			foreach(Structure Branch in Branches)
 			{
-				Branch.Remove();
+				Branch.Remove(Force:true);
 			}
 			Building.Chunks.Clear();
 			Building.Grid.Clear();
@@ -203,6 +209,7 @@ public class Game : Node
 			{
 				Building.RemoteLoadedChunks[Pair.Key].Clear();
 			}
+			SetupWorld();
 
 			SaveDir.Open("user://saves/"+SaveName);
 			SaveDir.ListDirBegin(true, true);
