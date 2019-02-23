@@ -27,9 +27,18 @@ public class SavedChunk
 		System.Collections.Generic.List<Structure> Structures = Building.GetChunk(ChunkTuple);
 		foreach(Structure Branch in Structures)
 		{
+			if(Branch.OwnerId == 0)
+			{
+				continue;
+			}
+
 			Out += new SavedStructure(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
 		}
-		Out = Out.Remove(Out.Length-1);
+
+		if(Out[Out.Length-1] == ',')
+		{
+			Out = Out.Remove(Out.Length-1);
+		}
 		Out += "]}";
 
 		return Out;
