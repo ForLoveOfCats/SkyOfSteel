@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Game : Node
 {
-	public const string Version = "0.1"; //Yes it's a string shush
+	public const string Version = "0.1.1-dev"; //Yes it's a string shush
 
 	public static Node RuntimeRoot;
 
@@ -116,6 +116,12 @@ public class Game : Node
 	}
 
 
+	private static void SetupWorld()
+	{
+		Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+	}
+
+
 	public static void StartWorld(bool AsServer = false)
 	{
 		CloseWorld();
@@ -132,7 +138,7 @@ public class Game : Node
 		if(AsServer)
 		{
 			Scripting.SetupServerEngine();
-			Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+			SetupWorld();
 		}
 
 		WorldOpen = true;
@@ -195,7 +201,7 @@ public class Game : Node
 			}
 			foreach(Structure Branch in Branches)
 			{
-				Branch.Remove();
+				Branch.Remove(Force:true);
 			}
 			Building.Chunks.Clear();
 			Building.Grid.Clear();
@@ -203,6 +209,7 @@ public class Game : Node
 			{
 				Building.RemoteLoadedChunks[Pair.Key].Clear();
 			}
+			SetupWorld();
 
 			SaveDir.Open("user://saves/"+SaveName);
 			SaveDir.ListDirBegin(true, true);
@@ -235,7 +242,7 @@ public class Game : Node
 					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 					if(Info != null)
 					{
-						Building.Place(Info.Item1, Info.Item2, Info.Item3, 0);
+						Building.Place(Info.Item1, Info.Item2, Info.Item3, 1);
 						PlaceCount++;
 					}
 				}

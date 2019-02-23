@@ -7,11 +7,11 @@ public class Structure : StaticBody
 	public int OwnerId = 0;
 
 
-	public void Remove()
+	public void Remove(bool Force=false)
 	{
-		if(Type == Items.TYPE.PLATFORM && Translation == new Vector3(0,0,0))
+		if(!Force && OwnerId == 0)
 		{
-			return; //Prevents removing the origin platform
+			return; //Prevents removing default structures
 		}
 
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))

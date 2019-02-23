@@ -148,7 +148,7 @@ public class Building : Node
 		if(!GetTree().IsNetworkServer())
 		{
 			RpcId(Net.ServerId, nameof(RequestChunks), new object[] {Id, PlayerPosition, RenderDistance});
-			return;
+			return; //If not already on the server run on server and return early on client
 		}
 
 		if(!Net.PeerList.Contains(Id)) {return;}
@@ -204,7 +204,15 @@ public class Building : Node
 		}
 		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
 
-		return Chunks[ChunkTuple].Count;
+		int SaveCount = 0;
+		foreach(Structure Branch in Chunks[ChunkTuple]) //I hate to do this because it is rather inefficient
+		{
+			if(Branch.OwnerId != 0)
+			{
+				SaveCount += 1;
+			}
+		}
+		return SaveCount;
 	}
 
 
