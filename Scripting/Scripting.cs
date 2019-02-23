@@ -16,6 +16,8 @@ public class Scripting : Node
 	public static Scripting Self;
 	Scripting()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 
 		ConsoleEngine = new Jurassic.ScriptEngine();
@@ -95,37 +97,6 @@ public class Scripting : Node
 		SetupScript.Open("res://Scripting/SetupScript.js", 1);
 		ConsoleEngine.Execute(SetupScript.GetAsText());
 		SetupScript.Close();
-
-		File Autoexec = new File();
-		if(Autoexec.FileExists("user://autoexec.js"))
-		{
-			Autoexec.Open("user://autoexec.js", 1);
-			Console.Print("Autoexec loaded 'autoexec.js'");
-			try
-			{
-				ConsoleEngine.Execute(Autoexec.GetAsText());
-			}
-			catch(JavaScriptException Error)
-			{
-				Console.Print(Error.Message + " @ line " + Error.LineNumber.ToString());
-				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
-			}
-		}
-		else
-		{
-			Console.Print("Autoexec not found 'autoexec.js'");
-		}
-		Autoexec.Close();
-
-		string[] CmdArgs = OS.GetCmdlineArgs();
-		foreach(string CurrentArg in CmdArgs)
-		{
-			Console.Log("Command line argument '" + CurrentArg + "'");
-			if(CurrentArg == "-dev_connect")
-			{
-				Console.Execute("connect();");
-			}
-		}
 	}
 
 
@@ -146,32 +117,28 @@ public class Scripting : Node
 	public static void LoadGameMode(string Name)
 	{
 		Directory ModeDir = new Directory();
-		if(ModeDir.DirExists("user://GameModes/" + Name)) //Gamemode exists
+		if(ModeDir.DirExists("user://gamemodes/" + Name)) //Gamemode exists
 		{
 			GamemodeName = Name;
 
-			if(ModeDir.FileExists("user://GameModes/" + Name + "/Server.js")) //Has a server side script
+			if(ModeDir.FileExists("user://gamemodes/" + Name + "/server.js")) //Has a server side script
 			{
 				SetupServerEngine();
 				File ServerScript = new File();
-				ServerScript.Open("user://GameModes/" + Name + "/Server.js", 1);
+				ServerScript.Open("user://gamemodes/" + Name + "/server.js", 1);
 				ServerGmEngine.Execute(ServerScript.GetAsText());
 				ServerScript.Close();
 			}
 
-			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a server side script
+			if(ModeDir.FileExists("user://gamemodes/" + Name + "/client.js")) //Has a client side script
 			{
 				SetupClientEngine();
 				File ClientScriptFile = new File();
-				ClientScriptFile.Open("user://GameModes/" + Name + "/Client.js", 1);
+				ClientScriptFile.Open("user://gamemodes/" + Name + "/client.js", 1);
 				ClientGmScript = ClientScriptFile.GetAsText();
 				ClientScriptFile.Close();
 				ClientGmEngine.Execute(ClientGmScript);
-				Self.Rpc(nameof(NetLoadClientScript), new object[] {ClientGmScript});
-			}
-
-			if(ModeDir.FileExists("user://GameModes/" + Name + "/Client.js")) //Has a client side script
-			{
+				Net.SteelRpc(Self, nameof(NetLoadClientScript), new object[] {ClientGmScript});
 			}
 		}
 	}
@@ -180,6 +147,7 @@ public class Scripting : Node
 	[Remote]
 	public void NetLoadClientScript(string Script)
 	{
+		Console.Log("Recieved client.js from server, executing");
 		SetupClientEngine();
 		ClientGmEngine.Execute(Script);
 	}

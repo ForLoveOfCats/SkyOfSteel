@@ -1,0 +1,77 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://UI/Menu/SaveMenu/SaveMenu.cs" type="Script" id=1]
+[ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Menu/Pieces/LabelPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="Title" parent="." instance=ExtResource( 2 )]
+margin_top = 170.0
+margin_right = 1024.0
+margin_bottom = 222.0
+text = "Save world"
+
+[node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
+margin_top = 226.0
+margin_right = 1024.0
+margin_bottom = 250.0
+
+[node name="NewSaveLabel" parent="." instance=ExtResource( 4 )]
+margin_top = 254.0
+margin_right = 1024.0
+margin_bottom = 278.0
+text = "Input the name for a new savefile"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 282.0
+margin_right = 1024.0
+margin_bottom = 312.0
+
+[node name="LineEdit" type="LineEdit" parent="HBoxContainer"]
+margin_right = 784.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+
+[node name="SaveButton" parent="HBoxContainer" instance=ExtResource( 5 )]
+margin_left = 788.0
+margin_right = 1024.0
+margin_bottom = 30.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+text = "Save"
+
+[node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
+margin_top = 316.0
+margin_right = 1024.0
+margin_bottom = 340.0
+
+[node name="ExistingSaveLabel" parent="." instance=ExtResource( 4 )]
+margin_top = 344.0
+margin_right = 1024.0
+margin_bottom = 368.0
+text = "or select a savefile to overwrite"
+
+[node name="ButtonsBelow" type="Node" parent="."]
+
+[node name="SpacerLabel3" parent="." instance=ExtResource( 3 )]
+margin_top = 372.0
+margin_right = 1024.0
+margin_bottom = 396.0
+
+[node name="BackButton" parent="." instance=ExtResource( 5 )]
+margin_top = 400.0
+margin_right = 1024.0
+margin_bottom = 430.0
+text = "Back"
+
+[connection signal="pressed" from="HBoxContainer/SaveButton" to="." method="SavePressed"]
+[connection signal="pressed" from="BackButton" to="." method="BackPressed"]

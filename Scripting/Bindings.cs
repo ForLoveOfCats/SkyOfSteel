@@ -156,11 +156,11 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 1);
+					Scripting.ConsoleEngine.Execute($"if({Binding.Name}.length > 0) {{ {Binding.Name}(1) }} else {{ {Binding.Name}() }}");
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 0);
+					Scripting.ConsoleEngine.Execute($"if({Binding.Name}.length > 0) {{ {Binding.Name}(0) }}");
 				}
 			}
 			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)

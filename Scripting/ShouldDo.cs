@@ -62,6 +62,36 @@ class ShouldDo
 	}
 
 
+	public static bool LocalPlayerForward(double Sens)
+	{
+		return CheckFunctionClient("_local_player_forward", Scripting.ToJs(new object[] {Sens}));
+	}
+
+
+	public static bool LocalPlayerBackward(double Sens)
+	{
+		return CheckFunctionClient("_local_player_backward", Scripting.ToJs(new object[] {Sens}));
+	}
+
+
+	public static bool LocalPlayerRight(double Sens)
+	{
+		return CheckFunctionClient("_local_player_right", Scripting.ToJs(new object[] {Sens}));
+	}
+
+
+	public static bool LocalPlayerLeft(double Sens)
+	{
+		return CheckFunctionClient("_local_player_left", Scripting.ToJs(new object[] {Sens}));
+	}
+
+
+	public static bool LocalPlayerJump()
+	{
+		return CheckFunctionClient("_local_player_jump", new object[] {});
+	}
+
+
 	public static bool LocalPlayerRotate(float Rotation)
 	{
 		return CheckFunctionClient("_local_player_rotate", Scripting.ToJs(new object[] {Rotation}));

@@ -2,18 +2,19 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Alpha.png-fa5dff7d68018bac9b24011b47f5646a.stex"
+path="res://.import/ForLoveOfCats.png-19fceaf4c5f8d362a6b9143d8d1097f6.stex"
 
 [deps]
 
-source_file="res://UI/Alpha.png"
-dest_files=[ "res://.import/Alpha.png-fa5dff7d68018bac9b24011b47f5646a.stex" ]
+source_file="res://UI/Menu/CreditsMenu/ForLoveOfCats.png"
+dest_files=[ "res://.import/ForLoveOfCats.png-19fceaf4c5f8d362a6b9143d8d1097f6.stex" ]
 
 [params]
 
 compress/mode=0
 compress/lossy_quality=0.7
 compress/hdr_mode=0
+compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
 flags/filter=true
@@ -23,6 +24,7 @@ flags/srgb=2
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
+process/invert_color=false
 stream=false
 size_limit=0
 detect_3d=true

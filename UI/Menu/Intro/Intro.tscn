@@ -1,0 +1,47 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://UI/Menu/Intro/Intro.cs" type="Script" id=1]
+[ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Menu/Pieces/LabelPiece.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="Welcome" parent="." instance=ExtResource( 2 )]
+margin_top = 212.0
+margin_right = 1024.0
+margin_bottom = 264.0
+text = "Welcome to SkyOfSteel!"
+
+[node name="Message" parent="." instance=ExtResource( 3 )]
+margin_top = 268.0
+margin_right = 1024.0
+margin_bottom = 292.0
+text = "SkyOfSteel is extremely early alpha. As a result it may be buggy and have issues. Thank you for your understanding."
+
+[node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
+margin_top = 296.0
+margin_right = 1024.0
+margin_bottom = 320.0
+
+[node name="ContinueButton" parent="." instance=ExtResource( 5 )]
+margin_top = 324.0
+margin_right = 1024.0
+margin_bottom = 354.0
+text = "Continue"
+
+[node name="QuitButton" parent="." instance=ExtResource( 5 )]
+margin_top = 358.0
+margin_right = 1024.0
+margin_bottom = 388.0
+text = "Quit"
+
+[connection signal="pressed" from="ContinueButton" to="." method="ContinuePressed"]
+[connection signal="pressed" from="QuitButton" to="." method="QuitPressed"]

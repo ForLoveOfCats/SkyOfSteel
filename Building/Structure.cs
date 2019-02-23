@@ -9,17 +9,15 @@ public class Structure : StaticBody
 
 	public void Remove()
 	{
+		if(Type == Items.TYPE.PLATFORM && Translation == new Vector3(0,0,0))
+		{
+			return; //Prevents removing the origin platform
+		}
+
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
-			Rpc(nameof(NetRemove));
-			QueueFree();
+			Net.SteelRpc(Building.Self, nameof(Building.Remove), GetName());
+			Building.Self.Remove(GetName());
 		}
-	}
-
-
-	[Remote]
-	public void NetRemove()
-	{
-		QueueFree();
 	}
 }

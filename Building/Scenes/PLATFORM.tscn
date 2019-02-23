@@ -1,44 +1,28 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Building/Structure.cs" type="Script" id=1]
-[ext_resource path="res://Building/Meshes/PLATFORM.obj" type="ArrayMesh" id=2]
-[ext_resource path="res://Building/Materials/PLATFORM.tres" type="Material" id=3]
+[ext_resource path="res://Items/Meshes/PLATFORM.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://Building/Materials/StructureShader.shader" type="Shader" id=3]
+[ext_resource path="res://Building/Textures/PLATFORM.png" type="Texture" id=4]
 
-[sub_resource type="BoxShape" id=1]
+
+
+[sub_resource type="ShaderMaterial" id=1]
+
+shader = ExtResource( 3 )
+shader_param/texture_albedo = ExtResource( 4 )
+
+[sub_resource type="BoxShape" id=2]
 
 extents = Vector3( 6, 0.3, 6 )
 
 [node name="PLATFORM" type="StaticBody"]
-
-input_ray_pickable = true
-input_capture_on_drag = false
-collision_layer = 1
-collision_mask = 1
-friction = 1.0
-bounce = 0.0
-constant_linear_velocity = Vector3( 0, 0, 0 )
-constant_angular_velocity = Vector3( 0, 0, 0 )
 script = ExtResource( 1 )
 
-[node name="MeshInstance" type="MeshInstance" parent="." index="0"]
-
-layers = 1
-material_override = null
-cast_shadow = 1
-extra_cull_margin = 0.0
-use_in_baked_light = false
-lod_min_distance = 0.0
-lod_min_hysteresis = 0.0
-lod_max_distance = 0.0
-lod_max_hysteresis = 0.0
+[node name="MeshInstance" type="MeshInstance" parent="."]
 mesh = ExtResource( 2 )
-skeleton = NodePath("..")
-material/0 = ExtResource( 3 )
-_sections_unfolded = [ "material" ]
+material/0 = SubResource( 1 )
 
-[node name="CollisionShape" type="CollisionShape" parent="." index="1"]
-
-shape = SubResource( 1 )
-disabled = false
-
+[node name="CollisionShape" type="CollisionShape" parent="."]
+shape = SubResource( 2 )
 

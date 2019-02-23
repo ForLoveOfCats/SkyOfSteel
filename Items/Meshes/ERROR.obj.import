@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/ERROR.obj-561c0400f87327a7821fda688f782ebe.mesh"
+
+[deps]
+
+files=[ "res://.import/ERROR.obj-561c0400f87327a7821fda688f782ebe.mesh" ]
+
+source_file="res://Items/Meshes/ERROR.obj"
+dest_files=[ "res://.import/ERROR.obj-561c0400f87327a7821fda688f782ebe.mesh", "res://.import/ERROR.obj-561c0400f87327a7821fda688f782ebe.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true

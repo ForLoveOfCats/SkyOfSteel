@@ -1,0 +1,82 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://UI/Menu/CreditsMenu/CreditsMenu.cs" type="Script" id=1]
+[ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Menu/CreditsMenu/ForLoveOfCats.png" type="Texture" id=3]
+[ext_resource path="res://UI/Menu/Pieces/LabelPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/CreditsMenu/Stenodyon.jpg" type="Texture" id=5]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=6]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=7]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="Title" parent="." instance=ExtResource( 2 )]
+margin_top = 188.0
+margin_right = 1024.0
+margin_bottom = 240.0
+text = "Credits"
+
+[node name="ForLoveOfCats" type="GridContainer" parent="."]
+margin_top = 244.0
+margin_right = 1024.0
+margin_bottom = 295.0
+columns = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="ForLoveOfCats"]
+margin_right = 510.0
+margin_bottom = 51.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 3 )
+
+[node name="Label" parent="ForLoveOfCats" instance=ExtResource( 4 )]
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 51.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "ForLoveOfCats: Initial creator, programmer, 3d modeler, texture artist, game designer, gui designer, project lead"
+align = 0
+valign = 1
+
+[node name="Stenodyon" type="GridContainer" parent="."]
+margin_top = 299.0
+margin_right = 1024.0
+margin_bottom = 350.0
+columns = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Stenodyon"]
+margin_right = 510.0
+margin_bottom = 51.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 5 )
+
+[node name="Label" parent="Stenodyon" instance=ExtResource( 4 )]
+margin_left = 514.0
+margin_right = 1024.0
+margin_bottom = 51.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Stenodyon: Technological insights, playtesting, proofreading, small programming contributions, friend"
+align = 0
+valign = 1
+
+[node name="SpacerLabel" parent="." instance=ExtResource( 6 )]
+margin_top = 354.0
+margin_right = 1024.0
+margin_bottom = 378.0
+
+[node name="BackButton" parent="." instance=ExtResource( 7 )]
+margin_top = 382.0
+margin_right = 1024.0
+margin_bottom = 412.0
+text = "Back"
+
+[connection signal="pressed" from="BackButton" to="." method="BackPressed"]

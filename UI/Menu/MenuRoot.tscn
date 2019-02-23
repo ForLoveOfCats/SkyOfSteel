@@ -1,0 +1,30 @@
+[gd_scene format=2]
+
+[node name="MenuRoot" type="Node"]
+
+[node name="HBox" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Left" type="VBoxContainer" parent="HBox"]
+margin_right = 254.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="Center" type="ScrollContainer" parent="HBox"]
+margin_left = 258.0
+margin_right = 766.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Right" type="VBoxContainer" parent="HBox"]
+margin_left = 770.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
