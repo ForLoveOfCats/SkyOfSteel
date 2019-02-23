@@ -335,12 +335,30 @@ public class API : Node
 				return new List<object> {Name, new Action(delegate(){
 					Game.PossessedPlayer.HUDInstance.Show();
 				})};
+			
+			case "teleport_player":
+				return new List<object> {Name, new Action(delegate(){
+
+				})};
 
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
 	}
 
+	public static List<object> GetConstructor(string Name, Jurassic.ScriptEngine Engine)
+	{
+
+		switch(Name) 
+		{
+
+			case "Vector3":
+				return new List<object> {Name, new JSVector3Constructor(Engine)};
+
+			default:
+				throw new System.ArgumentException("Invalid GetClass name arg '" + Name + "'");
+		}
+	}
 
 	public static List<List<object>> Expose(LEVEL ApiLevel, Scripting ScriptingRef)
 	{
@@ -491,3 +509,25 @@ public class API : Node
 		return Output;
 	}
 }
+
+	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel, Scripting ScriptingRef, Jurassic.ScriptEngine Engine) {
+
+		List<List<object>> Output = new List<List<object>>();
+
+		Output.Add(GetConstructor("Vector3", Engine));
+
+		switch(ApiLevel)
+		{
+			case LEVEL.CONSOLE:
+				
+				break;
+			case LEVEL.SERVER_GM:
+				
+				break;
+			case LEVEL.CLIENT_GM:
+				
+				break;
+		}
+
+		return Output;
+	}

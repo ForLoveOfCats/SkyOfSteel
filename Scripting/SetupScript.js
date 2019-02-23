@@ -24,3 +24,5 @@ bind("player_input_secondary_fire", "MouseTwo");
 
 chunk_render_distance(10);
 fps_max(200)
+
+Vector3(1, 1, 1)

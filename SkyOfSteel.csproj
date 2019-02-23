@@ -68,6 +68,7 @@
     <Compile Include="Scripting\API.cs" />
     <Compile Include="Scripting\BindingObject.cs" />
     <Compile Include="Scripting\Bindings.cs" />
+    <Compile Include="Scripting\JSVector3.cs" />
     <Compile Include="Scripting\ShouldDo.cs" />
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
