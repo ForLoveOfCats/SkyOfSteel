@@ -204,7 +204,15 @@ public class Building : Node
 		}
 		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
 
-		return Chunks[ChunkTuple].Count;
+		int SaveCount = 0;
+		foreach(Structure Branch in Chunks[ChunkTuple]) //I hate to do this because it is rather inefficient
+		{
+			if(Branch.OwnerId != 0)
+			{
+				SaveCount += 1;
+			}
+		}
+		return SaveCount;
 	}
 
 
