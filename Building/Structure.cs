@@ -9,9 +9,9 @@ public class Structure : StaticBody
 
 	public void Remove()
 	{
-		if(Type == Items.TYPE.PLATFORM && Translation == new Vector3(0,0,0))
+		if(OwnerId == 0)
 		{
-			return; //Prevents removing the origin platform
+			return; //Prevents removing default structures
 		}
 
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))

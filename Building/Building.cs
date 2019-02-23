@@ -148,7 +148,7 @@ public class Building : Node
 		if(!GetTree().IsNetworkServer())
 		{
 			RpcId(Net.ServerId, nameof(RequestChunks), new object[] {Id, PlayerPosition, RenderDistance});
-			return;
+			return; //If not already on the server run on server and return early on client
 		}
 
 		if(!Net.PeerList.Contains(Id)) {return;}

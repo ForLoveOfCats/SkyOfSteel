@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Game : Node
 {
-	public const string Version = "0.1"; //Yes it's a string shush
+	public const string Version = "0.1.1-dev"; //Yes it's a string shush
 
 	public static Node RuntimeRoot;
 
@@ -235,7 +235,7 @@ public class Game : Node
 					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 					if(Info != null)
 					{
-						Building.Place(Info.Item1, Info.Item2, Info.Item3, 0);
+						Building.Place(Info.Item1, Info.Item2, Info.Item3, 1);
 						PlaceCount++;
 					}
 				}
