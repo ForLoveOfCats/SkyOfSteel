@@ -70,6 +70,9 @@ public class Net : Node
 	{
 		if(Id == 1) //Running on client and connected to server
 		{
+			IsWaitingForServer = false;
+			WaitingForServerTimer = MaxWaitForServerDelay;
+
 			RpcId(ServerId, nameof(ProvideVersion), Game.Version);
 		}
 		else //Connected to a client OR server
