@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -46,7 +46,7 @@
       <HintPath>$(ProjectDir)/.mono/assemblies/GodotSharpEditor.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System"/>
     <Reference Include="Jurassic">
       <HintPath>$(ProjectDir)/Scripting/Jurassic.dll</HintPath>
       <Private>True</Private>
@@ -56,48 +56,48 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Building\BuildPositions.cs" />
-    <Compile Include="Building\BuildRotations.cs" />
-    <Compile Include="Building\Ghost.cs" />
-    <Compile Include="Building\Grid.cs" />
-    <Compile Include="Building\SavedChunk.cs" />
-    <Compile Include="Building\SavedStructure.cs" />
-    <Compile Include="Building\Structure.cs" />
-    <Compile Include="Game\Startup.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripting\API.cs" />
-    <Compile Include="Scripting\BindingObject.cs" />
-    <Compile Include="Scripting\Bindings.cs" />
-    <Compile Include="Scripting\JSVector3.cs" />
-    <Compile Include="Scripting\ShouldDo.cs" />
-    <Compile Include="Scripting\Scripting.cs" />
-    <Compile Include="Scripting\Console.cs" />
-    <Compile Include="Game\SteelMath.cs" />
-    <Compile Include="UI\ConsoleWindow.cs" />
-    <Compile Include="UI\HUD.cs" />
-    <Compile Include="Building\Building.cs" />
-    <Compile Include="Game\Game.cs" />
-    <Compile Include="Net\Net.cs" />
-    <Compile Include="Player\Player.cs" />
-    <Compile Include="Items\Items.cs" />
-    <Compile Include="UI\Menu\ConnectMenu\ConnectMenu.cs" />
-    <Compile Include="UI\Menu\CreditsMenu\CreditsMenu.cs" />
-    <Compile Include="UI\Menu\HelpMenu\HelpMenu.cs" />
-    <Compile Include="UI\Menu\HostMenu\HostMenu.cs" />
-    <Compile Include="UI\Menu\Intro\Intro.cs" />
-    <Compile Include="UI\Menu\MainMenu\MainMenu.cs" />
-    <Compile Include="UI\Menu\Menu.cs" />
-    <Compile Include="UI\Menu\NickMenu\NickMenu.cs" />
-    <Compile Include="UI\Menu\PauseMenu\PauseMenu.cs" />
-    <Compile Include="UI\Menu\LoadWorldHost\LoadHostButton.cs" />
-    <Compile Include="UI\Menu\LoadWorldHost\LoadWorldHost.cs" />
-    <Compile Include="UI\Menu\SaveMenu\SaveButton.cs" />
-    <Compile Include="UI\Menu\SaveMenu\SaveMenu.cs" />
-    <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs" />
-    <Compile Include="World\StructureRoot.cs" />
+    <Compile Include="Building\BuildPositions.cs"/>
+    <Compile Include="Building\BuildRotations.cs"/>
+    <Compile Include="Building\Ghost.cs"/>
+    <Compile Include="Building\Grid.cs"/>
+    <Compile Include="Building\SavedChunk.cs"/>
+    <Compile Include="Building\SavedStructure.cs"/>
+    <Compile Include="Building\Structure.cs"/>
+    <Compile Include="Game\Startup.cs"/>
+    <Compile Include="Properties\AssemblyInfo.cs"/>
+    <Compile Include="Scripting\Types\JsVector3.cs"/>
+    <Compile Include="Scripting\API.cs"/>
+    <Compile Include="Scripting\BindingObject.cs"/>
+    <Compile Include="Scripting\Bindings.cs"/>
+    <Compile Include="Scripting\ShouldDo.cs"/>
+    <Compile Include="Scripting\Scripting.cs"/>
+    <Compile Include="Scripting\Console.cs"/>
+    <Compile Include="Game\SteelMath.cs"/>
+    <Compile Include="UI\ConsoleWindow.cs"/>
+    <Compile Include="UI\HUD.cs"/>
+    <Compile Include="Building\Building.cs"/>
+    <Compile Include="Game\Game.cs"/>
+    <Compile Include="Net\Net.cs"/>
+    <Compile Include="Player\Player.cs"/>
+    <Compile Include="Items\Items.cs"/>
+    <Compile Include="UI\Menu\ConnectMenu\ConnectMenu.cs"/>
+    <Compile Include="UI\Menu\CreditsMenu\CreditsMenu.cs"/>
+    <Compile Include="UI\Menu\HelpMenu\HelpMenu.cs"/>
+    <Compile Include="UI\Menu\HostMenu\HostMenu.cs"/>
+    <Compile Include="UI\Menu\Intro\Intro.cs"/>
+    <Compile Include="UI\Menu\MainMenu\MainMenu.cs"/>
+    <Compile Include="UI\Menu\Menu.cs"/>
+    <Compile Include="UI\Menu\NickMenu\NickMenu.cs"/>
+    <Compile Include="UI\Menu\PauseMenu\PauseMenu.cs"/>
+    <Compile Include="UI\Menu\LoadWorldHost\LoadHostButton.cs"/>
+    <Compile Include="UI\Menu\LoadWorldHost\LoadWorldHost.cs"/>
+    <Compile Include="UI\Menu\SaveMenu\SaveButton.cs"/>
+    <Compile Include="UI\Menu\SaveMenu\SaveMenu.cs"/>
+    <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs"/>
+    <Compile Include="World\StructureRoot.cs"/>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config"/>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
 </Project>
