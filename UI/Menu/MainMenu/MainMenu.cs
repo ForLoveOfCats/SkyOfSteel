@@ -26,6 +26,13 @@ public class MainMenu : VBoxContainer
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");
 	}
 
+
+	public void ItchPressed()
+	{
+		OS.ShellOpen("https://forloveofcats.itch.io/skyofsteel");
+	}
+
+
 	public void TwitterPressed()
 	{
 		OS.ShellOpen("https://twitter.com/ForLoveOfCats");
