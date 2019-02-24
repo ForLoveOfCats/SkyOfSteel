@@ -335,11 +335,6 @@ public class API : Node
 				return new List<object> {Name, new Action(delegate(){
 					Game.PossessedPlayer.HUDInstance.Show();
 				})};
-			
-			case "teleport_player":
-				return new List<object> {Name, new Action(delegate(){
-
-				})};
 
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
@@ -349,7 +344,7 @@ public class API : Node
 	public static List<object> GetConstructor(string Name, Jurassic.ScriptEngine Engine)
 	{
 
-		switch(Name) 
+		switch(Name)
 		{
 
 			case "Vector3":
@@ -518,13 +513,10 @@ public class API : Node
 		switch(ApiLevel)
 		{
 			case LEVEL.CONSOLE:
-				
 				break;
 			case LEVEL.SERVER_GM:
-				
 				break;
 			case LEVEL.CLIENT_GM:
-				
 				break;
 		}
 
