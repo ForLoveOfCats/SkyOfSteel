@@ -12,7 +12,7 @@ public class JsVector3Constructor : ClrFunction
     }
 
     [JSConstructorFunction]
-    public JsVector3Instance Construct(double x, double y, double z) 
+    public JsVector3Instance Construct(double x, double y, double z)
     {
         return new JsVector3Instance(this.InstancePrototype, x, y, z);
     }
@@ -38,5 +38,10 @@ public class JsVector3Instance : ObjectInstance
         this["x"] = x;
         this["y"] = y;
         this["z"] = z;
+    }
+
+    public Vector3 Sharpen() 
+    {
+        return new Vector3((float)this["x"], (float)this["y"], (float)this["z"]);
     }
 }
