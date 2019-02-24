@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+
 public class Game : Node
 {
 	public const string Version = "0.1.1-dev"; //Yes it's a string shush
