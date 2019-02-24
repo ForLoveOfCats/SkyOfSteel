@@ -25,7 +25,6 @@ public class JsVector3Instance : ObjectInstance
 
     public JsVector3Instance(ObjectInstance prototype) : base(prototype) 
     {
-        GD.Print("Hello, I'm a JsVector3!");
         this["x"] = 0;
         this["y"] = 0;
         this["z"] = 0;
@@ -34,7 +33,6 @@ public class JsVector3Instance : ObjectInstance
     public JsVector3Instance(ObjectInstance prototype, double x, double y, double z) 
     : base(prototype)
      {
-        GD.Print("Hello, I'm a JsVector3!");
         this["x"] = x;
         this["y"] = y;
         this["z"] = z;
