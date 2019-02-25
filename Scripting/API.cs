@@ -342,6 +342,19 @@ public class API : Node
 	}
 
 
+	public static List<object> GetConstructor(string Name)
+	{
+		switch(Name)
+		{
+			case "Vector3":
+				return new List<object> {Name, new JsVector3Constructor(Scripting.ConsoleEngine)};
+
+			default:
+				throw new System.ArgumentException("Invalid GetConstructor name arg '" + Name + "'");
+		}
+	}
+
+
 	public static List<List<object>> Expose(LEVEL ApiLevel, Scripting ScriptingRef)
 	{
 		List<List<object>> Output = new List<List<object>>();
@@ -485,6 +498,26 @@ public class API : Node
 				Output.Add(GetDelCall("fly"));
 				Output.Add(GetDelCall("fly_toggle"));
 				Output.Add(GetDelCall("fly_get"));
+				break;
+		}
+
+		return Output;
+	}
+
+	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel)
+	{
+		List<List<object>> Output = new List<List<object>>();
+
+		switch(ApiLevel)
+		{
+			case LEVEL.CONSOLE:
+				Output.Add(GetConstructor("Vector3"));
+				break;
+			case LEVEL.SERVER_GM:
+				Output.Add(GetConstructor("Vector3"));
+				break;
+			case LEVEL.CLIENT_GM:
+				Output.Add(GetConstructor("Vector3"));
 				break;
 		}
 

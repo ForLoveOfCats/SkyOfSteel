@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using Jurassic;
+using Jurassic.Library;
 
 
 public class Scripting : Node
@@ -25,6 +26,10 @@ public class Scripting : Node
 		{
 			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
+		{
+			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
+		}
 
 		SetupServerEngine();
 		SetupClientEngine();
@@ -35,12 +40,7 @@ public class Scripting : Node
 	{
 		if(ToConvert is Vector3)
 		{
-			Vector3 Vec = (Vector3)ToConvert;
-			Jurassic.Library.ArrayInstance ArrVec = Scripting.ConsoleEngine.Array.Construct();
-			ArrVec.Push((double)Vec.x);
-			ArrVec.Push((double)Vec.y);
-			ArrVec.Push((double)Vec.z);
-			return ArrVec;
+			return new JsVector3(Scripting.ConsoleEngine.Object.InstancePrototype, (Vector3)ToConvert);
 		}
 
 		if(ToConvert is float)
@@ -70,13 +70,16 @@ public class Scripting : Node
 		return Out;
 	}
 
-
 	public static void SetupServerEngine()
 	{
 		ServerGmEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
 		{
 			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.SERVER_GM))
+		{
+			ServerGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}
 	}
 
@@ -87,6 +90,10 @@ public class Scripting : Node
 		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, Self))
 		{
 			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+		}
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CLIENT_GM))
+		{
+			ClientGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}
 	}
 
