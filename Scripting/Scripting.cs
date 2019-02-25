@@ -80,7 +80,7 @@ public class Scripting : Node
 		}
 		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.SERVER_GM, Self, ServerGmEngine))
 		{
-			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
+			ServerGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class Scripting : Node
 		}
 		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CLIENT_GM, Self, ClientGmEngine))
 		{
-			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
+			ClientGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}
 	}
 
