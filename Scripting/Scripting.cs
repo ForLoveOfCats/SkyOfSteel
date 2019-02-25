@@ -40,8 +40,7 @@ public class Scripting : Node
 	{
 		if(ToConvert is Vector3)
 		{
-			Vector3 Vec = (Vector3)ToConvert;
-			return new JsVector3(Scripting.ConsoleEngine.Object.InstancePrototype, (double)Vec.x, (double)Vec.y, (double)Vec.z);
+			return new JsVector3(Scripting.ConsoleEngine.Object.InstancePrototype, (Vector3)ToConvert);
 		}
 
 		if(ToConvert is float)
