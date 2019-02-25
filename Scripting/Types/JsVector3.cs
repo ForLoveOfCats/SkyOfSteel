@@ -6,7 +6,7 @@ using Godot;
 public class JsVector3Constructor : ClrFunction
 {
     public JsVector3Constructor(ScriptEngine engine)
-    : base(engine.Function.InstancePrototype, "Vector3", new JsVector3Instance(engine.Object.InstancePrototype))
+		: base(engine.Function.InstancePrototype, "Vector3", new JsVector3Instance(engine.Object.InstancePrototype))
     {
 
     }
@@ -31,9 +31,8 @@ public class JsVector3Instance : ObjectInstance
     }
 
 
-    public JsVector3Instance(ObjectInstance prototype, double x, double y, double z)
-    : base(prototype)
-     {
+    public JsVector3Instance(ObjectInstance prototype, double x, double y, double z) : base(prototype)
+	{
         this["x"] = x;
         this["y"] = y;
         this["z"] = z;
