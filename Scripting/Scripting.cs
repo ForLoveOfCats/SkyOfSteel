@@ -26,7 +26,7 @@ public class Scripting : Node
 		{
 			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE, Self, ConsoleEngine))
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
 		{
 			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}
@@ -78,7 +78,7 @@ public class Scripting : Node
 		{
 			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.SERVER_GM, Self, ServerGmEngine))
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.SERVER_GM))
 		{
 			ServerGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}
@@ -92,7 +92,7 @@ public class Scripting : Node
 		{
 			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
 		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CLIENT_GM, Self, ClientGmEngine))
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CLIENT_GM))
 		{
 			ClientGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
 		}

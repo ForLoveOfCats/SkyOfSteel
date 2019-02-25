@@ -504,7 +504,7 @@ public class API : Node
 		return Output;
 	}
 
-	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel, Scripting ScriptingRef, Jurassic.ScriptEngine Engine)
+	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel)
 	{
 		List<List<object>> Output = new List<List<object>>();
 
