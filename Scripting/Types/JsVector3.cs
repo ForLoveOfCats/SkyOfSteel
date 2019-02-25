@@ -11,6 +11,13 @@ public class JsVector3Constructor : ClrFunction
 
 
 	[JSConstructorFunction]
+	public JsVector3Instance Construct()
+	{
+		return new JsVector3Instance(this.InstancePrototype);
+	}
+
+
+	[JSConstructorFunction]
 	public JsVector3Instance Construct(double x, double y, double z)
 	{
 		return new JsVector3Instance(this.InstancePrototype, x, y, z);
