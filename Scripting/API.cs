@@ -504,19 +504,20 @@ public class API : Node
 		return Output;
 	}
 
-		public static List<List<object>> ExposeConstructors(LEVEL ApiLevel, Scripting ScriptingRef, Jurassic.ScriptEngine Engine) {
-
+	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel, Scripting ScriptingRef, Jurassic.ScriptEngine Engine)
+	{
 		List<List<object>> Output = new List<List<object>>();
-
-		Output.Add(GetConstructor("Vector3"));
 
 		switch(ApiLevel)
 		{
 			case LEVEL.CONSOLE:
+				Output.Add(GetConstructor("Vector3"));
 				break;
 			case LEVEL.SERVER_GM:
+				Output.Add(GetConstructor("Vector3"));
 				break;
 			case LEVEL.CLIENT_GM:
+				Output.Add(GetConstructor("Vector3"));
 				break;
 		}
 
