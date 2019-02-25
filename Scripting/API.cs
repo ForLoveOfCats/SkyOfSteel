@@ -341,19 +341,19 @@ public class API : Node
 		}
 	}
 
-	public static List<object> GetConstructor(string Name, Jurassic.ScriptEngine Engine)
-	{
 
+	public static List<object> GetConstructor(string Name)
+	{
 		switch(Name)
 		{
-
 			case "Vector3":
-				return new List<object> {Name, new JsVector3Constructor(Engine)};
+				return new List<object> {Name, new JsVector3Constructor(Scripting.ConsoleEngine)};
 
 			default:
-				throw new System.ArgumentException("Invalid GetClass name arg '" + Name + "'");
+				throw new System.ArgumentException("Invalid GetConstructor name arg '" + Name + "'");
 		}
 	}
+
 
 	public static List<List<object>> Expose(LEVEL ApiLevel, Scripting ScriptingRef)
 	{
@@ -508,7 +508,7 @@ public class API : Node
 
 		List<List<object>> Output = new List<List<object>>();
 
-		Output.Add(GetConstructor("Vector3", Engine));
+		Output.Add(GetConstructor("Vector3"));
 
 		switch(ApiLevel)
 		{
