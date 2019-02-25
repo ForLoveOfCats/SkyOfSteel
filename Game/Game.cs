@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Game : Node
 {
-	public const string Version = "0.1.1-dev"; //Yes it's a string shush
+	public const string Version = "0.1.1"; //Yes it's a string shush
 
 	public static Node RuntimeRoot;
 
