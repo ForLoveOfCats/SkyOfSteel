@@ -37,9 +37,9 @@ public class JsVector3 : ObjectInstance
 
 	public JsVector3(ObjectInstance prototype, Vector3 InVec) : base(prototype)
 	{
-		this["x"] = InVec.x;
-		this["y"] = InVec.y;
-		this["z"] = InVec.z;
+		this["x"] = (double)InVec.x;
+		this["y"] = (double)InVec.y;
+		this["z"] = (double)InVec.z;
 	}
 
 
