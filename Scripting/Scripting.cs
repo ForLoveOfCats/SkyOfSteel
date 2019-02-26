@@ -118,6 +118,23 @@ public class Scripting : Node
 		{
 			Console.Print(Error.Message);
 		}
+
+		try
+		{
+			ClientGmEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
+		}
+		catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
+		catch(JavaScriptException){}
+
+		if(GetTree().IsNetworkServer())
+		{
+			try
+			{
+				ServerGmEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
+			}
+			catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
+			catch(JavaScriptException){}
+		}
 	}
 
 
