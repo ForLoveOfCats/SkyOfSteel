@@ -3,7 +3,7 @@
 ### Welcome to the GitHub repository of the game SkyOfSteel!
 
 SkyOfSteel is a work in progress game built on the Godot game engine with C# and Mono.
-Currently builds with Godot Mono 3.1 Beta 5
+Currently builds with Godot Mono 3.1 Beta 5 and can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
 
 Contributions are welcome!
 
@@ -12,6 +12,8 @@ Contributions are welcome!
 - [SkyOfSteel](#skyofsteel)
         - [Welcome to the GitHub repository of the game SkyOfSteel!](#welcome-to-the-github-repository-of-the-game-skyofsteel)
 - [Table of Contents](#table-of-contents)
+    - [Download](#download)
+    - [Newsletter](#newsletter)
     - [Videos](#videos)
     - [Building](#building)
         - [Prerequisites](#prerequisites)
@@ -25,8 +27,16 @@ Contributions are welcome!
     - [License](#license)
 
 
+## Download
+[SkyOfSteel can be downloaded from Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
+
+
+## Newsletter
+[Read the weekly Sunday of Steel news letter here](https://medium.com/@ForLoveOfCats "Sunday of Steel Medium link")
+
+
 ## Videos
-[View the devlog one video on Youtube](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
+[View the devlog one video on Youtube (Out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
 
 [View the introductory video on Youtube(Out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
 
@@ -51,7 +61,10 @@ Contributions are welcome!
 ## Gameplay
 
 The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
-multiplayer private server setting. As of now multiplayer is fully functional and the building is about 90% functional with proper chunk loading/unloading over network as well as world saving and loading to/from file.
+multiplayer private server setting with high skill movement. As of now multiplayer is fully
+functional, the building is about 95% functional with proper chunk loading/unloading
+over network,  world saving and loading to/from file, and air strafing identical to id Tech 3
+and the Source engine.
 
 
 
@@ -64,9 +77,9 @@ can run gamemode scripts and send client side scripts to connecting clients simi
 webpage's scripts. In addition there is a full REPL ingame console.
 
 The modding API is based around game events. Whenever something occurs ingame it is
-processed as an "event" which can be filtered, modified, or discarded by mod scripts.
+processed as an "event" which can be filtered and discarded by mod scripts programmatically.
 This allows for a great deal of flexibility even without the normal API for such things
-as setting player positions and the like.
+as setting player positions and the like (which are being worked on).
 
 
 
