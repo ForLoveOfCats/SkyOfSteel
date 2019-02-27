@@ -48,6 +48,11 @@ public class HUD : Node
 			{
 				SlotPatch.Texture = Items.Thumbnail(Game.PossessedPlayer.Inventory[Slot].Type);
 			}
+			else
+			{
+				SlotPatch.Texture = Alpha;
+			}
+
 			SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
 
 			NinePatchRect ActiveIndicatorPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Slot) as NinePatchRect;
