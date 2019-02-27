@@ -101,6 +101,7 @@ public class Player : KinematicBody
 		}
 	}
 
+
 	[Remote]
 	public void SetFreeze(bool NewFrozen)
 	{
@@ -784,7 +785,7 @@ public class Player : KinematicBody
 			}
 		}
 
-		if(IsOnFloor() && Momentum.y <= 0f)
+		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
 		{
 			Momentum.y = -1f;
 		}
