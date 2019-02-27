@@ -28,16 +28,16 @@ public class Items : Node
 	{
 		if(Engine.EditorHint) {return;}
 
-		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
-		{
-			Thumbnails.Add(Type, GD.Load<Texture>($"res://Items/Thumbnails/{Type}.png"));
-			//Assume that every item has a texture, will throw exception on game startup if not
-		}
-
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{
 			Meshes.Add(Type, GD.Load<Mesh>($"res://Items/Meshes/{Type}.obj"));
 			//Assume that every item has a mesh, will throw exception on game startup if not
+		}
+
+		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
+		{
+			Thumbnails.Add(Type, GD.Load<Texture>($"res://Items/Thumbnails/{Type}.png"));
+			//Assume that every item has a texture, will throw exception on game startup if not
 		}
 	}
 
