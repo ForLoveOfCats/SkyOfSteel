@@ -15,6 +15,7 @@ public class Player : KinematicBody
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
 	private const float AirAcceleration = 24; //How many units per second to accelerate
 	private const float Friction = BaseMovementSpeed*10;
+	private const float JumpSpeedMultiplyer = 0.2f;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
 	private const float MaxJumpLength = 0.3f;
@@ -388,9 +389,6 @@ public class Player : KinematicBody
 		JumpSens = Sens;
 		if(Sens > 0d)
 		{
-			JumpAxis = 1;
-			IsCrouching = false;
-
 			if(FlyMode && ShouldDo.LocalPlayerJump())
 			{
 				if(IsSprinting)
@@ -406,8 +404,17 @@ public class Player : KinematicBody
 			else if(IsOnFloor() && ShouldDo.LocalPlayerJump())
 			{
 				Momentum.y = JumpStartForce;
+				if(JumpAxis < 1)
+				{
+					Momentum.x *= JumpSpeedMultiplyer;
+					Momentum.z *= JumpSpeedMultiplyer;
+				}
+
 				IsJumping = true;
 			}
+
+			JumpAxis = 1;
+			IsCrouching = false;
 		}
 		else
 		{
