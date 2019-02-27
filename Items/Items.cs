@@ -21,7 +21,7 @@ public class Items : Node
 
 	public enum TYPE {ERROR, PLATFORM, WALL, SLOPE}
 
-	public static Dictionary<Items.TYPE, Mesh> Meshes = new Dictionary<Items.TYPE, Mesh>();
+	public static Dictionary<TYPE, Mesh> Meshes = new Dictionary<TYPE, Mesh>();
 	private static Dictionary<TYPE, Texture> Thumbnails = new Dictionary<TYPE, Texture>();
 
 	Items()
@@ -30,19 +30,13 @@ public class Items : Node
 
 		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{
-			object Loaded = GD.Load("res://Items/Thumbnails/" + Type.ToString() + ".png");
-			if(Loaded == null)
-			{
-				GD.Print("No thumbnail for item '" + Type.ToString() + "'");
-				throw new System.Exception("No thumbnail for item '" + Type.ToString() + "'");
-			}
-			Thumbnails.Add(Type, Loaded as Texture);
+			Thumbnails.Add(Type, GD.Load<Texture>($"res://Items/Thumbnails/{Type}.png"));
+			//Assume that every item has a texture, will throw exception on game startup if not
 		}
 
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{
-			File ToLoad = new File();
-			Meshes.Add(Type, GD.Load("res://Items/Meshes/" + Type.ToString() + ".obj") as Mesh);
+			Meshes.Add(Type, GD.Load<Mesh>($"res://Items/Meshes/{Type}.obj"));
 			//Assume that every item has a mesh, will throw exception on game startup if not
 		}
 	}
