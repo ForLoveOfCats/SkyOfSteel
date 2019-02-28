@@ -571,7 +571,13 @@ public class Player : KinematicBody
 		{
 			if(Inventory[InventorySlot] != null)
 			{
-				Items.Drop(Inventory[InventorySlot], Translation+Cam.Translation);
+				Vector3 Vel = Momentum;
+				if(IsOnFloor())
+				{
+					Vel = Vel.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+				}
+
+				Items.Drop(Inventory[InventorySlot], Translation+Cam.Translation, Vel);
 				Inventory[InventorySlot] = null;
 				HUDInstance.HotbarUpdate();
 			}

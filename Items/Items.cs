@@ -61,13 +61,14 @@ public class Items : Node
 	}
 
 
-	public static void Drop(Instance ItemInstance, Vector3 Position)
+	public static void Drop(Instance ItemInstance, Vector3 Position, Vector3 BaseMomentum)
 	{
 		DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
 		ToDrop.Translation = Position;
-		ToDrop.Momentum = new Vector3(0,-5,0);
+		ToDrop.Momentum = BaseMomentum;
 		ToDrop.Item = ItemInstance;
 		ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Meshes[ItemInstance.Type];
+
 		Game.StructureRoot.AddChild(ToDrop);
 	}
 }
