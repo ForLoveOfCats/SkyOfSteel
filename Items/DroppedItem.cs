@@ -8,13 +8,13 @@ public class DroppedItem : KinematicBody
 
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
 	private bool PhysicsEnabled = true;
-	public Items.TYPE Type = Items.TYPE.ERROR;
+	public Items.Instance Item;
 
 	public override void _Ready()
 	{
 		ShaderMaterial Mat = new ShaderMaterial();
 		Mat.Shader = Items.StructureShader;
-		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
+		Mat.SetShaderParam("texture_albedo", Items.Textures[Item.Type]);
 		GetNode<MeshInstance>("MeshInstance").MaterialOverride = Mat;
 	}
 

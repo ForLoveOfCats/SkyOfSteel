@@ -66,7 +66,7 @@ public class Items : Node
 		DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
 		ToDrop.Translation = Position;
 		ToDrop.Momentum = new Vector3(0,-5,0);
-		ToDrop.Type = ItemInstance.Type;
+		ToDrop.Item = ItemInstance;
 		ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Meshes[ItemInstance.Type];
 		Game.StructureRoot.AddChild(ToDrop);
 	}
