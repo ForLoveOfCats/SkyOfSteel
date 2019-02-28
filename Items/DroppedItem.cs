@@ -24,7 +24,7 @@ public class DroppedItem : KinematicBody
 		SetRotationDegrees(new Vector3(0, RotationDegrees.y+(360*Delta*RPS), 0));
 		if(PhysicsEnabled)
 		{
-			PhysicsEnabled = (MoveAndCollide(Momentum*Delta) != null);
+			PhysicsEnabled = (MoveAndCollide(Momentum*Delta) == null);
 		}
 	}
 }
