@@ -26,8 +26,9 @@ public class DroppedItem : KinematicBody
 
 		if(PhysicsEnabled)
 		{
-			PhysicsEnabled = (MoveAndCollide(Momentum*Delta) == null);
+			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0));
 
+			PhysicsEnabled = !IsOnFloor();
 			if(PhysicsEnabled)
 			{
 				Momentum.y -= Gravity*Delta;
