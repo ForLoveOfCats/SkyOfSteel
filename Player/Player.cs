@@ -20,6 +20,7 @@ public class Player : KinematicBody
 	private const float JumpContinueForce = 6f;
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
+	private const float ItemThrowPower = 15f;
 	private const float LookDivisor = 6;
 
 	private bool Frozen = true;
@@ -576,6 +577,7 @@ public class Player : KinematicBody
 				{
 					Vel = Vel.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 				}
+				Vel += new Vector3(0,0,ItemThrowPower).Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical)).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
 				Items.Drop(Inventory[InventorySlot], Translation+Cam.Translation, Vel);
 				Inventory[InventorySlot] = null;
