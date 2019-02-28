@@ -2,13 +2,13 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/PLATFORM.png-cb7309dacbae9eeaddd0bc4dd3d8c20f.s3tc.stex"
-path.etc2="res://.import/PLATFORM.png-cb7309dacbae9eeaddd0bc4dd3d8c20f.etc2.stex"
+path.s3tc="res://.import/PLATFORM.png-af6711f0f028072cd0b2079e4242865b.s3tc.stex"
+path.etc2="res://.import/PLATFORM.png-af6711f0f028072cd0b2079e4242865b.etc2.stex"
 
 [deps]
 
-source_file="res://Building/Textures/PLATFORM.png"
-dest_files=[ "res://.import/PLATFORM.png-cb7309dacbae9eeaddd0bc4dd3d8c20f.s3tc.stex", "res://.import/PLATFORM.png-cb7309dacbae9eeaddd0bc4dd3d8c20f.etc2.stex" ]
+source_file="res://Items/Textures/PLATFORM.png"
+dest_files=[ "res://.import/PLATFORM.png-af6711f0f028072cd0b2079e4242865b.s3tc.stex", "res://.import/PLATFORM.png-af6711f0f028072cd0b2079e4242865b.etc2.stex" ]
 
 [params]
 

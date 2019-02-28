@@ -565,6 +565,20 @@ public class Player : KinematicBody
 	}
 
 
+	public void DropCurrentItem(double Sens)
+	{
+		if(Sens > 0)
+		{
+			if(Inventory[InventorySlot] != null)
+			{
+				Items.Drop(Inventory[InventorySlot], Translation+Cam.Translation);
+				Inventory[InventorySlot] = null;
+				HUDInstance.HotbarUpdate();
+			}
+		}
+	}
+
+
 	private void OnAir()
 	{
 		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));

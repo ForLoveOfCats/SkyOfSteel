@@ -209,6 +209,11 @@ public class API : Node
 					Game.PossessedPlayer.SecondaryFire(Sens);
 				})};
 
+			case "player_input_drop":
+				return new List<object> {Name, new Action<double>(delegate(double Sens){
+					Game.PossessedPlayer.DropCurrentItem(Sens);
+				})};
+
 			case "player_position_reset":
 				return new List<object> {Name, new Action(delegate(){
 					Game.PossessedPlayer.PositionReset();
@@ -398,6 +403,7 @@ public class API : Node
 				Output.Add(GetDelCall("player_input_build_rotate"));
 				Output.Add(GetDelCall("player_input_primary_fire"));
 				Output.Add(GetDelCall("player_input_secondary_fire"));
+				Output.Add(GetDelCall("player_input_drop"));
 				Output.Add(GetDelCall("player_position_reset"));
 				Output.Add(GetDelCall("gamemode"));
 				Output.Add(GetDelCall("gamemode_get"));

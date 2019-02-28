@@ -3,7 +3,8 @@
 [ext_resource path="res://Building/Structure.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/WALL.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://Building/Materials/StructureShader.shader" type="Shader" id=3]
-[ext_resource path="res://Building/Textures/WALL.png" type="Texture" id=4]
+[ext_resource path="res://Items/Textures/WALL.png" type="Texture" id=4]
+
 
 
 
