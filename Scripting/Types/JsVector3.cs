@@ -1,8 +1,8 @@
-using Jurassic;
-using Jurassic.Library;
+/*using Jurassic;
+using Jurassic.Library;*/
 using Godot;
 
-
+/*
 public class JsVector3Constructor : ClrFunction
 {
 	public JsVector3Constructor(ScriptEngine engine)
@@ -56,3 +56,4 @@ public class JsVector3 : ObjectInstance
 		return new Vector3((float)this["x"], (float)this["y"], (float)this["z"]);
 	}
 }
+*/

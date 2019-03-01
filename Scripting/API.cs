@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using Jurassic;
+// using Jurassic;
 
 
 public class API : Node
@@ -351,8 +351,8 @@ public class API : Node
 	{
 		switch(Name)
 		{
-			case "Vector3":
-				return new List<object> {Name, new JsVector3Constructor(Scripting.ConsoleEngine)};
+			/*case "Vector3":
+				return new List<object> {Name, new JsVector3Constructor(Scripting.ConsoleEngine)};*/
 
 			default:
 				throw new System.ArgumentException("Invalid GetConstructor name arg '" + Name + "'");

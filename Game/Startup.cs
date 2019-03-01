@@ -1,5 +1,5 @@
 using Godot;
-using Jurassic;
+// using Jurassic;
 
 
 public class Startup : Node
@@ -34,7 +34,7 @@ public class Startup : Node
 
 
 		//autoexec.js is executed afterwards
-		File Autoexec = new File();
+		/*File Autoexec = new File();
 		if(Autoexec.FileExists("user://autoexec.js"))
 		{
 			Autoexec.Open("user://autoexec.js", 1);
@@ -55,6 +55,6 @@ public class Startup : Node
 			Console.Print("Autoexec not found, creating a default one");
 			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/autoexec.js", "//This is your autoexec\n//It is executed directly after command line arugments are");
 		}
-		Autoexec.Close();
+		Autoexec.Close();*/
 	}
 }
