@@ -30,17 +30,17 @@ public class Scripting : Node
 		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 		ConsoleScope = ConsoleEngine.CreateScope();
 
-		/*ConsoleEngine = new Jurassic.ScriptEngine();
+
 		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
 		{
-			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
 		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
+		/*foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
 		{
 			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
-		}
+		}*/
 
-		SetupServerEngine();
+		/*SetupServerEngine();
 		SetupClientEngine();*/
 	}
 
