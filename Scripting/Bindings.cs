@@ -145,7 +145,7 @@ public class Bindings : Node
 
 	public override void _Process(float Delta)
 	{
-		if(!Game.BindsEnabled)
+		/*if(!Game.BindsEnabled)
 		{
 			return;
 		}
@@ -170,7 +170,7 @@ public class Bindings : Node
 					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 1);
 				}
 			}
-		}
+		}*/
 	}
 
 
@@ -181,7 +181,7 @@ public class Bindings : Node
 			return;
 		}
 
-		if(Event is InputEventMouseMotion MotionEvent)
+		/*if(Event is InputEventMouseMotion MotionEvent)
 		{
 			foreach(BindingObject Binding in BindingList)
 			{
@@ -204,6 +204,6 @@ public class Bindings : Node
 					}
 				}
 			}
-		}
+		}*/
 	}
 }

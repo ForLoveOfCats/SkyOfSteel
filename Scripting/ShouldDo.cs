@@ -9,7 +9,7 @@ class ShouldDo
 
 	private static bool CheckFunctionServer(string FunctionName, object[] Args)
 	{
-		if(Game.Self.GetTree().NetworkPeer == null || !Game.Self.GetTree().IsNetworkServer())
+		/*if(Game.Self.GetTree().NetworkPeer == null || !Game.Self.GetTree().IsNetworkServer())
 		{
 			return true;
 			//If we are not the server or the network is not ready then just return
@@ -24,13 +24,14 @@ class ShouldDo
 		{
 			return true;
 			//Also catches when the script is not running
-		}
+		}*/
+		return true;
 	}
 
 
 	private static bool CheckFunctionClient(string FunctionName, object[] Args)
 	{
-		try
+		/*try
 		{
 			return Scripting.ClientGmEngine.CallGlobalFunction<bool>(FunctionName, Args);
 		}
@@ -38,7 +39,8 @@ class ShouldDo
 		{
 			return true;
 			//Also catches when the script is not running
-		}
+		}*/
+		return true;
 	}
 
 

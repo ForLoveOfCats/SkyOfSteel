@@ -88,7 +88,7 @@ public class API : Node
 			case "ms_get":
 				return new List<object> {Name, new Func<int>(() => {return OS.GetTicksMsec();})};
 
-			case "peerlist_get":
+			/*case "peerlist_get":
 				return new List<object> {Name, new Func<Jurassic.Library.ArrayInstance>(() => {
 					Jurassic.Library.ArrayInstance Out = Scripting.ConsoleEngine.Array.Construct();
 					foreach(int Id in Net.PeerList)
@@ -96,7 +96,7 @@ public class API : Node
 						Out.Push(Id);
 					}
 					return Out;
-				})};
+				})};*/
 
 			case "bind":
 				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string InputString){
@@ -377,7 +377,7 @@ public class API : Node
 				Output.Add(GetDelCall("nickname_get"));
 				Output.Add(GetDelCall("remote_nickname_get"));
 				Output.Add(GetDelCall("disconnect"));
-				Output.Add(GetDelCall("peerlist_get"));
+				//Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
 				Output.Add(GetDelCall("unbind"));
 				Output.Add(GetDelCall("player_input_forward"));
@@ -426,7 +426,7 @@ public class API : Node
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("nickname_get"));
 				Output.Add(GetDelCall("remote_nickname_get"));
-				Output.Add(GetDelCall("peerlist_get"));
+				//Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));
 				Output.Add(GetDelCall("player_input_backward"));
@@ -469,7 +469,7 @@ public class API : Node
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("nickname_get"));
 				Output.Add(GetDelCall("remote_nickname_get"));
-				Output.Add(GetDelCall("peerlist_get"));
+				//Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));
 				Output.Add(GetDelCall("player_input_backward"));

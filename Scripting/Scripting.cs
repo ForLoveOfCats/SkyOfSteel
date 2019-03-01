@@ -7,9 +7,9 @@ using Jurassic.Library;*/
 
 public class Scripting : Node
 {
-	public static Jurassic.ScriptEngine ServerGmEngine;
+	/*public static Jurassic.ScriptEngine ServerGmEngine;
 	public static Jurassic.ScriptEngine ClientGmEngine;
-	public static Jurassic.ScriptEngine ConsoleEngine;
+	public static Jurassic.ScriptEngine ConsoleEngine;*/
 
 	public static string GamemodeName;
 	public static string ClientGmScript;
