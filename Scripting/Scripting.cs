@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 /*using Jurassic;
 using Jurassic.Library;*/
+using IronPython;
+using IronPython.Hosting;
+using Microsoft.Scripting;
+using Microsoft.Scripting.Hosting;
 
 
 public class Scripting : Node
@@ -10,6 +14,8 @@ public class Scripting : Node
 	/*public static Jurassic.ScriptEngine ServerGmEngine;
 	public static Jurassic.ScriptEngine ClientGmEngine;
 	public static Jurassic.ScriptEngine ConsoleEngine;*/
+	public static ScriptEngine ConsoleEngine;
+	private static ScriptScope ConsoleScope;
 
 	public static string GamemodeName;
 	public static string ClientGmScript;
@@ -20,6 +26,9 @@ public class Scripting : Node
 		if(Engine.EditorHint) {return;}
 
 		Self = this;
+
+		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
+		ConsoleScope = ConsoleEngine.CreateScope();
 
 		/*ConsoleEngine = new Jurassic.ScriptEngine();
 		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
@@ -183,20 +192,20 @@ public class Scripting : Node
 
 	public static void RunConsoleLine(string Line)
 	{
-		/*object Returned;
+		object Returned;
 		try
 		{
-			Returned = ConsoleEngine.Evaluate(Line);
+			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(Line, SourceCodeKind.AutoDetect);
+			Returned = Source.Execute(ConsoleScope);
+			if(Returned != null)
+			{
+				Console.Print(Returned.ToString());
+			}
 		}
-		catch(JavaScriptException Error)
+		catch(Exception e)
 		{
-			Console.Print(Error.Message);
-			return;
+			ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
+			Console.Print(eo.FormatException(e));
 		}
-
-		if(!(Returned is Jurassic.Undefined))
-		{
-			Console.Print(Returned.ToString());
-		}*/
 	}
 }
