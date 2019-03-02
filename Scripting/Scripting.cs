@@ -35,9 +35,9 @@ public class Scripting : Node
 		{
 			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
 		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
+		foreach(API.PyConstructorExposer Exposer in API.ExposeConstructors(API.LEVEL.CONSOLE))
 		{
-			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
+			ConsoleScope.SetVariable(Exposer.Name, Exposer.Constructor);
 		}
 
 		/*SetupServerEngine();

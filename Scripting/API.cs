@@ -6,6 +6,22 @@ using System.Collections.Generic;
 
 public class API : Node
 {
+	public class PyConstructorExposer
+	{
+		public string Name = null;
+		public Delegate Constructor = null;
+
+		public PyConstructorExposer()
+		{}
+
+		public PyConstructorExposer(string NameArg, Delegate ConArg)
+		{
+			Name = NameArg;
+			Constructor = ConArg;
+		}
+	}
+
+
 	public enum LEVEL {CONSOLE, SERVER_GM, CLIENT_GM};
 
 
@@ -347,12 +363,12 @@ public class API : Node
 	}
 
 
-	public static List<object> GetConstructor(string Name)
+	public static PyConstructorExposer GetConstructor(string Name)
 	{
 		switch(Name)
 		{
 			case "Vector3":
-				return new List<object> {Name, new Func<PyVector3>(() => {return new PyVector3();})};
+				return new PyConstructorExposer(Name, new Func<float, float, float, PyVector3>((X, Y, Z) => {return new PyVector3(X, Y, Z);}));
 
 			default:
 				throw new System.ArgumentException("Invalid GetConstructor name arg '" + Name + "'");
@@ -510,9 +526,9 @@ public class API : Node
 		return Output;
 	}
 
-	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel)
+	public static List<PyConstructorExposer> ExposeConstructors(LEVEL ApiLevel)
 	{
-		List<List<object>> Output = new List<List<object>>();
+		List<PyConstructorExposer> Output = new List<PyConstructorExposer>();
 
 		switch(ApiLevel)
 		{
