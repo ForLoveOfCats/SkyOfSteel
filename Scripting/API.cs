@@ -351,8 +351,8 @@ public class API : Node
 	{
 		switch(Name)
 		{
-			/*case "Vector3":
-				return new List<object> {Name, new JsVector3Constructor(Scripting.ConsoleEngine)};*/
+			case "Vector3":
+				return new List<object> {Name, new Func<PyVector3>(() => {return new PyVector3();})};
 
 			default:
 				throw new System.ArgumentException("Invalid GetConstructor name arg '" + Name + "'");

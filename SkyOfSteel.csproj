@@ -87,7 +87,6 @@
     <Compile Include="Game\Startup.cs" />
     <Compile Include="Items\DroppedItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripting\Types\JsVector3.cs" />
     <Compile Include="Scripting\API.cs" />
     <Compile Include="Scripting\BindingObject.cs" />
     <Compile Include="Scripting\Bindings.cs" />
@@ -95,6 +94,7 @@
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
     <Compile Include="Game\SteelMath.cs" />
+    <Compile Include="Scripting\Types\PyVector3.cs" />
     <Compile Include="UI\ConsoleWindow.cs" />
     <Compile Include="UI\HUD.cs" />
     <Compile Include="Building\Building.cs" />

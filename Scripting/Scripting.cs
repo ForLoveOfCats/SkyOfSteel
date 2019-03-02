@@ -35,10 +35,10 @@ public class Scripting : Node
 		{
 			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
 		}
-		/*foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
+		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
 		{
-			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
-		}*/
+			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
+		}
 
 		/*SetupServerEngine();
 		SetupClientEngine();*/
