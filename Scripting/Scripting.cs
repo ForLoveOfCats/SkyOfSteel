@@ -113,10 +113,19 @@ public class Scripting : Node
 
 	public override void _Ready()
 	{
-		/*File SetupScript = new File();
-		SetupScript.Open("res://Scripting/SetupScript.js", 1);
-		ConsoleEngine.Execute(SetupScript.GetAsText());
-		SetupScript.Close();*/
+		File SetupScript = new File();
+		SetupScript.Open("res://Scripting/SetupScript.py", 1);
+		try
+		{
+			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
+			Source.Execute(ConsoleScope);
+		}
+		catch(Exception e)
+		{
+			ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
+			Console.Print(eo.FormatException(e));
+		}
+		SetupScript.Close();
 	}
 
 
