@@ -16,6 +16,8 @@ public class Scripting : Node
 	public static Jurassic.ScriptEngine ConsoleEngine;*/
 	public static ScriptEngine ConsoleEngine;
 	private static ScriptScope ConsoleScope;
+	public static ScriptEngine GmEngine;
+	private static ScriptScope GmScope;
 
 	public static string GamemodeName;
 	public static string ClientGmScript;
@@ -30,7 +32,6 @@ public class Scripting : Node
 		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 		ConsoleScope = ConsoleEngine.CreateScope();
 
-
 		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
 		{
 			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
@@ -42,6 +43,7 @@ public class Scripting : Node
 
 		/*SetupServerEngine();
 		SetupClientEngine();*/
+		SetupGmEngine();
 	}
 
 
@@ -79,17 +81,19 @@ public class Scripting : Node
 		return Out;
 	}
 
-	public static void SetupServerEngine()
+	public static void SetupGmEngine()
 	{
-		/*ServerGmEngine = new Jurassic.ScriptEngine();
+		GmEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
+		GmScope = ConsoleEngine.CreateScope();
+
 		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
 		{
-			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
+			GmScope.SetVariable((string)List[0], (Delegate)List[1]);
 		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.SERVER_GM))
+		foreach(API.PyConstructorExposer Exposer in API.ExposeConstructors(API.LEVEL.CONSOLE))
 		{
-			ServerGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
-		}*/
+			GmScope.SetVariable(Exposer.Name, Exposer.Constructor);
+		}
 	}
 
 

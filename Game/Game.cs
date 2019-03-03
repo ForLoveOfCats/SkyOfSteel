@@ -135,9 +135,10 @@ public class Game : Node
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
+		Scripting.SetupGmEngine();
+
 		if(AsServer)
 		{
-			Scripting.SetupServerEngine();
 			SetupWorld();
 		}
 
@@ -157,8 +158,7 @@ public class Game : Node
 						  //Prevent crashes when player movement commands are run when world is not initalized
 		StructureRoot = null;
 		Scripting.GamemodeName = null;
-		Scripting.SetupServerEngine();
-		Scripting.SetupClientEngine();
+		Scripting.SetupGmEngine();
 		Scripting.ClientGmScript = null;
 
 		Building.Chunks.Clear();
