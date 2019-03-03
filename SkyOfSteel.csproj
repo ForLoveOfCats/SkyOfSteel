@@ -75,6 +75,7 @@
     <Reference Include="IronPython.Wpf">
       <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Building\BuildPositions.cs" />

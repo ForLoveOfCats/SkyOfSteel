@@ -192,15 +192,10 @@ public class Scripting : Node
 
 	public static void RunConsoleLine(string Line)
 	{
-		object Returned;
 		try
 		{
-			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(Line, SourceCodeKind.AutoDetect);
-			Returned = Source.Execute(ConsoleScope);
-			if(Returned != null)
-			{
-				Console.Print(Returned.ToString());
-			}
+			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString($"str({Line})");
+			Console.Print(Source.Execute(ConsoleScope).ToString());
 		}
 		catch(Exception e)
 		{
