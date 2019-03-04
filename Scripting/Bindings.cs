@@ -9,13 +9,14 @@ public class Bindings : Node
 	private static string[] MouseButtonList = {"MouseOne", "MouseTwo", "MouseThree"};
 	private static string[] MouseWheelList = {"WheelUp", "WheelDown"};
 	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
-	private static List<BindingObject> BindingList = new List<BindingObject>();
+	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 
 	private static Bindings Self;
 	private Bindings()
 	{
 		Self = this;
 	}
+
 
 	public static void Bind(string FunctionName, string InputString)
 	{
@@ -36,11 +37,11 @@ public class Bindings : Node
 		if(InputMap.HasAction(FunctionName))
 		{
 			InputMap.EraseAction(FunctionName);
-			foreach(BindingObject Bind in BindingList)
+			foreach(BindingObject Bind in BindingsWithArg)
 			{
 				if(Bind.Name == FunctionName)
 				{
-					BindingList.Remove(Bind);
+					BindingsWithArg.Remove(Bind);
 					break;
 				}
 			}
@@ -52,7 +53,7 @@ public class Bindings : Node
 			InputEventKey Event = new InputEventKey();
 			Event.Scancode = OS.FindScancodeFromString(InputString);
 			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingList.Add(new BindingObject(FunctionName, Type));
+			BindingsWithArg.Add(new BindingObject(FunctionName, Type));
 		}
 		else if(Type == BIND_TYPE.MOUSEBUTTON)
 		{
@@ -72,7 +73,7 @@ public class Bindings : Node
 				//No default as this else if will not run unless one of these string will match anyway
 			}
 			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingList.Add(new BindingObject(FunctionName, Type));
+			BindingsWithArg.Add(new BindingObject(FunctionName, Type));
 		}
 		else if(Type == BIND_TYPE.MOUSEWHEEL)
 		{
@@ -88,7 +89,7 @@ public class Bindings : Node
 					break;
 			}
 			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingList.Add(new BindingObject(FunctionName, Type));
+			BindingsWithArg.Add(new BindingObject(FunctionName, Type));
 		}
 		else if(Type == BIND_TYPE.AXIS)
 		{
@@ -111,7 +112,7 @@ public class Bindings : Node
 					Bind.AxisDirection = BindingObject.DIRECTION.LEFT;
 					break;
 			}
-			BindingList.Add(Bind);
+			BindingsWithArg.Add(Bind);
 		}
 	}
 
@@ -121,11 +122,11 @@ public class Bindings : Node
 		if(InputMap.HasAction(FunctionName))
 		{
 			InputMap.EraseAction(FunctionName);
-			foreach(BindingObject Bind in BindingList)
+			foreach(BindingObject Bind in BindingsWithArg)
 			{
 				if(Bind.Name == FunctionName)
 				{
-					BindingList.Remove(Bind);
+					BindingsWithArg.Remove(Bind);
 					break;
 				}
 			}
@@ -145,32 +146,32 @@ public class Bindings : Node
 
 	public override void _Process(float Delta)
 	{
-		/*if(!Game.BindsEnabled)
+		if(!Game.BindsEnabled)
 		{
 			return;
 		}
 
-		foreach(BindingObject Binding in BindingList)
+		foreach(BindingObject Binding in BindingsWithArg)
 		{
 			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"if({Binding.Name}.length > 0) {{ {Binding.Name}(1) }} else {{ {Binding.Name}() }}");
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"if({Binding.Name}.length > 0) {{ {Binding.Name}(0) }}");
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}(0)", Scripting.ConsoleScope);
 				}
 			}
 			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 1);
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 			}
-		}*/
+		}
 	}
 
 
@@ -181,29 +182,33 @@ public class Bindings : Node
 			return;
 		}
 
-		/*if(Event is InputEventMouseMotion MotionEvent)
+		if(Event is InputEventMouseMotion MotionEvent)
 		{
-			foreach(BindingObject Binding in BindingList)
+			foreach(BindingObject Binding in BindingsWithArg)
 			{
 				if(Binding.Type == BIND_TYPE.AXIS)
 				{
 					switch(Binding.AxisDirection)
 					{
 						case(BindingObject.DIRECTION.UP):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)));
 							break;
 						case(BindingObject.DIRECTION.DOWN):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y)));
 							break;
 						case(BindingObject.DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x)));
 							break;
 						case(BindingObject.DIRECTION.LEFT):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)));
 							break;
 					}
 				}
 			}
-		}*/
+		}
 	}
 }

@@ -15,9 +15,9 @@ public class Scripting : Node
 	public static Jurassic.ScriptEngine ClientGmEngine;
 	public static Jurassic.ScriptEngine ConsoleEngine;*/
 	public static ScriptEngine ConsoleEngine;
-	private static ScriptScope ConsoleScope;
+	public static ScriptScope ConsoleScope;
 	public static ScriptEngine GmEngine;
-	private static ScriptScope GmScope;
+	public static ScriptScope GmScope;
 
 	public static string GamemodeName;
 	public static string ClientGmScript;
