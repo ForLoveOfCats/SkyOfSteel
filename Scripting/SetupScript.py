@@ -1,3 +1,20 @@
+import clr
+
+clr.AddReference("GodotSharp");
+import Godot
+
+clr.AddReference("SkyOfSteel")
+import Game
+import Console
+import Scripting
+import Net
+import Bindings
+import Items
+import Building
+import Menu
+import Startup
+
+
 bind("player_input_forward", "W")
 bind("player_input_backward", "S")
 bind("player_input_right", "D")
