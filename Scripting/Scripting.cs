@@ -46,37 +46,27 @@ public class Scripting : Node
 	}
 
 
-	public static object ToJs(object ToConvert)
+	public static object ToPy(object ToConvert)
 	{
-		/*if(ToConvert is Vector3)
+		if(ToConvert is Vector3)
 		{
-			return new JsVector3(Scripting.ConsoleEngine.Object.InstancePrototype, (Vector3)ToConvert);
+			return ToConvert as PyVector3;
 		}
 
-		if(ToConvert is float)
-		{
-			return Convert.ToDouble((float)ToConvert);
-		}
-
-		if(ToConvert is int)
-		{
-			return Convert.ToDouble((int)ToConvert);
-		}
-
-		//*Should* be a supported type already*/
+		//Does not require intervention
 		return ToConvert;
 	}
 
 
-	public static object[] ToJs(object[] ConvertArray)
+	public static object[] ToPy(params object[] ConvertArray)
 	{
 		object[] Out = new object[ConvertArray.Length];
-		/*int Iteration = 0;
+		int Iteration = 0;
 		foreach(object ToConvert in ConvertArray)
 		{
-			Out[Iteration] = ToJs(ToConvert);
+			Out[Iteration] = ToPy(ToConvert);
 			Iteration += 1;
-		}*/
+		}
 		return Out;
 	}
 
