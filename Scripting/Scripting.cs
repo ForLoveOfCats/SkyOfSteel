@@ -11,11 +11,9 @@ using Microsoft.Scripting.Hosting;
 
 public class Scripting : Node
 {
-	/*public static Jurassic.ScriptEngine ServerGmEngine;
-	public static Jurassic.ScriptEngine ClientGmEngine;
-	public static Jurassic.ScriptEngine ConsoleEngine;*/
 	public static ScriptEngine ConsoleEngine;
 	public static ScriptScope ConsoleScope;
+	public static ScriptScope StringScope; //Used to convert objects to string
 	public static ScriptEngine GmEngine;
 	public static ScriptScope GmScope;
 
@@ -31,6 +29,7 @@ public class Scripting : Node
 
 		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 		ConsoleScope = ConsoleEngine.CreateScope();
+		StringScope = ConsoleEngine.CreateScope();
 
 		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
 		{
@@ -203,12 +202,22 @@ public class Scripting : Node
 	}
 
 
+	public static string PyToString(object Obj)
+	{
+		StringScope.SetVariable("to_string_object", Obj);
+		return ConsoleEngine.Execute("str(to_string_object)", StringScope);
+	}
+
+
 	public static void RunConsoleLine(string Line)
 	{
 		try
 		{
-			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString($"str({Line})");
-			Console.Print(Source.Execute(ConsoleScope).ToString());
+			object Returned = ConsoleEngine.Execute(Line, ConsoleScope);
+			if(Returned != null)
+			{
+				Console.Print(PyToString(Returned));
+			}
 		}
 		catch(Exception e)
 		{
