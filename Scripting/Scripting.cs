@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using IronPython;
 using IronPython.Hosting;
+using IronPython.Runtime;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Hosting;
 
@@ -118,36 +119,42 @@ public class Scripting : Node
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		/*try
-		{
-			ConsoleEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
-		}
-		catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
-		catch(JavaScriptException Error)
-		{
-			Console.Print(Error.Message);
-		}
-
-
-		if(GetTree().GetNetworkPeer() != null)
+		object Function = null;
+		ConsoleScope.TryGetVariable("_tick", out Function);
+		if(Function != null && Function is PythonFunction)
 		{
 			try
 			{
-				ClientGmEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
+				ConsoleEngine.Operations.Invoke(Function, Delta);
 			}
-			catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
-			catch(JavaScriptException){}
+			catch(Exception Err)
+			{
+				//TODO figure out a better solution to this
+				//Currently we just dump an error every _tick call
+				//Eventually I need to mark if the _tick functin has an error and not run it
+				//However that would fall apart once one can define functions at runtime
+				ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
+				Console.Print(EO.FormatException(Err));
+			}
+		}
 
-			if(GetTree().IsNetworkServer())
+		if(GamemodeName != null)
+		{
+			Function = null;
+			GmScope.TryGetVariable("_tick", out Function);
+			if(Function != null && Function is PythonFunction)
 			{
 				try
 				{
-					ServerGmEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
+					GmEngine.Operations.Invoke(Function, Delta);
 				}
-				catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
-				catch(JavaScriptException){}
+				catch(Exception Err)
+				{
+					ExceptionOperations EO = Scripting.GmEngine.GetService<ExceptionOperations>();
+					Console.Print(EO.FormatException(Err));
+				}
 			}
-		}*/
+		}
 	}
 
 
