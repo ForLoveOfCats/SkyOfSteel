@@ -1,13 +1,10 @@
 using Godot;
-
+using IronPython;
+using IronPython.Runtime;
 
 class ShouldDo
 {
-	//All functions here check the server script for now as the client script
-	  //is not loaded yet
-
-
-	private static bool CheckFunctionServer(string FunctionName, object[] Args)
+	private static bool CheckFunction(string FunctionName, object[] Args)
 	{
 		/*if(Game.Self.GetTree().NetworkPeer == null || !Game.Self.GetTree().IsNetworkServer())
 		{
@@ -18,114 +15,90 @@ class ShouldDo
 
 		try
 		{
-			return Scripting.ServerGmEngine.CallGlobalFunction<bool>(FunctionName, Args);
+			object Returned = Scripting.GmScope.GetVariable(FunctionName);
+			if(Returned is PythonFunction)
+			{
+				Scripting.GmEngine.Operations.Invoke(Returned, Args);
+			}
+			// return Scripting.ServerGmEngine.CallGlobalFunction<bool>(FunctionName, Args);
 		}
 		catch(System.InvalidOperationException)
 		{
 			return true;
 			//Also catches when the script is not running
 		}*/
-		return true;
-	}
-
-
-	private static bool CheckFunctionClient(string FunctionName, object[] Args)
-	{
-		/*try
-		{
-			return Scripting.ClientGmEngine.CallGlobalFunction<bool>(FunctionName, Args);
-		}
-		catch(System.InvalidOperationException)
-		{
-			return true;
-			//Also catches when the script is not running
-		}*/
-		return true;
-	}
-
-
-	private static bool CheckFunctionBoth(string FunctionName, object[] Args)
-	{
-		//If either script returns false then return false otherwise if both
-		  //return true then return true
-		//Due to how || works, if the server script returns false then the
-		  //client script never sees the event
-		if(!CheckFunctionServer(FunctionName, Args) || !CheckFunctionClient(FunctionName, Args))
-		{
-			return false;
-		}
 		return true;
 	}
 
 
 	public static bool LocalPlayerMove(Vector3 Position)
 	{
-		return CheckFunctionClient("_local_player_move", Scripting.ToPy(new object[] {Position}));
+		return CheckFunction("_local_player_move", Scripting.ToPy(new object[] {Position}));
 	}
 
 
 	public static bool LocalPlayerForward(double Sens)
 	{
-		return CheckFunctionClient("_local_player_forward", Scripting.ToPy(new object[] {Sens}));
+		return CheckFunction("_local_player_forward", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
 	public static bool LocalPlayerBackward(double Sens)
 	{
-		return CheckFunctionClient("_local_player_backward", Scripting.ToPy(new object[] {Sens}));
+		return CheckFunction("_local_player_backward", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
 	public static bool LocalPlayerRight(double Sens)
 	{
-		return CheckFunctionClient("_local_player_right", Scripting.ToPy(new object[] {Sens}));
+		return CheckFunction("_local_player_right", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
 	public static bool LocalPlayerLeft(double Sens)
 	{
-		return CheckFunctionClient("_local_player_left", Scripting.ToPy(new object[] {Sens}));
+		return CheckFunction("_local_player_left", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
 	public static bool LocalPlayerJump()
 	{
-		return CheckFunctionClient("_local_player_jump", new object[] {});
+		return CheckFunction("_local_player_jump", new object[] {});
 	}
 
 
 	public static bool LocalPlayerRotate(float Rotation)
 	{
-		return CheckFunctionClient("_local_player_rotate", Scripting.ToPy(new object[] {Rotation}));
+		return CheckFunction("_local_player_rotate", Scripting.ToPy(new object[] {Rotation}));
 	}
 
 
 	public static bool LocalPlayerPitch(float Rotation)
 	{
-		return CheckFunctionClient("_local_player_pitch", Scripting.ToPy(new object[] {Rotation}));
+		return CheckFunction("_local_player_pitch", Scripting.ToPy(new object[] {Rotation}));
 	}
 
 
 	public static bool RemotePlayerMove(int PlayerId, Vector3 Position)
 	{
-		return CheckFunctionBoth("_remote_player_move", Scripting.ToPy(new object[] {PlayerId, Position}));
+		return CheckFunction("_remote_player_move", Scripting.ToPy(new object[] {PlayerId, Position}));
 	}
 
 
 	public static bool RemotePlayerRotate(int PlayerId, Vector3 Rotation)
 	{
-		return CheckFunctionBoth("_remote_player_rotate", Scripting.ToPy(new object[] {PlayerId, Rotation}));
+		return CheckFunction("_remote_player_rotate", Scripting.ToPy(new object[] {PlayerId, Rotation}));
 	}
 
 
 	public static bool StructurePlace(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return CheckFunctionBoth("_structure_place", Scripting.ToPy(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
+		return CheckFunction("_structure_place", Scripting.ToPy(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
 	}
 
 
 	public static bool StructureRemove(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
-		return CheckFunctionBoth("_structure_remove", Scripting.ToPy(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
+		return CheckFunction("_structure_remove", Scripting.ToPy(new object[] {BranchType.ToString(), Position, Rotation, OwnerId}));
 	}
 }
