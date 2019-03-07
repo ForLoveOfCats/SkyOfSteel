@@ -82,7 +82,7 @@ public class API : Node
 				return new List<object> {Name, new Func<string>(() => {return Game.Nickname;})};
 
 			case "remote_nickname_get":
-				return new List<object> {Name, new Func<double, string>((double Id) => {
+				return new List<object> {Name, new Func<float, string>((float Id) => {
 					string Nick;
 					if(Net.Nicknames.TryGetValue((int)Id, out Nick))
 					{
@@ -125,60 +125,60 @@ public class API : Node
 				})};
 
 			case "player_input_forward":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.ForwardMove(Sens);
 				})};
 
 			case "player_input_forward_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.ForwardSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.ForwardSens;})};
 
 			case "player_input_backward":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.BackwardMove(Sens);
 				})};
 
 			case "player_input_backward_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.BackwardSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.BackwardSens;})};
 
 			case "player_input_right":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.RightMove(Sens);
 				})};
 
 			case "player_input_right_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.RightSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.RightSens;})};
 
 			case "player_input_left":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
 
 			case "player_input_left_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.LeftSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.LeftSens;})};
 
 			case "player_input_sprint":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
 
 			case "player_input_sprint_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsSprinting ? 1d : 0d;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.IsSprinting ? 1 : 0;})};
 
 			case "player_input_jump":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.Jump(Sens);
 				})};
 
 			case "player_input_jump_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsJumping ? 1d : 0d;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.IsJumping ? 1 : 0;})};
 
 			case "player_input_crouch":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.Crouch(Sens);
 				})};
 
 			case "player_input_crouch_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsCrouching ? 1d : 0d;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.IsCrouching ? 1 : 0;})};
 
 			case "player_input_inventory_up":
 				return new List<object> {Name, new Action(delegate(){
@@ -191,42 +191,42 @@ public class API : Node
 				})};
 
 			case "player_input_look_up":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookUp(Sens);
 				})};
 
 			case "player_input_look_down":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookDown(Sens);
 				})};
 
 			case "player_input_look_right":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookRight(Sens);
 				})};
 
 			case "player_input_look_left":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookLeft(Sens);
 				})};
 
 			case "player_input_build_rotate":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.BuildRotate(Sens);
 				})};
 
 			case "player_input_primary_fire":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.PrimaryFire(Sens);
 				})};
 
 			case "player_input_secondary_fire":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.SecondaryFire(Sens);
 				})};
 
 			case "player_input_drop":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.DropCurrentItem(Sens);
 				})};
 
@@ -276,10 +276,10 @@ public class API : Node
 				})};
 
 			case "fps_get":
-				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Engine.GetFramesPerSecond());})};
+				return new List<object> {Name, new Func<float>(() => {return Engine.GetFramesPerSecond();})};
 
 			case "fps_max":
-				return new List<object> {Name, new Action<double>(delegate(double TargetFps){
+				return new List<object> {Name, new Action<float>(delegate(float TargetFps){
 					if(Double.IsNaN(TargetFps) || Double.IsInfinity(TargetFps) || TargetFps < 0)
 					{
 						Console.ThrowPrint($"Please provide a valid positive max fps value which is less than Infinity");
@@ -289,11 +289,11 @@ public class API : Node
 				})};
 
 			case "fps_max_get":
-				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Engine.GetTargetFps());})};
+				return new List<object> {Name, new Func<float>(() => {return Engine.GetTargetFps();})};
 
 			case "chunk_render_distance":
-				return new List<object> {Name, new Action<double>(delegate(double Distance){
-					if(Distance < 2d)
+				return new List<object> {Name, new Action<float>(delegate(float Distance){
+					if(Distance < 2)
 					{
 						Console.ThrowPrint("Cannot set render distance value lower than two chunks");
 						return;
@@ -303,7 +303,7 @@ public class API : Node
 				})};
 
 			case "chunk_render_distance_get":
-				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Game.ChunkRenderDistance);})};
+				return new List<object> {Name, new Func<float>(() => {return Game.ChunkRenderDistance;})};
 
 			case "save":
 				return new List<object> {Name, new Action<string>(delegate(string SaveName){

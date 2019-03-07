@@ -53,10 +53,10 @@ public class Bindings : Node
 		}
 		if(ArgCount == 1 && Variable is Delegate)
 		{
-			//TODO Update this once we move to floats instead of doubles
-			if(!((Delegate)Variable).Method.GetParameters()[0].ParameterType.IsInstanceOfType(new double()))
+			//TODO Update this once we move to floats instead of floats
+			if(!((Delegate)Variable).Method.GetParameters()[0].ParameterType.IsInstanceOfType(new float()))
 			{
-				Console.ThrowPrint($"Builtin command '{FunctionName}' has a single non-double argument");
+				Console.ThrowPrint($"Builtin command '{FunctionName}' has a single non-float argument");
 				return;
 			}
 		}
@@ -290,16 +290,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(BindingObject.DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
 							break;
 						case(BindingObject.DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
 							break;
 						case(BindingObject.DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
 							break;
 						case(BindingObject.DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(double)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
 							break;
 					}
 				}

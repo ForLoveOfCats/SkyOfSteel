@@ -50,25 +50,25 @@ class ShouldDo
 	}
 
 
-	public static bool LocalPlayerForward(double Sens)
+	public static bool LocalPlayerForward(float Sens)
 	{
 		return CheckFunction("_local_player_forward", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
-	public static bool LocalPlayerBackward(double Sens)
+	public static bool LocalPlayerBackward(float Sens)
 	{
 		return CheckFunction("_local_player_backward", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
-	public static bool LocalPlayerRight(double Sens)
+	public static bool LocalPlayerRight(float Sens)
 	{
 		return CheckFunction("_local_player_right", Scripting.ToPy(new object[] {Sens}));
 	}
 
 
-	public static bool LocalPlayerLeft(double Sens)
+	public static bool LocalPlayerLeft(float Sens)
 	{
 		return CheckFunction("_local_player_left", Scripting.ToPy(new object[] {Sens}));
 	}

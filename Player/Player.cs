@@ -42,12 +42,12 @@ public class Player : KinematicBody
 	private bool IsPrimaryFiring = false;
 	private bool IsSecondaryFiring = false;
 
-	public double ForwardSens = 0d;
-	public double BackwardSens = 0d;
-	public double RightSens = 0d;
-	public double LeftSens = 0d;
-	public double SprintSens = 0d;
-	public double JumpSens = 0d;
+	public float ForwardSens = 0;
+	public float BackwardSens = 0;
+	public float RightSens = 0;
+	public float LeftSens = 0;
+	public float SprintSens = 0;
+	public float JumpSens = 0;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -201,9 +201,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void BuildRotate(double Sens)
+	public void BuildRotate(float Sens)
 	{
-		if(Sens > 0d && Inventory[InventorySlot] != null)
+		if(Sens > 0 && Inventory[InventorySlot] != null)
 		{
 			switch(Inventory[InventorySlot].Type)
 			{
@@ -222,14 +222,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void ForwardMove(double Sens)
+	public void ForwardMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerForward(Sens))
 		{
 			ForwardSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				BackwardSens = 0d;
+				BackwardSens = 0;
 				ForwardAxis = 1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -252,14 +252,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void BackwardMove(double Sens)
+	public void BackwardMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerBackward(Sens))
 		{
 			BackwardSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				ForwardSens = 0d;
+				ForwardSens = 0;
 				ForwardAxis = -1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -282,14 +282,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void RightMove(double Sens)
+	public void RightMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerRight(Sens))
 		{
 			RightSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				LeftSens = 0d;
+				LeftSens = 0;
 				RightAxis = 1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -312,14 +312,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void LeftMove(double Sens)
+	public void LeftMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerLeft(Sens))
 		{
 			LeftSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				RightSens = 0d;
+				RightSens = 0;
 				RightAxis = -1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -342,10 +342,10 @@ public class Player : KinematicBody
 	}
 
 
-	public void Sprint(double Sens)
+	public void Sprint(float Sens)
 	{
 		SprintSens = Sens;
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			if(IsOnFloor() || FlyMode)
 			{
@@ -385,10 +385,10 @@ public class Player : KinematicBody
 	}
 
 
-	public void Jump(double Sens)
+	public void Jump(float Sens)
 	{
 		JumpSens = Sens;
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			if(FlyMode && ShouldDo.LocalPlayerJump())
 			{
@@ -425,7 +425,7 @@ public class Player : KinematicBody
 	}
 
 
-	public void Crouch(double Sens)
+	public void Crouch(float Sens)
 	{
 		if(Sens > 0)
 		{
@@ -452,9 +452,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookUp(double Sens)
+	public void LookUp(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -467,9 +467,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookDown(double Sens)
+	public void LookDown(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -482,9 +482,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookRight(double Sens)
+	public void LookRight(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -497,9 +497,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookLeft(double Sens)
+	public void LookLeft(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -512,9 +512,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void PrimaryFire(double Sens)
+	public void PrimaryFire(float Sens)
 	{
-		if(Sens > 0d && !IsPrimaryFiring)
+		if(Sens > 0 && !IsPrimaryFiring)
 		{
 			IsPrimaryFiring = true;
 
@@ -533,16 +533,16 @@ public class Player : KinematicBody
 				}
 			}
 		}
-		if(Sens <= 0d && IsPrimaryFiring)
+		if(Sens <= 0 && IsPrimaryFiring)
 		{
 			IsPrimaryFiring = false;
 		}
 	}
 
 
-	public void SecondaryFire(double Sens)
+	public void SecondaryFire(float Sens)
 	{
-		if(Sens > 0d && !IsSecondaryFiring)
+		if(Sens > 0 && !IsSecondaryFiring)
 		{
 			IsSecondaryFiring = true;
 
@@ -559,14 +559,14 @@ public class Player : KinematicBody
 				}
 			}
 		}
-		if(Sens <= 0d && IsSecondaryFiring)
+		if(Sens <= 0 && IsSecondaryFiring)
 		{
 			IsSecondaryFiring = false;
 		}
 	}
 
 
-	public void DropCurrentItem(double Sens)
+	public void DropCurrentItem(float Sens)
 	{
 		if(Sens > 0)
 		{
@@ -645,7 +645,7 @@ public class Player : KinematicBody
 				}
 			}
 
-			if(SprintSens > 0d && !IsSprinting)
+			if(SprintSens > 0 && !IsSprinting)
 			{
 				IsSprinting = true;
 
@@ -659,7 +659,7 @@ public class Player : KinematicBody
 					Momentum.x = Momentum.x*SprintMultiplyer;
 				}
 			}
-			else if(SprintSens <= 0d && IsSprinting)
+			else if(SprintSens <= 0 && IsSprinting)
 			{
 				IsSprinting = false;
 
