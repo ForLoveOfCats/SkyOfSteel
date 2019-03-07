@@ -1,32 +1,45 @@
+using System;
 using Godot;
 using IronPython;
 using IronPython.Runtime;
+using Microsoft.Scripting.Hosting;
+
 
 class ShouldDo
 {
 	private static bool CheckFunction(string FunctionName, object[] Args)
 	{
-		/*if(Game.Self.GetTree().NetworkPeer == null || !Game.Self.GetTree().IsNetworkServer())
+		if(Game.Self.GetTree().NetworkPeer == null || !Game.Self.GetTree().IsNetworkServer() || Scripting.GamemodeName == null)
 		{
 			return true;
-			//If we are not the server or the network is not ready then just return
-			  //true for any event so that nothing is modified or affected
+			//If we are not the server, network is not ready, or no gamemode is loaded
+			  //then just return true for any event so that nothing is modified
 		}
 
-		try
+		object Function = null;
+		Scripting.GmScope.TryGetVariable(FunctionName, out Function);
+		if(Function != null && Function is PythonFunction)
 		{
-			object Returned = Scripting.GmScope.GetVariable(FunctionName);
-			if(Returned is PythonFunction)
+			try
 			{
-				Scripting.GmEngine.Operations.Invoke(Returned, Args);
+				object Returned = Scripting.GmEngine.Operations.Invoke(Function, Args);
+				if(Returned is bool)
+				{
+					return (bool)Returned;
+				}
+				else
+				{
+					Console.ThrowLog($"Gamemode event '{FunctionName}' did not return a bool");
+					Scripting.UnloadGameMode();
+				}
 			}
-			// return Scripting.ServerGmEngine.CallGlobalFunction<bool>(FunctionName, Args);
+			catch(Exception Err)
+			{
+				ExceptionOperations EO = Scripting.GmEngine.GetService<ExceptionOperations>();
+				Console.ThrowLog(EO.FormatException(Err));
+				Scripting.UnloadGameMode();
+			}
 		}
-		catch(System.InvalidOperationException)
-		{
-			return true;
-			//Also catches when the script is not running
-		}*/
 		return true;
 	}
 

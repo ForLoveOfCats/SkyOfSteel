@@ -1,8 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-/*using Jurassic;
-using Jurassic.Library;*/
 using IronPython;
 using IronPython.Hosting;
 using Microsoft.Scripting;
@@ -40,8 +38,6 @@ public class Scripting : Node
 			ConsoleScope.SetVariable(Exposer.Name, Exposer.Constructor);
 		}
 
-		/*SetupServerEngine();
-		SetupClientEngine();*/
 		SetupGmEngine();
 	}
 
@@ -50,7 +46,9 @@ public class Scripting : Node
 	{
 		if(ToConvert is Vector3)
 		{
-			return ToConvert as PyVector3;
+			//Could use two layers of casting to implicitly convert
+			//This is just nicer to read
+			return new PyVector3((Vector3)ToConvert);
 		}
 
 		//Does not require intervention
@@ -155,31 +153,46 @@ public class Scripting : Node
 
 	public static void LoadGameMode(string Name)
 	{
-		/*Directory ModeDir = new Directory();
-		if(ModeDir.DirExists("user://gamemodes/" + Name)) //Gamemode exists
+		UnloadGameMode();
+
+		Directory ModeDir = new Directory();
+		if(ModeDir.FileExists($"user://gamemodes/{Name}/{Name}.py")) //Has a  script
 		{
+			Console.Log($"Loaded gamemode '{Name}', executing");
+
 			GamemodeName = Name;
+			SetupGmEngine();
+			File ServerScript = new File();
+			ServerScript.Open($"user://gamemodes/{Name}/{Name}.py", 1);
 
-			if(ModeDir.FileExists("user://gamemodes/" + Name + "/server.js")) //Has a server side script
+			try
 			{
-				SetupServerEngine();
-				File ServerScript = new File();
-				ServerScript.Open("user://gamemodes/" + Name + "/server.js", 1);
-				ServerGmEngine.Execute(ServerScript.GetAsText());
-				ServerScript.Close();
+				GmEngine.Execute(ServerScript.GetAsText(), GmScope);
+			}
+			catch(Exception Err)
+			{
+				ExceptionOperations EO = GmEngine.GetService<ExceptionOperations>();
+				Console.Print(EO.FormatException(Err));
+				Scripting.UnloadGameMode();
 			}
 
-			if(ModeDir.FileExists("user://gamemodes/" + Name + "/client.js")) //Has a client side script
-			{
-				SetupClientEngine();
-				File ClientScriptFile = new File();
-				ClientScriptFile.Open("user://gamemodes/" + Name + "/client.js", 1);
-				ClientGmScript = ClientScriptFile.GetAsText();
-				ClientScriptFile.Close();
-				ClientGmEngine.Execute(ClientGmScript);
-				Net.SteelRpc(Self, nameof(NetLoadClientScript), new object[] {ClientGmScript});
-			}
-		}*/
+			ServerScript.Close();
+		}
+		else
+		{
+			Console.ThrowPrint($"No gamemode named '{Name}'");
+		}
+	}
+
+
+	public static void UnloadGameMode()
+	{
+		if(GamemodeName != null)
+		{
+			Console.Log($"The gamemode '{GamemodeName}' was unloaded");
+			GamemodeName = null;
+			SetupGmEngine();
+		}
 	}
 
 
