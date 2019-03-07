@@ -120,11 +120,6 @@ public class Net : Node
 			RpcId(GetTree().GetRpcSenderId(), nameof(SetupNewPeer), Id);
 		}
 
-		if(Scripting.ClientGmScript != null)
-		{
-			Scripting.Self.RpcId(GetTree().GetRpcSenderId(), nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
-		}
-
 		RpcId(GetTree().GetRpcSenderId(), nameof(ReadyToRequestWorld), new object[] {});
 	}
 

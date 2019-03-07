@@ -17,7 +17,6 @@ public class Scripting : Node
 	public static ScriptScope GmScope;
 
 	public static string GamemodeName;
-	public static string ClientGmScript;
 
 	public static Scripting Self;
 	Scripting()
@@ -82,20 +81,6 @@ public class Scripting : Node
 		{
 			GmScope.SetVariable(Exposer.Name, Exposer.Constructor);
 		}
-	}
-
-
-	public static void SetupClientEngine()
-	{
-		/*ClientGmEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, Self))
-		{
-			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CLIENT_GM))
-		{
-			ClientGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
-		}*/
 	}
 
 
@@ -200,15 +185,6 @@ public class Scripting : Node
 			GamemodeName = null;
 			SetupGmEngine();
 		}
-	}
-
-
-	[Remote]
-	public void NetLoadClientScript(string Script)
-	{
-		/*Console.Log("Recieved client.js from server, executing");
-		SetupClientEngine();
-		ClientGmEngine.Execute(Script);*/
 	}
 
 
