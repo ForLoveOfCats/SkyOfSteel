@@ -36,7 +36,7 @@ public class API : Node
 			case "printf":
 				return new List<object> {Name, new Action<object>(delegate(object ToPrint){Console.Print(Scripting.PyToString(ToPrint));})};
 
-			case "log":
+			case "logf":
 				return new List<object> {Name, new Action<object>(delegate(object ToLog){Console.Log(Scripting.PyToString(ToLog));})};
 
 			case "host":
@@ -387,7 +387,7 @@ public class API : Node
 			case LEVEL.CONSOLE:
 				Output.Add(GetDelCall("quit"));
 				Output.Add(GetDelCall("printf"));
-				Output.Add(GetDelCall("log"));
+				Output.Add(GetDelCall("logf"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
@@ -442,7 +442,7 @@ public class API : Node
 				break;
 			case LEVEL.GAMEMODE:
 				Output.Add(GetDelCall("printf"));
-				Output.Add(GetDelCall("log"));
+				Output.Add(GetDelCall("logf"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("nickname_get"));
 				Output.Add(GetDelCall("remote_nickname_get"));
