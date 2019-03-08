@@ -52,7 +52,7 @@ Contributions are welcome!
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json as the only dependency)
+* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json and IronPython)
 * Open the Godot editor to the project and let it reimport all the assets then hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
@@ -63,21 +63,19 @@ Contributions are welcome!
 The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
 multiplayer private server setting with high skill movement. As of now multiplayer is fully
 functional, the building is about 95% functional with proper chunk loading/unloading
-over network,  world saving and loading to/from file, and air strafing identical to id Tech 3
+over network, world saving and loading to/from file, and air strafing identical to id Tech 3
 and the Source engine.
 
 
 
 ## Modding
 
-SkyOfSteel has an innovative (and wip) modding API with full ECMAScript 5 support through
-the wonderful [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
-project. With both server and client side mod scripting much can be accomplished. Servers
-can run gamemode scripts and send client side scripts to connecting clients similar to a
-webpage's scripts. In addition there is a full REPL ingame console.
+SkyOfSteel has a WIP gamemode modding API utilizing [IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page").
+The intention is to allow for fully custom gamemodes to be developed. Currently scripting is server
+side only however client side scripting is on the todo list. In addition there is a full ingame REPL console.
 
-The modding API is based around game events. Whenever something occurs ingame it is
-processed as an "event" which can be filtered and discarded by mod scripts programmatically.
+The gamemode API is based around game events. Whenever something occurs ingame it is
+processed as an "event" which can be filtered and discarded by gamemode scripts programmatically.
 This allows for a great deal of flexibility even without the normal API for such things
 as setting player positions and the like (which are being worked on).
 
@@ -119,9 +117,6 @@ Feel free to contribute in the following ways:
 
 * Test and report bugs
   * Much work has already been done and there are doubtless many bugs which remain undiscovered
-* Test and report bugs to the [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page") project
-  * While not affiliated with the [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
-project, SkyOfSteel relies heavily on the continuing success of this wonderful ECMAScript 5 library
 * Fix reported bugs by getting down and dirty with the source code :)
   * Much work is left to be done and if you feel up to it you can help!
 * Contribute art and sound skills
@@ -147,7 +142,7 @@ Also feel free to follow me (ForLoveOfCats) on
 
 ## License
 
-SkyOfSteel is licensed under the MIT license and utilizes both
-[Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
+SkyOfSteel is licensed under the MIT license and utilizes
+[IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page")
 and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 which are both under the MIT license as well.
