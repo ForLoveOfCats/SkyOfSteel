@@ -9,7 +9,8 @@ public class Bindings : Node
 	private static string[] MouseButtonList = {"MouseOne", "MouseTwo", "MouseThree"};
 	private static string[] MouseWheelList = {"WheelUp", "WheelDown"};
 	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
-	private static List<BindingObject> BindingList = new List<BindingObject>();
+	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
+	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
 	private static Bindings Self;
 	private Bindings()
@@ -17,8 +18,49 @@ public class Bindings : Node
 		Self = this;
 	}
 
+
 	public static void Bind(string FunctionName, string InputString)
 	{
+		dynamic Variable;
+		Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);
+		if(Variable == null || !(Variable is Delegate || Variable is IronPython.Runtime.PythonFunction))
+		{
+			Console.ThrowPrint($"'{FunctionName}' is not a valid function");
+			return;
+		}
+
+		Nullable<int> ArgCount = null; //null for the sanity check
+		if(Variable is Delegate)
+		{
+			ArgCount = (Variable as Delegate).Method.GetParameters().Length;
+		}
+		else if(Variable is IronPython.Runtime.PythonFunction)
+		{
+			ArgCount = Scripting.ConsoleEngine.Execute($"len({FunctionName}.func_code.co_varnames)");
+		}
+
+		if(ArgCount == null)
+		{
+			//Sanity check
+			Console.ThrowPrint($"Cannot find argument count of '{FunctionName}', please contact the developers'");
+			return;
+		}
+
+		if(ArgCount != 0 && ArgCount != 1)
+		{
+			Console.ThrowPrint($"Function '{FunctionName}' must take either one or two arguments");
+			return;
+		}
+		if(ArgCount == 1 && Variable is Delegate)
+		{
+			//TODO Update this once we move to floats instead of floats
+			if(!((Delegate)Variable).Method.GetParameters()[0].ParameterType.IsInstanceOfType(new float()))
+			{
+				Console.ThrowPrint($"Builtin command '{FunctionName}' has a single non-float argument");
+				return;
+			}
+		}
+
 		BIND_TYPE Type = BIND_TYPE.SCANCODE;
 		if(System.Array.IndexOf(MouseButtonList, InputString) >= 0)
 		{
@@ -36,11 +78,13 @@ public class Bindings : Node
 		if(InputMap.HasAction(FunctionName))
 		{
 			InputMap.EraseAction(FunctionName);
-			foreach(BindingObject Bind in BindingList)
+			foreach(BindingObject Bind in BindingsWithArg)
 			{
 				if(Bind.Name == FunctionName)
 				{
-					BindingList.Remove(Bind);
+					//Does not throw exception when not found
+					BindingsWithArg.Remove(Bind);
+					BindingsWithoutArg.Remove(Bind);
 					break;
 				}
 			}
@@ -52,7 +96,19 @@ public class Bindings : Node
 			InputEventKey Event = new InputEventKey();
 			Event.Scancode = OS.FindScancodeFromString(InputString);
 			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingList.Add(new BindingObject(FunctionName, Type));
+
+			if(ArgCount == 1)
+			{
+				BindingsWithArg.Add(new BindingObject(FunctionName, Type));
+			}
+			else if(ArgCount == 0)
+			{
+				BindingsWithoutArg.Add(new BindingObject(FunctionName, Type));
+			}
+			else
+			{
+				Console.ThrowPrint($"Cannot add SCANCODE bind, '{FunctionName}' has an unsuported number of arguments");
+			}
 		}
 		else if(Type == BIND_TYPE.MOUSEBUTTON)
 		{
@@ -72,7 +128,19 @@ public class Bindings : Node
 				//No default as this else if will not run unless one of these string will match anyway
 			}
 			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingList.Add(new BindingObject(FunctionName, Type));
+
+			if(ArgCount == 1)
+			{
+				BindingsWithArg.Add(new BindingObject(FunctionName, Type));
+			}
+			else if(ArgCount == 0)
+			{
+				BindingsWithoutArg.Add(new BindingObject(FunctionName, Type));
+			}
+			else
+			{
+				Console.ThrowPrint($"Cannot add MOUSEBUTTON bind, '{FunctionName}' has an unsuported number of arguments");
+			}
 		}
 		else if(Type == BIND_TYPE.MOUSEWHEEL)
 		{
@@ -88,7 +156,19 @@ public class Bindings : Node
 					break;
 			}
 			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingList.Add(new BindingObject(FunctionName, Type));
+
+			if(ArgCount == 1)
+			{
+				BindingsWithArg.Add(new BindingObject(FunctionName, Type));
+			}
+			else if(ArgCount == 0)
+			{
+				BindingsWithoutArg.Add(new BindingObject(FunctionName, Type));
+			}
+			else
+			{
+				Console.ThrowPrint($"Cannot add MOUSEWHEEL bind, '{FunctionName}' has an unsuported number of arguments");
+			}
 		}
 		else if(Type == BIND_TYPE.AXIS)
 		{
@@ -111,7 +191,7 @@ public class Bindings : Node
 					Bind.AxisDirection = BindingObject.DIRECTION.LEFT;
 					break;
 			}
-			BindingList.Add(Bind);
+			BindingsWithArg.Add(Bind);
 		}
 	}
 
@@ -121,11 +201,13 @@ public class Bindings : Node
 		if(InputMap.HasAction(FunctionName))
 		{
 			InputMap.EraseAction(FunctionName);
-			foreach(BindingObject Bind in BindingList)
+			foreach(BindingObject Bind in BindingsWithArg)
 			{
 				if(Bind.Name == FunctionName)
 				{
-					BindingList.Remove(Bind);
+					//Does not throw exception when not found
+					BindingsWithArg.Remove(Bind);
+					BindingsWithoutArg.Remove(Bind);
 					break;
 				}
 			}
@@ -150,24 +232,42 @@ public class Bindings : Node
 			return;
 		}
 
-		foreach(BindingObject Binding in BindingList)
+		foreach(BindingObject Binding in BindingsWithArg)
 		{
 			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"if({Binding.Name}.length > 0) {{ {Binding.Name}(1) }} else {{ {Binding.Name}() }}");
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"if({Binding.Name}.length > 0) {{ {Binding.Name}(0) }}");
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}(0)", Scripting.ConsoleScope);
 				}
 			}
 			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, 1);
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
+				}
+			}
+		}
+
+		foreach(BindingObject Binding in BindingsWithoutArg)
+		{
+			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
+			{
+				if(Input.IsActionJustPressed(Binding.Name))
+				{
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
+				}
+			}
+			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
+			{
+				if(Input.IsActionJustReleased(Binding.Name))
+				{
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
 				}
 			}
 		}
@@ -183,25 +283,33 @@ public class Bindings : Node
 
 		if(Event is InputEventMouseMotion MotionEvent)
 		{
-			foreach(BindingObject Binding in BindingList)
+			foreach(BindingObject Binding in BindingsWithArg)
 			{
 				if(Binding.Type == BIND_TYPE.AXIS)
 				{
 					switch(Binding.AxisDirection)
 					{
 						case(BindingObject.DIRECTION.UP):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
 							break;
 						case(BindingObject.DIRECTION.DOWN):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.y)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
 							break;
 						case(BindingObject.DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
 							break;
 						case(BindingObject.DIRECTION.LEFT):
-							Scripting.ConsoleEngine.CallGlobalFunction(Binding.Name, (double)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)));
+							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
 							break;
 					}
+				}
+			}
+
+			foreach(BindingObject Binding in BindingsWithoutArg)
+			{
+				if(Binding.Type == BIND_TYPE.AXIS)
+				{
+					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
 				}
 			}
 		}

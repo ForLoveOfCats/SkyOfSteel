@@ -86,7 +86,7 @@ as setting player positions and the like (which are being worked on).
 ## Player Input Handling
 
 All player input is routed through the binding system which depending on the input will call
-a console command passing in a `double` ranging between 0 and 1 (up to infinity in some cases
+a console command passing in a `float` ranging between 0 and 1 (up to infinity in some cases
 such as mouse movement). Key input pass in a 1 for keydown and a 0 for keyup while analog
 inputs such as mouse motion pass in a 0 for no movement on the specified axis and a number
 greater than 0 for motion on that axis (the number is the amount of motion).

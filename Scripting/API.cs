@@ -1,12 +1,27 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using Jurassic;
 
 
 public class API : Node
 {
-	public enum LEVEL {CONSOLE, SERVER_GM, CLIENT_GM};
+	public class PyConstructorExposer
+	{
+		public string Name = null;
+		public Delegate Constructor = null;
+
+		public PyConstructorExposer()
+		{}
+
+		public PyConstructorExposer(string NameArg, Delegate ConArg)
+		{
+			Name = NameArg;
+			Constructor = ConArg;
+		}
+	}
+
+
+	public enum LEVEL {CONSOLE, GAMEMODE};
 
 
 	static List<object> GetDelCall(string Name)
@@ -18,11 +33,11 @@ public class API : Node
 					Game.Quit();
 				})};
 
-			case "print":
-				return new List<object> {Name, new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
+			case "printf":
+				return new List<object> {Name, new Action<object>(delegate(object ToPrint){Console.Print(Scripting.PyToString(ToPrint));})};
 
-			case "log":
-				return new List<object> {Name, new Action<string>(delegate(string ToLog){Console.Log(ToLog);})};
+			case "logf":
+				return new List<object> {Name, new Action<object>(delegate(object ToLog){Console.Log(Scripting.PyToString(ToLog));})};
 
 			case "host":
 				return new List<object> {Name, new Action(delegate(){
@@ -66,7 +81,7 @@ public class API : Node
 				return new List<object> {Name, new Func<string>(() => {return Game.Nickname;})};
 
 			case "remote_nickname_get":
-				return new List<object> {Name, new Func<double, string>((double Id) => {
+				return new List<object> {Name, new Func<float, string>((float Id) => {
 					string Nick;
 					if(Net.Nicknames.TryGetValue((int)Id, out Nick))
 					{
@@ -89,11 +104,11 @@ public class API : Node
 				return new List<object> {Name, new Func<int>(() => {return OS.GetTicksMsec();})};
 
 			case "peerlist_get":
-				return new List<object> {Name, new Func<Jurassic.Library.ArrayInstance>(() => {
-					Jurassic.Library.ArrayInstance Out = Scripting.ConsoleEngine.Array.Construct();
+				return new List<object> {Name, new Func<IronPython.Runtime.List>(() => {
+					IronPython.Runtime.List Out = new IronPython.Runtime.List();
 					foreach(int Id in Net.PeerList)
 					{
-						Out.Push(Id);
+						Out.append(Id);
 					}
 					return Out;
 				})};
@@ -109,60 +124,60 @@ public class API : Node
 				})};
 
 			case "player_input_forward":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.ForwardMove(Sens);
 				})};
 
 			case "player_input_forward_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.ForwardSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.ForwardSens;})};
 
 			case "player_input_backward":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.BackwardMove(Sens);
 				})};
 
 			case "player_input_backward_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.BackwardSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.BackwardSens;})};
 
 			case "player_input_right":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.RightMove(Sens);
 				})};
 
 			case "player_input_right_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.RightSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.RightSens;})};
 
 			case "player_input_left":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LeftMove(Sens);
 				})};
 
 			case "player_input_left_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.LeftSens;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.LeftSens;})};
 
 			case "player_input_sprint":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.Sprint(Sens);
 				})};
 
 			case "player_input_sprint_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsSprinting ? 1d : 0d;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.IsSprinting ? 1 : 0;})};
 
 			case "player_input_jump":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.Jump(Sens);
 				})};
 
 			case "player_input_jump_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsJumping ? 1d : 0d;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.IsJumping ? 1 : 0;})};
 
 			case "player_input_crouch":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.Crouch(Sens);
 				})};
 
 			case "player_input_crouch_get":
-				return new List<object> {Name, new Func<double>(() => {return Game.PossessedPlayer.IsCrouching ? 1d : 0d;})};
+				return new List<object> {Name, new Func<float>(() => {return Game.PossessedPlayer.IsCrouching ? 1 : 0;})};
 
 			case "player_input_inventory_up":
 				return new List<object> {Name, new Action(delegate(){
@@ -175,42 +190,42 @@ public class API : Node
 				})};
 
 			case "player_input_look_up":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookUp(Sens);
 				})};
 
 			case "player_input_look_down":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookDown(Sens);
 				})};
 
 			case "player_input_look_right":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookRight(Sens);
 				})};
 
 			case "player_input_look_left":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.LookLeft(Sens);
 				})};
 
 			case "player_input_build_rotate":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.BuildRotate(Sens);
 				})};
 
 			case "player_input_primary_fire":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.PrimaryFire(Sens);
 				})};
 
 			case "player_input_secondary_fire":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.SecondaryFire(Sens);
 				})};
 
 			case "player_input_drop":
-				return new List<object> {Name, new Action<double>(delegate(double Sens){
+				return new List<object> {Name, new Action<float>(delegate(float Sens){
 					Game.PossessedPlayer.DropCurrentItem(Sens);
 				})};
 
@@ -260,10 +275,10 @@ public class API : Node
 				})};
 
 			case "fps_get":
-				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Engine.GetFramesPerSecond());})};
+				return new List<object> {Name, new Func<float>(() => {return Engine.GetFramesPerSecond();})};
 
 			case "fps_max":
-				return new List<object> {Name, new Action<double>(delegate(double TargetFps){
+				return new List<object> {Name, new Action<float>(delegate(float TargetFps){
 					if(Double.IsNaN(TargetFps) || Double.IsInfinity(TargetFps) || TargetFps < 0)
 					{
 						Console.ThrowPrint($"Please provide a valid positive max fps value which is less than Infinity");
@@ -273,11 +288,11 @@ public class API : Node
 				})};
 
 			case "fps_max_get":
-				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Engine.GetTargetFps());})};
+				return new List<object> {Name, new Func<float>(() => {return Engine.GetTargetFps();})};
 
 			case "chunk_render_distance":
-				return new List<object> {Name, new Action<double>(delegate(double Distance){
-					if(Distance < 2d)
+				return new List<object> {Name, new Action<float>(delegate(float Distance){
+					if(Distance < 2)
 					{
 						Console.ThrowPrint("Cannot set render distance value lower than two chunks");
 						return;
@@ -287,7 +302,7 @@ public class API : Node
 				})};
 
 			case "chunk_render_distance_get":
-				return new List<object> {Name, new Func<double>(() => {return Convert.ToDouble(Game.ChunkRenderDistance);})};
+				return new List<object> {Name, new Func<float>(() => {return Game.ChunkRenderDistance;})};
 
 			case "save":
 				return new List<object> {Name, new Action<string>(delegate(string SaveName){
@@ -341,18 +356,21 @@ public class API : Node
 					Game.PossessedPlayer.HUDInstance.Show();
 				})};
 
+			case "type_get":
+				return new List<object> {Name, new Func<object, string>((Obj) => {return Obj.GetType().ToString();})};
+
 			default:
 				throw new System.ArgumentException("Invalid GetDelCall name arg '" + Name + "'");
 		}
 	}
 
 
-	public static List<object> GetConstructor(string Name)
+	public static PyConstructorExposer GetConstructor(string Name)
 	{
 		switch(Name)
 		{
 			case "Vector3":
-				return new List<object> {Name, new JsVector3Constructor(Scripting.ConsoleEngine)};
+				return new PyConstructorExposer(Name, new Func<float, float, float, PyVector3>((X, Y, Z) => {return new PyVector3(X, Y, Z);}));
 
 			default:
 				throw new System.ArgumentException("Invalid GetConstructor name arg '" + Name + "'");
@@ -368,8 +386,8 @@ public class API : Node
 		{
 			case LEVEL.CONSOLE:
 				Output.Add(GetDelCall("quit"));
-				Output.Add(GetDelCall("print"));
-				Output.Add(GetDelCall("log"));
+				Output.Add(GetDelCall("printf"));
+				Output.Add(GetDelCall("logf"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("host"));
 				Output.Add(GetDelCall("connect"));
@@ -420,9 +438,11 @@ public class API : Node
 				Output.Add(GetDelCall("fly"));
 				Output.Add(GetDelCall("fly_toggle"));
 				Output.Add(GetDelCall("fly_get"));
+				Output.Add(GetDelCall("type_get"));
 				break;
-			case LEVEL.SERVER_GM:
-				Output.Add(GetDelCall("log"));
+			case LEVEL.GAMEMODE:
+				Output.Add(GetDelCall("printf"));
+				Output.Add(GetDelCall("logf"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("nickname_get"));
 				Output.Add(GetDelCall("remote_nickname_get"));
@@ -463,66 +483,23 @@ public class API : Node
 				Output.Add(GetDelCall("fly"));
 				Output.Add(GetDelCall("fly_toggle"));
 				Output.Add(GetDelCall("fly_get"));
-				break;
-			case LEVEL.CLIENT_GM:
-				Output.Add(GetDelCall("log"));
-				Output.Add(GetDelCall("ms_get"));
-				Output.Add(GetDelCall("nickname_get"));
-				Output.Add(GetDelCall("remote_nickname_get"));
-				Output.Add(GetDelCall("peerlist_get"));
-				Output.Add(GetDelCall("player_input_forward"));
-				Output.Add(GetDelCall("player_input_forward_get"));
-				Output.Add(GetDelCall("player_input_backward"));
-				Output.Add(GetDelCall("player_input_backward_get"));
-				Output.Add(GetDelCall("player_input_right"));
-				Output.Add(GetDelCall("player_input_right_get"));
-				Output.Add(GetDelCall("player_input_left"));
-				Output.Add(GetDelCall("player_input_left_get"));
-				Output.Add(GetDelCall("player_input_sprint"));
-				Output.Add(GetDelCall("player_input_sprint_get"));
-				Output.Add(GetDelCall("player_input_jump"));
-				Output.Add(GetDelCall("player_input_jump_get"));
-				Output.Add(GetDelCall("player_input_crouch"));
-				Output.Add(GetDelCall("player_input_crouch_get"));
-				Output.Add(GetDelCall("player_input_inventory_up"));
-				Output.Add(GetDelCall("player_input_inventory_down"));
-				Output.Add(GetDelCall("player_input_look_up"));
-				Output.Add(GetDelCall("player_input_look_down"));
-				Output.Add(GetDelCall("player_input_look_right"));
-				Output.Add(GetDelCall("player_input_look_left"));
-				Output.Add(GetDelCall("player_input_build_rotate"));
-				Output.Add(GetDelCall("player_input_primary_fire"));
-				Output.Add(GetDelCall("player_input_secondary_fire"));
-				Output.Add(GetDelCall("player_position_reset"));
-				Output.Add(GetDelCall("gamemode_get"));
-				Output.Add(GetDelCall("chunk_render_distance"));
-				Output.Add(GetDelCall("chunk_render_distance_get"));
-				Output.Add(GetDelCall("fps_get"));
-				Output.Add(GetDelCall("fps_max_get"));
-				Output.Add(GetDelCall("hud_hide"));
-				Output.Add(GetDelCall("hud_show"));
-				Output.Add(GetDelCall("fly"));
-				Output.Add(GetDelCall("fly_toggle"));
-				Output.Add(GetDelCall("fly_get"));
+				Output.Add(GetDelCall("type_get"));
 				break;
 		}
 
 		return Output;
 	}
 
-	public static List<List<object>> ExposeConstructors(LEVEL ApiLevel)
+	public static List<PyConstructorExposer> ExposeConstructors(LEVEL ApiLevel)
 	{
-		List<List<object>> Output = new List<List<object>>();
+		List<PyConstructorExposer> Output = new List<PyConstructorExposer>();
 
 		switch(ApiLevel)
 		{
 			case LEVEL.CONSOLE:
 				Output.Add(GetConstructor("Vector3"));
 				break;
-			case LEVEL.SERVER_GM:
-				Output.Add(GetConstructor("Vector3"));
-				break;
-			case LEVEL.CLIENT_GM:
+			case LEVEL.GAMEMODE:
 				Output.Add(GetConstructor("Vector3"));
 				break;
 		}

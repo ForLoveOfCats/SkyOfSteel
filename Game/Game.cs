@@ -135,9 +135,10 @@ public class Game : Node
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
+		Scripting.SetupGmEngine();
+
 		if(AsServer)
 		{
-			Scripting.SetupServerEngine();
 			SetupWorld();
 		}
 
@@ -156,10 +157,8 @@ public class Game : Node
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 						  //Prevent crashes when player movement commands are run when world is not initalized
 		StructureRoot = null;
-		Scripting.GamemodeName = null;
-		Scripting.SetupServerEngine();
-		Scripting.SetupClientEngine();
-		Scripting.ClientGmScript = null;
+
+		Scripting.UnloadGameMode();
 
 		Building.Chunks.Clear();
 		Building.RemoteLoadedChunks.Clear();

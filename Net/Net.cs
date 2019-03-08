@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class Net : Node
 {
 	private const int MaxWaitForServerDelay = 10;
-	private const double VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
+	private const float VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
 	                                                    their version before disconnecting from a client which refuses
 	                                                    to identify their version*/
 
@@ -17,7 +17,7 @@ public class Net : Node
 	public static string Ip { get; private set; }
 
 	public static List<int> PeerList = new List<int>();
-	public static Dictionary<int, double> WaitingForVersion = new Dictionary<int, double>();
+	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
 	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
 
@@ -83,7 +83,7 @@ public class Net : Node
 		if(GetTree().IsNetworkServer())
 		{
 			//If we are the server
-			WaitingForVersion.Add(Id, 0d); //then add new client to WaitingForVersion
+			WaitingForVersion.Add(Id, 0); //then add new client to WaitingForVersion
 		}
 	}
 
@@ -118,11 +118,6 @@ public class Net : Node
 				continue;
 			}
 			RpcId(GetTree().GetRpcSenderId(), nameof(SetupNewPeer), Id);
-		}
-
-		if(Scripting.ClientGmScript != null)
-		{
-			Scripting.Self.RpcId(GetTree().GetRpcSenderId(), nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
 		}
 
 		RpcId(GetTree().GetRpcSenderId(), nameof(ReadyToRequestWorld), new object[] {});
