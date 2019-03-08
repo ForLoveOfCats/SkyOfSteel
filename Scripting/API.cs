@@ -33,7 +33,7 @@ public class API : Node
 					Game.Quit();
 				})};
 
-			case "print":
+			case "printf":
 				return new List<object> {Name, new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
 
 			case "log":
@@ -386,7 +386,7 @@ public class API : Node
 		{
 			case LEVEL.CONSOLE:
 				Output.Add(GetDelCall("quit"));
-				Output.Add(GetDelCall("print"));
+				Output.Add(GetDelCall("printf"));
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("host"));
@@ -441,6 +441,7 @@ public class API : Node
 				Output.Add(GetDelCall("type_get"));
 				break;
 			case LEVEL.GAMEMODE:
+				Output.Add(GetDelCall("printf"));
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("nickname_get"));
