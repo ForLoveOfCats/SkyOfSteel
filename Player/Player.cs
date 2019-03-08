@@ -579,7 +579,7 @@ public class Player : KinematicBody
 				}
 				Vel += new Vector3(0,0,ItemThrowPower).Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical)).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
-				World.DropItem(Inventory[InventorySlot], Translation+Cam.Translation, Vel);
+				World.Self.DropItem(Inventory[InventorySlot].Type, Translation+Cam.Translation, Vel);
 				Inventory[InventorySlot] = null;
 				HUDInstance.HotbarUpdate();
 			}
