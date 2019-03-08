@@ -4,6 +4,10 @@ importer="texture"
 type="StreamTexture"
 path.s3tc="res://.import/SLOPE.png-c6c98ddbe4c43c8b2eaa2a45ba7f660f.s3tc.stex"
 path.etc2="res://.import/SLOPE.png-c6c98ddbe4c43c8b2eaa2a45ba7f660f.etc2.stex"
+metadata={
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
+}
 
 [deps]
 
