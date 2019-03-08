@@ -1,7 +1,6 @@
 using System;
 using Godot;
 using Microsoft.Scripting.Hosting;
-// using Jurassic;
 
 
 public class Startup : Node
