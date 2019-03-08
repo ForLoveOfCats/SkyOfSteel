@@ -73,7 +73,7 @@ public class Scripting : Node
 		GmEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 		GmScope = ConsoleEngine.CreateScope();
 
-		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
+		foreach(List<object> List in API.Expose(API.LEVEL.GAMEMODE, Self))
 		{
 			GmScope.SetVariable((string)List[0], (Delegate)List[1]);
 		}

@@ -21,7 +21,7 @@ public class API : Node
 	}
 
 
-	public enum LEVEL {CONSOLE, SERVER_GM, CLIENT_GM};
+	public enum LEVEL {CONSOLE, GAMEMODE};
 
 
 	static List<object> GetDelCall(string Name)
@@ -440,7 +440,7 @@ public class API : Node
 				Output.Add(GetDelCall("fly_get"));
 				Output.Add(GetDelCall("type_get"));
 				break;
-			case LEVEL.SERVER_GM:
+			case LEVEL.GAMEMODE:
 				Output.Add(GetDelCall("log"));
 				Output.Add(GetDelCall("ms_get"));
 				Output.Add(GetDelCall("nickname_get"));
@@ -484,48 +484,6 @@ public class API : Node
 				Output.Add(GetDelCall("fly_get"));
 				Output.Add(GetDelCall("type_get"));
 				break;
-			case LEVEL.CLIENT_GM:
-				Output.Add(GetDelCall("log"));
-				Output.Add(GetDelCall("ms_get"));
-				Output.Add(GetDelCall("nickname_get"));
-				Output.Add(GetDelCall("remote_nickname_get"));
-				Output.Add(GetDelCall("peerlist_get"));
-				Output.Add(GetDelCall("player_input_forward"));
-				Output.Add(GetDelCall("player_input_forward_get"));
-				Output.Add(GetDelCall("player_input_backward"));
-				Output.Add(GetDelCall("player_input_backward_get"));
-				Output.Add(GetDelCall("player_input_right"));
-				Output.Add(GetDelCall("player_input_right_get"));
-				Output.Add(GetDelCall("player_input_left"));
-				Output.Add(GetDelCall("player_input_left_get"));
-				Output.Add(GetDelCall("player_input_sprint"));
-				Output.Add(GetDelCall("player_input_sprint_get"));
-				Output.Add(GetDelCall("player_input_jump"));
-				Output.Add(GetDelCall("player_input_jump_get"));
-				Output.Add(GetDelCall("player_input_crouch"));
-				Output.Add(GetDelCall("player_input_crouch_get"));
-				Output.Add(GetDelCall("player_input_inventory_up"));
-				Output.Add(GetDelCall("player_input_inventory_down"));
-				Output.Add(GetDelCall("player_input_look_up"));
-				Output.Add(GetDelCall("player_input_look_down"));
-				Output.Add(GetDelCall("player_input_look_right"));
-				Output.Add(GetDelCall("player_input_look_left"));
-				Output.Add(GetDelCall("player_input_build_rotate"));
-				Output.Add(GetDelCall("player_input_primary_fire"));
-				Output.Add(GetDelCall("player_input_secondary_fire"));
-				Output.Add(GetDelCall("player_position_reset"));
-				Output.Add(GetDelCall("gamemode_get"));
-				Output.Add(GetDelCall("chunk_render_distance"));
-				Output.Add(GetDelCall("chunk_render_distance_get"));
-				Output.Add(GetDelCall("fps_get"));
-				Output.Add(GetDelCall("fps_max_get"));
-				Output.Add(GetDelCall("hud_hide"));
-				Output.Add(GetDelCall("hud_show"));
-				Output.Add(GetDelCall("fly"));
-				Output.Add(GetDelCall("fly_toggle"));
-				Output.Add(GetDelCall("fly_get"));
-				Output.Add(GetDelCall("type_get"));
-				break;
 		}
 
 		return Output;
@@ -540,10 +498,7 @@ public class API : Node
 			case LEVEL.CONSOLE:
 				Output.Add(GetConstructor("Vector3"));
 				break;
-			case LEVEL.SERVER_GM:
-				Output.Add(GetConstructor("Vector3"));
-				break;
-			case LEVEL.CLIENT_GM:
+			case LEVEL.GAMEMODE:
 				Output.Add(GetConstructor("Vector3"));
 				break;
 		}
