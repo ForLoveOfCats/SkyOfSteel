@@ -34,10 +34,10 @@ public class API : Node
 				})};
 
 			case "printf":
-				return new List<object> {Name, new Action<string>(delegate(string ToPrint){Console.Print(ToPrint);})};
+				return new List<object> {Name, new Action<object>(delegate(object ToPrint){Console.Print(Scripting.PyToString(ToPrint));})};
 
 			case "log":
-				return new List<object> {Name, new Action<string>(delegate(string ToLog){Console.Log(ToLog);})};
+				return new List<object> {Name, new Action<object>(delegate(object ToLog){Console.Log(Scripting.PyToString(ToLog));})};
 
 			case "host":
 				return new List<object> {Name, new Action(delegate(){
