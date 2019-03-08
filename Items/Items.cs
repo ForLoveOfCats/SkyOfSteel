@@ -26,14 +26,12 @@ public class Items : Node
 	public static Dictionary<TYPE, Texture> Textures { get; private set; } = new Dictionary<TYPE, Texture>();
 
 	public static Shader StructureShader { get; private set; }
-	private static PackedScene DroppedItemScene;
 
 	Items()
 	{
 		if(Engine.EditorHint) {return;}
 
 		StructureShader = GD.Load<Shader>("res://Building/Materials/StructureShader.shader");
-		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
 
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{
@@ -58,17 +56,5 @@ public class Items : Node
 	public static Texture Thumbnail(TYPE Type)
 	{
 		return Thumbnails[Type];
-	}
-
-
-	public static void Drop(Instance ItemInstance, Vector3 Position, Vector3 BaseMomentum)
-	{
-		DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
-		ToDrop.Translation = Position;
-		ToDrop.Momentum = BaseMomentum;
-		ToDrop.Item = ItemInstance;
-		ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Meshes[ItemInstance.Type];
-
-		Game.StructureRoot.AddChild(ToDrop);
 	}
 }

@@ -21,6 +21,12 @@ public class DroppedItem : KinematicBody
 	}
 
 
+	~DroppedItem()
+	{
+		World.DroppedItems.Remove(this);
+	}
+
+
 	public override void _PhysicsProcess(float Delta)
 	{
 		SetRotationDegrees(new Vector3(0, RotationDegrees.y+(360*Delta*RPS), 0));
