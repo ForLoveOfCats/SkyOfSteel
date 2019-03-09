@@ -28,7 +28,7 @@ Net="*res://Net/Net.cs"
 Bindings="*res://Scripting/Bindings.cs"
 WorldAutoLoad="*res://World/World.cs"
 Items="*res://Items/Items.cs"
-Building="*res://Building/Building.cs"
+Building="*res://World/Building.cs"
 Menu="*res://UI/Menu/Menu.cs"
 Startup="*res://Game/Startup.cs"
 

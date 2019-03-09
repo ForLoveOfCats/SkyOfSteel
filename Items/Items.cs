@@ -31,7 +31,7 @@ public class Items : Node
 	{
 		if(Engine.EditorHint) {return;}
 
-		StructureShader = GD.Load<Shader>("res://Building/Materials/StructureShader.shader");
+		StructureShader = GD.Load<Shader>("res://World/Materials/StructureShader.shader");
 
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(TYPE)))
 		{

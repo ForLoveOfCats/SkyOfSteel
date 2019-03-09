@@ -23,7 +23,7 @@ public class Building : Node
 		Self = this;
 
 		Directory StructureDir = new Directory();
-		StructureDir.Open("res://Building/Scenes/");
+		StructureDir.Open("res://World/Scenes/");
 		StructureDir.ListDirBegin(true, true);
 		string FileName = StructureDir.GetNext();
 		while(true)
@@ -32,7 +32,7 @@ public class Building : Node
 			{
 				break;
 			}
-			PackedScene Scene = GD.Load("res://Building/Scenes/"+FileName) as PackedScene;
+			PackedScene Scene = GD.Load("res://World/Scenes/"+FileName) as PackedScene;
 			if((Scene.Instance() as Structure) == null)
 			{
 				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
@@ -44,13 +44,13 @@ public class Building : Node
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
 			File ToLoad = new File();
-			if(ToLoad.FileExists("res://Building/Scenes/" + Type.ToString() + ".tscn"))
+			if(ToLoad.FileExists("res://World/Scenes/" + Type.ToString() + ".tscn"))
 			{
-				Scenes.Add(Type, GD.Load("res://Building/Scenes/" + Type.ToString() + ".tscn") as PackedScene);
+				Scenes.Add(Type, GD.Load("res://World/Scenes/" + Type.ToString() + ".tscn") as PackedScene);
 			}
 			else
 			{
-				Scenes.Add(Type, GD.Load("res://Building/Scenes/ERROR.tscn") as PackedScene);
+				Scenes.Add(Type, GD.Load("res://World/Scenes/ERROR.tscn") as PackedScene);
 			}
 		}
 	}
