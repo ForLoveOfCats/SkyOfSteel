@@ -39,6 +39,21 @@ public class Scripting : Node
 		}
 
 		SetupGmEngine();
+
+		File SetupScript = new File();
+		SetupScript.Open("res://Scripting/SetupScript.py", 1);
+		try
+		{
+			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
+			Source.Execute(ConsoleScope);
+		}
+		catch(Exception Err)
+		{
+			ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
+			GD.Print(EO.FormatException(Err));
+			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
+		}
+		SetupScript.Close();
 	}
 
 
@@ -81,25 +96,6 @@ public class Scripting : Node
 		{
 			GmScope.SetVariable(Exposer.Name, Exposer.Constructor);
 		}
-	}
-
-
-	public override void _Ready()
-	{
-		File SetupScript = new File();
-		SetupScript.Open("res://Scripting/SetupScript.py", 1);
-		try
-		{
-			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
-			Source.Execute(ConsoleScope);
-		}
-		catch(Exception Err)
-		{
-			ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
-			GD.Print(EO.FormatException(Err));
-			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
-		}
-		SetupScript.Close();
 	}
 
 
