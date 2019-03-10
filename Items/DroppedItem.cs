@@ -23,7 +23,7 @@ public class DroppedItem : KinematicBody
 
 	public void Remove()
 	{
-		World.DroppedItems.Remove(this);
+		Building.DroppedItems.Remove(this);
 	}
 
 

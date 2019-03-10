@@ -114,7 +114,6 @@
     <Compile Include="UI\Menu\SaveMenu\SaveMenu.cs" />
     <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs" />
     <Compile Include="World\StructureRoot.cs" />
-    <Compile Include="World\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
