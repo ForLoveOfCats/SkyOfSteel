@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class GridClass
 {
-	private const int PlatformSize = Building.PlatformSize;
+	private const int PlatformSize = World.PlatformSize;
 	private Dictionary<Vector3, List<Structure>> Dict = new Dictionary<Vector3, List<Structure>>();
 
 

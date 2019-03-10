@@ -118,7 +118,7 @@ public class Game : Node
 
 	private static void SetupWorld()
 	{
-		Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+		World.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 	}
 
 
@@ -160,9 +160,9 @@ public class Game : Node
 
 		Scripting.UnloadGameMode();
 
-		Building.Chunks.Clear();
-		Building.RemoteLoadedChunks.Clear();
-		Building.Grid.Clear();
+		World.Chunks.Clear();
+		World.RemoteLoadedChunks.Clear();
+		World.Grid.Clear();
 
 		WorldOpen = false;
 	}
@@ -177,9 +177,9 @@ public class Game : Node
 		}
 
 		int SaveCount = 0;
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Building.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in World.Chunks)
 		{
-			SaveCount += Building.SaveChunk(Chunk.Key, SaveName);
+			SaveCount += World.SaveChunk(Chunk.Key, SaveName);
 		}
 		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
 	}
@@ -191,7 +191,7 @@ public class Game : Node
 		if(SaveDir.DirExists("user://saves/"+SaveName))
 		{
 			List<Structure> Branches = new List<Structure>();
-			foreach(KeyValuePair<Tuple<int,int>, List<Structure>> Chunk in Building.Chunks)
+			foreach(KeyValuePair<Tuple<int,int>, List<Structure>> Chunk in World.Chunks)
 			{
 				foreach(Structure Branch in Chunk.Value)
 				{
@@ -202,11 +202,11 @@ public class Game : Node
 			{
 				Branch.Remove(Force:true);
 			}
-			Building.Chunks.Clear();
-			Building.Grid.Clear();
-			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in Building.RemoteLoadedChunks)
+			World.Chunks.Clear();
+			World.Grid.Clear();
+			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in World.RemoteLoadedChunks)
 			{
-				Building.RemoteLoadedChunks[Pair.Key].Clear();
+				World.RemoteLoadedChunks[Pair.Key].Clear();
 			}
 			SetupWorld();
 
@@ -241,7 +241,7 @@ public class Game : Node
 					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 					if(Info != null)
 					{
-						Building.Place(Info.Item1, Info.Item2, Info.Item3, 1);
+						World.Place(Info.Item1, Info.Item2, Info.Item3, 1);
 						PlaceCount++;
 					}
 				}

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
-public class Building : Node
+public class World : Node
 {
 	public const int PlatformSize = 12;
 	public const int ChunkSize = 9*PlatformSize;
@@ -18,9 +18,9 @@ public class Building : Node
 
 	private static PackedScene DroppedItemScene;
 
-	public static Building Self;
+	public static World Self;
 
-	Building()
+	World()
 	{
 		if(Engine.EditorHint) {return;}
 
@@ -164,7 +164,7 @@ public class Building : Node
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(Building.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(World.PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(!LoadedChunks.Contains(ChunkTuple))
@@ -191,10 +191,10 @@ public class Building : Node
 
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
-		Building.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
+		World.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 		foreach(Structure Branch in Chunks[ChunkLocation])
 		{
-			Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+			World.Self.RpcId(Id, nameof(World.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
 	}
 
@@ -244,7 +244,7 @@ public class Building : Node
 		//Nested if to prevent very long line
 		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
 		{
-			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
 			{
 				//If network is inited, not the server, and platform it to far away then...
 				return; //...don't place
@@ -267,7 +267,7 @@ public class Building : Node
 			//Nested if to prevent very long line
 			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 			{
-				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
 				{
 					//If network is inited, am the server, and platform is to far away then...
 					Branch.Hide(); //...make it not visible but allow it to remain in the world
@@ -284,21 +284,21 @@ public class Building : Node
 		if(Game.StructureRoot.HasNode(Name))
 		{
 			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
-			Tuple<int,int> ChunkTuple = Building.GetChunkTuple(Branch.Translation);
-			List<Structure> Structures = Building.Chunks[ChunkTuple];
+			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
+			List<Structure> Structures = World.Chunks[ChunkTuple];
 			Structures.Remove(Branch);
 			//After removing `this` from the Structure list, the chunk might be empty
 			if(Structures.Count > 0)
 			{
-				Building.Chunks[ChunkTuple] = Structures;
+				World.Chunks[ChunkTuple] = Structures;
 			}
 			else
 			{
 				//If the chunk *is* empty then remove it
-				Building.Chunks.Remove(ChunkTuple);
+				World.Chunks.Remove(ChunkTuple);
 			}
 
-			Building.Grid.Remove(Branch);
+			World.Grid.Remove(Branch);
 			Branch.QueueFree();
 		}
 

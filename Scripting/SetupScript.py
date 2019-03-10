@@ -10,7 +10,7 @@ import Scripting
 import Net
 import Bindings
 import Items
-import Building
+import World
 import Menu
 import Startup
 

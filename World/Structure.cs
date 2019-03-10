@@ -16,8 +16,8 @@ public class Structure : StaticBody
 
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
-			Net.SteelRpc(Building.Self, nameof(Building.Remove), GetName());
-			Building.Self.Remove(GetName());
+			Net.SteelRpc(World.Self, nameof(World.Remove), GetName());
+			World.Self.Remove(GetName());
 		}
 	}
 }

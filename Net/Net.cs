@@ -106,7 +106,7 @@ public class Net : Node
 
 		WaitingForVersion.Remove(GetTree().GetRpcSenderId());
 
-		Building.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
+		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
 		SetupNewPeer(GetTree().GetRpcSenderId());
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
@@ -283,7 +283,7 @@ public class Net : Node
 	[Remote]
 	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
 	{
-		Building.Self.RpcId(ServerId, nameof(Building.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
 	}
 
 
@@ -297,10 +297,10 @@ public class Net : Node
 		}
 
 		List<Tuple<int,int>> ToRemove = new List<Tuple<int,int>>();
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Building.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in World.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
@@ -331,12 +331,12 @@ public class Net : Node
 		}
 		foreach(Tuple<int,int> Chunk in ToRemove)
 		{
-			Building.Chunks.Remove(Chunk);
+			World.Chunks.Remove(Chunk);
 		}
 
 		if(!Self.GetTree().IsNetworkServer())
 		{
-			Building.Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+			World.Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
 		}
 	}
 

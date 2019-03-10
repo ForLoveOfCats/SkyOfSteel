@@ -527,7 +527,7 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null && GhostInstance.CanBuild)
 					{
-						Building.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
+						World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}
@@ -579,7 +579,7 @@ public class Player : KinematicBody
 				}
 				Vel += new Vector3(0,0,ItemThrowPower).Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical)).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
-				Building.Self.DropItem(Inventory[InventorySlot].Type, Translation+Cam.Translation, Vel);
+				World.Self.DropItem(Inventory[InventorySlot].Type, Translation+Cam.Translation, Vel);
 				Inventory[InventorySlot] = null;
 				HUDInstance.HotbarUpdate();
 			}
@@ -821,9 +821,9 @@ public class Player : KinematicBody
 
 		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees);
 
-		if(!Building.GetChunkTuple(Translation).Equals(CurrentChunk))
+		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
-			CurrentChunk = Building.GetChunkTuple(Translation);
+			CurrentChunk = World.GetChunkTuple(Translation);
 			Net.UnloadAndRequestChunks();
 		}
 	}
