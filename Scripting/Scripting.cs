@@ -93,10 +93,11 @@ public class Scripting : Node
 			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
 			Source.Execute(ConsoleScope);
 		}
-		catch(Exception e)
+		catch(Exception Err)
 		{
-			ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
-			Console.Print(eo.FormatException(e));
+			ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
+			GD.Print(EO.FormatException(Err));
+			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
 		}
 		SetupScript.Close();
 	}
