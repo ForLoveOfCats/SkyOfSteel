@@ -246,7 +246,7 @@ public class World : Node
 			Game.StructureRoot.AddChild(Branch);
 
 			AddStructureToChunk(Branch);
-			Grid.Add(Branch);
+			Grid.AddItem(Branch);
 
 			//Nested if to prevent very long line
 			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
@@ -282,7 +282,7 @@ public class World : Node
 				World.Chunks.Remove(ChunkTuple);
 			}
 
-			World.Grid.Remove(Branch);
+			World.Grid.RemoveItem(Branch);
 			Branch.QueueFree();
 		}
 

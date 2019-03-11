@@ -3,10 +3,19 @@ using static Godot.Mathf;
 using System.Collections.Generic;
 
 
+public interface IInGrid
+{
+	Vector3 Translation { get; set; }
+
+	void GridUpdate();
+}
+
+
+
 public class GridClass
 {
 	private const int PlatformSize = World.PlatformSize;
-	private Dictionary<Vector3, List<Structure>> Dict = new Dictionary<Vector3, List<Structure>>();
+	private Dictionary<Vector3, List<IInGrid>> Dict = new Dictionary<Vector3, List<IInGrid>>();
 
 
 	private Vector3 GetArea(Vector3 Position)
@@ -35,50 +44,43 @@ public class GridClass
 	}
 
 
-	private void AddBranch(ref List<Structure> Branches, Structure Branch)
+	public void AddItem(IInGrid Item)
 	{
-		if(Branches == null)
+		List<IInGrid> Items;
+		foreach(Vector3 Area in GetAreas(Item.Translation))
 		{
-			Branches = new List<Structure>() {Branch};
-		}
-		else
-		{
-			Branches.Add(Branch);
-		}
-	}
-
-
-	public void Add(Structure Branch)
-	{
-		List<Structure> Branches;
-
-		foreach(Vector3 Area in GetAreas(Branch.Translation))
-		{
-			Dict.TryGetValue(Area, out Branches);
-			AddBranch(ref Branches, Branch);
-			Dict[Area] = Branches;
-		}
-	}
-
-
-	public void Remove(Structure Branch)
-	{
-		foreach(Vector3 Area in GetAreas(Branch.Translation))
-		{
-			List<Structure> Branches;
-			Dict.TryGetValue(Area, out Branches);
-
-			if(Branches != null)
+			Dict.TryGetValue(Area, out Items);
+			if(Items == null)
 			{
-				Branches.Remove(Branch);
+				Items = new List<IInGrid>() {Item};
+			}
+			else
+			{
+				Items.Add(Item);
+			}
+			Dict[Area] = Items;
+		}
+	}
 
-				if(Branches.Count <= 0)
+
+	public void RemoveItem(IInGrid Item)
+	{
+		foreach(Vector3 Area in GetAreas(Item.Translation))
+		{
+			List<IInGrid> Items;
+			Dict.TryGetValue(Area, out Items);
+
+			if(Items != null)
+			{
+				Items.Remove(Item);
+
+				if(Items.Count <= 0)
 				{
 					Dict.Remove(Area);
 				}
 				else
 				{
-					Dict[Area] = Branches;
+					Dict[Area] = Items;
 				}
 			}
 		}
@@ -91,15 +93,15 @@ public class GridClass
 	}
 
 
-	public List<Structure> Get(Vector3 Position)
+	public List<IInGrid> GetItems(Vector3 Position)
 	{
-		List<Structure> Branches;
-		Dict.TryGetValue(Position, out Branches);
+		List<IInGrid> Items;
+		Dict.TryGetValue(Position, out Items);
 
-		if(Branches == null)
+		if(Items == null)
 		{
-			return new List<Structure>() {};
+			return new List<IInGrid>() {};
 		}
-		return Branches;
+		return Items;
 	}
 }
