@@ -87,12 +87,6 @@ public class GridClass
 	}
 
 
-	public void Clear()
-	{
-		Dict.Clear();
-	}
-
-
 	public List<IInGrid> GetItems(Vector3 Position)
 	{
 		List<IInGrid> Items;
@@ -103,5 +97,11 @@ public class GridClass
 			return new List<IInGrid>() {};
 		}
 		return Items;
+	}
+
+
+	public void Clear()
+	{
+		Dict.Clear();
 	}
 }
