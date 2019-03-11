@@ -49,6 +49,7 @@ public class Scripting : Node
 		}
 		catch(Exception Err)
 		{
+			SetupScript.Close();
 			ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
 			GD.Print(EO.FormatException(Err));
 			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
