@@ -297,14 +297,14 @@ public class Net : Node
 		}
 
 		List<Tuple<int,int>> ToRemove = new List<Tuple<int,int>>();
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in World.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
-					foreach(Structure CurrentStructure in Chunk.Value)
+					foreach(Structure CurrentStructure in Chunk.Value.Structures)
 					{
 						CurrentStructure.Show();
 					}
@@ -312,7 +312,7 @@ public class Net : Node
 			}
 			else
 			{
-				foreach(Structure CurrentStructure in Chunk.Value)
+				foreach(Structure CurrentStructure in Chunk.Value.Structures)
 				{
 					if(Self.GetTree().IsNetworkServer())
 					{

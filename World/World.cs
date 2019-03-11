@@ -10,7 +10,7 @@ public class World : Node
 
 	public static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
-	public static Dictionary<Tuple<int,int>, List<Structure>> Chunks = new Dictionary<Tuple<int,int>, List<Structure>>();
+	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
 	public static GridClass Grid = new GridClass();
 
@@ -86,33 +86,17 @@ public class World : Node
 	}
 
 
-	public static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
-	{
-		return GetChunk(GetChunkTuple(Position));
-	}
-
-
-	public static System.Collections.Generic.List<Structure> GetChunk(Tuple<int, int> Position)
-	{
-		if(ChunkExists(Position))
-		{
-			return Chunks[Position];
-		}
-		return null; //uggggh whyyyyyyyy
-	}
-
-
-	static void AddToChunk(Structure Branch)
+	static void AddStructureToChunk(Structure Branch)
 	{
 		if(ChunkExists(Branch.Translation))
 		{
-			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)];
+			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
 			Chunk.Add(Branch);
-			Chunks[GetChunkTuple(Branch.Translation)] = Chunk;
+			Chunks[GetChunkTuple(Branch.Translation)].Structures = Chunk;
 		}
 		else
 		{
-			Chunks.Add(GetChunkTuple(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
+			Chunks.Add(GetChunkTuple(Branch.Translation), new ChunkClass(new List<Structure>{Branch}));
 		}
 	}
 
@@ -160,7 +144,7 @@ public class World : Node
 		if(!Net.PeerList.Contains(Id)) {return;}
 
 		List<Tuple<int,int>> LoadedChunks = RemoteLoadedChunks[Id];
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
@@ -192,7 +176,7 @@ public class World : Node
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
 		World.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
-		foreach(Structure Branch in Chunks[ChunkLocation])
+		foreach(Structure Branch in Chunks[ChunkLocation].Structures)
 		{
 			World.Self.RpcId(Id, nameof(World.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
@@ -211,7 +195,7 @@ public class World : Node
 		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
 
 		int SaveCount = 0;
-		foreach(Structure Branch in Chunks[ChunkTuple]) //I hate to do this because it is rather inefficient
+		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
 		{
 			if(Branch.OwnerId != 0)
 			{
@@ -225,10 +209,10 @@ public class World : Node
 	[Remote]
 	public void FreeChunk(Vector2 Pos)
 	{
-		List<Structure> Branches;
+		ChunkClass Branches;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out Branches))
 		{
-			foreach(Structure Branch in Branches)
+			foreach(Structure Branch in Branches.Structures)
 			{
 				Branch.Free();
 			}
@@ -261,7 +245,7 @@ public class World : Node
 			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
 			Game.StructureRoot.AddChild(Branch);
 
-			AddToChunk(Branch);
+			AddStructureToChunk(Branch);
 			Grid.Add(Branch);
 
 			//Nested if to prevent very long line
@@ -285,12 +269,12 @@ public class World : Node
 		{
 			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
 			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
-			List<Structure> Structures = World.Chunks[ChunkTuple];
+			List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
 			Structures.Remove(Branch);
 			//After removing `this` from the Structure list, the chunk might be empty
 			if(Structures.Count > 0)
 			{
-				World.Chunks[ChunkTuple] = Structures;
+				World.Chunks[ChunkTuple].Structures = Structures;
 			}
 			else
 			{

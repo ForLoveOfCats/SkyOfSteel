@@ -177,7 +177,7 @@ public class Game : Node
 		}
 
 		int SaveCount = 0;
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in World.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
 		{
 			SaveCount += World.SaveChunk(Chunk.Key, SaveName);
 		}
@@ -191,9 +191,9 @@ public class Game : Node
 		if(SaveDir.DirExists("user://saves/"+SaveName))
 		{
 			List<Structure> Branches = new List<Structure>();
-			foreach(KeyValuePair<Tuple<int,int>, List<Structure>> Chunk in World.Chunks)
+			foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in World.Chunks)
 			{
-				foreach(Structure Branch in Chunk.Value)
+				foreach(Structure Branch in Chunk.Value.Structures)
 				{
 					Branches.Add(Branch);
 				}
