@@ -279,9 +279,9 @@ public class API : Node
 
 			case "fps_max":
 				return new List<object> {Name, new Action<float>(delegate(float TargetFps){
-					if(Double.IsNaN(TargetFps) || Double.IsInfinity(TargetFps) || TargetFps < 0)
+					if(TargetFps <= 1)
 					{
-						Console.ThrowPrint($"Please provide a valid positive max fps value which is less than Infinity");
+						Console.ThrowPrint($"Please provide a valid fps value which is greater than 1");
 						return;
 					}
 					Engine.SetTargetFps(Convert.ToInt32(TargetFps));
