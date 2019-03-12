@@ -18,6 +18,7 @@ public class GridClass
 	private const int PlatformSize = World.PlatformSize;
 	private Dictionary<Vector3, List<IInGrid>> Dict = new Dictionary<Vector3, List<IInGrid>>();
 
+	private HashSet<Vector3> QueuedUpdates = new HashSet<Vector3>();
 	private List<IInGrid> Removals = new List<IInGrid>();
 
 
@@ -82,7 +83,7 @@ public class GridClass
 
 
 	//Must be called periodicly
-	public void DoRemoves()
+	private void DoRemoves()
 	{
 		foreach(IInGrid Item in Removals)
 		{
@@ -123,19 +124,14 @@ public class GridClass
 	}
 
 
-	public void UpdateArea(Vector3 Position)
+	public void QueueUpdateArea(Vector3 Position)
 	{
-		foreach(IInGrid Item in GetItems(Position))
-		{
-			Item.GridUpdate();
-		}
+		QueuedUpdates.Add(CalculateArea(Position));
 	}
 
 
-	public void UpdateNearby(Vector3 Position)
+	public void QueueUpdateNearby(Vector3 Position)
 	{
-		HashSet<Vector3> Areas = new HashSet<Vector3>();
-
 		foreach(Vector3 CorePos in CalculateAreas(Position))
 		{
 			for(float MulX = -1; MulX <= 1; MulX++)
@@ -144,16 +140,31 @@ public class GridClass
 				{
 					for(float MulZ = -1; MulZ <= 1; MulZ++)
 					{
-						Areas.Add(CorePos + new Vector3(MulX*PlatformSize, MulY*PlatformSize, MulZ*PlatformSize));
+						QueuedUpdates.Add(CorePos + new Vector3(MulX*PlatformSize, MulY*PlatformSize, MulZ*PlatformSize));
 					}
 				}
 			}
 		}
+	}
 
-		foreach(Vector3 Area in Areas)
+
+	//Must be called periodicly
+	private void DoUpdates()
+	{
+		foreach(Vector3 Area in QueuedUpdates)
 		{
-			UpdateArea(Area);
+			foreach(IInGrid Item in GetItems(Area))
+			{
+				Item.GridUpdate();
+			}
 		}
+	}
+
+
+	public void DoWork()
+	{
+		DoRemoves();
+		DoUpdates();
 	}
 
 

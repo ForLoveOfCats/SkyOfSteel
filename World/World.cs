@@ -282,7 +282,7 @@ public class World : Node
 				World.Chunks.Remove(ChunkTuple);
 			}
 
-			World.Grid.UpdateNearby(Branch.Translation);
+			World.Grid.QueueUpdateNearby(Branch.Translation);
 			World.Grid.QueueRemoveItem(Branch);
 			Branch.QueueFree();
 		}
@@ -327,6 +327,6 @@ public class World : Node
 
 	public override void _Process(float Delta)
 	{
-		Grid.DoRemoves();
+		Grid.DoWork();
 	}
 }
