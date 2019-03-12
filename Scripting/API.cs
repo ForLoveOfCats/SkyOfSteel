@@ -117,6 +117,16 @@ public class API : Node
 				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string InputString){
 					Bindings.Bind(FunctionName, InputString);
 				})};
+                
+            case "bind_controller_button":
+                return new List<object> {Name, new Action<string, string, int>(delegate(string FunctionName, string InputString, int ControllerButton){
+					Bindings.Bind(FunctionName, InputString, ControllerButton);
+				})};
+                
+            case "bind_controller_axis":
+                return new List<object> {Name, new Action<string, string, int, int>(delegate(string FunctionName, string InputString, int ControllerButton, int Axis){
+					Bindings.Bind(FunctionName, InputString, ControllerButton, Axis);
+				})};
 
 			case "unbind":
 				return new List<object> {Name, new Action<string>(delegate(string FunctionName){
@@ -397,6 +407,8 @@ public class API : Node
 				Output.Add(GetDelCall("disconnect"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
+                Output.Add(GetDelCall("bind_controller_axis"));
+                Output.Add(GetDelCall("bind_controller_button"));
 				Output.Add(GetDelCall("unbind"));
 				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));

@@ -28,6 +28,7 @@ public class Scripting : Node
 		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 		ConsoleScope = ConsoleEngine.CreateScope();
 		StringScope = ConsoleEngine.CreateScope();
+        
 
 		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
 		{
@@ -37,6 +38,7 @@ public class Scripting : Node
 		{
 			ConsoleScope.SetVariable(Exposer.Name, Exposer.Constructor);
 		}
+        
 
 		SetupGmEngine();
 

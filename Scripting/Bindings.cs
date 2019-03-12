@@ -11,6 +11,7 @@ public class Bindings : Node
 	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
+    private static int JOYSTICKSENSITIVITY = 10;
 
 	private static Bindings Self;
 	private Bindings()
@@ -19,7 +20,7 @@ public class Bindings : Node
 	}
 
 
-	public static void Bind(string FunctionName, string InputString)
+	public static void Bind(string FunctionName, string InputString, int ConsoleInput = -1, int AxisDirection = 0)
 	{
 		dynamic Variable;
 		Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);
@@ -193,6 +194,25 @@ public class Bindings : Node
 			}
 			BindingsWithArg.Add(Bind);
 		}
+        
+        if (ConsoleInput != -1) 
+        {
+            if (AxisDirection == 0) // It's a button
+            {
+                InputEventJoypadButton Event = new InputEventJoypadButton();
+                Event.ButtonIndex = ConsoleInput; 
+                InputMap.ActionAddEvent(FunctionName, Event);
+                    
+            }
+            else // It's a joystick
+            {
+                InputEventJoypadMotion Event = new InputEventJoypadMotion();
+                Event.Axis = ConsoleInput;
+                Event.AxisValue = AxisDirection;
+                InputMap.ActionAddEvent(FunctionName, Event);
+            }
+            
+        }
 	}
 
 
@@ -238,10 +258,12 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
+                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
+                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}(0)", Scripting.ConsoleScope);
 				}
 			}
@@ -249,17 +271,20 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
+                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 			}
 		}
-
+        
 		foreach(BindingObject Binding in BindingsWithoutArg)
 		{
+            
 			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
+                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
 				}
 			}
@@ -267,6 +292,7 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
+                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
 				}
 			}
@@ -280,9 +306,41 @@ public class Bindings : Node
 		{
 			return;
 		}
-
+        if(Event is InputEventJoypadMotion JoyMotionEvent)
+        {
+            
+            
+            
+            if (Event.IsAction("player_input_look_up")) // Move the Y axis
+            {
+                InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
+                a.Relative = new Vector2(0,-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue()); // All we need to know is whether we need to move the X or the Y axis.
+                this._Input(a);
+            }
+            if (Event.IsAction("player_input_look_down")) // Move the Y axis
+            {
+                InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
+                a.Relative = new Vector2(0,-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue()); // All we need to know is whether we need to move the X or the Y axis.
+                this._Input(a);
+            }
+            if (Event.IsAction("player_input_look_left")) // Move the X axis
+            {
+                InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
+                a.Relative = new Vector2(-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
+                this._Input(a);
+            }
+            if (Event.IsAction("player_input_look_right")) // Move the X axis
+            {
+                InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
+                a.Relative = new Vector2(-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
+                this._Input(a);
+            }
+            
+            
+        }
 		if(Event is InputEventMouseMotion MotionEvent)
 		{
+            
 			foreach(BindingObject Binding in BindingsWithArg)
 			{
 				if(Binding.Type == BIND_TYPE.AXIS)
@@ -304,6 +362,7 @@ public class Bindings : Node
 					}
 				}
 			}
+            
 
 			foreach(BindingObject Binding in BindingsWithoutArg)
 			{
