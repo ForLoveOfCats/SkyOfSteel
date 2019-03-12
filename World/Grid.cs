@@ -19,7 +19,7 @@ public class GridClass
 	private Dictionary<Vector3, List<IInGrid>> Dict = new Dictionary<Vector3, List<IInGrid>>();
 
 	private HashSet<Vector3> QueuedUpdates = new HashSet<Vector3>();
-	private List<IInGrid> Removals = new List<IInGrid>();
+	private HashSet<IInGrid> QueuedRemovals = new HashSet<IInGrid>();
 
 
 	private Vector3 CalculateArea(Vector3 Position)
@@ -50,9 +50,9 @@ public class GridClass
 
 	public void AddItem(IInGrid Item)
 	{
-		if(Removals.Contains(Item))
+		if(QueuedRemovals.Contains(Item))
 		{
-			Removals.Remove(Item);
+			QueuedRemovals.Remove(Item);
 		}
 		else
 		{
@@ -78,14 +78,14 @@ public class GridClass
 	//as we cannot modify the List while foreaching it
 	public void QueueRemoveItem(IInGrid Item)
 	{
-		Removals.Add(Item);
+		QueuedRemovals.Add(Item);
 	}
 
 
 	//Must be called periodicly
 	private void DoRemoves()
 	{
-		foreach(IInGrid Item in Removals)
+		foreach(IInGrid Item in QueuedRemovals)
 		{
 			foreach(Vector3 Area in CalculateAreas(Item.Translation))
 			{
@@ -107,7 +107,7 @@ public class GridClass
 				}
 			}
 		}
-		Removals.Clear();
+		QueuedRemovals.Clear();
 	}
 
 
