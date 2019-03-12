@@ -3,7 +3,7 @@
 ### Welcome to the GitHub repository of the game SkyOfSteel!
 
 SkyOfSteel is a work in progress game built on the Godot game engine with C# and Mono.
-Currently builds with Godot Mono 3.1 Beta 5
+Currently builds with Godot Mono 3.1 Beta 11 and can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
 
 Contributions are welcome!
 
@@ -12,6 +12,8 @@ Contributions are welcome!
 - [SkyOfSteel](#skyofsteel)
         - [Welcome to the GitHub repository of the game SkyOfSteel!](#welcome-to-the-github-repository-of-the-game-skyofsteel)
 - [Table of Contents](#table-of-contents)
+    - [Download](#download)
+    - [Newsletter](#newsletter)
     - [Videos](#videos)
     - [Building](#building)
         - [Prerequisites](#prerequisites)
@@ -25,8 +27,16 @@ Contributions are welcome!
     - [License](#license)
 
 
+## Download
+[SkyOfSteel can be downloaded from Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
+
+
+## Newsletter
+[Read the weekly Sunday of Steel news letter here](https://medium.com/@ForLoveOfCats "Sunday of Steel Medium link")
+
+
 ## Videos
-[View the devlog one video on Youtube](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
+[View the devlog one video on Youtube (Out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
 
 [View the introductory video on Youtube(Out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
 
@@ -35,14 +45,14 @@ Contributions are welcome!
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.1 Beta 5
+* A functioning installation of Godot Mono 3.1 Beta 11
   * Decently recent versions of both MSBuild and Nuget must be installed.
 
 
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json as the only dependency)
+* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json and IronPython)
 * Open the Godot editor to the project and let it reimport all the assets then hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
@@ -51,29 +61,30 @@ Contributions are welcome!
 ## Gameplay
 
 The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
-multiplayer private server setting. As of now multiplayer is fully functional and the building is about 90% functional with proper chunk loading/unloading over network as well as world saving and loading to/from file.
+multiplayer private server setting with high skill movement. As of now multiplayer is fully
+functional, the building is about 95% functional with proper chunk loading/unloading
+over network, world saving and loading to/from file, and air strafing identical to id Tech 3
+and the Source engine.
 
 
 
 ## Modding
 
-SkyOfSteel has an innovative (and wip) modding API with full ECMAScript 5 support through
-the wonderful [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
-project. With both server and client side mod scripting much can be accomplished. Servers
-can run gamemode scripts and send client side scripts to connecting clients similar to a
-webpage's scripts. In addition there is a full REPL ingame console.
+SkyOfSteel has a WIP gamemode modding API utilizing [IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page").
+The intention is to allow for fully custom gamemodes to be developed. Currently scripting is server
+side only however client side scripting is on the todo list. In addition there is a full ingame REPL console.
 
-The modding API is based around game events. Whenever something occurs ingame it is
-processed as an "event" which can be filtered, modified, or discarded by mod scripts.
+The gamemode API is based around game events. Whenever something occurs ingame it is
+processed as an "event" which can be filtered and discarded by gamemode scripts programmatically.
 This allows for a great deal of flexibility even without the normal API for such things
-as setting player positions and the like.
+as setting player positions and the like (which are being worked on).
 
 
 
 ## Player Input Handling
 
 All player input is routed through the binding system which depending on the input will call
-a console command passing in a `double` ranging between 0 and 1 (up to infinity in some cases
+a console command passing in a `float` ranging between 0 and 1 (up to infinity in some cases
 such as mouse movement). Key input pass in a 1 for keydown and a 0 for keyup while analog
 inputs such as mouse motion pass in a 0 for no movement on the specified axis and a number
 greater than 0 for motion on that axis (the number is the amount of motion).
@@ -106,9 +117,6 @@ Feel free to contribute in the following ways:
 
 * Test and report bugs
   * Much work has already been done and there are doubtless many bugs which remain undiscovered
-* Test and report bugs to the [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page") project
-  * While not affiliated with the [Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
-project, SkyOfSteel relies heavily on the continuing success of this wonderful ECMAScript 5 library
 * Fix reported bugs by getting down and dirty with the source code :)
   * Much work is left to be done and if you feel up to it you can help!
 * Contribute art and sound skills
@@ -134,7 +142,7 @@ Also feel free to follow me (ForLoveOfCats) on
 
 ## License
 
-SkyOfSteel is licensed under the MIT license and utilizes both
-[Jurassic](https://github.com/paulbartrum/jurassic/ "Jurassic Github Page")
+SkyOfSteel is licensed under the MIT license and utilizes
+[IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page")
 and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 which are both under the MIT license as well.

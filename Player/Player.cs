@@ -15,10 +15,12 @@ public class Player : KinematicBody
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
 	private const float AirAcceleration = 24; //How many units per second to accelerate
 	private const float Friction = BaseMovementSpeed*10;
+	private const float JumpSpeedMultiplyer = 1.2f;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
 	private const float MaxJumpLength = 0.3f;
 	private const float Gravity = 14f;
+	private const float ItemThrowPower = 15f;
 	private const float LookDivisor = 6;
 
 	private bool Frozen = true;
@@ -40,12 +42,12 @@ public class Player : KinematicBody
 	private bool IsPrimaryFiring = false;
 	private bool IsSecondaryFiring = false;
 
-	public double ForwardSens = 0d;
-	public double BackwardSens = 0d;
-	public double RightSens = 0d;
-	public double LeftSens = 0d;
-	public double SprintSens = 0d;
-	public double JumpSens = 0d;
+	public float ForwardSens = 0;
+	public float BackwardSens = 0;
+	public float RightSens = 0;
+	public float LeftSens = 0;
+	public float SprintSens = 0;
+	public float JumpSens = 0;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -85,7 +87,7 @@ public class Player : KinematicBody
 
 			AddChild(HUDInstance);
 
-			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
+			GhostInstance = ((PackedScene)(GD.Load("res://World/Ghost.tscn"))).Instance() as Ghost;
 			GhostInstance.Hide();
 			GetParent().CallDeferred("add_child", GhostInstance);
 		}
@@ -100,6 +102,7 @@ public class Player : KinematicBody
 			SetFreeze(false);
 		}
 	}
+
 
 	[Remote]
 	public void SetFreeze(bool NewFrozen)
@@ -198,9 +201,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void BuildRotate(double Sens)
+	public void BuildRotate(float Sens)
 	{
-		if(Sens > 0d && Inventory[InventorySlot] != null)
+		if(Sens > 0 && Inventory[InventorySlot] != null)
 		{
 			switch(Inventory[InventorySlot].Type)
 			{
@@ -219,14 +222,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void ForwardMove(double Sens)
+	public void ForwardMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerForward(Sens))
 		{
 			ForwardSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				BackwardSens = 0d;
+				BackwardSens = 0;
 				ForwardAxis = 1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -249,14 +252,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void BackwardMove(double Sens)
+	public void BackwardMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerBackward(Sens))
 		{
 			BackwardSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				ForwardSens = 0d;
+				ForwardSens = 0;
 				ForwardAxis = -1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -279,14 +282,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void RightMove(double Sens)
+	public void RightMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerRight(Sens))
 		{
 			RightSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				LeftSens = 0d;
+				LeftSens = 0;
 				RightAxis = 1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -309,14 +312,14 @@ public class Player : KinematicBody
 	}
 
 
-	public void LeftMove(double Sens)
+	public void LeftMove(float Sens)
 	{
 		if(ShouldDo.LocalPlayerLeft(Sens))
 		{
 			LeftSens = Sens;
-			if(Sens > 0d)
+			if(Sens > 0)
 			{
-				RightSens = 0d;
+				RightSens = 0;
 				RightAxis = -1;
 
 				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
@@ -339,10 +342,10 @@ public class Player : KinematicBody
 	}
 
 
-	public void Sprint(double Sens)
+	public void Sprint(float Sens)
 	{
 		SprintSens = Sens;
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			if(IsOnFloor() || FlyMode)
 			{
@@ -382,14 +385,11 @@ public class Player : KinematicBody
 	}
 
 
-	public void Jump(double Sens)
+	public void Jump(float Sens)
 	{
 		JumpSens = Sens;
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
-			JumpAxis = 1;
-			IsCrouching = false;
-
 			if(FlyMode && ShouldDo.LocalPlayerJump())
 			{
 				if(IsSprinting)
@@ -405,8 +405,17 @@ public class Player : KinematicBody
 			else if(IsOnFloor() && ShouldDo.LocalPlayerJump())
 			{
 				Momentum.y = JumpStartForce;
+				if(JumpAxis < 1)
+				{
+					Momentum.x *= JumpSpeedMultiplyer;
+					Momentum.z *= JumpSpeedMultiplyer;
+				}
+
 				IsJumping = true;
 			}
+
+			JumpAxis = 1;
+			IsCrouching = false;
 		}
 		else
 		{
@@ -416,7 +425,7 @@ public class Player : KinematicBody
 	}
 
 
-	public void Crouch(double Sens)
+	public void Crouch(float Sens)
 	{
 		if(Sens > 0)
 		{
@@ -443,9 +452,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookUp(double Sens)
+	public void LookUp(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -458,9 +467,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookDown(double Sens)
+	public void LookDown(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -473,9 +482,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookRight(double Sens)
+	public void LookRight(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -488,9 +497,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void LookLeft(double Sens)
+	public void LookLeft(float Sens)
 	{
-		if(Sens > 0d)
+		if(Sens > 0)
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
 
@@ -503,9 +512,9 @@ public class Player : KinematicBody
 	}
 
 
-	public void PrimaryFire(double Sens)
+	public void PrimaryFire(float Sens)
 	{
-		if(Sens > 0d && !IsPrimaryFiring)
+		if(Sens > 0 && !IsPrimaryFiring)
 		{
 			IsPrimaryFiring = true;
 
@@ -518,22 +527,22 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null && GhostInstance.CanBuild)
 					{
-						Building.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
+						World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}
 			}
 		}
-		if(Sens <= 0d && IsPrimaryFiring)
+		if(Sens <= 0 && IsPrimaryFiring)
 		{
 			IsPrimaryFiring = false;
 		}
 	}
 
 
-	public void SecondaryFire(double Sens)
+	public void SecondaryFire(float Sens)
 	{
-		if(Sens > 0d && !IsSecondaryFiring)
+		if(Sens > 0 && !IsSecondaryFiring)
 		{
 			IsSecondaryFiring = true;
 
@@ -550,9 +559,30 @@ public class Player : KinematicBody
 				}
 			}
 		}
-		if(Sens <= 0d && IsSecondaryFiring)
+		if(Sens <= 0 && IsSecondaryFiring)
 		{
 			IsSecondaryFiring = false;
+		}
+	}
+
+
+	public void DropCurrentItem(float Sens)
+	{
+		if(Sens > 0)
+		{
+			if(Inventory[InventorySlot] != null)
+			{
+				Vector3 Vel = Momentum;
+				if(FlyMode || IsOnFloor())
+				{
+					Vel = Vel.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+				}
+				Vel += new Vector3(0,0,ItemThrowPower).Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical)).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+
+				World.Self.DropItem(Inventory[InventorySlot].Type, Translation+Cam.Translation, Vel);
+				Inventory[InventorySlot] = null;
+				HUDInstance.HotbarUpdate();
+			}
 		}
 	}
 
@@ -615,7 +645,7 @@ public class Player : KinematicBody
 				}
 			}
 
-			if(SprintSens > 0d && !IsSprinting)
+			if(SprintSens > 0 && !IsSprinting)
 			{
 				IsSprinting = true;
 
@@ -629,7 +659,7 @@ public class Player : KinematicBody
 					Momentum.x = Momentum.x*SprintMultiplyer;
 				}
 			}
-			else if(SprintSens <= 0d && IsSprinting)
+			else if(SprintSens <= 0 && IsSprinting)
 			{
 				IsSprinting = false;
 
@@ -784,16 +814,16 @@ public class Player : KinematicBody
 			}
 		}
 
-		if(IsOnFloor() && Momentum.y <= 0f)
+		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
 		{
 			Momentum.y = -1f;
 		}
 
 		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees);
 
-		if(!Building.GetChunkTuple(Translation).Equals(CurrentChunk))
+		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
-			CurrentChunk = Building.GetChunkTuple(Translation);
+			CurrentChunk = World.GetChunkTuple(Translation);
 			Net.UnloadAndRequestChunks();
 		}
 	}

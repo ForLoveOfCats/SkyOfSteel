@@ -21,8 +21,8 @@ public class Ghost : Area
 	{
 		if(Engine.EditorHint) {return;}
 
-		GreenMat = GD.Load("res://Building/Materials/GreenGhost.tres") as Material;
-		RedMat = GD.Load("res://Building/Materials/RedGhost.tres") as Material;
+		GreenMat = GD.Load("res://World/Materials/GreenGhost.tres") as Material;
+		RedMat = GD.Load("res://World/Materials/RedGhost.tres") as Material;
 
 		//Godot's `Area` object likes to not register body entry's for several
 		  //physics ticks so these postion, rotation, and visibility queues
@@ -57,7 +57,7 @@ public class Ghost : Area
 
 	public override void _Ready()
 	{
-		GhostMesh = ((PackedScene)(GD.Load("res://Building/GhostMesh.tscn"))).Instance() as MeshInstance;
+		GhostMesh = ((PackedScene)(GD.Load("res://World/GhostMesh.tscn"))).Instance() as MeshInstance;
 		GetParent().AddChild(GhostMesh);
 
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];

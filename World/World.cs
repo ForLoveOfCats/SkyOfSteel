@@ -3,27 +3,33 @@ using System;
 using System.Collections.Generic;
 
 
-public class Building : Node
+public class World : Node
 {
 	public const int PlatformSize = 12;
 	public const int ChunkSize = 9*PlatformSize;
 
 	public static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
 
-	public static Dictionary<Tuple<int,int>, List<Structure>> Chunks = new Dictionary<Tuple<int,int>, List<Structure>>();
+	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
 	public static GridClass Grid = new GridClass();
 
-	public static Building Self;
+	public static List<DroppedItem> DroppedItems = new List<DroppedItem>();
 
-	Building()
+	private static PackedScene DroppedItemScene;
+
+	public static World Self;
+
+	World()
 	{
 		if(Engine.EditorHint) {return;}
 
 		Self = this;
 
+		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
+
 		Directory StructureDir = new Directory();
-		StructureDir.Open("res://Building/Scenes/");
+		StructureDir.Open("res://World/Scenes/");
 		StructureDir.ListDirBegin(true, true);
 		string FileName = StructureDir.GetNext();
 		while(true)
@@ -32,7 +38,7 @@ public class Building : Node
 			{
 				break;
 			}
-			PackedScene Scene = GD.Load("res://Building/Scenes/"+FileName) as PackedScene;
+			PackedScene Scene = GD.Load("res://World/Scenes/"+FileName) as PackedScene;
 			if((Scene.Instance() as Structure) == null)
 			{
 				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
@@ -44,13 +50,13 @@ public class Building : Node
 		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
 		{
 			File ToLoad = new File();
-			if(ToLoad.FileExists("res://Building/Scenes/" + Type.ToString() + ".tscn"))
+			if(ToLoad.FileExists("res://World/Scenes/" + Type.ToString() + ".tscn"))
 			{
-				Scenes.Add(Type, GD.Load("res://Building/Scenes/" + Type.ToString() + ".tscn") as PackedScene);
+				Scenes.Add(Type, GD.Load("res://World/Scenes/" + Type.ToString() + ".tscn") as PackedScene);
 			}
 			else
 			{
-				Scenes.Add(Type, GD.Load("res://Building/Scenes/ERROR.tscn") as PackedScene);
+				Scenes.Add(Type, GD.Load("res://World/Scenes/ERROR.tscn") as PackedScene);
 			}
 		}
 	}
@@ -80,33 +86,36 @@ public class Building : Node
 	}
 
 
-	public static System.Collections.Generic.List<Structure> GetChunk(Vector3 Position)
-	{
-		return GetChunk(GetChunkTuple(Position));
-	}
-
-
-	public static System.Collections.Generic.List<Structure> GetChunk(Tuple<int, int> Position)
-	{
-		if(ChunkExists(Position))
-		{
-			return Chunks[Position];
-		}
-		return null; //uggggh whyyyyyyyy
-	}
-
-
-	static void AddToChunk(Structure Branch)
+	static void AddStructureToChunk(Structure Branch)
 	{
 		if(ChunkExists(Branch.Translation))
 		{
-			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)];
+			List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
 			Chunk.Add(Branch);
-			Chunks[GetChunkTuple(Branch.Translation)] = Chunk;
+			Chunks[GetChunkTuple(Branch.Translation)].Structures = Chunk;
 		}
 		else
 		{
-			Chunks.Add(GetChunkTuple(Branch.Translation), new System.Collections.Generic.List<Structure>{Branch});
+			ChunkClass Chunk = new ChunkClass();
+			Chunk.Structures = new List<Structure>{Branch};
+			Chunks.Add(GetChunkTuple(Branch.Translation), Chunk);
+		}
+	}
+
+
+	public static void AddItemToChunk(DroppedItem Item)
+	{
+		if(ChunkExists(Item.Translation))
+		{
+			List<DroppedItem> Items = Chunks[GetChunkTuple(Item.Translation)].Items;
+			Items.Add(Item);
+			Chunks[GetChunkTuple(Item.Translation)].Items = Items;
+		}
+		else
+		{
+			ChunkClass Chunk = new ChunkClass();
+			Chunk.Items = new List<DroppedItem>{Item};
+			Chunks.Add(GetChunkTuple(Item.Translation), Chunk);
 		}
 	}
 
@@ -154,11 +163,11 @@ public class Building : Node
 		if(!Net.PeerList.Contains(Id)) {return;}
 
 		List<Tuple<int,int>> LoadedChunks = RemoteLoadedChunks[Id];
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(Building.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(World.PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(!LoadedChunks.Contains(ChunkTuple))
@@ -185,10 +194,10 @@ public class Building : Node
 
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
-		Building.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
-		foreach(Structure Branch in Chunks[ChunkLocation])
+		World.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
+		foreach(Structure Branch in Chunks[ChunkLocation].Structures)
 		{
-			Building.Self.RpcId(Id, nameof(Building.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+			World.Self.RpcId(Id, nameof(World.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
 	}
 
@@ -205,7 +214,7 @@ public class Building : Node
 		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
 
 		int SaveCount = 0;
-		foreach(Structure Branch in Chunks[ChunkTuple]) //I hate to do this because it is rather inefficient
+		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
 		{
 			if(Branch.OwnerId != 0)
 			{
@@ -219,10 +228,10 @@ public class Building : Node
 	[Remote]
 	public void FreeChunk(Vector2 Pos)
 	{
-		List<Structure> Branches;
+		ChunkClass Branches;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out Branches))
 		{
-			foreach(Structure Branch in Branches)
+			foreach(Structure Branch in Branches.Structures)
 			{
 				Branch.Free();
 			}
@@ -238,7 +247,7 @@ public class Building : Node
 		//Nested if to prevent very long line
 		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
 		{
-			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
 			{
 				//If network is inited, not the server, and platform it to far away then...
 				return; //...don't place
@@ -255,13 +264,13 @@ public class Building : Node
 			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
 			Game.StructureRoot.AddChild(Branch);
 
-			AddToChunk(Branch);
-			Grid.Add(Branch);
+			AddStructureToChunk(Branch);
+			Grid.AddItem(Branch);
 
 			//Nested if to prevent very long line
 			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 			{
-				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(Building.PlatformSize*9))
+				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
 				{
 					//If network is inited, am the server, and platform is to far away then...
 					Branch.Hide(); //...make it not visible but allow it to remain in the world
@@ -278,23 +287,66 @@ public class Building : Node
 		if(Game.StructureRoot.HasNode(Name))
 		{
 			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
-			Tuple<int,int> ChunkTuple = Building.GetChunkTuple(Branch.Translation);
-			List<Structure> Structures = Building.Chunks[ChunkTuple];
+			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
+			List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
 			Structures.Remove(Branch);
 			//After removing `this` from the Structure list, the chunk might be empty
 			if(Structures.Count > 0)
 			{
-				Building.Chunks[ChunkTuple] = Structures;
+				World.Chunks[ChunkTuple].Structures = Structures;
 			}
 			else
 			{
 				//If the chunk *is* empty then remove it
-				Building.Chunks.Remove(ChunkTuple);
+				World.Chunks.Remove(ChunkTuple);
 			}
 
-			Building.Grid.Remove(Branch);
+			World.Grid.QueueUpdateNearby(Branch.Translation);
+			World.Grid.QueueRemoveItem(Branch);
 			Branch.QueueFree();
 		}
 
+	}
+
+
+	//Should be able to be called without RPC yet only run on server
+	//Has to be non-static to be RPC-ed
+	[Remote]
+	public void DropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
+	{
+		if(Self.GetTree().GetNetworkPeer() != null)
+		{
+			if(Self.GetTree().IsNetworkServer())
+			{
+				Net.SteelRpc(Self, nameof(NetDropItem), Type, Position, BaseMomentum);
+				NetDropItem(Type, Position, BaseMomentum);
+			}
+			else
+			{
+				Self.RpcId(Net.ServerId, nameof(DropItem), Type, Position, BaseMomentum);
+			}
+		}
+	}
+
+
+	//Has to be non-static to be RPC-ed
+	[Remote]
+	public void NetDropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
+	{
+		DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
+		ToDrop.Translation = Position;
+		ToDrop.Momentum = BaseMomentum;
+		ToDrop.Type = Type;
+		ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
+
+		DroppedItems.Add(ToDrop);
+		AddItemToChunk(ToDrop);
+		Game.StructureRoot.AddChild(ToDrop);
+	}
+
+
+	public override void _Process(float Delta)
+	{
+		Grid.DoWork();
 	}
 }

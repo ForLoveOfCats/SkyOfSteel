@@ -1,10 +1,16 @@
 using Godot;
 
 
-public class Structure : StaticBody
+public class Structure : StaticBody, IInGrid
 {
 	public Items.TYPE Type = Items.TYPE.ERROR;
 	public int OwnerId = 0;
+
+
+	public void GridUpdate()
+	{
+		
+	}
 
 
 	public void Remove(bool Force=false)
@@ -16,8 +22,8 @@ public class Structure : StaticBody
 
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
-			Net.SteelRpc(Building.Self, nameof(Building.Remove), GetName());
-			Building.Self.Remove(GetName());
+			Net.SteelRpc(World.Self, nameof(World.Remove), GetName());
+			World.Self.Remove(GetName());
 		}
 	}
 }

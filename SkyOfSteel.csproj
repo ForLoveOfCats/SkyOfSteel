@@ -47,25 +47,44 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="Jurassic">
-      <HintPath>$(ProjectDir)/Scripting/Jurassic.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Metadata">
+      <HintPath>packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython">
+      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.Modules.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.SQLite">
+      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Wpf">
+      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Building\BuildPositions.cs" />
-    <Compile Include="Building\BuildRotations.cs" />
-    <Compile Include="Building\Ghost.cs" />
-    <Compile Include="Building\Grid.cs" />
-    <Compile Include="Building\SavedChunk.cs" />
-    <Compile Include="Building\SavedStructure.cs" />
-    <Compile Include="Building\Structure.cs" />
+    <Compile Include="World\BuildPositions.cs" />
+    <Compile Include="World\BuildRotations.cs" />
+    <Compile Include="World\Chunk.cs" />
+    <Compile Include="World\Ghost.cs" />
+    <Compile Include="World\Grid.cs" />
+    <Compile Include="World\SavedChunk.cs" />
+    <Compile Include="World\SavedStructure.cs" />
+    <Compile Include="World\Structure.cs" />
     <Compile Include="Game\Startup.cs" />
+    <Compile Include="Items\DroppedItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scripting\Types\JsVector3.cs" />
     <Compile Include="Scripting\API.cs" />
     <Compile Include="Scripting\BindingObject.cs" />
     <Compile Include="Scripting\Bindings.cs" />
@@ -73,9 +92,10 @@
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
     <Compile Include="Game\SteelMath.cs" />
+    <Compile Include="Scripting\Types\PyVector3.cs" />
     <Compile Include="UI\ConsoleWindow.cs" />
     <Compile Include="UI\HUD.cs" />
-    <Compile Include="Building\Building.cs" />
+    <Compile Include="World\World.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Net\Net.cs" />
     <Compile Include="Player\Player.cs" />

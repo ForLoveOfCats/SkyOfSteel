@@ -1,5 +1,6 @@
+using System;
 using Godot;
-using Jurassic;
+using Microsoft.Scripting.Hosting;
 
 
 public class Startup : Node
@@ -35,25 +36,26 @@ public class Startup : Node
 
 		//autoexec.js is executed afterwards
 		File Autoexec = new File();
-		if(Autoexec.FileExists("user://autoexec.js"))
+		if(Autoexec.FileExists("user://autoexec.py"))
 		{
-			Autoexec.Open("user://autoexec.js", 1);
+			Autoexec.Open("user://autoexec.py", 1);
 			Console.Print("Autoexec loaded");
 			try
 			{
-				Scripting.ConsoleEngine.Execute(Autoexec.GetAsText());
+				Scripting.ConsoleEngine.Execute(Autoexec.GetAsText(), Scripting.ConsoleScope);
 				Console.Print("Successfully executed autoexec");
 			}
-			catch(JavaScriptException Error)
+			catch(Exception Error)
 			{
-				Console.Print(Error.Message + " @ line " + Error.LineNumber.ToString());
+				ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
+				Console.Print(EO.FormatException(Error));
 				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
 			}
 		}
 		else
 		{
 			Console.Print("Autoexec not found, creating a default one");
-			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/autoexec.js", "//This is your autoexec\n//It is executed directly after command line arugments are");
+			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/autoexec.py", "#This is your autoexec\n#It is executed directly after command line arugments are\n\n");
 		}
 		Autoexec.Close();
 	}

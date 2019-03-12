@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Alpha.png-bfd319a14040ef15017e97efe91428e3.stex"
+path="res://.import/ERROR.png-7eca1aa90837c8555fd9917504ac44dc.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://UI/Textures/Alpha.png"
-dest_files=[ "res://.import/Alpha.png-bfd319a14040ef15017e97efe91428e3.stex" ]
+source_file="res://Items/Textures/ERROR.png"
+dest_files=[ "res://.import/ERROR.png-7eca1aa90837c8555fd9917504ac44dc.stex" ]
 
 [params]
 

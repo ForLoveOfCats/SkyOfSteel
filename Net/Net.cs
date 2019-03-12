@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class Net : Node
 {
 	private const int MaxWaitForServerDelay = 10;
-	private const double VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
+	private const float VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
 	                                                    their version before disconnecting from a client which refuses
 	                                                    to identify their version*/
 
@@ -17,7 +17,7 @@ public class Net : Node
 	public static string Ip { get; private set; }
 
 	public static List<int> PeerList = new List<int>();
-	public static Dictionary<int, double> WaitingForVersion = new Dictionary<int, double>();
+	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
 	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
 
@@ -83,7 +83,7 @@ public class Net : Node
 		if(GetTree().IsNetworkServer())
 		{
 			//If we are the server
-			WaitingForVersion.Add(Id, 0d); //then add new client to WaitingForVersion
+			WaitingForVersion.Add(Id, 0); //then add new client to WaitingForVersion
 		}
 	}
 
@@ -106,7 +106,7 @@ public class Net : Node
 
 		WaitingForVersion.Remove(GetTree().GetRpcSenderId());
 
-		Building.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
+		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
 		SetupNewPeer(GetTree().GetRpcSenderId());
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
@@ -118,11 +118,6 @@ public class Net : Node
 				continue;
 			}
 			RpcId(GetTree().GetRpcSenderId(), nameof(SetupNewPeer), Id);
-		}
-
-		if(Scripting.ClientGmScript != null)
-		{
-			Scripting.Self.RpcId(GetTree().GetRpcSenderId(), nameof(Scripting.NetLoadClientScript), new object[] {Scripting.ClientGmScript});
 		}
 
 		RpcId(GetTree().GetRpcSenderId(), nameof(ReadyToRequestWorld), new object[] {});
@@ -288,7 +283,7 @@ public class Net : Node
 	[Remote]
 	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
 	{
-		Building.Self.RpcId(ServerId, nameof(Building.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
 	}
 
 
@@ -302,14 +297,14 @@ public class Net : Node
 		}
 
 		List<Tuple<int,int>> ToRemove = new List<Tuple<int,int>>();
-		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Building.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(Building.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
-					foreach(Structure CurrentStructure in Chunk.Value)
+					foreach(Structure CurrentStructure in Chunk.Value.Structures)
 					{
 						CurrentStructure.Show();
 					}
@@ -317,7 +312,7 @@ public class Net : Node
 			}
 			else
 			{
-				foreach(Structure CurrentStructure in Chunk.Value)
+				foreach(Structure CurrentStructure in Chunk.Value.Structures)
 				{
 					if(Self.GetTree().IsNetworkServer())
 					{
@@ -336,12 +331,12 @@ public class Net : Node
 		}
 		foreach(Tuple<int,int> Chunk in ToRemove)
 		{
-			Building.Chunks.Remove(Chunk);
+			World.Chunks.Remove(Chunk);
 		}
 
 		if(!Self.GetTree().IsNetworkServer())
 		{
-			Building.Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+			World.Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
 		}
 	}
 

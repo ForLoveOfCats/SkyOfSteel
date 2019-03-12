@@ -6,12 +6,10 @@
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
 
 [sub_resource type="SpatialMaterial" id=1]
-
 albedo_texture = ExtResource( 3 )
 roughness = 0.0
 
 [sub_resource type="CapsuleShape" id=2]
-
 radius = 1.24303
 height = 4.26055
 
