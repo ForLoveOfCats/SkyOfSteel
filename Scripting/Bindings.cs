@@ -11,7 +11,6 @@ public class Bindings : Node
 	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
-    private static int JOYSTICKSENSITIVITY = 10;
 
 	private static Bindings Self;
 	private Bindings()
@@ -314,25 +313,25 @@ public class Bindings : Node
             if (Event.IsAction("player_input_look_up")) // Move the Y axis
             {
                 InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
-                a.Relative = new Vector2(0,-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue()); // All we need to know is whether we need to move the X or the Y axis.
+                a.Relative = new Vector2(0,-Game.JoystickSensitivity * -JoyMotionEvent.GetAxisValue()); // All we need to know is whether we need to move the X or the Y axis.
                 this._Input(a);
             }
             if (Event.IsAction("player_input_look_down")) // Move the Y axis
             {
                 InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
-                a.Relative = new Vector2(0,-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue()); // All we need to know is whether we need to move the X or the Y axis.
+                a.Relative = new Vector2(0,-Game.JoystickSensitivity * -JoyMotionEvent.GetAxisValue()); // All we need to know is whether we need to move the X or the Y axis.
                 this._Input(a);
             }
             if (Event.IsAction("player_input_look_left")) // Move the X axis
             {
                 InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
-                a.Relative = new Vector2(-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
+                a.Relative = new Vector2(-Game.JoystickSensitivity * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
                 this._Input(a);
             }
             if (Event.IsAction("player_input_look_right")) // Move the X axis
             {
                 InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
-                a.Relative = new Vector2(-JOYSTICKSENSITIVITY * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
+                a.Relative = new Vector2(-Game.JoystickSensitivity * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
                 this._Input(a);
             }
             

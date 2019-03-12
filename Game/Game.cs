@@ -19,6 +19,7 @@ public class Game : Node
 	public static StructureRootClass StructureRoot;
 
 	public static float MouseSensitivity = 1;
+	public static float JoystickSensitivity = 10;
 	public static int ChunkRenderDistance = 1;
 
 	public static string Nickname = "";
