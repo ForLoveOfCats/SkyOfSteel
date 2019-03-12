@@ -90,13 +90,15 @@ public class World : Node
 	{
 		if(ChunkExists(Branch.Translation))
 		{
-			System.Collections.Generic.List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
+			List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
 			Chunk.Add(Branch);
 			Chunks[GetChunkTuple(Branch.Translation)].Structures = Chunk;
 		}
 		else
 		{
-			Chunks.Add(GetChunkTuple(Branch.Translation), new ChunkClass(new List<Structure>{Branch}));
+			ChunkClass Chunk = new ChunkClass();
+			Chunk.Structures = new List<Structure>{Branch};
+			Chunks.Add(GetChunkTuple(Branch.Translation), Chunk);
 		}
 	}
 

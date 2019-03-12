@@ -6,9 +6,4 @@ using System.Collections.Generic;
 public class ChunkClass
 {
 	public List<Structure> Structures = new List<Structure>();
-
-	public ChunkClass(List<Structure> StructuresArg)
-	{
-		Structures = StructuresArg;
-	}
 }
