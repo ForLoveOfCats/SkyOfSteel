@@ -48,19 +48,26 @@ public class GridClass
 
 	public void AddItem(IInGrid Item)
 	{
-		List<IInGrid> Items;
-		foreach(Vector3 Area in CalculateAreas(Item.Translation))
+		if(Removals.Contains(Item))
 		{
-			Dict.TryGetValue(Area, out Items);
-			if(Items == null)
+			Removals.Remove(Item);
+		}
+		else
+		{
+			List<IInGrid> Items;
+			foreach(Vector3 Area in CalculateAreas(Item.Translation))
 			{
-				Items = new List<IInGrid>() {Item};
+				Dict.TryGetValue(Area, out Items);
+				if(Items == null)
+				{
+					Items = new List<IInGrid>() {Item};
+				}
+				else if(!Items.Contains(Item))
+				{
+					Items.Add(Item);
+				}
+				Dict[Area] = Items;
 			}
-			else if(!Items.Contains(Item))
-			{
-				Items.Add(Item);
-			}
-			Dict[Area] = Items;
 		}
 	}
 
