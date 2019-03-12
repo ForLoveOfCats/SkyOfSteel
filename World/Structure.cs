@@ -22,8 +22,6 @@ public class Structure : StaticBody, IInGrid
 
 		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
 		{
-			World.Grid.UpdateNearby(Translation);
-
 			Net.SteelRpc(World.Self, nameof(World.Remove), GetName());
 			World.Self.Remove(GetName());
 		}

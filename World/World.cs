@@ -282,6 +282,7 @@ public class World : Node
 				World.Chunks.Remove(ChunkTuple);
 			}
 
+			World.Grid.UpdateNearby(Branch.Translation);
 			World.Grid.QueueRemoveItem(Branch);
 			Branch.QueueFree();
 		}
