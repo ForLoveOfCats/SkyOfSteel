@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-public class DroppedItem : KinematicBody
+public class DroppedItem : KinematicBody, IInGrid
 {
 	private const float Gravity = 14f;
 	private const float MaxFallSpeed = -40f;
@@ -18,6 +18,13 @@ public class DroppedItem : KinematicBody
 		Mat.Shader = Items.StructureShader;
 		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
 		GetNode<MeshInstance>("MeshInstance").MaterialOverride = Mat;
+	}
+
+
+	public void GridUpdate()
+	{
+		PhysicsEnabled = true;
+		World.Grid.QueueRemoveItem(this);
 	}
 
 
@@ -47,6 +54,7 @@ public class DroppedItem : KinematicBody
 			else
 			{
 				Momentum = new Vector3(0,0,0);
+				World.Grid.AddItem(this);
 			}
 		}
 	}

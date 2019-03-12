@@ -17,6 +17,8 @@ public class GridClass
 	private const int PlatformSize = World.PlatformSize;
 	private Dictionary<Vector3, List<IInGrid>> Dict = new Dictionary<Vector3, List<IInGrid>>();
 
+	private List<IInGrid> Removals = new List<IInGrid>();
+
 
 	private Vector3 CalculateArea(Vector3 Position)
 	{
@@ -54,7 +56,7 @@ public class GridClass
 			{
 				Items = new List<IInGrid>() {Item};
 			}
-			else
+			else if(!Items.Contains(Item))
 			{
 				Items.Add(Item);
 			}
@@ -63,40 +65,90 @@ public class GridClass
 	}
 
 
-	public void RemoveItem(IInGrid Item)
+	//Items cannot be removed from the grid while updating
+	//as we cannot modify the List while foreaching it
+	public void QueueRemoveItem(IInGrid Item)
 	{
-		foreach(Vector3 Area in CalculateAreas(Item.Translation))
+		Removals.Add(Item);
+	}
+
+
+	//Must be called periodicly
+	public void DoRemoves()
+	{
+		foreach(IInGrid Item in Removals)
 		{
-			List<IInGrid> Items;
-			Dict.TryGetValue(Area, out Items);
-
-			if(Items != null)
+			foreach(Vector3 Area in CalculateAreas(Item.Translation))
 			{
-				Items.Remove(Item);
+				List<IInGrid> Items;
+				Dict.TryGetValue(Area, out Items);
 
-				if(Items.Count <= 0)
+				if(Items != null)
 				{
-					Dict.Remove(Area);
-				}
-				else
-				{
-					Dict[Area] = Items;
+					Items.Remove(Item);
+
+					if(Items.Count <= 0)
+					{
+						Dict.Remove(Area);
+					}
+					else
+					{
+						Dict[Area] = Items;
+					}
 				}
 			}
 		}
+		Removals.Clear();
 	}
 
 
 	public List<IInGrid> GetItems(Vector3 Position)
 	{
 		List<IInGrid> Items;
-		Dict.TryGetValue(Position, out Items);
+		Dict.TryGetValue(CalculateArea(Position), out Items);
 
 		if(Items == null)
 		{
 			return new List<IInGrid>() {};
 		}
 		return Items;
+	}
+
+
+	public void UpdateArea(Vector3 Position)
+	{
+		foreach(IInGrid Item in GetItems(Position))
+		{
+			Item.GridUpdate();
+		}
+	}
+
+
+	public void UpdateNearby(Vector3 Position)
+	{
+		HashSet<Vector3> Areas = new HashSet<Vector3>();
+
+		foreach(Vector3 CorePos in CalculateAreas(Position))
+		{
+			Areas.Add(CorePos);
+
+			//Forward/backward
+			Areas.Add(CorePos + new Vector3(0, 0, PlatformSize));
+			Areas.Add(CorePos + new Vector3(0, 0, -PlatformSize));
+
+			//Right/left
+			Areas.Add(CorePos + new Vector3(PlatformSize, 0, 0));
+			Areas.Add(CorePos + new Vector3(-PlatformSize, 0, 0));
+
+			//Up/down
+			Areas.Add(CorePos + new Vector3(0, PlatformSize, 0));
+			Areas.Add(CorePos + new Vector3(0, -PlatformSize, 0));
+		}
+
+		foreach(Vector3 Area in Areas)
+		{
+			UpdateArea(Area);
+		}
 	}
 
 

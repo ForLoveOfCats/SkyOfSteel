@@ -282,7 +282,7 @@ public class World : Node
 				World.Chunks.Remove(ChunkTuple);
 			}
 
-			World.Grid.RemoveItem(Branch);
+			World.Grid.QueueRemoveItem(Branch);
 			Branch.QueueFree();
 		}
 
@@ -319,5 +319,11 @@ public class World : Node
 
 		DroppedItems.Add(ToDrop);
 		Game.StructureRoot.AddChild(ToDrop);
+	}
+
+
+	public override void _Process(float Delta)
+	{
+		Grid.DoRemoves();
 	}
 }
