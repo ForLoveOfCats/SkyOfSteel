@@ -3,6 +3,7 @@ using static Godot.Mathf;
 using System.Collections.Generic;
 
 
+
 public interface IInGrid
 {
 	Vector3 Translation { get; set; }
