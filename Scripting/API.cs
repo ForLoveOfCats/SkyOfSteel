@@ -117,6 +117,16 @@ public class API : Node
 				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string InputString){
 					Bindings.Bind(FunctionName, InputString);
 				})};
+                
+            case "bind_controller_button":
+                return new List<object> {Name, new Action<string, string, int>(delegate(string FunctionName, string InputString, int ControllerButton){
+					Bindings.Bind(FunctionName, InputString, ControllerButton);
+				})};
+                
+            case "bind_controller_axis":
+                return new List<object> {Name, new Action<string, string, int, int>(delegate(string FunctionName, string InputString, int ControllerButton, int Axis){
+					Bindings.Bind(FunctionName, InputString, ControllerButton, Axis);
+				})};
 
 			case "unbind":
 				return new List<object> {Name, new Action<string>(delegate(string FunctionName){
@@ -279,9 +289,9 @@ public class API : Node
 
 			case "fps_max":
 				return new List<object> {Name, new Action<float>(delegate(float TargetFps){
-					if(TargetFps <= 1)
+					if(Double.IsNaN(TargetFps) || Double.IsInfinity(TargetFps) || TargetFps < 0)
 					{
-						Console.ThrowPrint($"Please provide a valid fps value which is greater than 1");
+						Console.ThrowPrint($"Please provide a valid positive max fps value which is less than Infinity");
 						return;
 					}
 					Engine.SetTargetFps(Convert.ToInt32(TargetFps));
@@ -397,6 +407,8 @@ public class API : Node
 				Output.Add(GetDelCall("disconnect"));
 				Output.Add(GetDelCall("peerlist_get"));
 				Output.Add(GetDelCall("bind"));
+                Output.Add(GetDelCall("bind_controller_axis"));
+                Output.Add(GetDelCall("bind_controller_button"));
 				Output.Add(GetDelCall("unbind"));
 				Output.Add(GetDelCall("player_input_forward"));
 				Output.Add(GetDelCall("player_input_forward_get"));

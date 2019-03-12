@@ -87,7 +87,7 @@ public class Player : KinematicBody
 
 			AddChild(HUDInstance);
 
-			GhostInstance = ((PackedScene)(GD.Load("res://World/Ghost.tscn"))).Instance() as Ghost;
+			GhostInstance = ((PackedScene)(GD.Load("res://Building/Ghost.tscn"))).Instance() as Ghost;
 			GhostInstance.Hide();
 			GetParent().CallDeferred("add_child", GhostInstance);
 		}
@@ -527,7 +527,7 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null && GhostInstance.CanBuild)
 					{
-						World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
+						Building.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
 						//ID 1 for now so all client own all non-default structures
 					}
 				}
@@ -821,9 +821,9 @@ public class Player : KinematicBody
 
 		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees);
 
-		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
+		if(!Building.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
-			CurrentChunk = World.GetChunkTuple(Translation);
+			CurrentChunk = Building.GetChunkTuple(Translation);
 			Net.UnloadAndRequestChunks();
 		}
 	}

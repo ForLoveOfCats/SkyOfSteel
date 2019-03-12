@@ -118,7 +118,7 @@ public class Game : Node
 
 	private static void SetupWorld()
 	{
-		World.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+		Building.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 	}
 
 
@@ -160,9 +160,9 @@ public class Game : Node
 
 		Scripting.UnloadGameMode();
 
-		World.Chunks.Clear();
-		World.RemoteLoadedChunks.Clear();
-		World.Grid.Clear();
+		Building.Chunks.Clear();
+		Building.RemoteLoadedChunks.Clear();
+		Building.Grid.Clear();
 
 		WorldOpen = false;
 	}
@@ -177,9 +177,9 @@ public class Game : Node
 		}
 
 		int SaveCount = 0;
-		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, List<Structure>> Chunk in Building.Chunks)
 		{
-			SaveCount += World.SaveChunk(Chunk.Key, SaveName);
+			SaveCount += Building.SaveChunk(Chunk.Key, SaveName);
 		}
 		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
 	}
@@ -191,9 +191,9 @@ public class Game : Node
 		if(SaveDir.DirExists("user://saves/"+SaveName))
 		{
 			List<Structure> Branches = new List<Structure>();
-			foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in World.Chunks)
+			foreach(KeyValuePair<Tuple<int,int>, List<Structure>> Chunk in Building.Chunks)
 			{
-				foreach(Structure Branch in Chunk.Value.Structures)
+				foreach(Structure Branch in Chunk.Value)
 				{
 					Branches.Add(Branch);
 				}
@@ -202,11 +202,11 @@ public class Game : Node
 			{
 				Branch.Remove(Force:true);
 			}
-			World.Chunks.Clear();
-			World.Grid.Clear();
-			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in World.RemoteLoadedChunks)
+			Building.Chunks.Clear();
+			Building.Grid.Clear();
+			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in Building.RemoteLoadedChunks)
 			{
-				World.RemoteLoadedChunks[Pair.Key].Clear();
+				Building.RemoteLoadedChunks[Pair.Key].Clear();
 			}
 			SetupWorld();
 
@@ -241,7 +241,7 @@ public class Game : Node
 					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 					if(Info != null)
 					{
-						World.Place(Info.Item1, Info.Item2, Info.Item3, 1);
+						Building.Place(Info.Item1, Info.Item2, Info.Item3, 1);
 						PlaceCount++;
 					}
 				}

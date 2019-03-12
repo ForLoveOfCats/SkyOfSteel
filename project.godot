@@ -26,10 +26,12 @@ Console="*res://Scripting/Console.cs"
 Scripting="*res://Scripting/Scripting.cs"
 Net="*res://Net/Net.cs"
 Bindings="*res://Scripting/Bindings.cs"
+WorldAutoLoad="*res://World/World.cs"
 Items="*res://Items/Items.cs"
-WorldAutoload="*res://World/World.cs"
+Building="*res://Building/Building.cs"
 Menu="*res://UI/Menu/Menu.cs"
 Startup="*res://Game/Startup.cs"
+Constants="*res://Scripting/Constants.cs"
 
 [display]
 
