@@ -137,19 +137,16 @@ public class GridClass
 
 		foreach(Vector3 CorePos in CalculateAreas(Position))
 		{
-			Areas.Add(CorePos);
-
-			//Forward/backward
-			Areas.Add(CorePos + new Vector3(0, 0, PlatformSize));
-			Areas.Add(CorePos + new Vector3(0, 0, -PlatformSize));
-
-			//Right/left
-			Areas.Add(CorePos + new Vector3(PlatformSize, 0, 0));
-			Areas.Add(CorePos + new Vector3(-PlatformSize, 0, 0));
-
-			//Up/down
-			Areas.Add(CorePos + new Vector3(0, PlatformSize, 0));
-			Areas.Add(CorePos + new Vector3(0, -PlatformSize, 0));
+			for(float MulX = -1; MulX <= 1; MulX++)
+			{
+				for(float MulY = -1; MulY <= 1; MulY++)
+				{
+					for(float MulZ = -1; MulZ <= 1; MulZ++)
+					{
+						Areas.Add(CorePos + new Vector3(MulX*PlatformSize, MulY*PlatformSize, MulZ*PlatformSize));
+					}
+				}
+			}
 		}
 
 		foreach(Vector3 Area in Areas)
