@@ -289,7 +289,8 @@ public class World : Node
 	}
 
 
-	//Should be able to be called without rpc yet only run on server
+	//Should be able to be called without RPC yet only run on server
+	//Has to be non-static to be RPC-ed
 	[Remote]
 	public void DropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
 	{
@@ -308,6 +309,7 @@ public class World : Node
 	}
 
 
+	//Has to be non-static to be RPC-ed
 	[Remote]
 	public void NetDropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
 	{
