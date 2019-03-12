@@ -8,6 +8,7 @@ public class DroppedItem : KinematicBody, IInGrid
 	private const float MaxFallSpeed = -40f;
 	private const float RPS = 0.5f; //Revolutions Per Second
 
+	public System.Tuple<int, int> CurrentChunkTuple;
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
 	private bool PhysicsEnabled = true;
 	public Items.TYPE Type;
@@ -18,6 +19,8 @@ public class DroppedItem : KinematicBody, IInGrid
 		Mat.Shader = Items.StructureShader;
 		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
 		GetNode<MeshInstance>("MeshInstance").MaterialOverride = Mat;
+
+		CurrentChunkTuple = World.GetChunkTuple(Translation);
 	}
 
 
@@ -41,6 +44,12 @@ public class DroppedItem : KinematicBody, IInGrid
 		if(PhysicsEnabled)
 		{
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0));
+			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
+			{
+				World.Chunks[CurrentChunkTuple].Items.Remove(this);
+				CurrentChunkTuple = World.GetChunkTuple(Translation);
+				World.AddItemToChunk(this);
+			}
 
 			PhysicsEnabled = !IsOnFloor();
 			if(PhysicsEnabled)

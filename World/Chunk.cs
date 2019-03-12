@@ -6,4 +6,5 @@ using System.Collections.Generic;
 public class ChunkClass
 {
 	public List<Structure> Structures = new List<Structure>();
+	public List<DroppedItem> Items = new List<DroppedItem>();
 }

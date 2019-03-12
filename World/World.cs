@@ -103,6 +103,23 @@ public class World : Node
 	}
 
 
+	public static void AddItemToChunk(DroppedItem Item)
+	{
+		if(ChunkExists(Item.Translation))
+		{
+			List<DroppedItem> Items = Chunks[GetChunkTuple(Item.Translation)].Items;
+			Items.Add(Item);
+			Chunks[GetChunkTuple(Item.Translation)].Items = Items;
+		}
+		else
+		{
+			ChunkClass Chunk = new ChunkClass();
+			Chunk.Items = new List<DroppedItem>{Item};
+			Chunks.Add(GetChunkTuple(Item.Translation), Chunk);
+		}
+	}
+
+
 	public static void PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
 	{
 		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
@@ -323,6 +340,7 @@ public class World : Node
 		ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
 
 		DroppedItems.Add(ToDrop);
+		AddItemToChunk(ToDrop);
 		Game.StructureRoot.AddChild(ToDrop);
 	}
 
