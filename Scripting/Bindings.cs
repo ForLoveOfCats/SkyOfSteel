@@ -6,9 +6,9 @@ using System.Collections.Generic;
 public class Bindings : Node
 {
 	public enum BIND_TYPE {SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
-	private static string[] MouseButtonList = {"MouseOne", "MouseTwo", "MouseThree"};
-	private static string[] MouseWheelList = {"WheelUp", "WheelDown"};
-	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
+	private static List<string> MouseButtonList = new List<string>{"MouseOne", "MouseTwo", "MouseThree"};
+	private static List<string> MouseWheelList = new List<string>{"WheelUp", "WheelDown"};
+	private static List<string> AxisList = new List<string>{"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
@@ -62,15 +62,15 @@ public class Bindings : Node
 		}
 
 		BIND_TYPE Type = BIND_TYPE.SCANCODE;
-		if(System.Array.IndexOf(MouseButtonList, InputString) >= 0)
+		if(MouseButtonList.Contains(InputString))
 		{
 			Type = BIND_TYPE.MOUSEBUTTON;
 		}
-		if(System.Array.IndexOf(MouseWheelList, InputString) >= 0)
+		if(MouseWheelList.Contains(InputString))
 		{
 			Type = BIND_TYPE.MOUSEWHEEL;
 		}
-		if(System.Array.IndexOf(AxisList, InputString) >= 0)
+		if(AxisList.Contains(InputString))
 		{
 			Type = BIND_TYPE.AXIS;
 		}
