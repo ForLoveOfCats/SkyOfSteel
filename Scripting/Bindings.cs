@@ -193,15 +193,14 @@ public class Bindings : Node
 			}
 			BindingsWithArg.Add(Bind);
 		}
-        
-        if (ConsoleInput != -1) 
+
+        if (ConsoleInput != -1)
         {
             if (AxisDirection == 0) // It's a button
             {
                 InputEventJoypadButton Event = new InputEventJoypadButton();
-                Event.ButtonIndex = ConsoleInput; 
+                Event.ButtonIndex = ConsoleInput;
                 InputMap.ActionAddEvent(FunctionName, Event);
-                    
             }
             else // It's a joystick
             {
@@ -210,7 +209,6 @@ public class Bindings : Node
                 Event.AxisValue = AxisDirection;
                 InputMap.ActionAddEvent(FunctionName, Event);
             }
-            
         }
 	}
 
@@ -257,12 +255,10 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}(0)", Scripting.ConsoleScope);
 				}
 			}
@@ -270,20 +266,17 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
 				}
 			}
 		}
-        
+
 		foreach(BindingObject Binding in BindingsWithoutArg)
 		{
-            
 			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
 				}
 			}
@@ -291,7 +284,6 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-                    
 					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
 				}
 			}
@@ -307,9 +299,6 @@ public class Bindings : Node
 		}
         if(Event is InputEventJoypadMotion JoyMotionEvent)
         {
-            
-            
-            
             if (Event.IsAction("player_input_look_up")) // Move the Y axis
             {
                 InputEventMouseMotion a = new InputEventMouseMotion(); // Create phoney mouse Event
@@ -334,12 +323,9 @@ public class Bindings : Node
                 a.Relative = new Vector2(-Game.JoystickSensitivity * -JoyMotionEvent.GetAxisValue(),0); // All we need to know is whether we need to move the X or the Y axis.
                 this._Input(a);
             }
-            
-            
         }
 		if(Event is InputEventMouseMotion MotionEvent)
 		{
-            
 			foreach(BindingObject Binding in BindingsWithArg)
 			{
 				if(Binding.Type == BIND_TYPE.AXIS)
@@ -361,7 +347,6 @@ public class Bindings : Node
 					}
 				}
 			}
-            
 
 			foreach(BindingObject Binding in BindingsWithoutArg)
 			{
