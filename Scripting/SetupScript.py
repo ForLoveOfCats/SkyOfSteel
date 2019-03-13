@@ -15,30 +15,30 @@ import Menu
 import Startup
 
 
-bind("player_input_forward", "W")
-bind("player_input_backward", "S")
-bind("player_input_right", "D")
-bind("player_input_left", "A")
-bind("player_input_sprint", "Shift")
-bind("player_input_jump", "Space")
-bind("player_input_crouch", "Control")
+bind("W", "player_input_forward")
+bind("S", "player_input_backward")
+bind("D", "player_input_right")
+bind("A", "player_input_left")
+bind("Shift", "player_input_sprint")
+bind("Space", "player_input_jump")
+bind("Control", "player_input_crouch")
 
-bind("player_input_inventory_up", "WheelUp")
-bind("player_input_inventory_down", "WheelDown")
+bind("WheelUp", "player_input_inventory_up")
+bind("WheelDown", "player_input_inventory_down")
 
-bind("player_input_look_up", "MouseUp")
-bind("player_input_look_down", "MouseDown")
-bind("player_input_look_right", "MouseRight")
-bind("player_input_look_left", "MouseLeft")
+bind("MouseUp", "player_input_look_up")
+bind("MouseDown", "player_input_look_down")
+bind("MouseRight", "player_input_look_right")
+bind("MouseLeft", "player_input_look_left")
 
-bind("player_input_build_rotate", "R")
-bind("player_input_drop", "Q")
+bind("R", "player_input_build_rotate")
+bind("Q", "player_input_drop")
 
-bind("player_position_reset", "K")
-bind("fly_toggle", "T")
+bind("K", "player_position_reset")
+bind("T", "fly_toggle")
 
-bind("player_input_primary_fire", "MouseOne")
-bind("player_input_secondary_fire", "MouseTwo")
+bind("MouseOne", "player_input_primary_fire")
+bind("MouseTwo", "player_input_secondary_fire")
 
 chunk_render_distance(10)
 fps_max(200)

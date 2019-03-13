@@ -19,7 +19,7 @@ public class Bindings : Node
 	}
 
 
-	public static void Bind(string FunctionName, string InputString)
+	public static void Bind(string InputString, string FunctionName)
 	{
 		dynamic Variable;
 		Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);

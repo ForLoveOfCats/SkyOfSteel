@@ -114,13 +114,13 @@ public class API : Node
 				})};
 
 			case "bind":
-				return new List<object> {Name, new Action<string, string>(delegate(string FunctionName, string InputString){
-					Bindings.Bind(FunctionName, InputString);
+				return new List<object> {Name, new Action<string, string>(delegate(string InputString, string FunctionName){
+					Bindings.Bind(InputString, FunctionName);
 				})};
 
 			case "unbind":
-				return new List<object> {Name, new Action<string>(delegate(string FunctionName){
-					Bindings.UnBind(FunctionName);
+				return new List<object> {Name, new Action<string>(delegate(string InputString){
+					Bindings.UnBind(InputString);
 				})};
 
 			case "player_input_forward":
