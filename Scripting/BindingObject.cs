@@ -1,19 +1,20 @@
 class BindingObject
 {
-	public string Name = "";
-	public Bindings.BIND_TYPE Type = Bindings.BIND_TYPE.SCANCODE;
+	public string Name = null; //Null to fail early
+	public string Function = null; //Null to fail early
+	public Bindings.BIND_TYPE Type = Bindings.BIND_TYPE.UNSET;
 	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
-	public DIRECTION AxisDirection;
+	public DIRECTION AxisDirection; //Only used if Type is AXIS
 
-	public BindingObject(string NameArg, Bindings.BIND_TYPE TypeArg)
+	public BindingObject(string NameArg, string FunctionArg)
 	{
-		this.Name = NameArg;
-		this.Type = TypeArg;
+		Name = NameArg;
+		Function = FunctionArg;
 	}
 
 
 	public bool Equals(BindingObject Other)
 	{
-		return this.Name == Other.Name;
+		return Name == Other.Name;
 	}
 }
