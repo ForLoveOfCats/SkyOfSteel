@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class Bindings : Node
 {
 	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
+	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
@@ -62,7 +63,7 @@ public class Bindings : Node
 
 		BindingObject NewBind = new BindingObject(KeyName, FunctionName);
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
-		Nullable<BindingObject.DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
+		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
 		int Scancode = 0;
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
@@ -96,25 +97,25 @@ public class Bindings : Node
 
 			case("MouseUp"): {
 				NewBind.Type = TYPE.AXIS;
-				AxisDirection = BindingObject.DIRECTION.UP;
+				AxisDirection = DIRECTION.UP;
 				break;
 			}
 
 			case("MouseDown"): {
 				NewBind.Type = TYPE.AXIS;
-				AxisDirection = BindingObject.DIRECTION.DOWN;
+				AxisDirection = DIRECTION.DOWN;
 				break;
 			}
 
 			case("MouseRight"): {
 				NewBind.Type = TYPE.AXIS;
-				AxisDirection = BindingObject.DIRECTION.RIGHT;
+				AxisDirection = DIRECTION.RIGHT;
 				break;
 			}
 
 			case("MouseLeft"): {
 				NewBind.Type = TYPE.AXIS;
-				AxisDirection = BindingObject.DIRECTION.LEFT;
+				AxisDirection = DIRECTION.LEFT;
 				break;
 			}
 
@@ -162,7 +163,7 @@ public class Bindings : Node
 			case(TYPE.AXIS): {
 				InputEventMouseMotion Event = new InputEventMouseMotion();
 				InputMap.ActionAddEvent(KeyName, Event);
-				NewBind.AxisDirection = (BindingObject.DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
 				break;
 			}
 		}
@@ -292,16 +293,16 @@ public class Bindings : Node
 				{
 					switch(Binding.AxisDirection)
 					{
-						case(BindingObject.DIRECTION.UP):
+						case(DIRECTION.UP):
 							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
 							break;
-						case(BindingObject.DIRECTION.DOWN):
+						case(DIRECTION.DOWN):
 							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
 							break;
-						case(BindingObject.DIRECTION.RIGHT):
+						case(DIRECTION.RIGHT):
 							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
 							break;
-						case(BindingObject.DIRECTION.LEFT):
+						case(DIRECTION.LEFT):
 							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
 							break;
 					}
