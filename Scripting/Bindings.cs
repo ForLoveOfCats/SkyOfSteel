@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Bindings : Node
 {
-	public enum BIND_TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
+	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
@@ -67,53 +67,53 @@ public class Bindings : Node
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
 			case("MouseOne"): {
-				NewBind.Type = BIND_TYPE.MOUSEBUTTON;
+				NewBind.Type = TYPE.MOUSEBUTTON;
 				ButtonValue = ButtonList.Left;
 				break;
 			}
 			case("MouseTwo"): {
-				NewBind.Type = BIND_TYPE.MOUSEBUTTON;
+				NewBind.Type = TYPE.MOUSEBUTTON;
 				ButtonValue = ButtonList.Right;
 				break;
 			}
 			case("MouseThree"): {
-				NewBind.Type = BIND_TYPE.MOUSEBUTTON;
+				NewBind.Type = TYPE.MOUSEBUTTON;
 				ButtonValue = ButtonList.Middle;
 				break;
 			}
 
 			case("WheelUp"): {
-				NewBind.Type = BIND_TYPE.MOUSEWHEEL;
+				NewBind.Type = TYPE.MOUSEWHEEL;
 				ButtonValue = ButtonList.WheelUp;
 				break;
 			}
 
 			case("WheelDown"): {
-				NewBind.Type = BIND_TYPE.MOUSEWHEEL;
+				NewBind.Type = TYPE.MOUSEWHEEL;
 				ButtonValue = ButtonList.WheelDown;
 				break;
 			}
 
 			case("MouseUp"): {
-				NewBind.Type = BIND_TYPE.AXIS;
+				NewBind.Type = TYPE.AXIS;
 				AxisDirection = BindingObject.DIRECTION.UP;
 				break;
 			}
 
 			case("MouseDown"): {
-				NewBind.Type = BIND_TYPE.AXIS;
+				NewBind.Type = TYPE.AXIS;
 				AxisDirection = BindingObject.DIRECTION.DOWN;
 				break;
 			}
 
 			case("MouseRight"): {
-				NewBind.Type = BIND_TYPE.AXIS;
+				NewBind.Type = TYPE.AXIS;
 				AxisDirection = BindingObject.DIRECTION.RIGHT;
 				break;
 			}
 
 			case("MouseLeft"): {
-				NewBind.Type = BIND_TYPE.AXIS;
+				NewBind.Type = TYPE.AXIS;
 				AxisDirection = BindingObject.DIRECTION.LEFT;
 				break;
 			}
@@ -124,7 +124,7 @@ public class Bindings : Node
 				if(LocalScancode != 0)
 				{
 					//Is a valid Scancode
-					NewBind.Type = BIND_TYPE.SCANCODE;
+					NewBind.Type = TYPE.SCANCODE;
 					Scancode = LocalScancode;
 				}
 				else
@@ -144,22 +144,22 @@ public class Bindings : Node
 		InputMap.AddAction(KeyName);
 		switch(NewBind.Type)
 		{
-			case(BIND_TYPE.SCANCODE): {
+			case(TYPE.SCANCODE): {
 				InputEventKey Event = new InputEventKey();
 				Event.Scancode = Scancode;
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}
 
-			case(BIND_TYPE.MOUSEBUTTON):
-			case(BIND_TYPE.MOUSEWHEEL): {
+			case(TYPE.MOUSEBUTTON):
+			case(TYPE.MOUSEWHEEL): {
 				InputEventMouseButton Event = new InputEventMouseButton();
 				Event.ButtonIndex = (int)ButtonValue;
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}
 
-			case(BIND_TYPE.AXIS): {
+			case(TYPE.AXIS): {
 				InputEventMouseMotion Event = new InputEventMouseMotion();
 				InputMap.ActionAddEvent(KeyName, Event);
 				NewBind.AxisDirection = (BindingObject.DIRECTION)AxisDirection; //Has to cast as it is Nullable
@@ -237,7 +237,7 @@ public class Bindings : Node
 
 		foreach(BindingObject Binding in BindingsWithArg)
 		{
-			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
@@ -248,7 +248,7 @@ public class Bindings : Node
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}(0)", Scripting.ConsoleScope);
 				}
 			}
-			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
+			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
@@ -259,14 +259,14 @@ public class Bindings : Node
 
 		foreach(BindingObject Binding in BindingsWithoutArg)
 		{
-			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
 				}
 			}
-			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
+			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
@@ -288,7 +288,7 @@ public class Bindings : Node
 		{
 			foreach(BindingObject Binding in BindingsWithArg)
 			{
-				if(Binding.Type == BIND_TYPE.AXIS)
+				if(Binding.Type == TYPE.AXIS)
 				{
 					switch(Binding.AxisDirection)
 					{
@@ -310,7 +310,7 @@ public class Bindings : Node
 
 			foreach(BindingObject Binding in BindingsWithoutArg)
 			{
-				if(Binding.Type == BIND_TYPE.AXIS)
+				if(Binding.Type == TYPE.AXIS)
 				{
 					//Don't need to switch on the direction as it doesn't want an argument anyway
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);

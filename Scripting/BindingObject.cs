@@ -2,7 +2,7 @@ class BindingObject
 {
 	public string Name = null; //Null to fail early
 	public string Function = null; //Null to fail early
-	public Bindings.BIND_TYPE Type = Bindings.BIND_TYPE.UNSET;
+	public Bindings.TYPE Type = Bindings.TYPE.UNSET;
 	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
 	public DIRECTION AxisDirection; //Only used if Type is AXIS
 
