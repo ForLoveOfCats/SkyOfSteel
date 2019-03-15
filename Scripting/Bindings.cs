@@ -84,6 +84,18 @@ public class Bindings : Node
 				break;
 			}
 
+			case("WheelUp"): {
+				NewBind.Type = BIND_TYPE.MOUSEWHEEL;
+				ButtonValue = ButtonList.WheelUp;
+				break;
+			}
+
+			case("WheelDown"): {
+				NewBind.Type = BIND_TYPE.MOUSEWHEEL;
+				ButtonValue = ButtonList.WheelDown;
+				break;
+			}
+
 			default: {
 				//Does not match any custom string literal must either be a Scancode or is invalid
 				int LocalScancode = OS.FindScancodeFromString(KeyName);
@@ -117,7 +129,8 @@ public class Bindings : Node
 				break;
 			}
 
-			case(BIND_TYPE.MOUSEBUTTON): {
+			case(BIND_TYPE.MOUSEBUTTON):
+			case(BIND_TYPE.MOUSEWHEEL): {
 				InputEventMouseButton Event = new InputEventMouseButton();
 				Event.ButtonIndex = (int)ButtonValue;
 				InputMap.ActionAddEvent(KeyName, Event);
