@@ -163,7 +163,7 @@ public class Bindings : Node
 				InputEventMouseMotion Event = new InputEventMouseMotion();
 				InputMap.ActionAddEvent(KeyName, Event);
 				NewBind.AxisDirection = (BindingObject.DIRECTION)AxisDirection; //Has to cast as it is Nullable
-					break;
+				break;
 			}
 		}
 		if(ArgCount == 0)
