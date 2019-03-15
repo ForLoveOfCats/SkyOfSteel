@@ -6,9 +6,6 @@ using System.Collections.Generic;
 public class Bindings : Node
 {
 	public enum BIND_TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
-	private static List<string> MouseButtonList = new List<string>{"MouseOne", "MouseTwo", "MouseThree"};
-	private static List<string> MouseWheelList = new List<string>{"WheelUp", "WheelDown"};
-	private static List<string> AxisList = new List<string>{"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
