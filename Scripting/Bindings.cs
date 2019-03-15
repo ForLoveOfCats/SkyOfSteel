@@ -65,6 +65,7 @@ public class Bindings : Node
 
 		BindingObject NewBind = new BindingObject(KeyName, FunctionName);
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
+		Nullable<BindingObject.DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
 		int Scancode = 0;
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
@@ -93,6 +94,30 @@ public class Bindings : Node
 			case("WheelDown"): {
 				NewBind.Type = BIND_TYPE.MOUSEWHEEL;
 				ButtonValue = ButtonList.WheelDown;
+				break;
+			}
+
+			case("MouseUp"): {
+				NewBind.Type = BIND_TYPE.AXIS;
+				AxisDirection = BindingObject.DIRECTION.UP;
+				break;
+			}
+
+			case("MouseDown"): {
+				NewBind.Type = BIND_TYPE.AXIS;
+				AxisDirection = BindingObject.DIRECTION.DOWN;
+				break;
+			}
+
+			case("MouseRight"): {
+				NewBind.Type = BIND_TYPE.AXIS;
+				AxisDirection = BindingObject.DIRECTION.RIGHT;
+				break;
+			}
+
+			case("MouseLeft"): {
+				NewBind.Type = BIND_TYPE.AXIS;
+				AxisDirection = BindingObject.DIRECTION.LEFT;
 				break;
 			}
 
@@ -135,6 +160,13 @@ public class Bindings : Node
 				Event.ButtonIndex = (int)ButtonValue;
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
+			}
+
+			case(BIND_TYPE.AXIS): {
+				InputEventMouseMotion Event = new InputEventMouseMotion();
+				InputMap.ActionAddEvent(KeyName, Event);
+				NewBind.AxisDirection = (BindingObject.DIRECTION)AxisDirection; //Has to cast as it is Nullable
+					break;
 			}
 		}
 		if(ArgCount == 0)
