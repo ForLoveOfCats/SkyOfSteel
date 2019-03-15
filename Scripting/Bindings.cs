@@ -66,7 +66,6 @@ public class Bindings : Node
 		BindingObject NewBind = new BindingObject(KeyName, FunctionName);
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
 		int Scancode = 0;
-		bool IsNewBindValid = true;
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
 			case("MouseOne"): {
@@ -97,47 +96,46 @@ public class Bindings : Node
 				else
 				{
 					//If not a valid Scancode then the provided key must not be a valid key
-					IsNewBindValid = false;
+					return;
 				}
 				break;
 			}
 		}
+		//Now we have everything we need to setup the bind with Godot's input system
 
-		if(IsNewBindValid)
+		//First clear any bind with the same key
+		UnBind(KeyName);
+
+		//Then add new bind
+		InputMap.AddAction(KeyName);
+		switch(NewBind.Type)
 		{
-			//First clear any bind with the same key
-			UnBind(KeyName);
+			case(BIND_TYPE.SCANCODE): {
+				InputEventKey Event = new InputEventKey();
+				Event.Scancode = Scancode;
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
+			}
 
-			//Then add new bind
-			InputMap.AddAction(KeyName);
-			switch(NewBind.Type)
-			{
-				case(BIND_TYPE.SCANCODE): {
-					InputEventKey Event = new InputEventKey();
-					Event.Scancode = Scancode;
-					InputMap.ActionAddEvent(KeyName, Event);
-					break;
-				}
-
-				case(BIND_TYPE.MOUSEBUTTON): {
-					InputEventMouseButton Event = new InputEventMouseButton();
-					Event.ButtonIndex = (int)ButtonValue;
-					InputMap.ActionAddEvent(KeyName, Event);
-					break;
-				}
+			case(BIND_TYPE.MOUSEBUTTON): {
+				InputEventMouseButton Event = new InputEventMouseButton();
+				Event.ButtonIndex = (int)ButtonValue;
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
 			}
-			if(ArgCount == 0)
-			{
-				BindingsWithoutArg.Add(NewBind);
-			}
-			else if(ArgCount == 1)
-			{
-				BindingsWithArg.Add(NewBind);
-			}
-			else
-			{
-				Console.ThrowPrint("Unsupported number of arguments when adding new bind to bindings lists");
-			}
+		}
+		if(ArgCount == 0)
+		{
+			BindingsWithoutArg.Add(NewBind);
+		}
+		else if(ArgCount == 1)
+		{
+			BindingsWithArg.Add(NewBind);
+		}
+		else
+		{
+			//Sanity check
+			Console.ThrowPrint("Unsupported number of arguments when adding new bind to bindings lists");
 		}
 	}
 
