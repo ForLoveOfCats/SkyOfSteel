@@ -120,6 +120,7 @@ public class Console : Node
 	{
 		Window.Close();
 		IsOpen = false;
+		HistLocal = History.Count;
 
 		if(!Menu.IsOpen)
 		{
@@ -133,6 +134,7 @@ public class Console : Node
 	{
 		Window.Open();
 		IsOpen = true;
+		HistLocal = History.Count;
 
 		Input.SetMouseMode(Input.MouseMode.Visible);
 		Game.BindsEnabled = false;
