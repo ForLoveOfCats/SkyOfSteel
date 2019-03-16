@@ -162,6 +162,7 @@ public class GridClass
 				Item.GridUpdate();
 			}
 		}
+		QueuedUpdates.Clear();
 	}
 
 
