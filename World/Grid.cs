@@ -20,6 +20,7 @@ public class GridClass
 
 	private HashSet<Vector3> QueuedUpdates = new HashSet<Vector3>();
 	private HashSet<IInGrid> QueuedRemovals = new HashSet<IInGrid>();
+	private Dictionary<IInGrid, List<Vector3>> QueuedRemovalAreas = new Dictionary<IInGrid, List<Vector3>>();
 
 
 	private Vector3 CalculateArea(Vector3 Position)
@@ -53,6 +54,7 @@ public class GridClass
 		if(QueuedRemovals.Contains(Item))
 		{
 			QueuedRemovals.Remove(Item);
+			QueuedRemovalAreas.Remove(Item);
 		}
 		else
 		{
@@ -79,6 +81,7 @@ public class GridClass
 	public void QueueRemoveItem(IInGrid Item)
 	{
 		QueuedRemovals.Add(Item);
+		QueuedRemovalAreas[Item] = CalculateAreas(Item.Translation);
 	}
 
 
@@ -87,7 +90,7 @@ public class GridClass
 	{
 		foreach(IInGrid Item in QueuedRemovals)
 		{
-			foreach(Vector3 Area in CalculateAreas(Item.Translation))
+			foreach(Vector3 Area in QueuedRemovalAreas[Item])
 			{
 				List<IInGrid> Items;
 				Dict.TryGetValue(Area, out Items);
@@ -108,6 +111,7 @@ public class GridClass
 			}
 		}
 		QueuedRemovals.Clear();
+		QueuedRemovalAreas.Clear();
 	}
 
 
