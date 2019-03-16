@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Bindings : Node
 {
-	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
+	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, MOUSEAXIS}
 	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
@@ -96,25 +96,25 @@ public class Bindings : Node
 			}
 
 			case("MouseUp"): {
-				NewBind.Type = TYPE.AXIS;
+				NewBind.Type = TYPE.MOUSEAXIS;
 				AxisDirection = DIRECTION.UP;
 				break;
 			}
 
 			case("MouseDown"): {
-				NewBind.Type = TYPE.AXIS;
+				NewBind.Type = TYPE.MOUSEAXIS;
 				AxisDirection = DIRECTION.DOWN;
 				break;
 			}
 
 			case("MouseRight"): {
-				NewBind.Type = TYPE.AXIS;
+				NewBind.Type = TYPE.MOUSEAXIS;
 				AxisDirection = DIRECTION.RIGHT;
 				break;
 			}
 
 			case("MouseLeft"): {
-				NewBind.Type = TYPE.AXIS;
+				NewBind.Type = TYPE.MOUSEAXIS;
 				AxisDirection = DIRECTION.LEFT;
 				break;
 			}
@@ -160,7 +160,7 @@ public class Bindings : Node
 				break;
 			}
 
-			case(TYPE.AXIS): {
+			case(TYPE.MOUSEAXIS): {
 				InputEventMouseMotion Event = new InputEventMouseMotion();
 				InputMap.ActionAddEvent(KeyName, Event);
 				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
@@ -289,7 +289,7 @@ public class Bindings : Node
 		{
 			foreach(BindingObject Binding in BindingsWithArg)
 			{
-				if(Binding.Type == TYPE.AXIS)
+				if(Binding.Type == TYPE.MOUSEAXIS)
 				{
 					switch(Binding.AxisDirection)
 					{
@@ -311,7 +311,7 @@ public class Bindings : Node
 
 			foreach(BindingObject Binding in BindingsWithoutArg)
 			{
-				if(Binding.Type == TYPE.AXIS)
+				if(Binding.Type == TYPE.MOUSEAXIS)
 				{
 					//Don't need to switch on the direction as it doesn't want an argument anyway
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
