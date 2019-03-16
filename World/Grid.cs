@@ -76,6 +76,19 @@ public class GridClass
 	}
 
 
+	public List<IInGrid> GetItems(Vector3 Position)
+	{
+		List<IInGrid> Items;
+		Dict.TryGetValue(CalculateArea(Position), out Items);
+
+		if(Items == null)
+		{
+			return new List<IInGrid>() {};
+		}
+		return Items;
+	}
+
+
 	//Items cannot be removed from the grid while updating
 	//as we cannot modify the List while foreaching it
 	public void QueueRemoveItem(IInGrid Item)
@@ -112,19 +125,6 @@ public class GridClass
 		}
 		QueuedRemovals.Clear();
 		QueuedRemovalAreas.Clear();
-	}
-
-
-	public List<IInGrid> GetItems(Vector3 Position)
-	{
-		List<IInGrid> Items;
-		Dict.TryGetValue(CalculateArea(Position), out Items);
-
-		if(Items == null)
-		{
-			return new List<IInGrid>() {};
-		}
-		return Items;
 	}
 
 
