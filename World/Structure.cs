@@ -8,9 +8,7 @@ public class Structure : StaticBody, IInGrid
 
 
 	public void GridUpdate()
-	{
-		
-	}
+	{}
 
 
 	public void Remove(bool Force=false)
