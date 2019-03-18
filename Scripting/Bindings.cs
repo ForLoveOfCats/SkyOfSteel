@@ -347,6 +347,7 @@ public class Bindings : Node
 						break;
 					}
 				}
+				
 				InputMap.ActionAddEvent(KeyName, Event);
 				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
 				break;
@@ -428,6 +429,7 @@ public class Bindings : Node
 			return;
 		}
 
+		bool KeyPressed = false; // This is to make sure console controls don't interfere with K&M
 		foreach(BindingObject Binding in BindingsWithArg)
 		{
 			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
@@ -440,6 +442,11 @@ public class Bindings : Node
 				{
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}(0)", Scripting.ConsoleScope);
 				}
+				if (Input.IsActionPressed(Binding.Name)) 
+				{
+					KeyPressed = true; // Prevent Console code from making a "release" event
+				}
+
 			}
 			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
@@ -448,60 +455,61 @@ public class Bindings : Node
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
 				}
 			}
-			if(Binding.Type == TYPE.CONTROLLERAXIS)
+			else if(Binding.Type == TYPE.CONTROLLERAXIS)
+			{
+				
+				int VerticalAxis = 0; 
+				int HorizontalAxis = 0;
+				InputEventJoypadMotion StickEvent = null; 
+				
+
+				foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
+					if (Option is InputEventJoypadMotion JoyEvent) {
+						StickEvent = JoyEvent;
+					}
+				}
+				
+
+				if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
 				{
-					
-					
-					int VerticalAxis = 0; 
-					int HorizontalAxis = 0;
-					InputEventJoypadMotion StickEvent = null; 
-					
-
-					foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
-						if (Option is InputEventJoypadMotion JoyEvent) {
-							StickEvent = JoyEvent;
-						}
-					}
-					
-
-					if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
+					// We are using Left stick to look around
+					VerticalAxis = 1;
+					HorizontalAxis = 0;
+				}
+				else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
+				{
+					// We are using Right stick to look around
+					VerticalAxis = 3;
+					HorizontalAxis = 2;
+				}
+				else
+				{
+					// Something has completely glitched
+				}
+				
+				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= 0.25 || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= 0.25) 
+				{
+					float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis)*4;
+					float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis)*4;
+					switch(Binding.AxisDirection)
 					{
-						// We are using Left stick to look around
-						VerticalAxis = 1;
-						HorizontalAxis = 0;
+						case(DIRECTION.UP):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+							break;
+						case(DIRECTION.DOWN):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+							break;
+						case(DIRECTION.RIGHT):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+							break;
+						case(DIRECTION.LEFT):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+							break;
 					}
-					else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
-					{
-						// We are using Right stick to look around
-						VerticalAxis = 3;
-						HorizontalAxis = 2;
-					}
-					else
-					{
-						// Something has completely glitched
-					}
-					
-					if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= 0.25 || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= 0.25) 
-					{
-						float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis)*4;
-						float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis)*4;
-						switch(Binding.AxisDirection)
-						{
-							case(DIRECTION.UP):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
-								break;
-							case(DIRECTION.DOWN):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
-								break;
-							case(DIRECTION.RIGHT):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
-								break;
-							case(DIRECTION.LEFT):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
-								break;
-						}
-					}
-					else // Set speed to zero to simulate key release
+				}
+				else // Set speed to zero to simulate key release
+				{
+					if (!KeyPressed) // Only do this if no other keys have been pressed, so this doesn't stop movement from k&m
 					{
 						float HorizontalMovement = 0;
 						float VerticalMovement = 0;
@@ -521,20 +529,18 @@ public class Bindings : Node
 								break;
 						}
 					}
-						
-						
-						
-						
-					
-				
 				}
+				
+
+
+			}
 			
 			
 		}
 
 		foreach(BindingObject Binding in BindingsWithoutArg)
 		{
-			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON || Binding.Type == TYPE.CONTROLLERAXIS)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
