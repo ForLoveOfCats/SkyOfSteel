@@ -430,7 +430,7 @@ public class Bindings : Node
 
 		foreach(BindingObject Binding in BindingsWithArg)
 		{
-			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON || Binding.Type == TYPE.CONTROLLERAXIS)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
@@ -450,63 +450,83 @@ public class Bindings : Node
 			}
 			if(Binding.Type == TYPE.CONTROLLERAXIS)
 				{
-					if (Binding.Function.StartsWith("player_input_look")) 
-					{
-						
-						int VerticalAxis = 0; 
-						int HorizontalAxis = 0;
-						InputEventJoypadMotion StickEvent = null; 
-						
+					
+					
+					int VerticalAxis = 0; 
+					int HorizontalAxis = 0;
+					InputEventJoypadMotion StickEvent = null; 
+					
 
-						foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
-							if (Option is InputEventJoypadMotion JoyEvent) {
-								StickEvent = JoyEvent;
-							}
+					foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
+						if (Option is InputEventJoypadMotion JoyEvent) {
+							StickEvent = JoyEvent;
 						}
-						
-
-						if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
-						{
-							// We are using Left stick to look around
-							VerticalAxis = 1;
-							HorizontalAxis = 0;
-						}
-						else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
-						{
-							// We are using Right stick to look around
-							VerticalAxis = 3;
-							HorizontalAxis = 2;
-						}
-						else
-						{
-							// Something has completely glitched
-						}
-						
-						if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= 0.25 || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= 0.25) 
-						{
-							Vector2 FakeRelative = new Vector2(Input.GetJoyAxis(0,HorizontalAxis)*5,Input.GetJoyAxis(0,VerticalAxis)*5);
-							switch(Binding.AxisDirection)
-							{
-								case(DIRECTION.UP):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.y*-1))})", Scripting.ConsoleScope);
-									break;
-								case(DIRECTION.DOWN):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.y))})", Scripting.ConsoleScope);
-									break;
-								case(DIRECTION.RIGHT):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.x))})", Scripting.ConsoleScope);
-									break;
-								case(DIRECTION.LEFT):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.x*-1))})", Scripting.ConsoleScope);
-									break;
-							}
-						}
-							
-							
-							
-							
-						
 					}
+					
+
+					if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
+					{
+						// We are using Left stick to look around
+						VerticalAxis = 1;
+						HorizontalAxis = 0;
+					}
+					else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
+					{
+						// We are using Right stick to look around
+						VerticalAxis = 3;
+						HorizontalAxis = 2;
+					}
+					else
+					{
+						// Something has completely glitched
+					}
+					
+					if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= 0.25 || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= 0.25) 
+					{
+						float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis)*4;
+						float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis)*4;
+						switch(Binding.AxisDirection)
+						{
+							case(DIRECTION.UP):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.DOWN):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.RIGHT):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.LEFT):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+								break;
+						}
+					}
+					else // Set speed to zero to simulate key release
+					{
+						float HorizontalMovement = 0;
+						float VerticalMovement = 0;
+						switch(Binding.AxisDirection)
+						{
+							case(DIRECTION.UP):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.DOWN):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.RIGHT):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.LEFT):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+								break;
+						}
+					}
+						
+						
+						
+						
+					
+				
 				}
 			
 			
@@ -572,73 +592,6 @@ public class Bindings : Node
 				}
 			}
 		}
-		if (Event is InputEventJoypadMotion JoyStickEvent)
-		{
-			// This is not a general function, it is only used for looking around, so we can do this in a much more "static" way than the other events.
-			
-			// Now we know it is a looking event
-			
-			// Create Vector that simulates how far a mouse may hvae moved in that time
 		
-			foreach(BindingObject Binding in BindingsWithArg)
-			{
-				if(Binding.Type == TYPE.CONTROLLERAXIS)
-				{
-					if (Binding.Function.StartsWith("player_input_look")) 
-					{
-						if (JoyStickEvent.Axis != 0) 
-						{
-							int VerticalAxis = 0;
-							int HorizontalAxis = 0;
-							InputEventJoypadMotion StickEvent = null; 
-							/* 
-
-							foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
-								if (Option is InputEventJoypadMotion JoyEvent) {
-									StickEvent = JoyEvent;
-								}
-							}*/
-							StickEvent = JoyStickEvent;
-
-							if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
-							{
-								// We are using Left stick to look around
-								VerticalAxis = 1;
-								HorizontalAxis = 0;
-							}
-							else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
-							{
-								// We are using Right stick to look around
-								VerticalAxis = 3;
-								HorizontalAxis = 2;
-							}
-							else
-							{
-								// Something has completely glitched
-							}
-							Vector2 FakeRelative = new Vector2(Input.GetJoyAxis(0,HorizontalAxis*10),Input.GetJoyAxis(0,VerticalAxis*10));
-						
-							switch(Binding.AxisDirection)
-							{
-								case(DIRECTION.UP):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.y*-1))})", Scripting.ConsoleScope);
-									break;
-								case(DIRECTION.DOWN):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.y))})", Scripting.ConsoleScope);
-									break;
-								case(DIRECTION.RIGHT):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.x))})", Scripting.ConsoleScope);
-									break;
-								case(DIRECTION.LEFT):
-									Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(FakeRelative.x*-1))})", Scripting.ConsoleScope);
-									break;
-							}
-						}
-					}
-				}
-			
-
-			}
-		}
 	}
 }
