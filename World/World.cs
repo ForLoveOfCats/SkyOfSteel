@@ -12,6 +12,7 @@ public class World : Node
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
+	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
 	public static GridClass Grid = new GridClass();
 
 	public static List<DroppedItem> DroppedItems = new List<DroppedItem>();
@@ -162,6 +163,8 @@ public class World : Node
 
 		if(!Net.PeerList.Contains(Id)) {return;}
 
+		ChunkLoadDistances[Id] = RenderDistance;
+
 		List<Tuple<int,int>> LoadedChunks = RemoteLoadedChunks[Id];
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
@@ -270,10 +273,27 @@ public class World : Node
 			//Nested if to prevent very long line
 			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 			{
-				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
+				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
 				{
 					//If network is inited, am the server, and platform is to far away then...
 					Branch.Hide(); //...make it not visible but allow it to remain in the world
+				}
+
+				foreach(int Id in Net.PeerList)
+				{
+					if(Id == Net.ServerId) //Skip self (we are the server)
+					{
+						continue;
+					}
+
+					Vector3 PlayerPos = Game.PlayerList[Id].Translation;
+					if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
+					{
+						if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
+						{
+							RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
+						}
+					}
 				}
 			}
 		}

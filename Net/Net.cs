@@ -146,6 +146,7 @@ public class Net : Node
 
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
+		World.ChunkLoadDistances[Id] = 0;
 	}
 
 
