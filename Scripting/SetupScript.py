@@ -29,7 +29,7 @@ bind("LeftStickClick", "player_input_sprint")
 bind("Space", "player_input_jump")
 bind("XboxA", "player_input_jump")
 bind("Control", "player_input_crouch")
-bind("LeftStickClick", "player_input_crouch")
+bind("XboxB", "player_input_crouch")
 
 bind("WheelUp", "player_input_inventory_up")
 bind("XboxLB", "player_input_inventory_up")
@@ -45,9 +45,10 @@ bind("RightStickRight", "player_input_look_right")
 bind("MouseLeft", "player_input_look_left")
 bind("RightStickLeft", "player_input_look_left")
 
-bind("R", "player_input_build_rotate") # Not enough controller buttons for everything, so this one gets excluded :(
+bind("R", "player_input_build_rotate") 
+bind("XboxX", "player_input_build_rotate")
 bind("Q", "player_input_drop")
-bind("XboxX", "player_input_drop")
+bind("RightStickClick", "player_input_drop")
 
 bind("K", "player_position_reset")
 bind("ControllerOverview", "player_position_reset")
