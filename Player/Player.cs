@@ -10,11 +10,10 @@ public class Player : KinematicBody
 	public int Id = 0;
 
 	private const float BaseMovementSpeed = 16;
-	private const float MovementInputMultiplyer = BaseMovementSpeed;
 	private const float SprintMultiplyer = 2;
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
 	private const float AirAcceleration = 24; //How many units per second to accelerate
-	private const float Friction = BaseMovementSpeed*10;
+	private const float Friction = MaxMovementSpeed / 0.1f; //The number is how many seconds needed to stop from full speed
 	private const float JumpSpeedMultiplyer = 1.2f;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
@@ -521,12 +520,24 @@ public class Player : KinematicBody
 			return;
 		}
 
-		Vector3 WishDir = new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer);
-		if(IsSprinting)
-		{
-			WishDir *= SprintMultiplyer;
+
+		if(IsOnFloor() || FlyMode){
+			Vector3 WishDir = new Vector3(-RightAxis*BaseMovementSpeed, 0, ForwardAxis*BaseMovementSpeed);
+			Momentum += WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+
+			float Speed = Momentum.Length();
+			if(Speed != 0)
+			{
+				Speed = Clamp(Speed + (Speed > 1 ? -Friction*Delta : Friction*Delta), 0, MaxMovementSpeed);
+				Momentum = Momentum.Normalized() * Speed;
+			}
 		}
-		Momentum = AirAccelerate(Momentum, WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
+		else
+		{
+			Vector3 WishDir = new Vector3(-RightAxis*BaseMovementSpeed, 0, ForwardAxis*BaseMovementSpeed);
+			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+			Momentum = AirAccelerate(Momentum, WishDir, Delta);
+		}
 
 		Vector3 OldPos = Translation;
 		if(FlyMode)
