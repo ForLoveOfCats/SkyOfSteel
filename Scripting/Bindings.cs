@@ -489,8 +489,8 @@ public class Bindings : Node
 				
 				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= 0.25 || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= 0.25) 
 				{
-					float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis)*4;
-					float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis)*4;
+					float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis);
+					float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis);
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
@@ -574,16 +574,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/2})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/2})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/2})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/2})", Scripting.ConsoleScope);
 							break;
 					}
 				}
