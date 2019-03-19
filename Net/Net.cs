@@ -179,11 +179,15 @@ public class Net : Node
 			Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
 			PeerList.Remove(Id);
 		}
+
 		if(Nicknames.ContainsKey(Id))
 		{
 			Nicknames.Remove(Id);
 			Game.PossessedPlayer.HUDInstance.RemoveNickLabel(Id);
 		}
+
+		World.ChunkLoadDistances.Remove(Id);
+		World.RemoteLoadedChunks.Remove(Id);
 	}
 
 
