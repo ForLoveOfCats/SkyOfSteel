@@ -31,6 +31,14 @@ public class Player : KinematicBody
 	private int ForwardAxis = 0;
 	private int RightAxis = 0;
 	private int JumpAxis = 0;
+
+	public float ForwardSens = 0;
+	public float BackwardSens = 0;
+	public float RightSens = 0;
+	public float LeftSens = 0;
+	public float SprintSens = 0;
+	public float JumpSens = 0;
+
 	public bool IsCrouching = false;
 	public bool IsSprinting = false;
 	public bool IsJumping = false;
@@ -41,13 +49,6 @@ public class Player : KinematicBody
 	private float LookVertical = 0;
 	private bool IsPrimaryFiring = false;
 	private bool IsSecondaryFiring = false;
-
-	public float ForwardSens = 0;
-	public float BackwardSens = 0;
-	public float RightSens = 0;
-	public float LeftSens = 0;
-	public float SprintSens = 0;
-	public float JumpSens = 0;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -231,18 +232,6 @@ public class Player : KinematicBody
 			{
 				BackwardSens = 0;
 				ForwardAxis = 1;
-
-				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
-				{
-					if(IsSprinting)
-					{
-						Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-					}
-					else
-					{
-						Momentum.z = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-					}
-				}
 			}
 			else if(ForwardAxis > 0)
 			{
@@ -261,18 +250,6 @@ public class Player : KinematicBody
 			{
 				ForwardSens = 0;
 				ForwardAxis = -1;
-
-				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
-				{
-					if(IsSprinting)
-					{
-						Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-					}
-					else
-					{
-						Momentum.z = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-					}
-				}
 			}
 			else if(ForwardAxis < 0)
 			{
@@ -291,18 +268,6 @@ public class Player : KinematicBody
 			{
 				LeftSens = 0;
 				RightAxis = 1;
-
-				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
-				{
-					if(IsSprinting)
-					{
-						Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-					}
-					else
-					{
-						Momentum.x = Mathf.Clamp((float)(-1*Sens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-					}
-				}
 			}
 			else if(RightAxis > 0)
 			{
@@ -321,18 +286,6 @@ public class Player : KinematicBody
 			{
 				RightSens = 0;
 				RightAxis = -1;
-
-				if((IsOnFloor() && JumpAxis < 1) || FlyMode)
-				{
-					if(IsSprinting)
-					{
-						Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-					}
-					else
-					{
-						Momentum.x = Mathf.Clamp((float)(Sens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-					}
-				}
 			}
 			else if(RightAxis < 0)
 			{
@@ -350,37 +303,11 @@ public class Player : KinematicBody
 			if(IsOnFloor() || FlyMode)
 			{
 				IsSprinting = true;
-
-				if(ForwardAxis != 0)
-				{
-					Momentum.z = Momentum.z*SprintMultiplyer;
-				}
-
-				if(RightAxis != 0)
-				{
-					Momentum.x = Momentum.x*SprintMultiplyer;
-				}
-
-				if(FlyMode)
-				{
-					Momentum.y = Momentum.y*SprintMultiplyer;
-				}
 			}
 		}
 		else
 		{
-			if(IsOnFloor() || FlyMode)
-			{
-				IsSprinting = false;
-
-				Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
-				Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
-
-				if(FlyMode)
-				{
-					Momentum.y = Mathf.Clamp(Momentum.y, -BaseMovementSpeed, BaseMovementSpeed);
-				}
-			}
+			IsSprinting = false;
 		}
 	}
 
@@ -587,89 +514,6 @@ public class Player : KinematicBody
 	}
 
 
-	private void OnAir()
-	{
-		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
-	}
-
-
-	private void OnLand()
-	{
-		Momentum = Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal)));
-
-		if(JumpAxis < 1)
-		{
-			if(ForwardAxis == 1)
-			{
-				if(IsSprinting)
-				{
-					Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-				}
-				else
-				{
-					Momentum.z = Mathf.Clamp((float)(ForwardSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-				}
-			}
-			else if(ForwardAxis == -1)
-			{
-				if(IsSprinting)
-				{
-					Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-				}
-				else
-				{
-					Momentum.z = Mathf.Clamp((float)(-1*BackwardSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-				}
-			}
-
-			if(RightAxis == 1)
-			{
-				if(IsSprinting)
-				{
-					Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer*SprintMultiplyer), -MaxMovementSpeed, 0f);
-				}
-				else
-				{
-					Momentum.x = Mathf.Clamp((float)(-1*RightSens*MovementInputMultiplyer), -BaseMovementSpeed, 0f);
-				}
-			}
-			else if(RightAxis == -1)
-			{
-				if(IsSprinting)
-				{
-					Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer*SprintMultiplyer), 0f, MaxMovementSpeed);
-				}
-				else
-				{
-					Momentum.x = Mathf.Clamp((float)(LeftSens*MovementInputMultiplyer), 0f, BaseMovementSpeed);
-				}
-			}
-
-			if(SprintSens > 0 && !IsSprinting)
-			{
-				IsSprinting = true;
-
-				if(ForwardAxis != 0)
-				{
-					Momentum.z = Momentum.z*SprintMultiplyer;
-				}
-
-				if(RightAxis != 0)
-				{
-					Momentum.x = Momentum.x*SprintMultiplyer;
-				}
-			}
-			else if(SprintSens <= 0 && IsSprinting)
-			{
-				IsSprinting = false;
-
-				Momentum.z = Mathf.Clamp(Momentum.z, -BaseMovementSpeed, BaseMovementSpeed);
-				Momentum.x = Mathf.Clamp(Momentum.x, -BaseMovementSpeed, BaseMovementSpeed);
-			}
-		}
-	}
-
-
 	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Possessed || Frozen)
@@ -677,128 +521,26 @@ public class Player : KinematicBody
 			return;
 		}
 
-
-		if(!FlyMode)
+		Vector3 WishDir = new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer);
+		if(IsSprinting)
 		{
-			if(IsOnFloor())
-			{
-				if(!WasOnFloor)
-				{
-					OnLand();
-				}
-			}
-			else if(WasOnFloor)
-			{
-				OnAir();
-			}
-			WasOnFloor = IsOnFloor();
+			WishDir *= SprintMultiplyer;
 		}
-
-		if(JumpAxis < 1)
-		{
-			if(ForwardAxis == 0 && IsOnFloor())
-			{
-				if(Momentum.z > 0)
-				{
-					Momentum.z = Mathf.Clamp(Momentum.z-Friction*Delta, 0f, MaxMovementSpeed);
-				}
-				else if (Momentum.z < 0)
-				{
-					Momentum.z = Mathf.Clamp(Momentum.z+Friction*Delta, -MaxMovementSpeed, 0f);
-				}
-			}
-
-			if(RightAxis == 0 && IsOnFloor())
-			{
-				if(Momentum.x > 0)
-				{
-					Momentum.x = Mathf.Clamp(Momentum.x-Friction*Delta, 0f, MaxMovementSpeed);
-				}
-				else if (Momentum.x < 0)
-				{
-					Momentum.x = Mathf.Clamp(Momentum.x+Friction*Delta, -MaxMovementSpeed, 0f);
-				}
-			}
-		}
-		else if(!FlyMode)
-		{
-			Jump(JumpSens);
-		}
-
-		if(FlyMode)
-		{
-			if(ForwardAxis == 0)
-			{
-				if(Momentum.z > 0)
-				{
-					Momentum.z = Mathf.Clamp(Momentum.z-Friction*Delta, 0f, MaxMovementSpeed);
-				}
-				else if (Momentum.z < 0)
-				{
-					Momentum.z = Mathf.Clamp(Momentum.z+Friction*Delta, -MaxMovementSpeed, 0f);
-				}
-			}
-
-			if(RightAxis == 0)
-			{
-				if(Momentum.x > 0)
-				{
-					Momentum.x = Mathf.Clamp(Momentum.x-Friction*Delta, 0f, MaxMovementSpeed);
-				}
-				else if (Momentum.x < 0)
-				{
-					Momentum.x = Mathf.Clamp(Momentum.x+Friction*Delta, -MaxMovementSpeed, 0f);
-				}
-			}
-
-			if(JumpAxis < 1 && !IsCrouching)
-			{
-				if(Momentum.y > 0)
-				{
-					Momentum.y = Mathf.Clamp(Momentum.y-Friction*Delta, 0f, MaxMovementSpeed);
-				}
-				if(Momentum.y < 0)
-				{
-					Momentum.y = Mathf.Clamp(Momentum.y+Friction*Delta, 0f, MaxMovementSpeed);
-				}
-			}
-		}
-
-		if(!FlyMode)
-		{
-			if(IsJumping && JumpTimer <= MaxJumpLength)
-			{
-				JumpTimer += Delta;
-				Momentum.y = Mathf.Clamp(Momentum.y+JumpContinueForce*Delta, -MaxMovementSpeed, MaxMovementSpeed);
-			}
-			else
-			{
-				JumpTimer = 0f;
-				IsJumping = false;
-				Momentum.y = Mathf.Clamp(Momentum.y-Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
-			}
-
-			if(!IsOnFloor())
-			{
-				Momentum = AirAccelerate(Momentum, new Vector3(-RightAxis*MovementInputMultiplyer, 0, ForwardAxis*MovementInputMultiplyer).Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
-			}
-		}
+		Momentum = AirAccelerate(Momentum, WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)), Delta);
 
 		Vector3 OldPos = Translation;
-		//100 bounces in order to allow players to go up slopes more quickly
-		//MoveAndSlide multiplies by *physics* delta internally
 		if(FlyMode)
 		{
 			Vector3 FlatVel = Momentum;
 			FlatVel.y = 0;
-			MoveAndSlide(FlatVel.Rotated(new Vector3(1,0,0), Mathf.Deg2Rad(LoopRotation(-LookVertical)))
-			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+			MoveAndSlide(FlatVel
+			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)))
+			             .Rotated(new Vector3(1,0,0), Mathf.Deg2Rad(LoopRotation(-LookVertical)))
+			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(LookHorizontal))),
+			             new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 
-			MoveAndSlide(new Vector3(0,Momentum.y,0).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
-		}
-		else if(IsOnFloor())
-		{
-			MoveAndSlide(Momentum.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+			MoveAndSlide(new Vector3(0,Momentum.y,0).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60))
+				.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)));
 		}
 		else
 		{
