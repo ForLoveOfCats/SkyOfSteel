@@ -470,7 +470,7 @@ public class Bindings : Node
 				}
 				else
 				{
-					Console.ThrowLog("This joystick doesn't exist! ?????????");
+					Console.ThrowPrint("This joystick doesn't exist! ?????????");
 				}
 
 				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= Game.Deadzone || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= Game.Deadzone)
@@ -492,11 +492,11 @@ public class Bindings : Node
 							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
 							break;
 					}
-					Binding.IsZero = false;
+					Binding.JoyWasInDeadzone = false;
 				}
 				else // Set sens to zero to simulate key release
 				{
-					if (Binding.IsZero == false) // Only do this if the Binding wasn't zero last time
+					if (Binding.JoyWasInDeadzone == false) // Only do this if the Binding wasn't zero last time
 					{
 						float HorizontalMovement = 0;
 						float VerticalMovement = 0;
@@ -515,7 +515,7 @@ public class Bindings : Node
 								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
 								break;
 						}
-						Binding.IsZero = true;
+						Binding.JoyWasInDeadzone = true;
 					}
 				}
 			}

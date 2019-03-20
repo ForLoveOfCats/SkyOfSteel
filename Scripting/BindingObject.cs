@@ -5,7 +5,7 @@ class BindingObject
 	public Bindings.TYPE Type = Bindings.TYPE.UNSET;
 	public Bindings.DIRECTION AxisDirection; //Only used if Type is AXIS
 
-	public bool IsZero = true;
+	public bool JoyWasInDeadzone = true;
 
 	public BindingObject(string NameArg, string FunctionArg)
 	{
