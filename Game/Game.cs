@@ -18,7 +18,7 @@ public class Game : Node
 	public static bool WorldOpen = false;
 	public static StructureRootClass StructureRoot;
 
-	public static float LookSensitivity = 5;
+	public static float LookSensitivity = 15;
 	public static float MouseDivisor = LookSensitivity;
 	public static float Deadzone = 0.25f;
 	public static int ChunkRenderDistance = 1;
