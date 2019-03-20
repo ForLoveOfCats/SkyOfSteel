@@ -520,6 +520,7 @@ public class Player : KinematicBody
 			return;
 		}
 
+		Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
 
 		if(IsOnFloor() || FlyMode){
 			Vector3 WishDir = new Vector3(-RightAxis*BaseMovementSpeed, 0, ForwardAxis*BaseMovementSpeed);
