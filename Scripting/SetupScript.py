@@ -45,13 +45,13 @@ bind("RightStickRight", "player_input_look_right")
 bind("MouseLeft", "player_input_look_left")
 bind("RightStickLeft", "player_input_look_left")
 
-bind("R", "player_input_build_rotate") 
+bind("R", "player_input_build_rotate")
 bind("XboxX", "player_input_build_rotate")
 bind("Q", "player_input_drop")
 bind("RightStickClick", "player_input_drop")
 
 bind("K", "player_position_reset")
-bind("ControllerOverview", "player_position_reset")
+bind("XboxSelect", "player_position_reset")
 bind("T", "fly_toggle")
 bind("XboxY", "fly_toggle")
 
@@ -62,4 +62,3 @@ bind("XboxLT", "player_input_secondary_fire")
 
 chunk_render_distance(10)
 fps_max(200)
-

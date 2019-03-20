@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public class Bindings : Node
 {
 	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, MOUSEAXIS, CONTROLLERBUTTON, CONTROLLERAXIS}
-	
 	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
@@ -65,10 +64,8 @@ public class Bindings : Node
 		BindingObject NewBind = new BindingObject(KeyName, FunctionName);
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
 		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
-		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because 
+		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because
 		int Scancode = 0;
-		
-		
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
 			case("MouseOne"): {
@@ -123,53 +120,53 @@ public class Bindings : Node
 				break;
 			}
 
-			case("LeftStickUp"): { 
+			case("LeftStickUp"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.UP;
 				ControllerButtonValue = JoystickList.AnalogLy;
 				break;
 			}
 
-			case("LeftStickDown"): { 
+			case("LeftStickDown"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.DOWN;
 				ControllerButtonValue = JoystickList.AnalogLy;
 				break;
 			}
 
-			case("LeftStickLeft"): { 
+			case("LeftStickLeft"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.LEFT;
 				ControllerButtonValue = JoystickList.AnalogLx;
 				break;
 			}
 
-			case("LeftStickRight"): { 
+			case("LeftStickRight"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.RIGHT;
 				ControllerButtonValue = JoystickList.AnalogLx;
 				break;
 			}
 
-			case("RightStickUp"): { 
+			case("RightStickUp"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.UP;
 				ControllerButtonValue = JoystickList.AnalogRy;
 				break;
 			}
-			case("RightStickDown"): { 
+			case("RightStickDown"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.DOWN;
 				ControllerButtonValue = JoystickList.AnalogRy;
 				break;
 			}
-			case("RightStickLeft"): { 
+			case("RightStickLeft"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.LEFT;
 				ControllerButtonValue = JoystickList.AnalogRx;
 				break;
 			}
-			case("RightStickRight"): { 
+			case("RightStickRight"): {
 				NewBind.Type = TYPE.CONTROLLERAXIS;
 				AxisDirection = DIRECTION.RIGHT;
 				ControllerButtonValue = JoystickList.AnalogRx;
@@ -260,20 +257,18 @@ public class Bindings : Node
 				break;
 			}
 
-			case("ControllerOptions"): { // Put controller there so it's not confusing
+			case("XboxStart"): {
 				NewBind.Type = TYPE.CONTROLLERBUTTON;
 				ControllerButtonValue = JoystickList.Start;
 				break;
 			}
 
-			case("ControllerOverview"): { // Put controller there so it's not confusing
+			case("XboxSelect"): {
 				// Or Select. Or Share. Or The big thing in the middle of ps4 remotes. Or -.
 				NewBind.Type = TYPE.CONTROLLERBUTTON;
 				ControllerButtonValue = JoystickList.Select;
 				break;
 			}
-
-
 
 			default: {
 				//Does not match any custom string literal must either be a Scancode or is invalid
@@ -325,29 +320,29 @@ public class Bindings : Node
 
 			case(TYPE.CONTROLLERAXIS): {
 				InputEventJoypadMotion Event = new InputEventJoypadMotion();
-				Event.Axis = (int)ControllerButtonValue;
-				switch (AxisDirection) {
+				Event.Axis = (int)ControllerButtonValue; // Set which Joystick axis we're using
+				switch (AxisDirection) { // Set which direction on the axis we need to trigger the event
 					case(DIRECTION.UP): {
-						Event.AxisValue = -1;
+						Event.AxisValue = -1; // -1, on the Vertical axis is up
 						break;
 					}
 
 					case(DIRECTION.LEFT): {
-						Event.AxisValue = -1;
+						Event.AxisValue = -1; // -1, on the Horizontal axis is left
 						break;
 					}
 
 					case(DIRECTION.DOWN): {
-						Event.AxisValue = 1;
+						Event.AxisValue = 1; // 1, on the Vertical axis is down
 						break;
 					}
 
 					case(DIRECTION.RIGHT): {
-						Event.AxisValue = 1;
+						Event.AxisValue = 1; // 1, on the Horizontal axis is right
 						break;
 					}
 				}
-				
+
 				InputMap.ActionAddEvent(KeyName, Event);
 				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
 				break;
@@ -429,7 +424,6 @@ public class Bindings : Node
 			return;
 		}
 
-		bool KeyPressed = false; // This is to make sure console controls don't interfere with K&M
 		foreach(BindingObject Binding in BindingsWithArg)
 		{
 			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
@@ -442,11 +436,6 @@ public class Bindings : Node
 				{
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}(0)", Scripting.ConsoleScope);
 				}
-				if (Input.IsActionPressed(Binding.Name)) 
-				{
-					KeyPressed = true; // Prevent Console code from making a "release" event
-				}
-
 			}
 			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
@@ -457,37 +446,34 @@ public class Bindings : Node
 			}
 			else if(Binding.Type == TYPE.CONTROLLERAXIS)
 			{
-				
-				int VerticalAxis = 0; 
+				int VerticalAxis = 0;
 				int HorizontalAxis = 0;
-				InputEventJoypadMotion StickEvent = null; 
-				
+				InputEventJoypadMotion StickEvent = null;
 
 				foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
 					if (Option is InputEventJoypadMotion JoyEvent) {
 						StickEvent = JoyEvent;
 					}
 				}
-				
 
 				if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
 				{
-					// We are using Left stick to look around
+					// We are using Left stick
 					VerticalAxis = 1;
 					HorizontalAxis = 0;
 				}
 				else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
 				{
-					// We are using Right stick to look around
+					// We are using Right stick
 					VerticalAxis = 3;
 					HorizontalAxis = 2;
 				}
 				else
 				{
-					// Something has completely glitched
+					Console.ThrowLog("This joystick doesn't exist! ?????????");
 				}
-				
-				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= 0.25 || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= 0.25) 
+
+				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= Game.Deadzone || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= Game.Deadzone)
 				{
 					float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis);
 					float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis);
@@ -506,10 +492,11 @@ public class Bindings : Node
 							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
 							break;
 					}
+					Binding.IsZero = false;
 				}
-				else // Set speed to zero to simulate key release
+				else // Set sens to zero to simulate key release
 				{
-					if (!KeyPressed) // Only do this if no other keys have been pressed, so this doesn't stop movement from k&m
+					if (Binding.IsZero == false) // Only do this if the Binding wasn't zero last time
 					{
 						float HorizontalMovement = 0;
 						float VerticalMovement = 0;
@@ -528,14 +515,10 @@ public class Bindings : Node
 								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
 								break;
 						}
+						Binding.IsZero = true;
 					}
 				}
-				
-
-
 			}
-			
-			
 		}
 
 		foreach(BindingObject Binding in BindingsWithoutArg)
@@ -574,16 +557,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/2})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/2})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/2})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/2})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 					}
 				}
@@ -598,6 +581,5 @@ public class Bindings : Node
 				}
 			}
 		}
-		
 	}
 }

@@ -456,7 +456,7 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
 			if(ShouldDo.LocalPlayerPitch(Change))
 			{
@@ -471,7 +471,7 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
 			if(ShouldDo.LocalPlayerPitch(-Change))
 			{
@@ -486,7 +486,7 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
 			if(ShouldDo.LocalPlayerRotate(-Change))
 			{
@@ -501,7 +501,7 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.MouseSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
 			if(ShouldDo.LocalPlayerRotate(+Change))
 			{
