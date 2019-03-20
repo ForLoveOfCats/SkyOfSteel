@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class Bindings : Node
 {
-	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, MOUSEAXIS}
+	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, MOUSEAXIS, CONTROLLERBUTTON, CONTROLLERAXIS}
 	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
@@ -64,6 +64,7 @@ public class Bindings : Node
 		BindingObject NewBind = new BindingObject(KeyName, FunctionName);
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
 		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
+		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because
 		int Scancode = 0;
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
@@ -119,6 +120,156 @@ public class Bindings : Node
 				break;
 			}
 
+			case("LeftStickUp"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.UP;
+				ControllerButtonValue = JoystickList.AnalogLy;
+				break;
+			}
+
+			case("LeftStickDown"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				ControllerButtonValue = JoystickList.AnalogLy;
+				break;
+			}
+
+			case("LeftStickLeft"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				ControllerButtonValue = JoystickList.AnalogLx;
+				break;
+			}
+
+			case("LeftStickRight"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				ControllerButtonValue = JoystickList.AnalogLx;
+				break;
+			}
+
+			case("RightStickUp"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.UP;
+				ControllerButtonValue = JoystickList.AnalogRy;
+				break;
+			}
+			case("RightStickDown"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				ControllerButtonValue = JoystickList.AnalogRy;
+				break;
+			}
+			case("RightStickLeft"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				ControllerButtonValue = JoystickList.AnalogRx;
+				break;
+			}
+			case("RightStickRight"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				ControllerButtonValue = JoystickList.AnalogRx;
+				break;
+			}
+
+			case("XboxA"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxA;
+				break;
+			}
+
+			case("XboxB"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxB;
+				break;
+			}
+
+			case("XboxX"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxX;
+				break;
+			}
+
+			case("XboxY"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxY;
+				break;
+			}
+
+			case("XboxLB"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L;
+				break;
+			}
+
+			case("XboxRB"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R;
+				break;
+			}
+
+			case("XboxLT"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L2;
+				break;
+			}
+
+			case("XboxRT"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R2;
+				break;
+			}
+
+			case("RightStickClick"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R3;
+				break;
+			}
+
+			case("LeftStickClick"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L3;
+				break;
+			}
+
+			case("DPadUp"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadUp;
+				break;
+			}
+
+			case("DPadDown"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadDown;
+				break;
+			}
+
+			case("DPadLeft"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadLeft;
+				break;
+			}
+
+			case("DPadRight"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadRight;
+				break;
+			}
+
+			case("XboxStart"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.Start;
+				break;
+			}
+
+			case("XboxSelect"): {
+				// Or Select. Or Share. Or The big thing in the middle of ps4 remotes. Or -.
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.Select;
+				break;
+			}
+
 			default: {
 				//Does not match any custom string literal must either be a Scancode or is invalid
 				int LocalScancode = OS.FindScancodeFromString(KeyName);
@@ -164,6 +315,43 @@ public class Bindings : Node
 				InputEventMouseMotion Event = new InputEventMouseMotion();
 				InputMap.ActionAddEvent(KeyName, Event);
 				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				break;
+			}
+
+			case(TYPE.CONTROLLERAXIS): {
+				InputEventJoypadMotion Event = new InputEventJoypadMotion();
+				Event.Axis = (int)ControllerButtonValue; // Set which Joystick axis we're using
+				switch (AxisDirection) { // Set which direction on the axis we need to trigger the event
+					case(DIRECTION.UP): {
+						Event.AxisValue = -1; // -1, on the Vertical axis is up
+						break;
+					}
+
+					case(DIRECTION.LEFT): {
+						Event.AxisValue = -1; // -1, on the Horizontal axis is left
+						break;
+					}
+
+					case(DIRECTION.DOWN): {
+						Event.AxisValue = 1; // 1, on the Vertical axis is down
+						break;
+					}
+
+					case(DIRECTION.RIGHT): {
+						Event.AxisValue = 1; // 1, on the Horizontal axis is right
+						break;
+					}
+				}
+
+				InputMap.ActionAddEvent(KeyName, Event);
+				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				break;
+			}
+
+			case(TYPE.CONTROLLERBUTTON): {
+				InputEventJoypadButton Event = new InputEventJoypadButton();
+				Event.SetButtonIndex((int)ControllerButtonValue);
+				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}
 		}
@@ -238,7 +426,7 @@ public class Bindings : Node
 
 		foreach(BindingObject Binding in BindingsWithArg)
 		{
-			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
@@ -256,11 +444,86 @@ public class Bindings : Node
 					Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
 				}
 			}
+			else if(Binding.Type == TYPE.CONTROLLERAXIS)
+			{
+				int VerticalAxis = 0;
+				int HorizontalAxis = 0;
+				InputEventJoypadMotion StickEvent = null;
+
+				foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
+					if (Option is InputEventJoypadMotion JoyEvent) {
+						StickEvent = JoyEvent;
+					}
+				}
+
+				if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
+				{
+					// We are using Left stick
+					VerticalAxis = 1;
+					HorizontalAxis = 0;
+				}
+				else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
+				{
+					// We are using Right stick
+					VerticalAxis = 3;
+					HorizontalAxis = 2;
+				}
+				else
+				{
+					Console.ThrowPrint("This joystick doesn't exist! ?????????");
+				}
+
+				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= Game.Deadzone || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= Game.Deadzone)
+				{
+					float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis);
+					float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis);
+					switch(Binding.AxisDirection)
+					{
+						case(DIRECTION.UP):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+							break;
+						case(DIRECTION.DOWN):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+							break;
+						case(DIRECTION.RIGHT):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+							break;
+						case(DIRECTION.LEFT):
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+							break;
+					}
+					Binding.JoyWasInDeadzone = false;
+				}
+				else // Set sens to zero to simulate key release
+				{
+					if (Binding.JoyWasInDeadzone == false) // Only do this if the Binding wasn't zero last time
+					{
+						float HorizontalMovement = 0;
+						float VerticalMovement = 0;
+						switch(Binding.AxisDirection)
+						{
+							case(DIRECTION.UP):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.DOWN):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.RIGHT):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+								break;
+							case(DIRECTION.LEFT):
+								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+								break;
+						}
+						Binding.JoyWasInDeadzone = true;
+					}
+				}
+			}
 		}
 
 		foreach(BindingObject Binding in BindingsWithoutArg)
 		{
-			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
@@ -294,16 +557,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
+							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 					}
 				}
