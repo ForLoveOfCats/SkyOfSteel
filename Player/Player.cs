@@ -307,7 +307,7 @@ public class Player : KinematicBody
 		JumpSens = Sens;
 		if(Sens > 0)
 		{
-			if(FlyMode && ShouldDo.LocalPlayerJump())
+			if(FlyMode)
 			{
 				if(IsSprinting)
 				{
@@ -520,7 +520,34 @@ public class Player : KinematicBody
 			return;
 		}
 
-		Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
+		if(IsJumping)
+		{
+			Momentum.y += JumpContinueForce*Delta;
+
+			JumpTimer += Delta;
+			if(JumpTimer >= MaxJumpLength)
+			{
+				JumpTimer = 0;
+				IsJumping = false;
+			}
+		}
+		else if(!FlyMode)
+		{
+			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
+		}
+
+		if(FlyMode && JumpAxis <= 0 && !IsCrouching)
+		{
+			//In flymode and jump is not being held
+			if(Momentum.y > 0)
+			{
+				Momentum.y = Mathf.Clamp(Momentum.y - Friction*Delta, 0, MaxMovementSpeed);
+			}
+			else if(Momentum.y < 0)
+			{
+				Momentum.y = Mathf.Clamp(Momentum.y + Friction*Delta, -MaxMovementSpeed, 0);
+			}
+		}
 
 		if(IsOnFloor() || FlyMode){
 			Vector3 WishDir = new Vector3(-RightAxis*BaseMovementSpeed, 0, ForwardAxis*BaseMovementSpeed);
