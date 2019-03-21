@@ -557,8 +557,9 @@ public class Player : KinematicBody
 			if(Speed != 0)
 			{
 				Speed = Clamp(Speed + (Speed > 1 ? -Friction*Delta : Friction*Delta), 0, MaxMovementSpeed);
-				Momentum.x = Momentum.Normalized().x * Speed;
-				Momentum.z = Momentum.Normalized().z * Speed;
+				Vector3 HorzMomentum = new Vector3(Momentum.x, 0, Momentum.z).Normalized() * Speed;
+				Momentum.x = HorzMomentum.x;
+				Momentum.z = HorzMomentum.z;
 			}
 		}
 		else
