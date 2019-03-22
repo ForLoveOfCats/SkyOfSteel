@@ -520,7 +520,14 @@ public class Player : KinematicBody
 			return;
 		}
 
-		if(IsJumping)
+
+		if(JumpAxis > 0 && IsOnFloor() && !WasOnFloor)
+		{
+			Momentum.y = JumpStartForce;
+			IsJumping = true;
+		}
+
+		if(IsJumping && !WasOnFloor)
 		{
 			Momentum.y += JumpContinueForce*Delta;
 
@@ -531,7 +538,8 @@ public class Player : KinematicBody
 				IsJumping = false;
 			}
 		}
-		else if(!FlyMode)
+
+		if(!IsJumping && !FlyMode)
 		{
 			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
 		}
@@ -549,7 +557,9 @@ public class Player : KinematicBody
 			}
 		}
 
-		if(IsOnFloor() || FlyMode){
+		WasOnFloor = IsOnFloor();
+
+		if(!IsJumping && (IsOnFloor() || FlyMode)){
 			Vector3 WishDir = new Vector3(-RightAxis*BaseMovementSpeed, 0, ForwardAxis*BaseMovementSpeed);
 			Momentum += WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
