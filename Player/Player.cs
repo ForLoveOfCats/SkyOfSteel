@@ -324,8 +324,10 @@ public class Player : KinematicBody
 				Momentum.y = JumpStartForce;
 				if(JumpAxis < 1)
 				{
-					Momentum.x *= JumpSpeedMultiplyer;
-					Momentum.z *= JumpSpeedMultiplyer;
+					Vector3 FlatMomentum = new Vector3(Momentum.x, 0, Momentum.z);
+					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + JumpSpeedMultiplyer);
+					Momentum.x = FlatMomentum.x;
+					Momentum.z = FlatMomentum.z;
 				}
 
 				IsJumping = true;
