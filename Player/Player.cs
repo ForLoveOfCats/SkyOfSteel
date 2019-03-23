@@ -562,14 +562,21 @@ public class Player : KinematicBody
 
 		WasOnFloor = IsOnFloor();
 
-		if(!IsJumping && (IsOnFloor() || FlyMode)){
-			Vector3 WishDir = new Vector3(-RightAxis*BaseMovementSpeed, 0, ForwardAxis*BaseMovementSpeed);
+		if(!IsJumping && (IsOnFloor() || FlyMode))
+		{
+			float SpeedLimit = BaseMovementSpeed;
+			if(IsSprinting)
+			{
+				SpeedLimit *= SprintMultiplyer;
+			}
+
+			Vector3 WishDir = new Vector3(-RightAxis, 0, ForwardAxis).Normalized() * (SpeedLimit + Friction*Delta);
 			Momentum += WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
 			float Speed = Momentum.Length();
 			if(Speed != 0)
 			{
-				Speed = Clamp(Speed + (Speed > 1 ? -Friction*Delta : Friction*Delta), 0, MaxMovementSpeed);
+				Speed = Clamp(Speed - Friction*Delta, 0, SpeedLimit);
 				Vector3 HorzMomentum = new Vector3(Momentum.x, 0, Momentum.z).Normalized() * Speed;
 				Momentum.x = HorzMomentum.x;
 				Momentum.z = HorzMomentum.z;
