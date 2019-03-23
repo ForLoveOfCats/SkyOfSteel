@@ -9,11 +9,11 @@ public class Player : KinematicBody
 	public bool Possessed = false;
 	public int Id = 0;
 
-	private const float BaseMovementSpeed = 16;
-	private const float SprintMultiplyer = 2;
+	private const float BaseMovementSpeed = 20;
+	private const float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
 	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
 	private const float AirAcceleration = 24; //How many units per second to accelerate
-	private const float Friction = MaxMovementSpeed / 0.1f; //The number is how many seconds needed to stop from full speed
+	private const float Friction = MaxMovementSpeed / 0.2f; //The number is how many seconds needed to stop from full speed
 	private const float JumpSpeedMultiplyer = 1.2f;
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
