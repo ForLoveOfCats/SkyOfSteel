@@ -524,7 +524,7 @@ public class Player : KinematicBody
 		}
 
 
-		if(JumpAxis > 0 && IsOnFloor() && !WasOnFloor)
+		if(JumpAxis > 0 && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
