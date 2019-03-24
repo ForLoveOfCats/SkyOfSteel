@@ -508,7 +508,7 @@ public class Player : KinematicBody
 
 	private Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
 	{
-		WishDir = WishDir.Normalized() * BaseMovementSpeed;
+		WishDir = WishDir.Normalized() * ((MaxMovementSpeed + BaseMovementSpeed) / 2);
 		float CurrentSpeed = Vel.Dot(WishDir);
 		float AddSpeed = MaxMovementSpeed - CurrentSpeed;
 		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*Delta);
