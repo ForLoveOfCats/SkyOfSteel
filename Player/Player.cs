@@ -591,7 +591,7 @@ public class Player : KinematicBody
 			float Speed = Momentum.Length();
 			if(Speed > 0)
 			{
-				Speed = Clamp(Speed - Friction*Delta, 0, SpeedLimit);
+				Speed = Clamp(Speed - Friction*Delta, 0, Speed);
 				Vector3 HorzMomentum = new Vector3(Momentum.x, 0, Momentum.z).Normalized() * Speed;
 				Momentum.x = HorzMomentum.x;
 				Momentum.z = HorzMomentum.z;
