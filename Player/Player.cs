@@ -570,11 +570,26 @@ public class Player : KinematicBody
 				SpeedLimit *= SprintMultiplyer;
 			}
 
-			Vector3 WishDir = new Vector3(-RightAxis, 0, ForwardAxis).Normalized() * (SpeedLimit + Friction*Delta);
-			Momentum += WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+			float X = 0, Z = 0;
+			if(RightAxis > 0)
+				X = -RightSens;
+			else if(RightAxis < 0)
+				X = LeftSens;
+			if(ForwardAxis > 0)
+				Z = ForwardSens;
+			else if(ForwardAxis < 0)
+				Z = -BackwardSens;
+
+			Vector3 WishDir = ClampVec3(new Vector3(X, 0, Z), 0, 1) * (SpeedLimit + Friction*Delta);
+			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+			if(WishDir.Length() > 0)
+			{
+				Momentum.x = WishDir.x;
+				Momentum.z = WishDir.z;
+			}
 
 			float Speed = Momentum.Length();
-			if(Speed != 0)
+			if(Speed > 0)
 			{
 				Speed = Clamp(Speed - Friction*Delta, 0, SpeedLimit);
 				Vector3 HorzMomentum = new Vector3(Momentum.x, 0, Momentum.z).Normalized() * Speed;
