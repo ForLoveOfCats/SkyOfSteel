@@ -5,13 +5,12 @@
 [ext_resource path="res://World/Materials/StructureShader.shader" type="Shader" id=3]
 [ext_resource path="res://Items/Textures/WALL.png" type="Texture" id=4]
 
-
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 3 )
 shader_param/texture_albedo = ExtResource( 4 )
 
 [sub_resource type="BoxShape" id=2]
-extents = Vector3( 6, 5.7, 0.3 )
+extents = Vector3( 6, 6, 0.3 )
 
 [node name="WALL" type="StaticBody"]
 collision_layer = 3
