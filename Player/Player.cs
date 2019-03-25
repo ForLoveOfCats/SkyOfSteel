@@ -306,10 +306,7 @@ public class Player : KinematicBody
 		SprintSens = Sens;
 		if(Sens > 0)
 		{
-			if(IsOnFloor() || FlyMode)
-			{
-				IsSprinting = true;
-			}
+			IsSprinting = true;
 		}
 		else
 		{
