@@ -520,7 +520,7 @@ public class Player : KinematicBody
 
 	private Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
 	{
-		WishDir = WishDir.Normalized() * ((MaxMovementSpeed + BaseMovementSpeed) / 2);
+		WishDir = ClampVec3(WishDir, 0, 1) * ((MaxMovementSpeed + BaseMovementSpeed) / 2);
 		float CurrentSpeed = Vel.Dot(WishDir);
 		float AddSpeed = MaxMovementSpeed - CurrentSpeed;
 		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*Delta);
@@ -534,7 +534,6 @@ public class Player : KinematicBody
 		{
 			return;
 		}
-
 
 		if(JumpAxis > 0 && IsOnFloor())
 		{
@@ -611,7 +610,17 @@ public class Player : KinematicBody
 		}
 		else
 		{
-			Vector3 WishDir = new Vector3(-RightAxis, 0, ForwardAxis);
+			float X = 0, Z = 0;
+			if(RightAxis > 0)
+				X = -RightSens;
+			else if(RightAxis < 0)
+				X = LeftSens;
+			if(ForwardAxis > 0)
+				Z = ForwardSens;
+			else if(ForwardAxis < 0)
+				Z = -BackwardSens;
+
+			Vector3 WishDir = new Vector3(X, 0, Z);
 			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 			Momentum = AirAccelerate(Momentum, WishDir, Delta);
 		}
