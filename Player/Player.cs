@@ -18,6 +18,9 @@ public class Player : KinematicBody
 	private const float JumpStartForce = 8f;
 	private const float JumpContinueForce = 6f;
 	private const float MaxJumpLength = 0.3f;
+	private const float WallKickJumpForce = 16;
+	private const float WallKickHorzontalForce = 45;
+	private const float MinWallKickRecoverPercentage = 0.2f;
 	private const float Gravity = 14f;
 	private const float ItemThrowPower = 15f;
 	private const float LookDivisor = 6;
@@ -43,6 +46,7 @@ public class Player : KinematicBody
 	public bool IsJumping = false;
 	public bool WasOnFloor = false;
 	private float JumpTimer = 0f;
+	private float WallKickRecoverPercentage = 1;
 	private Vector3 Momentum = new Vector3(0,0,0);
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
@@ -535,6 +539,8 @@ public class Player : KinematicBody
 			return;
 		}
 
+		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta, 0, 1);
+
 		if(JumpAxis > 0 && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
@@ -621,7 +627,7 @@ public class Player : KinematicBody
 				Z = -BackwardSens;
 
 			Vector3 WishDir = new Vector3(X, 0, Z);
-			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * WallKickRecoverPercentage;
 			Momentum = AirAccelerate(Momentum, WishDir, Delta);
 		}
 
@@ -642,6 +648,20 @@ public class Player : KinematicBody
 		else
 		{
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+
+			if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0)
+			{
+				WallKickRecoverPercentage = 0;
+
+				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
+
+				if(Momentum.y <= WallKickJumpForce)
+					Momentum.y = WallKickJumpForce;
+				else
+					Momentum.y += WallKickJumpForce;
+
+				Momentum.y = Clamp(Momentum.y, -MaxMovementSpeed, MaxMovementSpeed);
+			}
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
