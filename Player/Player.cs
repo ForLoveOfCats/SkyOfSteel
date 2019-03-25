@@ -220,12 +220,15 @@ public class Player : KinematicBody
 			ForwardSens = Sens;
 			if(Sens > 0)
 			{
-				BackwardSens = 0;
 				ForwardAxis = 1;
 			}
 			else if(ForwardAxis > 0)
 			{
 				ForwardAxis = 0;
+				if(BackwardSens > 0)
+				{
+					ForwardAxis = -1;
+				}
 			}
 		}
 	}
@@ -238,12 +241,15 @@ public class Player : KinematicBody
 			BackwardSens = Sens;
 			if(Sens > 0)
 			{
-				ForwardSens = 0;
 				ForwardAxis = -1;
 			}
 			else if(ForwardAxis < 0)
 			{
 				ForwardAxis = 0;
+				if(ForwardSens > 0)
+				{
+					ForwardAxis = 1;
+				}
 			}
 		}
 	}
@@ -256,12 +262,15 @@ public class Player : KinematicBody
 			RightSens = Sens;
 			if(Sens > 0)
 			{
-				LeftSens = 0;
 				RightAxis = 1;
 			}
 			else if(RightAxis > 0)
 			{
 				RightAxis = 0;
+				if(LeftSens > 0)
+				{
+					RightAxis = -1;
+				}
 			}
 		}
 	}
@@ -274,12 +283,15 @@ public class Player : KinematicBody
 			LeftSens = Sens;
 			if(Sens > 0)
 			{
-				RightSens = 0;
 				RightAxis = -1;
 			}
 			else if(RightAxis < 0)
 			{
 				RightAxis = 0;
+				if(RightSens >0)
+				{
+					RightAxis = 1;
+				}
 			}
 		}
 	}
