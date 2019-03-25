@@ -335,7 +335,7 @@ public class Player : KinematicBody
 				}
 				IsJumping = false;
 			}
-			else if(IsOnFloor() && ShouldDo.LocalPlayerJump())
+			else if(WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && ShouldDo.LocalPlayerJump())
 			{
 				Momentum.y = JumpStartForce;
 				if(JumpAxis < 1)
@@ -541,7 +541,7 @@ public class Player : KinematicBody
 
 		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta, 0, 1);
 
-		if(JumpAxis > 0 && IsOnFloor())
+		if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
