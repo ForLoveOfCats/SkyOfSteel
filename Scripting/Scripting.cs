@@ -9,7 +9,7 @@ using Cs = Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript;
 
 public class Scripting : Node
 {
-	public static Sc.Script ConsoleEngine = Cs.Create(@"", Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies()));
+	public static Sc.ScriptState ConsoleEngine;
 	// public static ScriptEngine GmEngine;
 
 	public static string GamemodeName;
@@ -22,6 +22,8 @@ public class Scripting : Node
 		Self = this;
 
 		// ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
+		Sc.Script CEngine = Cs.Create(@"", Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies()));
+		ConsoleEngine = CEngine.ContinueWith("").RunAsync().Result;
 
 		SetupGmEngine();
 	}
@@ -121,18 +123,20 @@ public class Scripting : Node
 
 	public static void RunConsoleLine(string Line)
 	{
-		/*try
-		  {
-		  object Returned = ConsoleEngine.Execute(Line, ConsoleScope);
-		  if(Returned != null)
-		  {
-		  Console.Print(PyToString(Returned));
-		  }
-		  }
-		  catch(Exception e)
-		  {
-		  ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
-		  Console.Print(eo.FormatException(e));
-		  }*/
+		try
+		{
+			ConsoleEngine = ConsoleEngine.ContinueWithAsync(Line).Result;
+			object Returned = ConsoleEngine.ReturnValue;
+			if(Returned != null)
+			{
+				Console.Print(Returned.ToString());
+			}
+		}
+		catch(Exception Err)
+		{
+			// ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
+			// Console.Print(eo.FormatException(e));
+			Console.Print(Err.Message);
+		}
 	}
 }

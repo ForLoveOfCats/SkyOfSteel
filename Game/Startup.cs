@@ -43,7 +43,7 @@ public class Startup : Node
 			{
 				// Scripting.ConsoleEngine.Execute(Autoexec.GetAsText(), Scripting.ConsoleScope);
 				GD.Print(Autoexec.GetAsText());
-				Scripting.ConsoleEngine.ContinueWith(Autoexec.GetAsText()).RunAsync().Wait();
+				Scripting.ConsoleEngine = Scripting.ConsoleEngine.ContinueWithAsync(Autoexec.GetAsText()).Result;
 				Console.Print("Successfully executed autoexec");
 			}
 			catch(Exception Error)
