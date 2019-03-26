@@ -485,8 +485,6 @@ public class Player : KinematicBody
 				Structure Hit = BuildRayCast.GetCollider() as Structure;
 				if(Hit != null)
 				{
-					// Message.NetRemoveRequest(Hit.Name);
-					//Name is GUID used to reference individual structures over network
 					Hit.Remove();
 				}
 			}
