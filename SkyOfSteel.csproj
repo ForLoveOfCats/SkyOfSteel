@@ -63,6 +63,9 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp.Scripting">
       <HintPath>packages\Microsoft.CodeAnalysis.CSharp.Scripting.2.10.0\lib\netstandard1.3\Microsoft.CodeAnalysis.CSharp.Scripting.dll</HintPath>
     </Reference>
+	<Reference Include="System.Collections.Immutable">
+      <HintPath>packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="World\BuildPositions.cs" />
