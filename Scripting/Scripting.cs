@@ -1,11 +1,15 @@
 using Godot;
 using System;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+using Sc = Microsoft.CodeAnalysis.Scripting;
+using Cs = Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript;
 
 
 public class Scripting : Node
 {
-	// public static ScriptEngine ConsoleEngine;
+	public static Sc.Script ConsoleEngine = Cs.Create(@"", Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies()));
 	// public static ScriptEngine GmEngine;
 
 	public static string GamemodeName;
@@ -20,22 +24,6 @@ public class Scripting : Node
 		// ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 
 		SetupGmEngine();
-
-		File SetupScript = new File();
-		SetupScript.Open("res://Scripting/SetupScript.py", 1);
-		try
-		{
-			// ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
-			// Source.Execute(ConsoleScope);
-		}
-		catch(Exception Err)
-		{
-			SetupScript.Close();
-			// ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
-			// GD.Print(EO.FormatException(Err));
-			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
-		}
-		SetupScript.Close();
 	}
 
 
