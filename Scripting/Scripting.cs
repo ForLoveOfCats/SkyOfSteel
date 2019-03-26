@@ -134,8 +134,6 @@ public class Scripting : Node
 		}
 		catch(Exception Err)
 		{
-			// ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
-			// Console.Print(eo.FormatException(e));
 			Console.Print(Err.Message);
 		}
 	}

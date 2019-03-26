@@ -33,7 +33,7 @@ public class Startup : Node
 		}
 
 
-		//autoexec.js is executed afterwards
+		//autoexec.csx is executed afterwards
 		File Autoexec = new File();
 		if(Autoexec.FileExists("user://autoexec.csx"))
 		{
@@ -41,15 +41,11 @@ public class Startup : Node
 			Console.Print("Autoexec loaded");
 			try
 			{
-				// Scripting.ConsoleEngine.Execute(Autoexec.GetAsText(), Scripting.ConsoleScope);
-				GD.Print(Autoexec.GetAsText());
 				Scripting.ConsoleEngine = Scripting.ConsoleEngine.ContinueWithAsync(Autoexec.GetAsText()).Result;
 				Console.Print("Successfully executed autoexec");
 			}
 			catch(Exception Error)
 			{
-				// ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
-				// Console.Print(EO.FormatException(Error));
 				Console.Print(Error.Message);
 				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
 			}
