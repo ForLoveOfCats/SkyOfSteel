@@ -50,27 +50,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Dynamic">
-      <HintPath>packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Dynamic.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Scripting">
-      <HintPath>packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Scripting.Metadata">
-      <HintPath>packages\DynamicLanguageRuntime.1.2.2\lib\net45\Microsoft.Scripting.Metadata.dll</HintPath>
-    </Reference>
-    <Reference Include="IronPython">
-      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.dll</HintPath>
-    </Reference>
-    <Reference Include="IronPython.Modules">
-      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.Modules.dll</HintPath>
-    </Reference>
-    <Reference Include="IronPython.SQLite">
-      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="IronPython.Wpf">
-      <HintPath>packages\IronPython.2.7.9\lib\net45\IronPython.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.CodeAnalysis">
       <HintPath>packages\Microsoft.CodeAnalysis.Common.2.10.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>

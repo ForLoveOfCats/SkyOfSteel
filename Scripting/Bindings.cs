@@ -20,9 +20,9 @@ public class Bindings : Node
 	public static void Bind(string KeyName, string FunctionName)
 	{
 		//First we check if the function provided even exists
-		dynamic Variable;
-		Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);
-		if(Variable == null || !(Variable is Delegate || Variable is IronPython.Runtime.PythonFunction))
+		dynamic Variable = null;
+		// Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);
+		if(Variable == null || !(Variable is Delegate /*|| Variable is IronPython.Runtime.PythonFunction*/))
 		{
 			Console.ThrowPrint($"'{FunctionName}' is not a valid function");
 			return;
@@ -34,10 +34,10 @@ public class Bindings : Node
 		{
 			ArgCount = (Variable as Delegate).Method.GetParameters().Length;
 		}
-		else if(Variable is IronPython.Runtime.PythonFunction)
-		{
-			ArgCount = Scripting.ConsoleEngine.Execute($"len({FunctionName}.func_code.co_varnames)");
-		}
+		/*else if(Variable is IronPython.Runtime.PythonFunction)
+		  {
+		  ArgCount = Scripting.ConsoleEngine.Execute($"len({FunctionName}.func_code.co_varnames)");
+		  }*/
 
 		if(ArgCount == null) //Sanity check
 		{
@@ -430,18 +430,18 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
+					// Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Function}(0)", Scripting.ConsoleScope);
+					// Scripting.ConsoleEngine.Execute($"{Binding.Function}(0)", Scripting.ConsoleScope);
 				}
 			}
 			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
+					// Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
 				}
 			}
 			else if(Binding.Type == TYPE.CONTROLLERAXIS)
@@ -480,16 +480,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
 							break;
 					}
 					Binding.JoyWasInDeadzone = false;
@@ -503,16 +503,16 @@ public class Bindings : Node
 						switch(Binding.AxisDirection)
 						{
 							case(DIRECTION.UP):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
 								break;
 							case(DIRECTION.DOWN):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
 								break;
 							case(DIRECTION.RIGHT):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
 								break;
 							case(DIRECTION.LEFT):
-								Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
 								break;
 						}
 						Binding.JoyWasInDeadzone = true;
@@ -527,14 +527,14 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
+					// Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
 				}
 			}
 			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
+					// Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
 				}
 			}
 		}
@@ -557,16 +557,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 						case(DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
 							break;
 					}
 				}
@@ -577,7 +577,7 @@ public class Bindings : Node
 				if(Binding.Type == TYPE.MOUSEAXIS)
 				{
 					//Don't need to switch on the direction as it doesn't want an argument anyway
-					Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
+					// Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
 				}
 			}
 		}

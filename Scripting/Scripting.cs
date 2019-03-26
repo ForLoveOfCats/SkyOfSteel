@@ -1,20 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using IronPython;
-using IronPython.Hosting;
-using IronPython.Runtime;
-using Microsoft.Scripting;
-using Microsoft.Scripting.Hosting;
 
 
 public class Scripting : Node
 {
-	public static ScriptEngine ConsoleEngine;
-	public static ScriptScope ConsoleScope;
-	public static ScriptScope StringScope; //Used to convert objects to string
-	public static ScriptEngine GmEngine;
-	public static ScriptScope GmScope;
+	// public static ScriptEngine ConsoleEngine;
+	// public static ScriptEngine GmEngine;
 
 	public static string GamemodeName;
 
@@ -25,18 +17,7 @@ public class Scripting : Node
 
 		Self = this;
 
-		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
-		ConsoleScope = ConsoleEngine.CreateScope();
-		StringScope = ConsoleEngine.CreateScope();
-
-		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
-		{
-			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
-		}
-		foreach(API.PyConstructorExposer Exposer in API.ExposeConstructors(API.LEVEL.CONSOLE))
-		{
-			ConsoleScope.SetVariable(Exposer.Name, Exposer.Constructor);
-		}
+		// ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 
 		SetupGmEngine();
 
@@ -44,99 +25,63 @@ public class Scripting : Node
 		SetupScript.Open("res://Scripting/SetupScript.py", 1);
 		try
 		{
-			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
-			Source.Execute(ConsoleScope);
+			// ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
+			// Source.Execute(ConsoleScope);
 		}
 		catch(Exception Err)
 		{
 			SetupScript.Close();
-			ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
-			GD.Print(EO.FormatException(Err));
+			// ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
+			// GD.Print(EO.FormatException(Err));
 			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
 		}
 		SetupScript.Close();
 	}
 
 
-	public static object ToPy(object ToConvert)
-	{
-		if(ToConvert is Vector3)
-		{
-			//Could use two layers of casting to implicitly convert
-			//This is just nicer to read
-			return new PyVector3((Vector3)ToConvert);
-		}
-
-		//Does not require intervention
-		return ToConvert;
-	}
-
-
-	public static object[] ToPy(params object[] ConvertArray)
-	{
-		object[] Out = new object[ConvertArray.Length];
-		int Iteration = 0;
-		foreach(object ToConvert in ConvertArray)
-		{
-			Out[Iteration] = ToPy(ToConvert);
-			Iteration += 1;
-		}
-		return Out;
-	}
-
 	public static void SetupGmEngine()
 	{
-		GmEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
-		GmScope = ConsoleEngine.CreateScope();
-
-		foreach(List<object> List in API.Expose(API.LEVEL.GAMEMODE, Self))
-		{
-			GmScope.SetVariable((string)List[0], (Delegate)List[1]);
-		}
-		foreach(API.PyConstructorExposer Exposer in API.ExposeConstructors(API.LEVEL.CONSOLE))
-		{
-			GmScope.SetVariable(Exposer.Name, Exposer.Constructor);
-		}
+		// GmEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 	}
 
 
 	public override void _PhysicsProcess(float Delta)
 	{
 		object Function = null;
-		ConsoleScope.TryGetVariable("_tick", out Function);
+		/*ConsoleScope.TryGetVariable("_tick", out Function);
 		if(Function != null && Function is PythonFunction)
 		{
-			try
-			{
-				ConsoleEngine.Operations.Invoke(Function, Delta);
-			}
-			catch(Exception Err)
-			{
-				//TODO figure out a better solution to this
-				//Currently we just dump an error every _tick call
-				//Eventually I need to mark if the _tick functin has an error and not run it
-				//However that would fall apart once one can define functions at runtime
-				ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
-				Console.Print(EO.FormatException(Err));
-			}
+		try
+		{
+		ConsoleEngine.Operations.Invoke(Function, Delta);
 		}
+		catch(Exception Err)
+		{
+		//TODO figure out a better solution to this
+		//Currently we just dump an error every _tick call
+		//Eventually I need to mark if the _tick functin has an error and not run it
+		//However that would fall apart once one can define functions at runtime
+		ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
+		Console.Print(EO.FormatException(Err));
+		}
+		}*/
 
 		if(GamemodeName != null)
 		{
 			Function = null;
-			GmScope.TryGetVariable("_tick", out Function);
-			if(Function != null && Function is PythonFunction)
-			{
-				try
-				{
-					GmEngine.Operations.Invoke(Function, Delta);
-				}
-				catch(Exception Err)
-				{
-					ExceptionOperations EO = Scripting.GmEngine.GetService<ExceptionOperations>();
-					Console.Print(EO.FormatException(Err));
-				}
-			}
+			/*GmScope.TryGetVariable("_tick", out Function);
+			  if(Function != null && Function is PythonFunction)
+			  {
+			  try
+			  {
+			  GmEngine.Operations.Invoke(Function, Delta);
+			  }
+			  catch(Exception Err)
+			  {
+			  ExceptionOperations EO = Scripting.GmEngine.GetService<ExceptionOperations>();
+			  Console.Print(EO.FormatException(Err));
+			  }
+			  }*/
 		}
 	}
 
@@ -157,12 +102,12 @@ public class Scripting : Node
 
 			try
 			{
-				GmEngine.Execute(ServerScript.GetAsText(), GmScope);
+				// GmEngine.Execute(ServerScript.GetAsText(), GmScope);
 			}
 			catch(Exception Err)
 			{
-				ExceptionOperations EO = GmEngine.GetService<ExceptionOperations>();
-				Console.Print(EO.FormatException(Err));
+				// ExceptionOperations EO = GmEngine.GetService<ExceptionOperations>();
+				// Console.Print(EO.FormatException(Err));
 				Scripting.UnloadGameMode();
 			}
 
@@ -186,27 +131,20 @@ public class Scripting : Node
 	}
 
 
-	public static string PyToString(object Obj)
-	{
-		StringScope.SetVariable("to_string_object", Obj);
-		return ConsoleEngine.Execute("str(to_string_object)", StringScope);
-	}
-
-
 	public static void RunConsoleLine(string Line)
 	{
-		try
-		{
-			object Returned = ConsoleEngine.Execute(Line, ConsoleScope);
-			if(Returned != null)
-			{
-				Console.Print(PyToString(Returned));
-			}
-		}
-		catch(Exception e)
-		{
-			ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
-			Console.Print(eo.FormatException(e));
-		}
+		/*try
+		  {
+		  object Returned = ConsoleEngine.Execute(Line, ConsoleScope);
+		  if(Returned != null)
+		  {
+		  Console.Print(PyToString(Returned));
+		  }
+		  }
+		  catch(Exception e)
+		  {
+		  ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
+		  Console.Print(eo.FormatException(e));
+		  }*/
 	}
 }

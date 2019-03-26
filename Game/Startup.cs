@@ -1,6 +1,5 @@
 using System;
 using Godot;
-using Microsoft.Scripting.Hosting;
 
 
 public class Startup : Node
@@ -42,13 +41,13 @@ public class Startup : Node
 			Console.Print("Autoexec loaded");
 			try
 			{
-				Scripting.ConsoleEngine.Execute(Autoexec.GetAsText(), Scripting.ConsoleScope);
+				// Scripting.ConsoleEngine.Execute(Autoexec.GetAsText(), Scripting.ConsoleScope);
 				Console.Print("Successfully executed autoexec");
 			}
 			catch(Exception Error)
 			{
-				ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
-				Console.Print(EO.FormatException(Error));
+				// ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
+				// Console.Print(EO.FormatException(Error));
 				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
 			}
 		}
