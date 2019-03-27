@@ -23,6 +23,8 @@ public class Net : Node
 
 	public static Dictionary<int, string> Nicknames = new Dictionary<int, string>();
 
+	public static MultiplayerAPI Work; //Get it? Net.Work
+
 	public static Net Self;
 	Net()
 	{
@@ -34,6 +36,8 @@ public class Net : Node
 
 	public override void _Ready()
 	{
+		Work = Multiplayer; //This means that anywhere we can Net.Work.Whatever instead of Game.Self.GetTree().Whatever
+
 		GetTree().Connect("network_peer_connected", this, "_PlayerConnected");
 		GetTree().Connect("network_peer_disconnected", this, "_PlayerDisconnected");
 		GetTree().Connect("server_disconnected", this, "_ServerDisconnected");

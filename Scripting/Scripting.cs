@@ -23,7 +23,7 @@ public class Scripting : Node
 
 		// ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
 		Sc.Script CEngine = Cs.Create(@"", Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies()));
-		ConsoleEngine = CEngine.ContinueWith("").RunAsync().Result;
+		ConsoleEngine = CEngine.ContinueWith("using static API; using Godot;").RunAsync().Result;
 
 		SetupGmEngine();
 	}
