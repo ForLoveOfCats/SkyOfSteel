@@ -37,42 +37,7 @@ public class Scripting : Node
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		object Function = null;
-		/*ConsoleScope.TryGetVariable("_tick", out Function);
-		if(Function != null && Function is PythonFunction)
-		{
-		try
-		{
-		ConsoleEngine.Operations.Invoke(Function, Delta);
-		}
-		catch(Exception Err)
-		{
-		//TODO figure out a better solution to this
-		//Currently we just dump an error every _tick call
-		//Eventually I need to mark if the _tick functin has an error and not run it
-		//However that would fall apart once one can define functions at runtime
-		ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
-		Console.Print(EO.FormatException(Err));
-		}
-		}*/
-
-		if(GamemodeName != null)
-		{
-			Function = null;
-			/*GmScope.TryGetVariable("_tick", out Function);
-			  if(Function != null && Function is PythonFunction)
-			  {
-			  try
-			  {
-			  GmEngine.Operations.Invoke(Function, Delta);
-			  }
-			  catch(Exception Err)
-			  {
-			  ExceptionOperations EO = Scripting.GmEngine.GetService<ExceptionOperations>();
-			  Console.Print(EO.FormatException(Err));
-			  }
-			  }*/
-		}
+		//TODO Call the gamemode's tick function
 	}
 
 
