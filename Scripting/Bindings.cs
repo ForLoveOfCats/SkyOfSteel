@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Sc = Microsoft.CodeAnalysis.Scripting;
 
 
 public class Bindings : Node
@@ -19,49 +20,27 @@ public class Bindings : Node
 
 	public static void Bind(string KeyName, string FunctionName)
 	{
-		//First we check if the function provided even exists
-		dynamic Variable = null;
-		// Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);
-		if(Variable == null || !(Variable is Delegate /*|| Variable is IronPython.Runtime.PythonFunction*/))
+		BindingObject NewBind = new BindingObject(KeyName);
+		//We need to check that the function exitst and either takes no args or one float arg and get the Action
+		try //First assume it takes a float argument
 		{
-			Console.ThrowPrint($"'{FunctionName}' is not a valid function");
-			return;
+			Sc.ScriptState State = Scripting.ConsoleEngine.ContinueWithAsync($"return new Action<float>(delegate(float x) {{ {FunctionName}(x); }} );").Result;
+			NewBind.FuncWithArg = State.ReturnValue as Action<float>;
 		}
-
-		//Then we grab the number of aruments the function takes
-		Nullable<int> ArgCount = null; //null for the sanity check
-		if(Variable is Delegate)
+		catch //Must either not exist or has different argument requirements
 		{
-			ArgCount = (Variable as Delegate).Method.GetParameters().Length;
-		}
-		/*else if(Variable is IronPython.Runtime.PythonFunction)
-		  {
-		  ArgCount = Scripting.ConsoleEngine.Execute($"len({FunctionName}.func_code.co_varnames)");
-		  }*/
-
-		if(ArgCount == null) //Sanity check
-		{
-			Console.ThrowPrint($"Cannot find argument count of '{FunctionName}', please contact the developers'");
-			return;
-		}
-
-		//Then we verify that the function takes either zero or one arguments
-		if(ArgCount != 0 && ArgCount != 1)
-		{
-			Console.ThrowPrint($"Function '{FunctionName}' must take either one or two arguments");
-			return;
-		}
-		if(ArgCount == 1 && Variable is Delegate) //and if it does take a variable we make sure it can take a float
-		{
-			if(!((Delegate)Variable).Method.GetParameters()[0].ParameterType.IsInstanceOfType(new float()))
+			try //Next we assume that it exists but without an argument
 			{
-				Console.ThrowPrint($"Builtin command '{FunctionName}' has a single non-float argument");
+				Sc.ScriptState State = Scripting.ConsoleEngine.ContinueWithAsync($"return new Action(delegate() {{ {FunctionName}(); }} );").Result;
+				NewBind.FuncWithoutArg = State.ReturnValue as Action;
+			}
+			catch //At this point we know it either does not exist or has incompatible argument requirements
+			{
+				Console.ThrowPrint($"The supplied function '{FunctionName}' does not exist, does not take a single float argument, or does not take zero arguments");
 				return;
 			}
 		}
 
-
-		BindingObject NewBind = new BindingObject(KeyName, FunctionName);
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
 		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
 		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because
@@ -355,18 +334,14 @@ public class Bindings : Node
 				break;
 			}
 		}
-		if(ArgCount == 0)
-		{
-			BindingsWithoutArg.Add(NewBind);
-		}
-		else if(ArgCount == 1)
+
+		if(NewBind.FuncWithArg != null)
 		{
 			BindingsWithArg.Add(NewBind);
 		}
-		else
+		else if(NewBind.FuncWithoutArg != null)
 		{
-			//Sanity check
-			Console.ThrowPrint("Unsupported number of arguments when adding new bind to bindings lists");
+			BindingsWithoutArg.Add(NewBind);
 		}
 	}
 
@@ -430,18 +405,18 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					// Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
+					Binding.FuncWithArg.Invoke(1);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-					// Scripting.ConsoleEngine.Execute($"{Binding.Function}(0)", Scripting.ConsoleScope);
+					Binding.FuncWithArg.Invoke(0);
 				}
 			}
 			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					// Scripting.ConsoleEngine.Execute($"{Binding.Function}(1)", Scripting.ConsoleScope);
+					Binding.FuncWithArg.Invoke(1);
 				}
 			}
 			else if(Binding.Type == TYPE.CONTROLLERAXIS)
@@ -480,16 +455,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(-VerticalMovement);
 							break;
 						case(DIRECTION.DOWN):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(VerticalMovement);
 							break;
 						case(DIRECTION.RIGHT):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(HorizontalMovement);
 							break;
 						case(DIRECTION.LEFT):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(-HorizontalMovement);
 							break;
 					}
 					Binding.JoyWasInDeadzone = false;
@@ -498,23 +473,7 @@ public class Bindings : Node
 				{
 					if (Binding.JoyWasInDeadzone == false) // Only do this if the Binding wasn't zero last time
 					{
-						float HorizontalMovement = 0;
-						float VerticalMovement = 0;
-						switch(Binding.AxisDirection)
-						{
-							case(DIRECTION.UP):
-								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement*-1)})", Scripting.ConsoleScope);
-								break;
-							case(DIRECTION.DOWN):
-								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(VerticalMovement)})", Scripting.ConsoleScope);
-								break;
-							case(DIRECTION.RIGHT):
-								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)})", Scripting.ConsoleScope);
-								break;
-							case(DIRECTION.LEFT):
-								// Scripting.ConsoleEngine.Execute($"{Binding.Function}({(HorizontalMovement)*-1})", Scripting.ConsoleScope);
-								break;
-						}
+						Binding.FuncWithArg.Invoke(0);
 						Binding.JoyWasInDeadzone = true;
 					}
 				}
@@ -527,14 +486,14 @@ public class Bindings : Node
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					// Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
+					Binding.FuncWithoutArg.Invoke();
 				}
 			}
 			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					// Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
+					Binding.FuncWithoutArg.Invoke();
 				}
 			}
 		}
@@ -557,16 +516,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.y)/Game.MouseDivisor);
 							break;
 						case(DIRECTION.DOWN):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.y)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.y)/Game.MouseDivisor);
 							break;
 						case(DIRECTION.RIGHT):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.x)/Game.MouseDivisor);
 							break;
 						case(DIRECTION.LEFT):
-							// Scripting.ConsoleEngine.Execute($"{Binding.Function}({((float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1)))/Game.MouseDivisor})", Scripting.ConsoleScope);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.x)/Game.MouseDivisor);
 							break;
 					}
 				}
@@ -577,7 +536,7 @@ public class Bindings : Node
 				if(Binding.Type == TYPE.MOUSEAXIS)
 				{
 					//Don't need to switch on the direction as it doesn't want an argument anyway
-					// Scripting.ConsoleEngine.Execute($"{Binding.Function}()", Scripting.ConsoleScope);
+					Binding.FuncWithoutArg.Invoke();
 				}
 			}
 		}
