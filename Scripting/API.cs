@@ -121,6 +121,18 @@ public static class API
 	}
 
 
+	public static void FpsMax(int TargetFps)
+	{
+		if(TargetFps <= 1)
+		{
+			Console.ThrowPrint("Please provide a valid fps value which is greater than 1");
+			return;
+		}
+
+		Engine.SetTargetFps(Convert.ToInt32(TargetFps));
+	}
+
+
 	public static bool Save(string Name)
 	{
 		if(Game.WorldOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())

@@ -131,6 +131,12 @@ public class Player : KinematicBody
 	}
 
 
+	public void ToggleFly()
+	{
+		SetFly(!FlyMode);
+	}
+
+
 	public void PositionReset()
 	{
 		Translation = new Vector3(0,1,0);
