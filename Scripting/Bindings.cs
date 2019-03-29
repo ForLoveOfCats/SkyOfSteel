@@ -18,7 +18,7 @@ public class Bindings : Node
 	}
 
 
-	public static void Bind(string KeyName, string FunctionName)
+	public static bool Bind(string KeyName, string FunctionName)
 	{
 		BindingObject NewBind = new BindingObject(KeyName);
 		//We need to check that the function exitst and either takes no args or one float arg and get the Action
@@ -37,7 +37,7 @@ public class Bindings : Node
 			catch //At this point we know it either does not exist or has incompatible argument requirements
 			{
 				Console.ThrowPrint($"The supplied function '{FunctionName}' does not exist, does not take a single float argument, or does not take zero arguments");
-				return;
+				return false;
 			}
 		}
 
@@ -261,7 +261,8 @@ public class Bindings : Node
 				else
 				{
 					//If not a valid Scancode then the provided key must not be a valid key
-					return;
+					Console.ThrowPrint($"The supplied key '{KeyName}' is not a valid key");
+					return false;
 				}
 				break;
 			}
@@ -343,6 +344,8 @@ public class Bindings : Node
 		{
 			BindingsWithoutArg.Add(NewBind);
 		}
+
+		return true;
 	}
 
 

@@ -69,8 +69,7 @@ public static class API
 
 	public static bool Bind(string InputString, string FunctionName)
 	{
-		Bindings.Bind(InputString, FunctionName); //TODO Get bool from this call
-		return true;
+		return Bindings.Bind(InputString, FunctionName);
 	}
 
 
