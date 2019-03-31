@@ -10,7 +10,7 @@ using Cs = Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript;
 public class Scripting : Node
 {
 	public static Sc.ScriptState ConsoleEngine;
-	// public static ScriptEngine GmEngine;
+	public static Sc.ScriptState GmEngine;
 
 	public static string GamemodeName;
 
@@ -21,23 +21,13 @@ public class Scripting : Node
 
 		Self = this;
 
-		// ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
-		Sc.Script CEngine = Cs.Create(@"", Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies()));
+		Assembly[] LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+		Sc.Script CEngine = Cs.Create("", Sc.ScriptOptions.Default.WithReferences(LoadedAssemblies));
 		ConsoleEngine = CEngine.ContinueWith("using System; using Godot; using static API;").RunAsync().Result;
 
-		SetupGmEngine();
-	}
-
-
-	public static void SetupGmEngine()
-	{
-		// GmEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
-	}
-
-
-	public override void _PhysicsProcess(float Delta)
-	{
-		//TODO Call the gamemode's tick function
+		Sc.Script GEngine = Cs.Create("", Sc.ScriptOptions.Default.WithReferences(LoadedAssemblies));
+		GmEngine = GEngine.ContinueWith("using System; using Godot; using static API;").RunAsync().Result;
 	}
 
 
@@ -46,24 +36,36 @@ public class Scripting : Node
 		UnloadGameMode();
 
 		Directory ModeDir = new Directory();
-		if(ModeDir.FileExists($"user://gamemodes/{Name}/{Name}.py")) //Has a  script
+		if(ModeDir.FileExists($"user://Gamemodes/{Name}/{Name}.csx")) //Has a  script
 		{
 			Console.Log($"Loaded gamemode '{Name}', executing");
 
 			GamemodeName = Name;
-			SetupGmEngine();
 			File ServerScript = new File();
-			ServerScript.Open($"user://gamemodes/{Name}/{Name}.py", 1);
+			ServerScript.Open($"user://Gamemodes/{Name}/{Name}.csx", 1);
 
 			try
 			{
-				// GmEngine.Execute(ServerScript.GetAsText(), GmScope);
+				Sc.ScriptState State = GmEngine.ContinueWithAsync(ServerScript.GetAsText()).Result;
+				object Returned = State.ReturnValue;
+				if(Returned is Gamemode)
+				{
+					Game.Mode = Returned as Gamemode;
+					Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
+					Game.Self.AddChild(Game.Mode);
+					Game.Mode.SetName("Gamemode");
+				}
+				else
+				{
+					Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
+					UnloadGameMode();
+				}
 			}
 			catch(Exception Err)
 			{
-				// ExceptionOperations EO = GmEngine.GetService<ExceptionOperations>();
-				// Console.Print(EO.FormatException(Err));
-				Scripting.UnloadGameMode();
+				ServerScript.Close();
+				Console.Log(Err.Message);
+				UnloadGameMode();
 			}
 
 			ServerScript.Close();
@@ -81,7 +83,10 @@ public class Scripting : Node
 		{
 			Console.Log($"The gamemode '{GamemodeName}' was unloaded");
 			GamemodeName = null;
-			SetupGmEngine();
+
+			Game.Mode.OnUnload();
+			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
+			Game.Mode = new Gamemode();
 		}
 	}
 

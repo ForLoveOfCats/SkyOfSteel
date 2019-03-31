@@ -18,6 +18,8 @@ public class Game : Node
 	public static bool WorldOpen = false;
 	public static StructureRootClass StructureRoot;
 
+	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
+
 	public static float LookSensitivity = 15;
 	public static float MouseDivisor = LookSensitivity;
 	public static float Deadzone = 0.25f;
@@ -136,8 +138,6 @@ public class Game : Node
 		StructureRoot = new StructureRootClass();
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
-
-		Scripting.SetupGmEngine();
 
 		if(AsServer)
 		{
