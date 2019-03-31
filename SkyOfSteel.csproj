@@ -87,7 +87,6 @@
     <Compile Include="Scripting\Scripting.cs" />
     <Compile Include="Scripting\Console.cs" />
     <Compile Include="Game\SteelMath.cs" />
-    <Compile Include="Scripting\Types\PyVector3.cs" />
     <Compile Include="UI\ConsoleWindow.cs" />
     <Compile Include="UI\HUD.cs" />
     <Compile Include="World\World.cs" />
