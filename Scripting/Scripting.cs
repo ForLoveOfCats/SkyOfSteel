@@ -31,7 +31,7 @@ public class Scripting : Node
 	}
 
 
-	public static void LoadGameMode(string Name)
+	public static bool LoadGameMode(string Name)
 	{
 		UnloadGameMode();
 
@@ -54,11 +54,17 @@ public class Scripting : Node
 					Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
 					Game.Self.AddChild(Game.Mode);
 					Game.Mode.SetName("Gamemode");
+
+					ServerScript.Close();
+					return true;
 				}
 				else
 				{
 					Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
 					UnloadGameMode();
+
+					ServerScript.Close();
+					return false;
 				}
 			}
 			catch(Exception Err)
@@ -66,13 +72,17 @@ public class Scripting : Node
 				ServerScript.Close();
 				Console.Log(Err.Message);
 				UnloadGameMode();
+
+				ServerScript.Close();
+				return false;
 			}
 
-			ServerScript.Close();
+			ServerScript.Close(); //Just in case
 		}
 		else
 		{
 			Console.ThrowPrint($"No gamemode named '{Name}'");
+			return false;
 		}
 	}
 

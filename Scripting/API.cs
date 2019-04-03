@@ -184,8 +184,7 @@ public static class API
 	{
 		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
 		{
-			Scripting.LoadGameMode(Name); //TODO move error checking into this Gamemode function
-			return true;
+			return Scripting.LoadGameMode(Name);
 		}
 
 		Console.ThrowPrint("Cannot set gamemode when not hosting");
@@ -199,8 +198,7 @@ public static class API
 		{
 			if(Scripting.GamemodeName != "")
 			{
-				Scripting.LoadGameMode(Scripting.GamemodeName);
-				return true;
+				return Scripting.LoadGameMode(Scripting.GamemodeName);
 			}
 
 			Console.ThrowPrint("No gamemode loaded to reload");
