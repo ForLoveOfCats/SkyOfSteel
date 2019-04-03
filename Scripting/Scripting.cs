@@ -100,6 +100,13 @@ public class Scripting : Node
 	}
 
 
+	[Remote]
+	public void RequestGmUnload()
+	{
+		UnloadGameMode();
+	}
+
+
 	public static void UnloadGameMode()
 	{
 		if(GamemodeName != null)
