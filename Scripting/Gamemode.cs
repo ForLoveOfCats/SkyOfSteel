@@ -16,6 +16,42 @@ public class Gamemode : Node
 	}
 
 
+	public virtual bool ShouldMoveForward(float Sens)
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldMoveBackward(float Sens)
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldMoveRight(float Sens)
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldMoveLeft(float Sens)
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldJump()
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldCrouch()
+	{
+		return true;
+	}
+
+
 	public virtual bool ShouldPlayerRotate(float Rotation)
 	{
 		return true;

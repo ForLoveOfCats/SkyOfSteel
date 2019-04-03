@@ -225,7 +225,7 @@ public class Player : KinematicBody
 
 	public void ForwardMove(float Sens)
 	{
-		if(ShouldDo.LocalPlayerForward(Sens))
+		if(Game.Mode.ShouldMoveForward(Sens))
 		{
 			ForwardSens = Sens;
 			if(Sens > 0)
@@ -246,7 +246,7 @@ public class Player : KinematicBody
 
 	public void BackwardMove(float Sens)
 	{
-		if(ShouldDo.LocalPlayerBackward(Sens))
+		if(Game.Mode.ShouldMoveBackward(Sens))
 		{
 			BackwardSens = Sens;
 			if(Sens > 0)
@@ -267,7 +267,7 @@ public class Player : KinematicBody
 
 	public void RightMove(float Sens)
 	{
-		if(ShouldDo.LocalPlayerRight(Sens))
+		if(Game.Mode.ShouldMoveRight(Sens))
 		{
 			RightSens = Sens;
 			if(Sens > 0)
@@ -288,7 +288,7 @@ public class Player : KinematicBody
 
 	public void LeftMove(float Sens)
 	{
-		if(ShouldDo.LocalPlayerLeft(Sens))
+		if(Game.Mode.ShouldMoveLeft(Sens))
 		{
 			LeftSens = Sens;
 			if(Sens > 0)
@@ -338,7 +338,7 @@ public class Player : KinematicBody
 				}
 				IsJumping = false;
 			}
-			else if(WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && ShouldDo.LocalPlayerJump())
+			else if(WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && Game.Mode.ShouldJump())
 			{
 				Momentum.y = JumpStartForce;
 				if(JumpAxis < 1)
@@ -371,7 +371,7 @@ public class Player : KinematicBody
 			JumpAxis = 0;
 			JumpSens = 0;
 
-			if(FlyMode)
+			if(FlyMode && Game.Mode.ShouldCrouch()) //NOTE Crouching is currently only for going down in flymode
 			{
 				if(IsSprinting)
 				{
