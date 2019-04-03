@@ -110,12 +110,6 @@ public class Console : Node
 	}
 
 
-	public static void ClearLog() //TODO Expose this and a clear print function to console
-	{
-		LogLabel.Text = "";
-	}
-
-
 	public static void Close()
 	{
 		Window.Close();

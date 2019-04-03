@@ -23,6 +23,8 @@ public class Net : Node
 
 	public static Dictionary<int, string> Nicknames = new Dictionary<int, string>();
 
+	public static MultiplayerAPI Work; //Get it? Net.Work
+
 	public static Net Self;
 	Net()
 	{
@@ -34,6 +36,8 @@ public class Net : Node
 
 	public override void _Ready()
 	{
+		Work = Multiplayer; //This means that anywhere we can Net.Work.Whatever instead of Game.Self.GetTree().Whatever
+
 		GetTree().Connect("network_peer_connected", this, "_PlayerConnected");
 		GetTree().Connect("network_peer_disconnected", this, "_PlayerDisconnected");
 		GetTree().Connect("server_disconnected", this, "_ServerDisconnected");
@@ -108,8 +112,8 @@ public class Net : Node
 
 		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
-		SetupNewPeer(GetTree().GetRpcSenderId());
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
+		SetupNewPeer(GetTree().GetRpcSenderId());
 		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
 		foreach(int Id in PeerList)
 		{
@@ -147,6 +151,9 @@ public class Net : Node
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
 		World.ChunkLoadDistances[Id] = 0;
+
+		if(Net.Work.IsNetworkServer())
+			Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -188,6 +195,9 @@ public class Net : Node
 
 		World.ChunkLoadDistances.Remove(Id);
 		World.RemoteLoadedChunks.Remove(Id);
+
+		if(Net.Work.IsNetworkServer())
+			Game.Mode.OnPlayerDisconnect(Id);
 	}
 
 
@@ -235,19 +245,6 @@ public class Net : Node
 
 	public static void ConnectTo(string InIp)
 	{
-		if(Self.GetTree().NetworkPeer != null)
-		{
-			if(Self.GetTree().IsNetworkServer())
-			{
-				Console.ThrowPrint("Cannot connect when hosting");
-			}
-			else
-			{
-				Console.ThrowPrint("Cannot connect when already connected to a server");
-			}
-			return;
-		}
-
 		//Set static string Ip
 		Ip = InIp;
 
