@@ -76,8 +76,6 @@ public class Scripting : Node
 				ServerScript.Close();
 				return false;
 			}
-
-			ServerScript.Close(); //Just in case
 		}
 		else
 		{
