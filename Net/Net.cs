@@ -112,8 +112,8 @@ public class Net : Node
 
 		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
-		SetupNewPeer(GetTree().GetRpcSenderId());
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
+		SetupNewPeer(GetTree().GetRpcSenderId());
 		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
 		foreach(int Id in PeerList)
 		{
@@ -151,6 +151,9 @@ public class Net : Node
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
 		World.ChunkLoadDistances[Id] = 0;
+
+		if(Net.Work.IsNetworkServer())
+			Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -192,6 +195,9 @@ public class Net : Node
 
 		World.ChunkLoadDistances.Remove(Id);
 		World.RemoteLoadedChunks.Remove(Id);
+
+		if(Net.Work.IsNetworkServer())
+			Game.Mode.OnPlayerDisconnect(Id);
 	}
 
 

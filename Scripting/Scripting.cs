@@ -31,6 +31,21 @@ public class Scripting : Node
 	}
 
 
+	[Remote]
+	public void RequestGmLoad(string Name)
+	{
+		Console.Log($"The server requested that gamemode '{Name}' be loaded");
+		if(LoadGameMode(Name))
+		{
+			Console.Log($"Successfully loaded the gamemode '{Name}' as requested by the server");
+		}
+		else
+		{
+			Console.ThrowLog($"The server requested that your client load the gamemode '{Name}' but your client was unable to");
+		}
+	}
+
+
 	public static bool LoadGameMode(string Name)
 	{
 		UnloadGameMode();

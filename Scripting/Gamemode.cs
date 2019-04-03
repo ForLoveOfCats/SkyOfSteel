@@ -10,6 +10,14 @@ public class Gamemode : Node
 	{}
 
 
+	public virtual void OnPlayerConnect(int PeerId)
+	{}
+
+
+	public virtual void OnPlayerDisconnect(int PeerId)
+	{}
+
+
 	public virtual bool ShouldPlayerMove(Vector3 Position)
 	{
 		return true;
