@@ -239,19 +239,6 @@ public class Net : Node
 
 	public static void ConnectTo(string InIp)
 	{
-		if(Self.GetTree().NetworkPeer != null)
-		{
-			if(Self.GetTree().IsNetworkServer())
-			{
-				Console.ThrowPrint("Cannot connect when hosting");
-			}
-			else
-			{
-				Console.ThrowPrint("Cannot connect when already connected to a server");
-			}
-			return;
-		}
-
 		//Set static string Ip
 		Ip = InIp;
 

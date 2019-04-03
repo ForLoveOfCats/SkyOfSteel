@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Net;
 using System.Collections.Generic;
 
 
@@ -19,6 +20,19 @@ public static class API
 
 	public static bool Connect(string Ip)
 	{
+		if(Net.Work.NetworkPeer != null)
+		{
+			if(Net.Work.IsNetworkServer())
+			{
+				Console.ThrowPrint("Cannot connect when hosting");
+			}
+			else
+			{
+				Console.ThrowPrint("Cannot connect when already connected to a server");
+			}
+			return false;
+		}
+
 		if(Game.Nickname == "")
 		{
 			Console.ThrowPrint("Please set a multiplayer nickname before connecting");
@@ -29,8 +43,16 @@ public static class API
 			if(Ip == "" || Ip == "localhost")
 				Ip = "127.0.0.1";
 
-			Net.ConnectTo(Ip); //TODO move error checking/prints into this Connect function
-			return true; //TODO This should only return true when Ip is valid
+
+			IPAddress Address; //Unused, just to check if valid ip
+			if(!IPAddress.TryParse(Ip, out Address)) //Requires an `out` argument
+			{
+				Console.ThrowPrint("Please provide a valid IP address");
+				return false;
+			}
+
+			Net.ConnectTo(Ip);
+			return true;
 		}
 	}
 
