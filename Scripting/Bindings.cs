@@ -395,7 +395,7 @@ public class Bindings : Node
 	}
 
 
-	public override void _Process(float Delta)
+	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Game.BindsEnabled)
 		{
