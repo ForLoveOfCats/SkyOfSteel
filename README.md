@@ -52,7 +52,7 @@ Contributions are welcome!
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json and IronPython)
+* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json and Roslyn)
 * Open the Godot editor to the project and let it reimport all the assets then hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
@@ -70,14 +70,13 @@ and the Source engine.
 
 ## Modding
 
-SkyOfSteel has a WIP gamemode modding API utilizing [IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page").
-The intention is to allow for fully custom gamemodes to be developed. Currently scripting is server
-side only however client side scripting is on the todo list. In addition there is a full ingame REPL console.
+SkyOfSteel has a gamemode modding system utilizing [Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page") to provide runtime
+C# compilation. The intention is to allow for fully custom gamemodes to be developed with full access to internal game APIs both
+server side *and* client side. In addition there is a full ingame REPL console.
 
-The gamemode API is based around game events. Whenever something occurs ingame it is
+The gamemode API has a concept of game events. Whenever something occurs ingame it is
 processed as an "event" which can be filtered and discarded by gamemode scripts programmatically.
-This allows for a great deal of flexibility even without the normal API for such things
-as setting player positions and the like (which are being worked on).
+This allows for a great deal of flexibility before even touching the normal API.
 
 
 
@@ -143,6 +142,6 @@ Also feel free to follow me (ForLoveOfCats) on
 ## License
 
 SkyOfSteel is licensed under the MIT license and utilizes
-[IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page")
+[Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page")
 and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 which are both under the MIT license as well.
