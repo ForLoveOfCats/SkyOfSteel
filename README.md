@@ -144,4 +144,4 @@ Also feel free to follow me (ForLoveOfCats) on
 SkyOfSteel is licensed under the MIT license and utilizes
 [Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page")
 and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-which are both under the MIT license as well.
+which are under the Apache-2.0 and the MIT licenses respectively.
