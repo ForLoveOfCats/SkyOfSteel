@@ -152,8 +152,7 @@ public class Net : Node
 		PeerList.Add(Id);
 		World.ChunkLoadDistances[Id] = 0;
 
-		if(Net.Work.IsNetworkServer())
-			Game.Mode.OnPlayerConnect(Id);
+		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -196,8 +195,7 @@ public class Net : Node
 		World.ChunkLoadDistances.Remove(Id);
 		World.RemoteLoadedChunks.Remove(Id);
 
-		if(Net.Work.IsNetworkServer())
-			Game.Mode.OnPlayerDisconnect(Id);
+		Game.Mode.OnPlayerDisconnect(Id);
 	}
 
 
