@@ -41,12 +41,6 @@ class ShouldDo
 	}
 
 
-	public static bool LocalPlayerMove(Vector3 Position)
-	{
-		return CheckFunction("_local_player_move", Position);
-	}
-
-
 	public static bool LocalPlayerForward(float Sens)
 	{
 		return CheckFunction("_local_player_forward", Sens);
@@ -74,41 +68,5 @@ class ShouldDo
 	public static bool LocalPlayerJump()
 	{
 		return CheckFunction("_local_player_jump");
-	}
-
-
-	public static bool LocalPlayerRotate(float Rotation)
-	{
-		return CheckFunction("_local_player_rotate", Rotation);
-	}
-
-
-	public static bool LocalPlayerPitch(float Rotation)
-	{
-		return CheckFunction("_local_player_pitch", Rotation);
-	}
-
-
-	public static bool RemotePlayerMove(int PlayerId, Vector3 Position)
-	{
-		return CheckFunction("_remote_player_move", PlayerId, Position);
-	}
-
-
-	public static bool RemotePlayerRotate(int PlayerId, Vector3 Rotation)
-	{
-		return CheckFunction("_remote_player_rotate", PlayerId, Rotation);
-	}
-
-
-	public static bool StructurePlace(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
-	{
-		return CheckFunction("_structure_place", BranchType.ToString(), Position, Rotation, OwnerId);
-	}
-
-
-	public static bool StructureRemove(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
-	{
-		return CheckFunction("_structure_remove", BranchType.ToString(), Position, Rotation, OwnerId);
 	}
 }

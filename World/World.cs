@@ -257,7 +257,7 @@ public class World : Node
 			}
 		}
 
-		if(ShouldDo.StructurePlace(BranchType, Position, Rotation, OwnerId))
+		if(Game.Mode.ShouldPlaceStructure(BranchType, Position, Rotation, OwnerId))
 		{
 			Structure Branch = Scenes[BranchType].Instance() as Structure;
 			Branch.Type = BranchType;

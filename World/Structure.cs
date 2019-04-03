@@ -18,7 +18,7 @@ public class Structure : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
+		if(Game.Mode.ShouldRemoveStructure(Type, Translation, RotationDegrees, OwnerId))
 		{
 			Net.SteelRpc(World.Self, nameof(World.Remove), GetName());
 			World.Self.Remove(GetName());

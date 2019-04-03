@@ -396,7 +396,7 @@ public class Player : KinematicBody
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
-			if(ShouldDo.LocalPlayerPitch(Change))
+			if(Game.Mode.ShouldPlayerPitch(Change))
 			{
 				LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
 				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
@@ -411,7 +411,7 @@ public class Player : KinematicBody
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
-			if(ShouldDo.LocalPlayerPitch(-Change))
+			if(Game.Mode.ShouldPlayerPitch(-Change))
 			{
 				LookVertical = Mathf.Clamp(LookVertical-Change, -90, 90);
 				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
@@ -426,7 +426,7 @@ public class Player : KinematicBody
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
-			if(ShouldDo.LocalPlayerRotate(-Change))
+			if(Game.Mode.ShouldPlayerRotate(-Change))
 			{
 				LookHorizontal -= Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
@@ -441,7 +441,7 @@ public class Player : KinematicBody
 		{
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
-			if(ShouldDo.LocalPlayerRotate(+Change))
+			if(Game.Mode.ShouldPlayerRotate(+Change))
 			{
 				LookHorizontal += Change;
 				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
@@ -668,7 +668,7 @@ public class Player : KinematicBody
 		Translation = OldPos;
 		if(NewPos != OldPos)
 		{
-			if(ShouldDo.LocalPlayerMove(NewPos))
+			if(Game.Mode.ShouldPlayerMove(NewPos))
 			{
 				Translation = NewPos;
 			}
@@ -692,12 +692,12 @@ public class Player : KinematicBody
 	[Remote]
 	public void Update(Vector3 Position, Vector3 Rotation)
 	{
-		if(ShouldDo.RemotePlayerMove(Id, Position))
+		if(Game.Mode.ShouldSyncRemotePlayerPosition(Id, Position))
 		{
 			Translation = Position;
 		}
 
-		if(ShouldDo.RemotePlayerRotate(Id, Rotation))
+		if(Game.Mode.ShouldSyncRemotePlayerRotation(Id, Rotation))
 		{
 			RotationDegrees = Rotation;
 		}
