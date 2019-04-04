@@ -21,13 +21,16 @@ public class Scripting : Node
 
 		Self = this;
 
-		Assembly[] LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+		Sc.ScriptOptions Options = Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
+			.AddReferences(Assembly.GetAssembly(typeof(System.Dynamic.DynamicObject)),  // System.Code
+						   Assembly.GetAssembly(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo)),  // Microsoft.CSharp
+						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
-		Sc.Script CEngine = Cs.Create("", Sc.ScriptOptions.Default.WithReferences(LoadedAssemblies));
-		ConsoleEngine = CEngine.ContinueWith("using System; using Godot; using static API;").RunAsync().Result;
+		Sc.Script CEngine = Cs.Create("", Options);
+		ConsoleEngine = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
 
-		Sc.Script GEngine = Cs.Create("", Sc.ScriptOptions.Default.WithReferences(LoadedAssemblies));
-		GmEngine = GEngine.ContinueWith("using System; using Godot; using static API;").RunAsync().Result;
+		Sc.Script GEngine = Cs.Create("", Options);
+		GmEngine = GEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
 	}
 
 
@@ -111,12 +114,13 @@ public class Scripting : Node
 	{
 		if(GamemodeName != null)
 		{
-			Console.Log($"The gamemode '{GamemodeName}' was unloaded");
-			GamemodeName = null;
-
 			Game.Mode.OnUnload();
 			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
 			Game.Mode = new Gamemode();
+			API.Gm = new API.EmptyCustomCommands();
+
+			Console.Log($"The gamemode '{GamemodeName}' was unloaded");
+			GamemodeName = null;
 		}
 	}
 
@@ -126,7 +130,7 @@ public class Scripting : Node
 		try
 		{
 			ConsoleEngine = ConsoleEngine.ContinueWithAsync(Line).Result;
-			object Returned = ConsoleEngine.ReturnValue;
+			object Returned = ConsoleEngine.ReturnValue as object;
 			if(Returned != null)
 			{
 				Console.Print(Returned.ToString());

@@ -6,6 +6,14 @@ using System.Collections.Generic;
 
 public static class API
 {
+	public class EmptyCustomCommands //Use this instead of null for better error message in console
+	{}
+
+
+	public static dynamic Gm = new EmptyCustomCommands(); //TODO Using this from the console will make the game crash on quit
+	//This is fixed in 3.1 Stable (but we currently use 3.1 Beta 11) so once we move to 3.1.1 this will be fixed
+
+
 	public static bool Host()
 	{
 		if(Game.Nickname == "")
