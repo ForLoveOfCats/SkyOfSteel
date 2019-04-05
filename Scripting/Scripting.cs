@@ -139,7 +139,15 @@ public class Scripting : Node
 	{
 		if(GamemodeName != null)
 		{
-			Game.Mode.OnUnload();
+			try
+			{
+				Game.Mode.OnUnload();
+			}
+			catch(Exception Err)
+			{
+				Console.ThrowLog($"An exception was thrown when calling 'OnUnload' on gamemode '{GamemodeName}': {Err.Message}");
+			}
+
 			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
 			Game.Mode = new Gamemode();
 			API.Gm = new API.EmptyCustomCommands();
