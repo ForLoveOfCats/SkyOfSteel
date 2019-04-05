@@ -94,14 +94,13 @@ public class Scripting : Node
 				ScriptFile.Close();
 			}
 
-			GamemodeName = Name;
-
 			try
 			{
 				Sc.ScriptState State = GmEngine.ContinueWithAsync(Source).Result;
 				object Returned = State.ReturnValue;
 				if(Returned is Gamemode)
 				{
+					GamemodeName = Name;
 					Game.Mode = Returned as Gamemode;
 					Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
 					Game.Self.AddChild(Game.Mode);
@@ -111,14 +110,12 @@ public class Scripting : Node
 				else
 				{
 					Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
-					UnloadGameMode();
 					return false;
 				}
 			}
 			catch(Exception Err)
 			{
 				Console.Log(Err.Message);
-				UnloadGameMode();
 				return false;
 			}
 		}
