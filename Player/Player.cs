@@ -655,13 +655,7 @@ public class Player : KinematicBody
 				WallKickRecoverPercentage = 0;
 
 				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
-
-				if(Momentum.y <= WallKickJumpForce)
-					Momentum.y = WallKickJumpForce;
-				else
-					Momentum.y += WallKickJumpForce;
-
-				Momentum.y = Clamp(Momentum.y, -MaxMovementSpeed, MaxMovementSpeed);
+				Momentum.y = WallKickJumpForce;
 			}
 		}
 		Vector3 NewPos = Translation;
