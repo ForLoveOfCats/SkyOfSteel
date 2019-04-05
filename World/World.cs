@@ -145,6 +145,93 @@ public class World : Node
 
 
 	[Remote]
+	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	{
+		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
+
+		//Nested if to prevent very long line
+		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
+		{
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
+			{
+				//If network is inited, not the server, and platform it to far away then...
+				return; //...don't place
+			}
+		}
+
+		if(Game.Mode.ShouldPlaceStructure(BranchType, Position, Rotation, OwnerId))
+		{
+			Structure Branch = Scenes[BranchType].Instance() as Structure;
+			Branch.Type = BranchType;
+			Branch.OwnerId = OwnerId;
+			Branch.Translation = Position;
+			Branch.RotationDegrees = Rotation;
+			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
+			Game.StructureRoot.AddChild(Branch);
+
+			AddStructureToChunk(Branch);
+			Grid.AddItem(Branch);
+
+			//Nested if to prevent very long line
+			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
+			{
+				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
+				{
+					//If network is inited, am the server, and platform is to far away then...
+					Branch.Hide(); //...make it not visible but allow it to remain in the world
+				}
+
+				foreach(int Id in Net.PeerList)
+				{
+					if(Id == Net.ServerId) //Skip self (we are the server)
+					{
+						continue;
+					}
+
+					Vector3 PlayerPos = Game.PlayerList[Id].Translation;
+					if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
+					{
+						if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
+						{
+							RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	//Name is the string GUID name of the structure to be removed
+	[Remote]
+	public void Remove(string Name)
+	{
+		if(Game.StructureRoot.HasNode(Name))
+		{
+			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
+			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
+			List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
+			Structures.Remove(Branch);
+			//After removing `this` from the Structure list, the chunk might be empty
+			if(Structures.Count > 0)
+			{
+				World.Chunks[ChunkTuple].Structures = Structures;
+			}
+			else
+			{
+				//If the chunk *is* empty then remove it
+				World.Chunks.Remove(ChunkTuple);
+			}
+
+			World.Grid.QueueUpdateNearby(Branch.Translation);
+			World.Grid.QueueRemoveItem(Branch);
+			Branch.QueueFree();
+		}
+
+	}
+
+
+	[Remote]
 	public void InitialNetWorldLoad(int Id, Vector3 PlayerPosition, int RenderDistance)
 	{
 		RequestChunks(Id, PlayerPosition, RenderDistance);
@@ -239,93 +326,6 @@ public class World : Node
 				Branch.Free();
 			}
 		}
-	}
-
-
-	[Remote]
-	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
-	{
-		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
-
-		//Nested if to prevent very long line
-		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
-		{
-			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
-			{
-				//If network is inited, not the server, and platform it to far away then...
-				return; //...don't place
-			}
-		}
-
-		if(Game.Mode.ShouldPlaceStructure(BranchType, Position, Rotation, OwnerId))
-		{
-			Structure Branch = Scenes[BranchType].Instance() as Structure;
-			Branch.Type = BranchType;
-			Branch.OwnerId = OwnerId;
-			Branch.Translation = Position;
-			Branch.RotationDegrees = Rotation;
-			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-			Game.StructureRoot.AddChild(Branch);
-
-			AddStructureToChunk(Branch);
-			Grid.AddItem(Branch);
-
-			//Nested if to prevent very long line
-			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
-			{
-				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
-				{
-					//If network is inited, am the server, and platform is to far away then...
-					Branch.Hide(); //...make it not visible but allow it to remain in the world
-				}
-
-				foreach(int Id in Net.PeerList)
-				{
-					if(Id == Net.ServerId) //Skip self (we are the server)
-					{
-						continue;
-					}
-
-					Vector3 PlayerPos = Game.PlayerList[Id].Translation;
-					if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
-					{
-						if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
-						{
-							RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
-						}
-					}
-				}
-			}
-		}
-	}
-
-
-	//Name is the string GUID name of the structure to be removed
-	[Remote]
-	public void Remove(string Name)
-	{
-		if(Game.StructureRoot.HasNode(Name))
-		{
-			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
-			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
-			List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
-			Structures.Remove(Branch);
-			//After removing `this` from the Structure list, the chunk might be empty
-			if(Structures.Count > 0)
-			{
-				World.Chunks[ChunkTuple].Structures = Structures;
-			}
-			else
-			{
-				//If the chunk *is* empty then remove it
-				World.Chunks.Remove(ChunkTuple);
-			}
-
-			World.Grid.QueueUpdateNearby(Branch.Translation);
-			World.Grid.QueueRemoveItem(Branch);
-			Branch.QueueFree();
-		}
-
 	}
 
 
