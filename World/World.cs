@@ -121,31 +121,35 @@ public class World : Node
 	}
 
 
-	public static void PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
+	public static Structure PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
 	{
 		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
 			Vector3 Rotation = BuildRotations.Calculate(Base, BranchType);
-			Place(BranchType, (Vector3)Position, Rotation, OwnerId);
+			return Place(BranchType, (Vector3)Position, Rotation, OwnerId);
 		}
+
+		return null;
 	}
 
 
-	public static void Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public static Structure Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		string Name = System.Guid.NewGuid().ToString();
-		Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
+		Structure Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
 
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
 			Net.SteelRpc(Self, nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
 		}
+
+		return Branch;
 	}
 
 
 	[Remote]
-	public void PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	public Structure PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
 		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
@@ -155,7 +159,7 @@ public class World : Node
 			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
 			{
 				//If network is inited, not the server, and platform it to far away then...
-				return; //...don't place
+				return null; //...don't place
 			}
 		}
 
@@ -198,7 +202,11 @@ public class World : Node
 					}
 				}
 			}
+
+			return Branch;
 		}
+
+		return null;
 	}
 
 
