@@ -54,17 +54,51 @@ public class Scripting : Node
 		UnloadGameMode();
 
 		Directory ModeDir = new Directory();
-		if(ModeDir.FileExists($"user://Gamemodes/{Name}/{Name}.csx")) //Has a  script
+		if(ModeDir.FileExists($"user://Gamemodes/{Name}/{Name}.json"))
 		{
-			Console.Log($"Loaded gamemode '{Name}', executing");
+			Console.Log($"Found gamemode '{Name}', loading");
+
+			GmConfigClass Config;
+			{
+				File ConfigFile = new File();
+				ConfigFile.Open($"user://Gamemodes/{Name}/{Name}.json", 1);
+				try
+				{
+					Config = Newtonsoft.Json.JsonConvert.DeserializeObject<GmConfigClass>(ConfigFile.GetAsText());
+					ConfigFile.Close();
+				}
+				catch(Newtonsoft.Json.JsonReaderException)
+				{
+					ConfigFile.Close();
+					Console.ThrowLog($"Failed to parse config file for gamemode '{Name}'");
+					return false;
+				}
+			}
+
+			string Source = "";
+			{
+				File ScriptFile = new File();
+				foreach(string Path in Config.Scripts)
+				{
+					if(!ModeDir.FileExists($"user://Gamemodes/{Name}/{Path}"))
+					{
+						Console.ThrowLog($"No file '{Path}' while loading scripts for gamemode '{Name}'");
+						ScriptFile.Close();
+						return false;
+					}
+
+					ScriptFile.Open($"user://Gamemodes/{Name}/{Path}", 1);
+					Source += "\n" + ScriptFile.GetAsText();
+				}
+
+				ScriptFile.Close();
+			}
 
 			GamemodeName = Name;
-			File ServerScript = new File();
-			ServerScript.Open($"user://Gamemodes/{Name}/{Name}.csx", 1);
 
 			try
 			{
-				Sc.ScriptState State = GmEngine.ContinueWithAsync(ServerScript.GetAsText()).Result;
+				Sc.ScriptState State = GmEngine.ContinueWithAsync(Source).Result;
 				object Returned = State.ReturnValue;
 				if(Returned is Gamemode)
 				{
@@ -72,26 +106,19 @@ public class Scripting : Node
 					Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
 					Game.Self.AddChild(Game.Mode);
 					Game.Mode.SetName("Gamemode");
-
-					ServerScript.Close();
 					return true;
 				}
 				else
 				{
 					Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
 					UnloadGameMode();
-
-					ServerScript.Close();
 					return false;
 				}
 			}
 			catch(Exception Err)
 			{
-				ServerScript.Close();
 				Console.Log(Err.Message);
 				UnloadGameMode();
-
-				ServerScript.Close();
 				return false;
 			}
 		}
