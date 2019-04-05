@@ -4,10 +4,22 @@ using Godot;
 
 public class Startup : Node
 {
-	//Sets up defaults, processes command line arguments and runs autoexec.js
+	//Ensures folders exist, sets up defaults, processes command line arguments and runs Autoexec.csx
 	public override void _Ready()
 	{
-		//First defaults are set
+		//First we make sure that the Saves and Gamemodes folders exist
+		{
+			Directory Dir = new Directory();
+
+			if(!Dir.DirExists("user://Saves"))
+				Dir.MakeDir("user://Saves");
+
+			if(!Dir.DirExists("user//Gamemodes"))
+				Dir.MakeDir("user://Gamemodes");
+		}
+
+
+		//Then defaults are set
 		SetupDefaults();
 
 		//Then command line arguments are processed
