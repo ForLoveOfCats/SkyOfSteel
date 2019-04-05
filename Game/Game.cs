@@ -173,9 +173,9 @@ public class Game : Node
 	public static void SaveWorld(string SaveName)
 	{
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://saves/" + SaveName))
+		if(SaveDir.DirExists("user://Saves/" + SaveName))
 		{
-			System.IO.Directory.Delete(OS.GetUserDataDir() + "/saves/" + SaveName, true);
+			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveName, true);
 		}
 
 		int SaveCount = 0;
@@ -190,7 +190,7 @@ public class Game : Node
 	public static bool LoadWorld(string SaveName)
 	{
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://saves/"+SaveName))
+		if(SaveDir.DirExists($"user://Saves/{SaveName}"))
 		{
 			List<Structure> Branches = new List<Structure>();
 			foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in World.Chunks)
@@ -212,7 +212,7 @@ public class Game : Node
 			}
 			SetupWorld();
 
-			SaveDir.Open("user://saves/"+SaveName);
+			SaveDir.Open($"user://Saves/{SaveName}");
 			SaveDir.ListDirBegin(true, true);
 
 			int PlaceCount = 0;
@@ -225,7 +225,7 @@ public class Game : Node
 					break;
 				}
 
-				string LoadedFile = System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/saves/{SaveName}/{FileName}");
+				string LoadedFile = System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{FileName}");
 
 				SavedChunk LoadedChunk;
 				try

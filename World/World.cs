@@ -305,11 +305,11 @@ public class World : Node
 		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
 
 		Directory SaveDir = new Directory();
-		if(!SaveDir.DirExists("user://saves/"+SaveName))
+		if(!SaveDir.DirExists("user://Saves/"+SaveName))
 		{
-			SaveDir.MakeDirRecursive("user://saves/"+SaveName);
+			SaveDir.MakeDirRecursive("user://Saves/"+SaveName);
 		}
-		System.IO.File.WriteAllText(OS.GetUserDataDir() + "/saves/" + SaveName + "/" + ChunkTuple.ToString() + ".json", SerializedChunk);
+		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
 		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient

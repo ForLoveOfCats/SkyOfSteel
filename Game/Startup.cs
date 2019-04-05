@@ -38,9 +38,9 @@ public class Startup : Node
 
 		//autoexec.csx is executed last
 		File Autoexec = new File();
-		if(Autoexec.FileExists("user://autoexec.csx"))
+		if(Autoexec.FileExists("user://Autoexec.csx"))
 		{
-			Autoexec.Open("user://autoexec.csx", 1);
+			Autoexec.Open("user://Autoexec.csx", 1);
 			Console.Print("Autoexec loaded");
 			try
 			{
@@ -56,7 +56,7 @@ public class Startup : Node
 		else
 		{
 			Console.Print("Autoexec not found, creating a default one");
-			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/autoexec.csx", "// This is your autoexec\n// It is executed directly after command line arugments are\n\n");
+			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Autoexec.csx", "// This is your autoexec\n// It is executed directly after command line arugments are\n\n");
 		}
 		Autoexec.Close();
 	}
