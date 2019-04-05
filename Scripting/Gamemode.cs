@@ -4,6 +4,7 @@ using Godot;
 public class Gamemode : Node
 {
 	public string LoadPath = null; //Fail early
+	public string Name = null; //Fail early
 
 
 	public virtual void OnUnload()
