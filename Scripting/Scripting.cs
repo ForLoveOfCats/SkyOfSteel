@@ -1,16 +1,17 @@
 using Godot;
 using System;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Sc = Microsoft.CodeAnalysis.Scripting;
 using Cs = Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript;
 
 
 public class Scripting : Node
 {
+	public static Sc.ScriptOptions ScriptOptions;
+
 	public static Sc.ScriptState ConsoleEngine;
-	public static Sc.ScriptState GmEngine;
 
 	public static string GamemodeName;
 
@@ -21,16 +22,13 @@ public class Scripting : Node
 
 		Self = this;
 
-		Sc.ScriptOptions Options = Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
+		ScriptOptions = Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
 			.AddReferences(Assembly.GetAssembly(typeof(System.Dynamic.DynamicObject)),  // System.Code
 						   Assembly.GetAssembly(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo)),  // Microsoft.CSharp
 						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
-		Sc.Script CEngine = Cs.Create("", Options);
+		Sc.Script CEngine = Cs.Create("", ScriptOptions);
 		ConsoleEngine = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
-
-		Sc.Script GEngine = Cs.Create("", Options);
-		GmEngine = GEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
 	}
 
 
@@ -96,7 +94,9 @@ public class Scripting : Node
 
 			try
 			{
-				Sc.ScriptState State = GmEngine.ContinueWithAsync(Source).Result;
+				Sc.Script Engine = Cs.Create(Source,
+				                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}")));
+				Sc.ScriptState State = Engine.RunAsync().Result;
 				object Returned = State.ReturnValue;
 				if(Returned is Gamemode)
 				{
