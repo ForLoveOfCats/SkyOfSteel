@@ -21,6 +21,7 @@ public class Player : KinematicBody
 	private const float WallKickJumpForce = 16;
 	private const float WallKickHorzontalForce = 45;
 	private const float MinWallKickRecoverPercentage = 0.2f;
+	private const float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
 	private const float Gravity = 14f;
 	private const float ItemThrowPower = 15f;
 	private const float LookDivisor = 6;
@@ -540,7 +541,7 @@ public class Player : KinematicBody
 			return;
 		}
 
-		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta, 0, 1);
+		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta*WallKickRecoverSpeed, 0, 1);
 
 		if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor())
 		{
