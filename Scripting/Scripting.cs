@@ -97,7 +97,7 @@ public class Scripting : Node
 			}
 			catch(Exception Err)
 			{
-				Console.ThrowLog($"Error executing gamemode '{Name}': {Err}");
+				Console.ThrowLog($"Error executing gamemode '{Name}': {Err.Message}");
 				return false;
 			}
 
