@@ -11,7 +11,7 @@ public class Scripting : Node
 {
 	public static Sc.ScriptOptions ScriptOptions;
 
-	public static Sc.ScriptState ConsoleEngine;
+	public static Sc.ScriptState ConsoleState;
 
 	public static string GamemodeName;
 
@@ -28,7 +28,7 @@ public class Scripting : Node
 						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
 		Sc.Script CEngine = Cs.Create("", ScriptOptions);
-		ConsoleEngine = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
+		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
 	}
 
 
@@ -162,8 +162,8 @@ public class Scripting : Node
 	{
 		try
 		{
-			ConsoleEngine = ConsoleEngine.ContinueWithAsync(Line).Result;
-			object Returned = ConsoleEngine.ReturnValue as object;
+			ConsoleState = ConsoleState.ContinueWithAsync(Line).Result;
+			object Returned = ConsoleState.ReturnValue as object;
 			if(Returned != null)
 			{
 				Console.Print(Returned.ToString());

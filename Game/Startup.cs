@@ -56,7 +56,7 @@ public class Startup : Node
 			Console.Print("Autoexec loaded");
 			try
 			{
-				Scripting.ConsoleEngine = Scripting.ConsoleEngine.ContinueWithAsync(Autoexec.GetAsText()).Result;
+				Scripting.ConsoleState = Scripting.ConsoleState.ContinueWithAsync(Autoexec.GetAsText()).Result;
 				Console.Print("Successfully executed autoexec");
 			}
 			catch(Exception Error)

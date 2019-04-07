@@ -24,14 +24,14 @@ public class Bindings : Node
 		//We need to check that the function exitst and either takes no args or one float arg and get the Action
 		try //First assume it takes a float argument
 		{
-			Sc.ScriptState State = Scripting.ConsoleEngine.ContinueWithAsync($"return new Action<float>(delegate(float x) {{ {FunctionName}(x); }} );").Result;
+			Sc.ScriptState State = Scripting.ConsoleState.ContinueWithAsync($"return new Action<float>(delegate(float x) {{ {FunctionName}(x); }} );").Result;
 			NewBind.FuncWithArg = State.ReturnValue as Action<float>;
 		}
 		catch //Must either not exist or has different argument requirements
 		{
 			try //Next we assume that it exists but without an argument
 			{
-				Sc.ScriptState State = Scripting.ConsoleEngine.ContinueWithAsync($"return new Action(delegate() {{ {FunctionName}(); }} );").Result;
+				Sc.ScriptState State = Scripting.ConsoleState.ContinueWithAsync($"return new Action(delegate() {{ {FunctionName}(); }} );").Result;
 				NewBind.FuncWithoutArg = State.ReturnValue as Action;
 			}
 			catch //At this point we know it either does not exist or has incompatible argument requirements
