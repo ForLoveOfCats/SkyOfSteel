@@ -1,7 +1,7 @@
 
 public class GmConfigClass
 {
-	public string[] Scripts = new string[] {};
+	public string MainScript = null;
 
 	//TODO Add gamemode version and GUID fields
 }

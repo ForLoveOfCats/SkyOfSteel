@@ -72,30 +72,27 @@ public class Scripting : Node
 					return false;
 				}
 			}
-
-			string Source = "";
+			if(Config.MainScript == null)
 			{
-				File ScriptFile = new File();
-				foreach(string Path in Config.Scripts)
-				{
-					if(!ModeDir.FileExists($"user://Gamemodes/{Name}/{Path}"))
-					{
-						Console.ThrowLog($"No file '{Path}' while loading scripts for gamemode '{Name}'");
-						ScriptFile.Close();
-						return false;
-					}
-
-					ScriptFile.Open($"user://Gamemodes/{Name}/{Path}", 1);
-					Source += "\n" + ScriptFile.GetAsText();
-				}
-
-				ScriptFile.Close();
+				Console.ThrowLog($"The gamemode '{Name}' did not specify a path for MainScript");
+				return false;
 			}
+
+			File ScriptFile = new File();
+			if(!ScriptFile.FileExists($"user://Gamemodes/{Name}/{Config.MainScript}"))
+			{
+				Console.ThrowLog($"Specified MainScript '{Config.MainScript}' for gamemode '{Name}' does not exist");
+				return false;
+			}
+			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", 1);
 
 			try
 			{
-				Sc.Script Engine = Cs.Create(Source,
+				Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
 				                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}")));
+
+				ScriptFile.Close();
+
 				Sc.ScriptState State = Engine.RunAsync().Result;
 				object Returned = State.ReturnValue;
 				if(Returned is Gamemode)
@@ -116,6 +113,7 @@ public class Scripting : Node
 			}
 			catch(Exception Err)
 			{
+				ScriptFile.Close();
 				Console.ThrowLog($"Error executing gamemode '{Name}': {Err}");
 				return false;
 			}
