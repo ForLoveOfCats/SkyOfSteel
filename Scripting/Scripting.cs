@@ -85,36 +85,35 @@ public class Scripting : Node
 				return false;
 			}
 			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", 1);
+			Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
+			                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}")));
+			ScriptFile.Close();
 
+			object Returned = null;
 			try
 			{
-				Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
-				                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}")));
-
-				ScriptFile.Close();
-
 				Sc.ScriptState State = Engine.RunAsync().Result;
-				object Returned = State.ReturnValue;
-				if(Returned is Gamemode)
-				{
-					GamemodeName = Name;
-					Game.Mode = Returned as Gamemode;
-					Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
-					Game.Mode.Name = Name;
-					Game.Self.AddChild(Game.Mode);
-					Game.Mode.SetName("Gamemode");
-					return true;
-				}
-				else
-				{
-					Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
-					return false;
-				}
+				Returned = State.ReturnValue;
 			}
 			catch(Exception Err)
 			{
-				ScriptFile.Close();
 				Console.ThrowLog($"Error executing gamemode '{Name}': {Err}");
+				return false;
+			}
+
+			if(Returned is Gamemode)
+			{
+				GamemodeName = Name;
+				Game.Mode = Returned as Gamemode;
+				Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
+				Game.Mode.Name = Name;
+				Game.Self.AddChild(Game.Mode);
+				Game.Mode.SetName("Gamemode");
+				return true;
+			}
+			else
+			{
+				Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
 				return false;
 			}
 		}
