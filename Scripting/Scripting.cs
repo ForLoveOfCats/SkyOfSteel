@@ -145,6 +145,7 @@ public class Scripting : Node
 				Console.ThrowLog($"An exception was thrown when calling 'OnUnload' on gamemode '{GamemodeName}': {Err.Message}");
 			}
 
+			Game.Mode.SetName("UnloadedGamemode"); ///Prevents name mangling of new gamemode, important for RPC
 			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
 			Game.Mode = new Gamemode();
 			API.Gm = new API.EmptyCustomCommands();
