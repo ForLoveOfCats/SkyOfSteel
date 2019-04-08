@@ -16,7 +16,7 @@ public class Game : Node
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
 	public static bool WorldOpen = false;
-	public static StructureRootClass StructureRoot = null;
+	public static Node StructureRoot = null;
 	public static Node ItemsRoot = null;
 
 	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
@@ -138,7 +138,7 @@ public class Game : Node
 		SkyScene.SetName("SkyScene");
 		RuntimeRoot.AddChild(SkyScene);
 
-		StructureRoot = new StructureRootClass();
+		StructureRoot = new Node();
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
