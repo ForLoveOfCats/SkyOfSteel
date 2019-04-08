@@ -171,7 +171,7 @@ public class Scripting : Node
 
 		if(Returned != null)
 		{
-			Console.Print(Returned.ToString());
+			Console.Print(Returned);
 		}
 	}
 }

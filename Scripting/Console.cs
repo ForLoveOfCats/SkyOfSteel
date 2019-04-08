@@ -72,25 +72,25 @@ public class Console : Node
 	}
 
 
-	public static void Print(string ToPrint)
+	public static void Print(object ToPrint)
 	{
-		ConsoleLabel.Text += " " + ToPrint + "\n";
+		ConsoleLabel.Text += " " + ToPrint.ToString() + "\n";
 	}
 
 
-	public static void Log(string ToLog)
+	public static void Log(object ToLog)
 	{
-		LogLabel.Text += " " + ToLog + "\n";
+		LogLabel.Text += " " + ToLog.ToString() + "\n";
 	}
 
 
-	public static void ThrowPrint(string ToThrow)
+	public static void ThrowPrint(object ToThrow)
 	{
 		Print($"ERROR: {ToThrow}");
 	}
 
 
-	public static void ThrowLog(string ToThrow)
+	public static void ThrowLog(object ToThrow)
 	{
 		Log($"ERROR: {ToThrow}");
 	}
