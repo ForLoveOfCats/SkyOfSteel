@@ -16,7 +16,8 @@ public class Game : Node
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
 	public static bool WorldOpen = false;
-	public static StructureRootClass StructureRoot;
+	public static StructureRootClass StructureRoot = null;
+	public static Node ItemsRoot = null;
 
 	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
 
@@ -141,6 +142,10 @@ public class Game : Node
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
+		ItemsRoot = new Node();
+		ItemsRoot.SetName("ItemsRoot");
+		SkyScene.AddChild(ItemsRoot);
+
 		if(AsServer)
 		{
 			SetupWorld();
@@ -160,7 +165,9 @@ public class Game : Node
 		PlayerList.Clear();
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 						  //Prevent crashes when player movement commands are run when world is not initalized
+
 		StructureRoot = null;
+		ItemsRoot = null;
 
 		Scripting.UnloadGamemode();
 

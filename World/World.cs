@@ -373,7 +373,7 @@ public class World : Node
 
 			DroppedItems.Add(ToDrop);
 			AddItemToChunk(ToDrop);
-			Game.StructureRoot.AddChild(ToDrop);
+			Game.ItemsRoot.AddChild(ToDrop);
 		}
 	}
 
