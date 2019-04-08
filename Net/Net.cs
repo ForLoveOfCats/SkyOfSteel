@@ -81,7 +81,7 @@ public class Net : Node
 		}
 		else //Connected to a client OR server
 		{
-			Console.Log("Player '" + Id.ToString() + "' connected");
+			Console.Log($"Player '{Id}' connected");
 		}
 
 		if(GetTree().IsNetworkServer())
@@ -131,7 +131,7 @@ public class Net : Node
 	[Remote]
 	public void NotifySuccessConnect() //Run on client
 	{
-		Console.Log("Connected to server at '" + Ip.ToString() + "'");
+		Console.Log($"Connected to server at '{Ip}'");
 		Game.StartWorld();
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
@@ -178,11 +178,11 @@ public class Net : Node
 
 	public void _PlayerDisconnected(int Id)
 	{
-		Console.Log("Player '" + Id.ToString() + "' disconnected");
+		Console.Log($"Player '{Id}' disconnected");
 
 		if(PeerList.Contains(Id)) //May be disconnecting from a client which did not fully connect
 		{
-			Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
+			Self.GetTree().GetRoot().GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
 			PeerList.Remove(Id);
 		}
 
@@ -201,7 +201,7 @@ public class Net : Node
 
 	public void _ServerDisconnected()
 	{
-		Console.Log("Lost connection to server at '" + Ip.ToString() + "'");
+		Console.Log($"Lost connection to server at '{Ip}'");
 		Disconnect();
 	}
 
@@ -229,7 +229,7 @@ public class Net : Node
 		Self.GetTree().SetNetworkPeer(Peer);
 		Self.GetTree().SetMeta("network_peer", Peer);
 
-		Console.Log("Started hosting on port '" + Port.ToString()+ "'");
+		Console.Log($"Started hosting on port '{Port}'");
 
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Nicknames[ServerId] = Game.Nickname;
