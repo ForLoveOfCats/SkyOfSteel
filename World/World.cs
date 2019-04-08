@@ -346,8 +346,8 @@ public class World : Node
 		{
 			if(Self.GetTree().IsNetworkServer())
 			{
-				Net.SteelRpc(Self, nameof(NetDropItem), Type, Position, BaseMomentum);
 				NetDropItem(Type, Position, BaseMomentum);
+				Net.SteelRpc(Self, nameof(NetDropItem), Type, Position, BaseMomentum);
 			}
 			else
 			{
@@ -359,17 +359,22 @@ public class World : Node
 
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void NetDropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
+	public void NetDropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum) //Performs the actual drop
 	{
-		DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
-		ToDrop.Translation = Position;
-		ToDrop.Momentum = BaseMomentum;
-		ToDrop.Type = Type;
-		ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
+		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
-		DroppedItems.Add(ToDrop);
-		AddItemToChunk(ToDrop);
-		Game.StructureRoot.AddChild(ToDrop);
+		if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
+		{
+			DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
+			ToDrop.Translation = Position;
+			ToDrop.Momentum = BaseMomentum;
+			ToDrop.Type = Type;
+			ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
+
+			DroppedItems.Add(ToDrop);
+			AddItemToChunk(ToDrop);
+			Game.StructureRoot.AddChild(ToDrop);
+		}
 	}
 
 
