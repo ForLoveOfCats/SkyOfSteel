@@ -157,18 +157,21 @@ public class Scripting : Node
 
 	public static void RunConsoleLine(string Line)
 	{
+		object Returned = null;
+
 		try
 		{
 			ConsoleState = ConsoleState.ContinueWithAsync(Line).Result;
-			object Returned = ConsoleState.ReturnValue as object;
-			if(Returned != null)
-			{
-				Console.Print(Returned.ToString());
-			}
+			Returned = ConsoleState.ReturnValue as object;
 		}
-		catch(Exception Err)
+		catch(Sc.CompilationErrorException Err)
 		{
 			Console.Print(Err.Message);
+		}
+
+		if(Returned != null)
+		{
+			Console.Print(Returned.ToString());
 		}
 	}
 }
