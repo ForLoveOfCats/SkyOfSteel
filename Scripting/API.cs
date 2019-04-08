@@ -214,7 +214,7 @@ public static class API
 	{
 		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
 		{
-			return Scripting.LoadGameMode(Name);
+			return Scripting.LoadGamemode(Name);
 		}
 
 		Console.ThrowPrint("Cannot set gamemode when not hosting");
@@ -228,7 +228,7 @@ public static class API
 		{
 			if(Scripting.GamemodeName != "")
 			{
-				return Scripting.LoadGameMode(Scripting.GamemodeName);
+				return Scripting.LoadGamemode(Scripting.GamemodeName);
 			}
 
 			Console.ThrowPrint("No gamemode loaded to reload");

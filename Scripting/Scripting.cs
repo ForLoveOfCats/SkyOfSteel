@@ -36,7 +36,7 @@ public class Scripting : Node
 	public void RequestGmLoad(string Name)
 	{
 		Console.Log($"The server requested that gamemode '{Name}' be loaded");
-		if(LoadGameMode(Name))
+		if(LoadGamemode(Name))
 		{
 			Console.Log($"Successfully loaded the gamemode '{Name}' as requested by the server");
 		}
@@ -47,9 +47,9 @@ public class Scripting : Node
 	}
 
 
-	public static bool LoadGameMode(string Name)
+	public static bool LoadGamemode(string Name)
 	{
-		UnloadGameMode();
+		UnloadGamemode();
 
 		Directory ModeDir = new Directory();
 		if(ModeDir.FileExists($"user://Gamemodes/{Name}/{Name}.json"))
@@ -128,11 +128,11 @@ public class Scripting : Node
 	[Remote]
 	public void RequestGmUnload()
 	{
-		UnloadGameMode();
+		UnloadGamemode();
 	}
 
 
-	public static void UnloadGameMode()
+	public static void UnloadGamemode()
 	{
 		if(GamemodeName != null)
 		{
