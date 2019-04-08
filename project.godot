@@ -69,4 +69,5 @@ MenuToggle={
 
 [rendering]
 
+environment/default_clear_color=Color( 0.466667, 0.690196, 1, 1 )
 environment/default_environment="res://default_env.tres"
