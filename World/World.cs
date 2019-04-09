@@ -495,8 +495,9 @@ public class World : Node
 		{
 			if(Self.GetTree().IsNetworkServer())
 			{
-				NetDropItem(Type, Position, BaseMomentum);
-				Net.SteelRpc(Self, nameof(NetDropItem), Type, Position, BaseMomentum);
+				string Name = System.Guid.NewGuid().ToString();
+				DropItemWithName(Type, Position, BaseMomentum, Name);
+				Net.SteelRpc(Self, nameof(DropItemWithName), Type, Position, BaseMomentum, Name);
 			}
 			else
 			{
@@ -508,7 +509,7 @@ public class World : Node
 
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void NetDropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum) //Performs the actual drop
+	public void DropItemWithName(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
 		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
@@ -518,6 +519,7 @@ public class World : Node
 			ToDrop.Translation = Position;
 			ToDrop.Momentum = BaseMomentum;
 			ToDrop.Type = Type;
+			ToDrop.Name = Name;
 			ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
 
 			DroppedItems.Add(ToDrop);
