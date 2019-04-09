@@ -194,7 +194,7 @@ public static class API
 				return false;
 			}
 
-			if(Game.LoadWorld(Name))
+			if(World.Load(Name))
 			{
 				Console.Print($"Loaded save '{Name}' successfully");
 				return true;

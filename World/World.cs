@@ -140,6 +140,78 @@ public class World : Node
 	}
 
 
+	public static bool Load(string SaveName)
+	{
+		Directory SaveDir = new Directory();
+		if(SaveDir.DirExists($"user://Saves/{SaveName}"))
+		{
+			List<Structure> Branches = new List<Structure>();
+			foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in Chunks)
+			{
+				foreach(Structure Branch in Chunk.Value.Structures)
+				{
+					Branches.Add(Branch);
+				}
+			}
+			foreach(Structure Branch in Branches)
+			{
+				Branch.Remove(Force:true);
+			}
+			Chunks.Clear();
+			Grid.Clear();
+			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in RemoteLoadedChunks)
+			{
+				RemoteLoadedChunks[Pair.Key].Clear();
+			}
+			DefaultPlatforms();
+
+			SaveDir.Open($"user://Saves/{SaveName}");
+			SaveDir.ListDirBegin(true, true);
+
+			int PlaceCount = 0;
+			while(true)
+			{
+				string FileName = SaveDir.GetNext();
+				if(FileName.Empty())
+				{
+					//Iterated through all files
+					break;
+				}
+
+				string LoadedFile = System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{FileName}");
+
+				SavedChunk LoadedChunk;
+				try
+				{
+					LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
+				}
+				catch(Newtonsoft.Json.JsonReaderException)
+				{
+					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveName}'");
+					continue;
+				}
+
+				foreach(SavedStructure SavedBranch in LoadedChunk.S)
+				{
+					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
+					if(Info != null)
+					{
+						Place(Info.Item1, Info.Item2, Info.Item3, 1);
+						PlaceCount++;
+					}
+				}
+			}
+			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
+			return true;
+		}
+		else
+		{
+			Console.ThrowLog($"Failed to load save '{SaveName}' as it does not exist");
+			return false;
+		}
+	}
+
+
 	public static Vector3 GetChunkPos(Vector3 Position)
 	{
 		return new Vector3(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, 0, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);
