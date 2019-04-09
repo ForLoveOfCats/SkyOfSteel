@@ -132,7 +132,7 @@ public class Net : Node
 	public void NotifySuccessConnect() //Run on client
 	{
 		Console.Log($"Connected to server at '{Ip}'");
-		Game.StartWorld();
+		World.Start();
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
@@ -222,7 +222,7 @@ public class Net : Node
 		}
 
 		PeerList.Clear();
-		Game.StartWorld(AsServer: true);
+		World.Start(AsServer: true);
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);

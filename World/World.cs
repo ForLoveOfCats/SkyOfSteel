@@ -67,6 +67,32 @@ public class World : Node
 	}
 
 
+	public static void Start(bool AsServer = false)
+	{
+		Game.CloseWorld();
+		Menu.Close();
+
+		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
+		SkyScene.SetName("SkyScene");
+		Game.RuntimeRoot.AddChild(SkyScene);
+
+		World.StructureRoot = new Node();
+		World.StructureRoot.SetName("StructureRoot");
+		SkyScene.AddChild(World.StructureRoot);
+
+		World.ItemsRoot = new Node();
+		World.ItemsRoot.SetName("ItemsRoot");
+		SkyScene.AddChild(World.ItemsRoot);
+
+		if(AsServer)
+		{
+			Game.SetupWorld();
+		}
+
+		World.IsOpen = true;
+	}
+
+
 	public static Vector3 GetChunkPos(Vector3 Position)
 	{
 		return new Vector3(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, 0, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);

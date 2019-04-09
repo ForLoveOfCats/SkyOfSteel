@@ -119,35 +119,9 @@ public class Game : Node
 	}
 
 
-	private static void SetupWorld()
+	public static void SetupWorld()
 	{
 		World.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
-	}
-
-
-	public static void StartWorld(bool AsServer = false)
-	{
-		CloseWorld();
-		Menu.Close();
-
-		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
-		SkyScene.SetName("SkyScene");
-		RuntimeRoot.AddChild(SkyScene);
-
-		World.StructureRoot = new Node();
-		World.StructureRoot.SetName("StructureRoot");
-		SkyScene.AddChild(World.StructureRoot);
-
-		World.ItemsRoot = new Node();
-		World.ItemsRoot.SetName("ItemsRoot");
-		SkyScene.AddChild(World.ItemsRoot);
-
-		if(AsServer)
-		{
-			SetupWorld();
-		}
-
-		World.IsOpen = true;
 	}
 
 
