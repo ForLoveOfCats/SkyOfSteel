@@ -172,7 +172,7 @@ public static class API
 				return false;
 			}
 
-			Game.SaveWorld(Name);
+			World.Save(Name);
 			Console.Print($"Saved world to save '{Name}' successfully");
 			return true;
 		}

@@ -119,23 +119,6 @@ public class Game : Node
 	}
 
 
-	public static void SaveWorld(string SaveName)
-	{
-		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://Saves/" + SaveName))
-		{
-			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveName, true);
-		}
-
-		int SaveCount = 0;
-		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
-		{
-			SaveCount += World.SaveChunk(Chunk.Key, SaveName);
-		}
-		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
-	}
-
-
 	public static bool LoadWorld(string SaveName)
 	{
 		Directory SaveDir = new Directory();

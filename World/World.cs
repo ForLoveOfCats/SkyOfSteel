@@ -123,6 +123,23 @@ public class World : Node
 	}
 
 
+	public static void Save(string SaveName)
+	{
+		Directory SaveDir = new Directory();
+		if(SaveDir.DirExists("user://Saves/" + SaveName))
+		{
+			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveName, true);
+		}
+
+		int SaveCount = 0;
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
+		{
+			SaveCount += SaveChunk(Chunk.Key, SaveName);
+		}
+		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
+	}
+
+
 	public static Vector3 GetChunkPos(Vector3 Position)
 	{
 		return new Vector3(Mathf.RoundToInt(Position.x/ChunkSize)*ChunkSize, 0, Mathf.RoundToInt(Position.z/ChunkSize)*ChunkSize);

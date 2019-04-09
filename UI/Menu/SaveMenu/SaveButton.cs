@@ -8,7 +8,7 @@ public class SaveButton : Button
 
 	public void SavePressed()
 	{
-		Game.SaveWorld(SaveName);
+		World.Save(SaveName);
 		Menu.BuildPause();
 	}
 }

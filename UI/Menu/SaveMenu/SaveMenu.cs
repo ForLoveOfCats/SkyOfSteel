@@ -47,7 +47,7 @@ public class SaveMenu : VBoxContainer
 	public void SavePressed()
 	{
 		LineEdit NameInput = GetNode<LineEdit>("HBoxContainer/LineEdit");
-		Game.SaveWorld(NameInput.Text);
+		World.Save(NameInput.Text);
 
 		Menu.BuildPause();
 	}
