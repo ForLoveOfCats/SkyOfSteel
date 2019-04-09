@@ -119,12 +119,6 @@ public class Game : Node
 	}
 
 
-	public static void SetupWorld()
-	{
-		World.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
-	}
-
-
 	public static void SaveWorld(string SaveName)
 	{
 		Directory SaveDir = new Directory();
@@ -165,7 +159,7 @@ public class Game : Node
 			{
 				World.RemoteLoadedChunks[Pair.Key].Clear();
 			}
-			SetupWorld();
+			World.DefaultPlatforms();
 
 			SaveDir.Open($"user://Saves/{SaveName}");
 			SaveDir.ListDirBegin(true, true);

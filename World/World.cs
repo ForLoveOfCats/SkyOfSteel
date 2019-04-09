@@ -67,6 +67,12 @@ public class World : Node
 	}
 
 
+	public static void DefaultPlatforms()
+	{
+		World.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+	}
+
+
 	public static void Start(bool AsServer = false)
 	{
 		Close();
@@ -86,7 +92,7 @@ public class World : Node
 
 		if(AsServer)
 		{
-			Game.SetupWorld();
+			DefaultPlatforms();
 		}
 
 		World.IsOpen = true;
