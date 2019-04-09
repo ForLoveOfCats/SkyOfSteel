@@ -15,10 +15,6 @@ public class Game : Node
 	public static Player PossessedPlayer = GD.Load<PackedScene>("res://Player/Player.tscn").Instance() as Player;
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
-	public static bool WorldOpen = false;
-	public static Node StructureRoot = null;
-	public static Node ItemsRoot = null;
-
 	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
 
 	public static float LookSensitivity = 15;
@@ -70,7 +66,7 @@ public class Game : Node
 				{
 					Menu.Close();
 				}
-				else if(WorldOpen)
+				else if(World.IsOpen)
 				{
 					Menu.BuildPause();
 				}
@@ -138,20 +134,20 @@ public class Game : Node
 		SkyScene.SetName("SkyScene");
 		RuntimeRoot.AddChild(SkyScene);
 
-		StructureRoot = new Node();
-		StructureRoot.SetName("StructureRoot");
-		SkyScene.AddChild(StructureRoot);
+		World.StructureRoot = new Node();
+		World.StructureRoot.SetName("StructureRoot");
+		SkyScene.AddChild(World.StructureRoot);
 
-		ItemsRoot = new Node();
-		ItemsRoot.SetName("ItemsRoot");
-		SkyScene.AddChild(ItemsRoot);
+		World.ItemsRoot = new Node();
+		World.ItemsRoot.SetName("ItemsRoot");
+		SkyScene.AddChild(World.ItemsRoot);
 
 		if(AsServer)
 		{
 			SetupWorld();
 		}
 
-		WorldOpen = true;
+		World.IsOpen = true;
 	}
 
 
@@ -166,8 +162,8 @@ public class Game : Node
 		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 						  //Prevent crashes when player movement commands are run when world is not initalized
 
-		StructureRoot = null;
-		ItemsRoot = null;
+		World.StructureRoot = null;
+		World.ItemsRoot = null;
 
 		Scripting.UnloadGamemode();
 
@@ -175,7 +171,7 @@ public class Game : Node
 		World.RemoteLoadedChunks.Clear();
 		World.Grid.Clear();
 
-		WorldOpen = false;
+		World.IsOpen = false;
 	}
 
 

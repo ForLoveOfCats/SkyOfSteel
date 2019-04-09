@@ -289,7 +289,7 @@ public class Net : Node
 
 	public static void UnloadAndRequestChunks()
 	{
-		if(!Game.WorldOpen)
+		if(!World.IsOpen)
 		{
 			//World is not setup yet
 			//Prevents NullReferenceException

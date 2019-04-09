@@ -67,7 +67,7 @@ public static class API
 
 	public static bool Disconnect()
 	{
-		if(!Game.WorldOpen)
+		if(!World.IsOpen)
 		{
 			Console.ThrowPrint("Neither connected nor hosting");
 			return false;
@@ -80,7 +80,7 @@ public static class API
 
 	public static string Nickname(string NewNick)
 	{
-		if(Game.WorldOpen)
+		if(World.IsOpen)
 		{
 			Console.ThrowPrint("Cannot set nickname while hosting or connected");
 			return Game.Nickname;
@@ -164,7 +164,7 @@ public static class API
 
 	public static bool Save(string Name)
 	{
-		if(Game.WorldOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
 		{
 			if(Name == "")
 			{
@@ -186,7 +186,7 @@ public static class API
 
 	public static bool Load(string Name)
 	{
-		if(Game.WorldOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
 		{
 			if(Name == "")
 			{

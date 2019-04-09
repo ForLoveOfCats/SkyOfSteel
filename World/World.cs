@@ -15,6 +15,10 @@ public class World : Node
 	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
 	public static GridClass Grid = new GridClass();
 
+	public static bool IsOpen = false;
+	public static Node StructureRoot = null;
+	public static Node ItemsRoot = null;
+
 	public static List<DroppedItem> DroppedItems = new List<DroppedItem>();
 
 	private static PackedScene DroppedItemScene;
@@ -171,7 +175,7 @@ public class World : Node
 			Branch.Translation = Position;
 			Branch.RotationDegrees = Rotation;
 			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-			Game.StructureRoot.AddChild(Branch);
+			StructureRoot.AddChild(Branch);
 
 			AddStructureToChunk(Branch);
 			Grid.AddItem(Branch);
@@ -214,9 +218,9 @@ public class World : Node
 	[Remote]
 	public void Remove(string Name)
 	{
-		if(Game.StructureRoot.HasNode(Name))
+		if(StructureRoot.HasNode(Name))
 		{
-			Structure Branch = Game.StructureRoot.GetNode(Name) as Structure;
+			Structure Branch = StructureRoot.GetNode(Name) as Structure;
 			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
 			List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
 			Structures.Remove(Branch);
@@ -373,7 +377,7 @@ public class World : Node
 
 			DroppedItems.Add(ToDrop);
 			AddItemToChunk(ToDrop);
-			Game.ItemsRoot.AddChild(ToDrop);
+			ItemsRoot.AddChild(ToDrop);
 		}
 	}
 
