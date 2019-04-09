@@ -125,30 +125,6 @@ public class Game : Node
 	}
 
 
-	public static void CloseWorld()
-	{
-		if(RuntimeRoot.HasNode("SkyScene"))
-		{
-			RuntimeRoot.GetNode("SkyScene").Free();
-			//Free instead of QueueFree to prevent crash when starting new world in same frame
-		}
-		PlayerList.Clear();
-		PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
-						  //Prevent crashes when player movement commands are run when world is not initalized
-
-		World.StructureRoot = null;
-		World.ItemsRoot = null;
-
-		Scripting.UnloadGamemode();
-
-		World.Chunks.Clear();
-		World.RemoteLoadedChunks.Clear();
-		World.Grid.Clear();
-
-		World.IsOpen = false;
-	}
-
-
 	public static void SaveWorld(string SaveName)
 	{
 		Directory SaveDir = new Directory();

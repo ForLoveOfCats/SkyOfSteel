@@ -69,7 +69,7 @@ public class World : Node
 
 	public static void Start(bool AsServer = false)
 	{
-		Game.CloseWorld();
+		Close();
 		Menu.Close();
 
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
@@ -90,6 +90,30 @@ public class World : Node
 		}
 
 		World.IsOpen = true;
+	}
+
+
+	public static void Close()
+	{
+		if(Game.RuntimeRoot.HasNode("SkyScene"))
+		{
+			Game.RuntimeRoot.GetNode("SkyScene").Free();
+			//Free instead of QueueFree to prevent crash when starting new world in same frame
+		}
+		Game.PlayerList.Clear();
+		Game.PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
+		//Prevent crashes when player movement commands are run when world is not initalized
+
+		StructureRoot = null;
+		ItemsRoot = null;
+
+		Scripting.UnloadGamemode();
+
+		Chunks.Clear();
+		RemoteLoadedChunks.Clear();
+		Grid.Clear();
+
+		IsOpen = false;
 	}
 
 

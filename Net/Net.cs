@@ -256,7 +256,7 @@ public class Net : Node
 
 	public static void Disconnect(bool BuildMenu = true)
 	{
-		Game.CloseWorld();
+		World.Close();
 
 		NetworkedMultiplayerENet EN = Self.GetTree().GetNetworkPeer() as NetworkedMultiplayerENet;
 		if(EN != null)
