@@ -69,7 +69,7 @@ public class World : Node
 
 	public static void DefaultPlatforms()
 	{
-		World.Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+		Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
 	}
 
 
@@ -82,20 +82,20 @@ public class World : Node
 		SkyScene.SetName("SkyScene");
 		Game.RuntimeRoot.AddChild(SkyScene);
 
-		World.StructureRoot = new Node();
-		World.StructureRoot.SetName("StructureRoot");
-		SkyScene.AddChild(World.StructureRoot);
+		StructureRoot = new Node();
+		StructureRoot.SetName("StructureRoot");
+		SkyScene.AddChild(StructureRoot);
 
-		World.ItemsRoot = new Node();
-		World.ItemsRoot.SetName("ItemsRoot");
-		SkyScene.AddChild(World.ItemsRoot);
+		ItemsRoot = new Node();
+		ItemsRoot.SetName("ItemsRoot");
+		SkyScene.AddChild(ItemsRoot);
 
 		if(AsServer)
 		{
 			DefaultPlatforms();
 		}
 
-		World.IsOpen = true;
+		IsOpen = true;
 	}
 
 
@@ -216,7 +216,7 @@ public class World : Node
 		//Nested if to prevent very long line
 		if(GetTree().NetworkPeer != null && !GetTree().IsNetworkServer())
 		{
-			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(World.PlatformSize*9))
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
 			{
 				//If network is inited, not the server, and platform it to far away then...
 				return null; //...don't place
@@ -277,22 +277,22 @@ public class World : Node
 		if(StructureRoot.HasNode(Name))
 		{
 			Structure Branch = StructureRoot.GetNode(Name) as Structure;
-			Tuple<int,int> ChunkTuple = World.GetChunkTuple(Branch.Translation);
-			List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
+			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
+			List<Structure> Structures = Chunks[ChunkTuple].Structures;
 			Structures.Remove(Branch);
 			//After removing `this` from the Structure list, the chunk might be empty
 			if(Structures.Count > 0)
 			{
-				World.Chunks[ChunkTuple].Structures = Structures;
+				Chunks[ChunkTuple].Structures = Structures;
 			}
 			else
 			{
 				//If the chunk *is* empty then remove it
-				World.Chunks.Remove(ChunkTuple);
+				Chunks.Remove(ChunkTuple);
 			}
 
-			World.Grid.QueueUpdateNearby(Branch.Translation);
-			World.Grid.QueueRemoveItem(Branch);
+			Grid.QueueUpdateNearby(Branch.Translation);
+			Grid.QueueRemoveItem(Branch);
 			Branch.QueueFree();
 		}
 
@@ -325,7 +325,7 @@ public class World : Node
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(World.PlatformSize*9))
+			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(!LoadedChunks.Contains(ChunkTuple))
@@ -352,10 +352,10 @@ public class World : Node
 
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
-		World.Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
+		Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 		foreach(Structure Branch in Chunks[ChunkLocation].Structures)
 		{
-			World.Self.RpcId(Id, nameof(World.PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
 	}
 
@@ -423,7 +423,7 @@ public class World : Node
 	{
 		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
-		if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
+		if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) <= Game.ChunkRenderDistance*(PlatformSize*9))
 		{
 			DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
 			ToDrop.Translation = Position;
