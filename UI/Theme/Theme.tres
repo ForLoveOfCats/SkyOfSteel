@@ -1,20 +1,26 @@
-[gd_resource type="Theme" load_steps=11 format=2]
+[gd_resource type="Theme" load_steps=10 format=2]
 
 [ext_resource path="res://UI/Theme/ButtonHover.tres" type="StyleBox" id=1]
 [ext_resource path="res://UI/Theme/ButtonNormal.tres" type="StyleBox" id=2]
 [ext_resource path="res://UI/Theme/ButtonPressed.tres" type="StyleBox" id=3]
-[ext_resource path="res://UI/Theme/ScrollBarGrabber.tres" type="StyleBox" id=4]
-[ext_resource path="res://UI/Theme/ScrollBarBody.tres" type="StyleBox" id=5]
-[ext_resource path="res://UI/Theme/LineEditFocus.tres" type="StyleBox" id=6]
-[ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=7]
-[ext_resource path="res://UI/Theme/ScrollBarGrabberSelected.tres" type="StyleBox" id=8]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=9]
+[ext_resource path="res://UI/Theme/ScrollBarBody.tres" type="StyleBox" id=4]
+[ext_resource path="res://UI/Theme/LineEditFocus.tres" type="StyleBox" id=5]
+[ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=6]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=7]
 
-[sub_resource type="DynamicFont" id=1]
-font_data = ExtResource( 9 )
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 4.0
+content_margin_right = 4.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+bg_color = Color( 0.341176, 0.337255, 0.337255, 1 )
+border_color = Color( 0.341176, 0.337255, 0.337255, 1 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 7 )
 
 [resource]
-default_font = SubResource( 1 )
+default_font = SubResource( 2 )
 Button/colors/font_color = Color( 0, 0, 0, 1 )
 Button/colors/font_color_disabled = Color( 0, 0, 0, 1 )
 Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
@@ -127,11 +133,11 @@ HScrollBar/icons/decrement = null
 HScrollBar/icons/decrement_highlight = null
 HScrollBar/icons/increment = null
 HScrollBar/icons/increment_highlight = null
-HScrollBar/styles/grabber = ExtResource( 4 )
-HScrollBar/styles/grabber_highlight = ExtResource( 4 )
-HScrollBar/styles/grabber_pressed = ExtResource( 4 )
-HScrollBar/styles/scroll = ExtResource( 5 )
-HScrollBar/styles/scroll_focus = ExtResource( 5 )
+HScrollBar/styles/grabber = SubResource( 1 )
+HScrollBar/styles/grabber_highlight = SubResource( 1 )
+HScrollBar/styles/grabber_pressed = SubResource( 1 )
+HScrollBar/styles/scroll = ExtResource( 4 )
+HScrollBar/styles/scroll_focus = ExtResource( 4 )
 HSeparator/constants/separation = 4
 HSeparator/styles/separator = null
 HSlider/icons/grabber = null
@@ -181,8 +187,8 @@ LineEdit/colors/selection_color = Color( 0.466667, 0.690196, 1, 1 )
 LineEdit/constants/minimum_spaces = 12
 LineEdit/fonts/font = null
 LineEdit/icons/clear = null
-LineEdit/styles/focus = ExtResource( 6 )
-LineEdit/styles/normal = ExtResource( 7 )
+LineEdit/styles/focus = ExtResource( 5 )
+LineEdit/styles/normal = ExtResource( 6 )
 LineEdit/styles/read_only = null
 LinkButton/colors/font_color = Color( 0, 0, 0, 1 )
 LinkButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
@@ -334,7 +340,7 @@ TextEdit/fonts/font = null
 TextEdit/icons/tab = null
 TextEdit/styles/completion = null
 TextEdit/styles/focus = null
-TextEdit/styles/normal = ExtResource( 7 )
+TextEdit/styles/normal = ExtResource( 6 )
 TextEdit/styles/read_only = null
 ToolButton/colors/font_color = Color( 0, 0, 0, 1 )
 ToolButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
@@ -397,11 +403,11 @@ VScrollBar/icons/decrement = null
 VScrollBar/icons/decrement_highlight = null
 VScrollBar/icons/increment = null
 VScrollBar/icons/increment_highlight = null
-VScrollBar/styles/grabber = ExtResource( 4 )
-VScrollBar/styles/grabber_highlight = ExtResource( 4 )
-VScrollBar/styles/grabber_pressed = ExtResource( 8 )
-VScrollBar/styles/scroll = ExtResource( 5 )
-VScrollBar/styles/scroll_focus = ExtResource( 5 )
+VScrollBar/styles/grabber = null
+VScrollBar/styles/grabber_highlight = null
+VScrollBar/styles/grabber_pressed = null
+VScrollBar/styles/scroll = ExtResource( 4 )
+VScrollBar/styles/scroll_focus = ExtResource( 4 )
 VSeparator/constants/separation = 4
 VSeparator/styles/separator = null
 VSlider/icons/grabber = null
