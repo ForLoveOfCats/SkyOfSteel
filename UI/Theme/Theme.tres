@@ -1,15 +1,17 @@
-[gd_resource type="Theme" load_steps=9 format=2]
+[gd_resource type="Theme" load_steps=11 format=2]
 
 [ext_resource path="res://UI/Theme/ButtonHover.tres" type="StyleBox" id=1]
 [ext_resource path="res://UI/Theme/ButtonNormal.tres" type="StyleBox" id=2]
 [ext_resource path="res://UI/Theme/ButtonPressed.tres" type="StyleBox" id=3]
 [ext_resource path="res://UI/Theme/ScrollBarGrabber.tres" type="StyleBox" id=4]
 [ext_resource path="res://UI/Theme/ScrollBarBody.tres" type="StyleBox" id=5]
-[ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=6]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=7]
+[ext_resource path="res://UI/Theme/LineEditFocus.tres" type="StyleBox" id=6]
+[ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=7]
+[ext_resource path="res://UI/Theme/ScrollBarGrabberSelected.tres" type="StyleBox" id=8]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=9]
 
 [sub_resource type="DynamicFont" id=1]
-font_data = ExtResource( 7 )
+font_data = ExtResource( 9 )
 
 [resource]
 default_font = SubResource( 1 )
@@ -175,12 +177,12 @@ LineEdit/colors/clear_button_color_pressed = Color( 0, 0, 0, 1 )
 LineEdit/colors/cursor_color = Color( 0, 0, 0, 1 )
 LineEdit/colors/font_color = Color( 0, 0, 0, 1 )
 LineEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
-LineEdit/colors/selection_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/selection_color = Color( 0.466667, 0.690196, 1, 1 )
 LineEdit/constants/minimum_spaces = 12
 LineEdit/fonts/font = null
 LineEdit/icons/clear = null
-LineEdit/styles/focus = null
-LineEdit/styles/normal = ExtResource( 6 )
+LineEdit/styles/focus = ExtResource( 6 )
+LineEdit/styles/normal = ExtResource( 7 )
 LineEdit/styles/read_only = null
 LinkButton/colors/font_color = Color( 0, 0, 0, 1 )
 LinkButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
@@ -247,7 +249,7 @@ ProgressBar/styles/fg = null
 RichTextLabel/colors/default_color = Color( 0, 0, 0, 1 )
 RichTextLabel/colors/font_color_selected = Color( 0, 0, 0, 1 )
 RichTextLabel/colors/font_color_shadow = Color( 0, 0, 0, 0 )
-RichTextLabel/colors/selection_color = Color( 0, 0, 0, 1 )
+RichTextLabel/colors/selection_color = Color( 0.466667, 0.690196, 1, 1 )
 RichTextLabel/constants/line_separation = 1
 RichTextLabel/constants/shadow_as_outline = 0
 RichTextLabel/constants/shadow_offset_x = 0
@@ -332,7 +334,7 @@ TextEdit/fonts/font = null
 TextEdit/icons/tab = null
 TextEdit/styles/completion = null
 TextEdit/styles/focus = null
-TextEdit/styles/normal = ExtResource( 6 )
+TextEdit/styles/normal = ExtResource( 7 )
 TextEdit/styles/read_only = null
 ToolButton/colors/font_color = Color( 0, 0, 0, 1 )
 ToolButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
@@ -397,7 +399,7 @@ VScrollBar/icons/increment = null
 VScrollBar/icons/increment_highlight = null
 VScrollBar/styles/grabber = ExtResource( 4 )
 VScrollBar/styles/grabber_highlight = ExtResource( 4 )
-VScrollBar/styles/grabber_pressed = ExtResource( 4 )
+VScrollBar/styles/grabber_pressed = ExtResource( 8 )
 VScrollBar/styles/scroll = ExtResource( 5 )
 VScrollBar/styles/scroll_focus = ExtResource( 5 )
 VSeparator/constants/separation = 4
