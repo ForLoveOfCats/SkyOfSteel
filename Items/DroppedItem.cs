@@ -10,7 +10,7 @@ public class DroppedItem : KinematicBody, IInGrid
 
 	public System.Tuple<int, int> CurrentChunkTuple;
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
-	private bool PhysicsEnabled = true;
+	public bool PhysicsEnabled = true;
 	public Items.TYPE Type;
 
 	public override void _Ready()
@@ -33,7 +33,7 @@ public class DroppedItem : KinematicBody, IInGrid
 
 	public void Remove()
 	{
-        World.DroppedItems.Remove(this);
+		World.Self.RemoveDroppedItem(this.GetName());
 	}
 
 

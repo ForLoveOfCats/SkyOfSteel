@@ -492,7 +492,7 @@ public class Player : KinematicBody
 				Structure Hit = BuildRayCast.GetCollider() as Structure;
 				if(Hit != null)
 				{
-					Hit.Remove();
+					Hit.NetRemove();
 				}
 			}
 		}

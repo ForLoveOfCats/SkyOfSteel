@@ -19,8 +19,6 @@ public class World : Node
 	public static Node StructureRoot = null;
 	public static Node ItemsRoot = null;
 
-	public static List<DroppedItem> DroppedItems = new List<DroppedItem>();
-
 	private static PackedScene DroppedItemScene;
 
 	public static World Self;
@@ -361,22 +359,16 @@ public class World : Node
 
 	//Name is the string GUID name of the structure to be removed
 	[Remote]
-	public void Remove(string Name)
+	public void RemoveStructure(string Name)
 	{
 		if(StructureRoot.HasNode(Name))
 		{
 			Structure Branch = StructureRoot.GetNode(Name) as Structure;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
-			List<Structure> Structures = Chunks[ChunkTuple].Structures;
-			Structures.Remove(Branch);
-			//After removing `this` from the Structure list, the chunk might be empty
-			if(Structures.Count > 0)
+			Chunks[ChunkTuple].Structures.Remove(Branch);
+			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
 			{
-				Chunks[ChunkTuple].Structures = Structures;
-			}
-			else
-			{
-				//If the chunk *is* empty then remove it
+				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
 			}
 
@@ -384,7 +376,27 @@ public class World : Node
 			Grid.QueueRemoveItem(Branch);
 			Branch.QueueFree();
 		}
+	}
 
+
+	//Name is the string GUID name of the dropped item to be removed
+	[Remote]
+	public void RemoveDroppedItem(string Name)
+	{
+		if(ItemsRoot.HasNode(Name))
+		{
+			DroppedItem Item = ItemsRoot.GetNode(Name) as DroppedItem;
+			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
+			Chunks[ChunkTuple].Items.Remove(Item);
+			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
+			{
+				//If the chunk is empty then remove it
+				Chunks.Remove(ChunkTuple);
+			}
+
+			Grid.QueueRemoveItem(Item);
+			Item.QueueFree();
+		}
 	}
 
 
@@ -441,10 +453,16 @@ public class World : Node
 
 	static void SendChunk(int Id, Tuple<int,int> ChunkLocation)
 	{
-		Self.RpcId(Id, nameof(FreeChunk), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
+		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
+
 		foreach(Structure Branch in Chunks[ChunkLocation].Structures)
 		{
 			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+		}
+
+		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)
+		{
+			Self.RpcId(Id, nameof(DropItemWithName), Item.Type, Item.Translation, Item.Momentum, Item.GetName());
 		}
 	}
 
@@ -473,15 +491,22 @@ public class World : Node
 
 
 	[Remote]
-	public void FreeChunk(Vector2 Pos)
+	public void PrepareChunkSpace(Vector2 Pos) //Run on the client to clear a chunk's area before being populated from the server
 	{
-		ChunkClass Branches;
-		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out Branches))
+		ChunkClass ChunkToFree;
+		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out ChunkToFree)) //Chunk might not exist
 		{
-			foreach(Structure Branch in Branches.Structures)
+			foreach(Structure Branch in ChunkToFree.Structures)
 			{
 				Branch.Free();
 			}
+
+			foreach(DroppedItem Item in ChunkToFree.Items)
+			{
+				Item.Free();
+			}
+
+			Chunks.Remove(new Tuple<int,int>((int)Pos.x, (int)Pos.y));
 		}
 	}
 
@@ -511,20 +536,29 @@ public class World : Node
 	[Remote]
 	public void DropItemWithName(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
-		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
-
-		if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) <= Game.ChunkRenderDistance*(PlatformSize*9))
+		if(ItemsRoot.HasNode(Name))
 		{
-			DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
-			ToDrop.Translation = Position;
-			ToDrop.Momentum = BaseMomentum;
-			ToDrop.Type = Type;
-			ToDrop.Name = Name;
-			ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
+			DroppedItem Instance = ItemsRoot.GetNode<DroppedItem>(Name);
+			Instance.Translation = Position;
+			Instance.Momentum = BaseMomentum;
+			Instance.PhysicsEnabled = true;
+		}
+		else
+		{
+			Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
-			DroppedItems.Add(ToDrop);
-			AddItemToChunk(ToDrop);
-			ItemsRoot.AddChild(ToDrop);
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) <= Game.ChunkRenderDistance*(PlatformSize*9))
+			{
+				DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
+				ToDrop.Translation = Position;
+				ToDrop.Momentum = BaseMomentum;
+				ToDrop.Type = Type;
+				ToDrop.Name = Name;
+				ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
+
+				AddItemToChunk(ToDrop);
+				ItemsRoot.AddChild(ToDrop);
+			}
 		}
 	}
 

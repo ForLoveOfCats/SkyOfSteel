@@ -296,8 +296,7 @@ public class Net : Node
 			return;
 		}
 
-		List<Tuple<int,int>> ToRemove = new List<Tuple<int,int>>();
-		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks.ToArray())
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
@@ -312,6 +311,7 @@ public class Net : Node
 			}
 			else
 			{
+				List<Structure> StructuresBeingRemoved = new List<Structure>();
 				foreach(Structure CurrentStructure in Chunk.Value.Structures)
 				{
 					if(Self.GetTree().IsNetworkServer())
@@ -320,19 +320,33 @@ public class Net : Node
 					}
 					else
 					{
-						CurrentStructure.QueueFree();
+						StructuresBeingRemoved.Add(CurrentStructure);
 					}
 				}
-				if(!Self.GetTree().IsNetworkServer())
+				foreach(Structure CurrentStructure in StructuresBeingRemoved)
 				{
-					ToRemove.Add(Chunk.Key);
+						CurrentStructure.Remove(Force:true);
+				}
+
+				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
+				foreach(DroppedItem Item in Chunk.Value.Items)
+				{
+					if(Self.GetTree().IsNetworkServer())
+					{
+						Item.Hide();
+					}
+					else
+					{
+						ItemsBeingRemoved.Add(Item);
+					}
+				}
+				foreach(DroppedItem Item in ItemsBeingRemoved)
+				{
+					Item.Remove();
 				}
 			}
 		}
-		foreach(Tuple<int,int> Chunk in ToRemove)
-		{
-			World.Chunks.Remove(Chunk);
-		}
+
 
 		if(!Self.GetTree().IsNetworkServer())
 		{
