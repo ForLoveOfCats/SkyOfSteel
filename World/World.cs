@@ -176,27 +176,11 @@ public class World : Node
 					break;
 				}
 
-				string LoadedFile = System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{FileName}");
-
-				SavedChunk LoadedChunk;
-				try
-				{
-					LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(LoadedFile);
-				}
-				catch(Newtonsoft.Json.JsonReaderException)
+				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{FileName}"));
+				PlaceCount += Returned.Item2;
+				if(!Returned.Item1)
 				{
 					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveName}'");
-					continue;
-				}
-
-				foreach(SavedStructure SavedBranch in LoadedChunk.S)
-				{
-					Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
-					if(Info != null)
-					{
-						Place(Info.Item1, Info.Item2, Info.Item3, 1);
-						PlaceCount++;
-					}
 				}
 			}
 			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
@@ -487,6 +471,32 @@ public class World : Node
 			}
 		}
 		return SaveCount;
+	}
+
+
+	public static Tuple<bool,int> LoadChunk(string ToLoad) //Doesn't actually have to be a single chunk
+	{
+		SavedChunk LoadedChunk;
+		try
+		{
+			LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(ToLoad);
+		}
+		catch(Newtonsoft.Json.JsonReaderException)
+		{
+			return new Tuple<bool,int>(false, 0);
+		}
+
+		int PlaceCount = 0;
+		foreach(SavedStructure SavedBranch in LoadedChunk.S)
+		{
+			Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
+			if(Info != null)
+			{
+				Place(Info.Item1, Info.Item2, Info.Item3, 1);
+				PlaceCount++;
+			}
+		}
+		return new Tuple<bool,int>(true, PlaceCount);
 	}
 
 
