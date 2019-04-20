@@ -134,7 +134,8 @@ public class Player : KinematicBody
 
 	public void ToggleFly()
 	{
-		SetFly(!FlyMode);
+		if(Game.Mode.ShouldToggleFly())
+			SetFly(!FlyMode);
 	}
 
 
