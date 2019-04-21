@@ -26,6 +26,8 @@ public class Player : KinematicBody
 	private const float ItemThrowPower = 15f;
 	private const float LookDivisor = 6;
 
+	private const float SfxMinLandMomentumY = 3;
+
 	private bool Frozen = true;
 	public bool FlyMode { get; private set;} = false;
 
@@ -49,6 +51,7 @@ public class Player : KinematicBody
 	private float JumpTimer = 0f;
 	private float WallKickRecoverPercentage = 1;
 	private Vector3 Momentum = new Vector3(0,0,0);
+	private float LastMomentumY = 0;
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
 	private bool IsPrimaryFiring = false;
@@ -63,6 +66,8 @@ public class Player : KinematicBody
 
 	public HUD HUDInstance;
 	private Ghost GhostInstance;
+
+	public AudioStreamPlayer SfxLand;
 
 	Player()
 	{
@@ -95,6 +100,8 @@ public class Player : KinematicBody
 			GhostInstance = ((PackedScene)(GD.Load("res://World/Ghost.tscn"))).Instance() as Ghost;
 			GhostInstance.Hide();
 			GetParent().CallDeferred("add_child", GhostInstance);
+
+			SfxLand = GetNode<AudioStreamPlayer>("LocalAudio/Land");
 		}
 		else
 		{
@@ -580,6 +587,13 @@ public class Player : KinematicBody
 			}
 		}
 
+		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
+		{
+			float Volume = Abs(Clamp(LastMomentumY, -MaxMovementSpeed, 0))/2 - 30;
+			AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(SfxLand.Bus), Volume);
+			SfxLand.Play();
+		}
+
 		WasOnFloor = IsOnFloor();
 
 		if(!IsJumping && (IsOnFloor() || FlyMode))
@@ -633,6 +647,8 @@ public class Player : KinematicBody
 			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * WallKickRecoverPercentage;
 			Momentum = AirAccelerate(Momentum, WishDir, Delta);
 		}
+
+		LastMomentumY = Momentum.y;
 
 		Vector3 OldPos = Translation;
 		if(FlyMode)

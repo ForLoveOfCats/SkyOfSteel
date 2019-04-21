@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://Player/DevTexture.png" type="Texture" id=3]
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
+[ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=5]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 3 )
@@ -35,4 +36,10 @@ cast_to = Vector3( 0, 0, 24 )
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -2.8213e-07, -1, 0, 1, -2.8213e-07, 0, 3.4, 0 )
 shape = SubResource( 2 )
+
+[node name="LocalAudio" type="Node" parent="."]
+
+[node name="Land" type="AudioStreamPlayer" parent="LocalAudio"]
+stream = ExtResource( 5 )
+bus = "Land"
 
