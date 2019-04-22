@@ -67,7 +67,7 @@ public class Player : KinematicBody
 	public HUD HUDInstance;
 	private Ghost GhostInstance;
 
-	public AudioStreamPlayer SfxLand;
+	public PlayerSfxManager SfxManager;
 
 	Player()
 	{
@@ -101,7 +101,7 @@ public class Player : KinematicBody
 			GhostInstance.Hide();
 			GetParent().CallDeferred("add_child", GhostInstance);
 
-			SfxLand = GetNode<AudioStreamPlayer>("LocalAudio/Land");
+			SfxManager = GetNode<PlayerSfxManager>("PlayerSfxManager");
 		}
 		else
 		{
@@ -590,8 +590,7 @@ public class Player : KinematicBody
 		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
 			float Volume = Abs(Clamp(LastMomentumY, -MaxMovementSpeed, 0))/2 - 30;
-			AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(SfxLand.Bus), Volume);
-			SfxLand.Play();
+			SfxManager.FpLand(Volume);
 		}
 
 		WasOnFloor = IsOnFloor();
