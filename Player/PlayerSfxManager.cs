@@ -1,19 +1,31 @@
 using Godot;
 
 
-public class PlayerSfxManager : Node
+public class PlayerSfxManager : Spatial
 {
-	public AudioStreamPlayer LandSfx;
+	public AudioStreamPlayer FpLandSfx;
+	public AudioStreamPlayer3D TpLandSfx;
 
 	public override void _Ready()
 	{
-		LandSfx = GetNode<AudioStreamPlayer>("LandSfx");
+		FpLandSfx = GetNode<AudioStreamPlayer>("FpLandSfx");
+		TpLandSfx = GetNode<AudioStreamPlayer3D>("TpLandSfx");
+	}
+
+
+	[Remote]
+	public void TpLand(float Volume)
+	{
+		TpLandSfx.UnitDb = Volume + 10;
+		TpLandSfx.Play();
 	}
 
 
 	public void FpLand(float Volume) //First person land sfx
 	{
-		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(LandSfx.Bus), Volume);
-		LandSfx.Play();
+		GD.Print(Volume);
+		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(FpLandSfx.Bus), Volume);
+		FpLandSfx.Play();
+		Net.SteelRpc(this, nameof(TpLand), Volume);
 	}
 }
