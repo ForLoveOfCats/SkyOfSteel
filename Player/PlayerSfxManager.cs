@@ -6,10 +6,14 @@ public class PlayerSfxManager : Spatial
 	public AudioStreamPlayer FpLandSfx;
 	public AudioStreamPlayer3D TpLandSfx;
 
+	public AudioStreamPlayer FpWallKickSfx;
+
 	public override void _Ready()
 	{
 		FpLandSfx = GetNode<AudioStreamPlayer>("FpLandSfx");
 		TpLandSfx = GetNode<AudioStreamPlayer3D>("TpLandSfx");
+
+		FpWallKickSfx = GetNode<AudioStreamPlayer>("FpWallKickSfx");
 	}
 
 
@@ -27,5 +31,11 @@ public class PlayerSfxManager : Spatial
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(FpLandSfx.Bus), Volume);
 		FpLandSfx.Play();
 		Net.SteelRpc(this, nameof(TpLand), Volume);
+	}
+
+
+	public void FpWallKick()
+	{
+		FpWallKickSfx.Play();
 	}
 }

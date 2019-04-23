@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body.obj" type="ArrayMesh" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://default_env.tres" type="Environment" id=4]
 [ext_resource path="res://Player/PlayerSfxManager.cs" type="Script" id=5]
 [ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=6]
+[ext_resource path="res://Player/WallKickSfx.wav" type="AudioStream" id=7]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 3 )
@@ -48,4 +49,8 @@ bus = "Land"
 [node name="TpLandSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
 stream = ExtResource( 6 )
 unit_size = 2.0
+
+[node name="FpWallKickSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
+stream = ExtResource( 7 )
+volume_db = -25.0
 

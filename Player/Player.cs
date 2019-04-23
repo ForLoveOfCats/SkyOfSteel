@@ -673,6 +673,8 @@ public class Player : KinematicBody
 
 				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
 				Momentum.y = WallKickJumpForce;
+
+				SfxManager.FpWallKick();
 			}
 		}
 		Vector3 NewPos = Translation;
