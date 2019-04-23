@@ -27,7 +27,6 @@ public class PlayerSfxManager : Spatial
 
 	public void FpLand(float Volume) //First person land sfx
 	{
-		GD.Print(Volume);
 		AudioServer.SetBusVolumeDb(AudioServer.GetBusIndex(FpLandSfx.Bus), Volume);
 		FpLandSfx.Play();
 		Net.SteelRpc(this, nameof(TpLand), Volume);
