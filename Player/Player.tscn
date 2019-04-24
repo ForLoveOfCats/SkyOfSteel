@@ -53,4 +53,3 @@ unit_size = 2.0
 [node name="FpWallKickSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
 stream = ExtResource( 7 )
 volume_db = -25.0
-

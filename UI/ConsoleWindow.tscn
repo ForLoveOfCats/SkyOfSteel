@@ -48,4 +48,3 @@ margin_bottom = 600.0
 custom_fonts/font = ExtResource( 3 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-

@@ -18,4 +18,3 @@ shape = SubResource( 1 )
 [node name="MeshInstance" type="MeshInstance" parent="."]
 mesh = ExtResource( 2 )
 material/0 = null
-
