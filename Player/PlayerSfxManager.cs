@@ -7,6 +7,7 @@ public class PlayerSfxManager : Spatial
 	public AudioStreamPlayer3D TpLandSfx;
 
 	public AudioStreamPlayer FpWallKickSfx;
+	public AudioStreamPlayer3D TpWallKickSfx;
 
 	public override void _Ready()
 	{
@@ -14,6 +15,7 @@ public class PlayerSfxManager : Spatial
 		TpLandSfx = GetNode<AudioStreamPlayer3D>("TpLandSfx");
 
 		FpWallKickSfx = GetNode<AudioStreamPlayer>("FpWallKickSfx");
+		TpWallKickSfx = GetNode<AudioStreamPlayer3D>("TpWallKickSfx");
 	}
 
 
@@ -33,8 +35,16 @@ public class PlayerSfxManager : Spatial
 	}
 
 
+	[Remote]
+	public void TpWallKick()
+	{
+		TpWallKickSfx.Play();
+	}
+
+
 	public void FpWallKick()
 	{
 		FpWallKickSfx.Play();
+		Net.SteelRpc(this, nameof(TpWallKick));
 	}
 }
