@@ -121,6 +121,31 @@ public class World : Node
 	}
 
 
+	public static void Clear()
+	{
+		List<Structure> Branches = new List<Structure>();
+		foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in Chunks)
+		{
+			foreach(Structure Branch in Chunk.Value.Structures)
+			{
+				Branches.Add(Branch);
+			}
+		}
+		foreach(Structure Branch in Branches)
+		{
+			Branch.Remove(Force:true);
+		}
+
+		Chunks.Clear();
+		Grid.Clear();
+
+		foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in RemoteLoadedChunks)
+		{
+			RemoteLoadedChunks[Pair.Key].Clear();
+		}
+	}
+
+
 	public static void Save(string SaveName)
 	{
 		Directory SaveDir = new Directory();
@@ -143,24 +168,7 @@ public class World : Node
 		Directory SaveDir = new Directory();
 		if(SaveDir.DirExists($"user://Saves/{SaveName}"))
 		{
-			List<Structure> Branches = new List<Structure>();
-			foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in Chunks)
-			{
-				foreach(Structure Branch in Chunk.Value.Structures)
-				{
-					Branches.Add(Branch);
-				}
-			}
-			foreach(Structure Branch in Branches)
-			{
-				Branch.Remove(Force:true);
-			}
-			Chunks.Clear();
-			Grid.Clear();
-			foreach(KeyValuePair<int, List<Tuple<int,int>>> Pair in RemoteLoadedChunks)
-			{
-				RemoteLoadedChunks[Pair.Key].Clear();
-			}
+			Clear();
 			DefaultPlatforms();
 
 			SaveDir.Open($"user://Saves/{SaveName}");
