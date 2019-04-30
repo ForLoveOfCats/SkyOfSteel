@@ -86,7 +86,10 @@ public class Scripting : Node
 			}
 			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", 1);
 			Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
-			                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}")));
+			                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}"))
+			                             .WithEmitDebugInformation(true)
+			                             .WithFilePath($"{OS.GetUserDataDir()}/Gamemodes/{Name}")
+			                             .WithFileEncoding(System.Text.Encoding.UTF8)); //NOTE Hardcoding UTF8 should work for now
 			ScriptFile.Close();
 
 			object Returned = null;
