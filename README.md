@@ -36,9 +36,9 @@ Contributions are welcome!
 
 
 ## Videos
-[View the devlog one video on Youtube (Out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
+[View the devlog one video on Youtube (*Very* out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
 
-[View the introductory video on Youtube(Out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
+[View the introductory video on Youtube(*Very* out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
 
 
 ## Building
