@@ -163,18 +163,11 @@ public class Scripting : Node
 		try
 		{
 			ConsoleState = ConsoleState.ContinueWithAsync(Line).Result;
-			Returned = ConsoleState.ReturnValue;
+			Returned = ConsoleState.ReturnValue as object; //just in case of an issue this should become null
 		}
-		catch(Sc.CompilationErrorException Err)
+		catch(Exception Err)
 		{
 			Console.Print(Err.Message);
-		}
-		catch(AggregateException Err)
-		{
-			if(Err.InnerException is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
-				return; //A gamemode's custom command returned void
-
-			throw Err.InnerException; //Otherwise throw the exception again
 		}
 
 		if(Returned != null)
