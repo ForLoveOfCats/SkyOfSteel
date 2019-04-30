@@ -63,8 +63,8 @@ Contributions are welcome!
 The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
 multiplayer private server setting with high skill movement. As of now multiplayer is fully
 functional, the building is about 95% functional with proper chunk loading/unloading
-over network, world saving and loading to/from file, and air strafing identical to id Tech 3
-and the Source engine.
+over network, world saving and loading to/from file, air strafing identical to id Tech 3
+and the Source engine, and wall kicking.
 
 
 
@@ -77,6 +77,8 @@ server side *and* client side. In addition there is a full ingame REPL console.
 The gamemode API has a concept of game events. Whenever something occurs ingame it is
 processed as an "event" which can be filtered and discarded by gamemode scripts programmatically.
 This allows for a great deal of flexibility before even touching the normal API.
+
+Read more here: https://github.com/ForLoveOfCats/ModsOfSteel
 
 
 
