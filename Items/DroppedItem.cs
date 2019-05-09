@@ -45,11 +45,12 @@ public class DroppedItem : KinematicBody, IInGrid
 		if(PhysicsEnabled)
 		{
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:60);
-			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
+			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation))) //We just crossed into a different chunk
 			{
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);
 				CurrentChunkTuple = World.GetChunkTuple(Translation);
 				World.AddItemToChunk(this);
+				Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, GetName());
 			}
 
 			if(IsOnFloor())

@@ -454,7 +454,7 @@ public class World : Node
 
 		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)
 		{
-			Self.RpcId(Id, nameof(DropItemWithName), Item.Type, Item.Translation, Item.Momentum, Item.GetName());
+			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.Momentum, Item.GetName());
 		}
 	}
 
@@ -539,8 +539,8 @@ public class World : Node
 			if(Self.GetTree().IsNetworkServer())
 			{
 				string Name = System.Guid.NewGuid().ToString();
-				DropItemWithName(Type, Position, BaseMomentum, Name);
-				Net.SteelRpc(Self, nameof(DropItemWithName), Type, Position, BaseMomentum, Name);
+				DropOrUpdateItem(Type, Position, BaseMomentum, Name);
+				Net.SteelRpc(Self, nameof(DropOrUpdateItem), Type, Position, BaseMomentum, Name);
 			}
 			else
 			{
@@ -552,7 +552,7 @@ public class World : Node
 
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void DropItemWithName(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
+	public void DropOrUpdateItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
 		if(ItemsRoot.HasNode(Name))
 		{
