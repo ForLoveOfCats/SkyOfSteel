@@ -307,6 +307,11 @@ public class Net : Node
 					{
 						CurrentStructure.Show();
 					}
+
+					foreach(DroppedItem Item in Chunk.Value.Items)
+					{
+						Item.Show();
+					}
 				}
 			}
 			else
