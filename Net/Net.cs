@@ -17,6 +17,7 @@ public class Net : Node
 	public static string Ip { get; private set; }
 
 	public static List<int> PeerList = new List<int>();
+	public static Dictionary<int, Player> Players = new Dictionary<int, Player>();
 	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
 	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
@@ -266,9 +267,9 @@ public class Net : Node
 
 		Self.GetTree().SetNetworkPeer(null);
 		PeerList.Clear();
-		Game.PlayerList.Clear();
+		Net.Players.Clear();
 		Nicknames.Clear();
-		Game.PlayerList.Clear();
+		Net.Players.Clear();
 
 		IsWaitingForServer = false;
 		WaitingForServerTimer = MaxWaitForServerDelay;

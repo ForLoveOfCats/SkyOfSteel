@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 
 public class Game : Node
@@ -11,7 +10,6 @@ public class Game : Node
 
 	public static int MaxPlayers = 8;
 	public static bool BindsEnabled = false;
-	public static Dictionary<int, Player> PlayerList = new Dictionary<int, Player>();
 	public static Player PossessedPlayer = GD.Load<PackedScene>("res://Player/Player.tscn").Instance() as Player;
 										   //Prevent crashes when player movement commands are run when world is not initalized
 
@@ -109,7 +107,7 @@ public class Game : Node
 		NewPlayer.Possessed = Possess;
 		NewPlayer.Id = Id;
 		NewPlayer.SetName(Id.ToString());
-		PlayerList.Add(Id, NewPlayer);
+		Net.Players.Add(Id, NewPlayer);
 		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 
 		if(Possess)

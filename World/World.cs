@@ -104,7 +104,7 @@ public class World : Node
 			Game.RuntimeRoot.GetNode("SkyScene").Free();
 			//Free instead of QueueFree to prevent crash when starting new world in same frame
 		}
-		Game.PlayerList.Clear();
+		Net.Players.Clear();
 		Game.PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 		//Prevent crashes when player movement commands are run when world is not initalized
 
@@ -331,7 +331,7 @@ public class World : Node
 						continue;
 					}
 
-					Vector3 PlayerPos = Game.PlayerList[Id].Translation;
+					Vector3 PlayerPos = Net.Players[Id].Translation;
 					if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
 					{
 						if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
