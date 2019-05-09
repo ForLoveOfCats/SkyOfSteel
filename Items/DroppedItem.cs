@@ -6,6 +6,7 @@ public class DroppedItem : KinematicBody, IInGrid
 {
 	private const float Gravity = 14f;
 	private const float MaxFallSpeed = -40f;
+	private const float Friction = 15f;
 	private const float RPS = 0.5f; //Revolutions Per Second
 
 	public System.Tuple<int, int> CurrentChunkTuple;
@@ -43,7 +44,7 @@ public class DroppedItem : KinematicBody, IInGrid
 
 		if(PhysicsEnabled)
 		{
-			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0));
+			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:60);
 			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
 			{
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);
@@ -51,7 +52,18 @@ public class DroppedItem : KinematicBody, IInGrid
 				World.AddItemToChunk(this);
 			}
 
-			PhysicsEnabled = !IsOnFloor();
+			if(IsOnFloor())
+			{
+				//Doing friction
+				Vector3 Horz = new Vector3(Momentum.x, 0, Momentum.z);
+				Horz = Horz.Normalized() * Mathf.Clamp(Horz.Length() - (Friction*Delta), 0, Mathf.Abs(MaxFallSpeed));
+				Momentum.x = Horz.x;
+				Momentum.z = Horz.z;
+
+				if(Horz.Length() <= 0)
+					PhysicsEnabled = false;
+			}
+
 			if(PhysicsEnabled)
 			{
 				Momentum.y -= Gravity*Delta;
