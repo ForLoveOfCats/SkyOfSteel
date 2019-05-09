@@ -73,10 +73,6 @@ public class Player : KinematicBody
 	{
 		if(Engine.EditorHint) {return;}
 
-		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
-		ItemGive(new Items.Instance(Items.TYPE.WALL));
-		ItemGive(new Items.Instance(Items.TYPE.SLOPE));
-
 		HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
 	}
 
@@ -113,6 +109,10 @@ public class Player : KinematicBody
 		{
 			SetFreeze(false);
 		}
+
+		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
+		ItemGive(new Items.Instance(Items.TYPE.WALL));
+		ItemGive(new Items.Instance(Items.TYPE.SLOPE));
 	}
 
 
@@ -161,6 +161,7 @@ public class Player : KinematicBody
 				if(Inventory[Slot].Type == ToGive.Type)
 				{
 					Inventory[Slot].Count += ToGive.Count;
+					HUDInstance.HotbarUpdate();
 					return;
 				}
 			}
@@ -171,6 +172,7 @@ public class Player : KinematicBody
 			if(Inventory[Slot] is null)
 			{
 				Inventory[Slot] = ToGive;
+				HUDInstance.HotbarUpdate();
 				return;
 			}
 		}
