@@ -138,12 +138,6 @@ public static class API
 
 	public static bool ChunkRenderDistance(int Distance)
 	{
-		if(Distance < 2)
-		{
-			Console.ThrowPrint("Cannot set render distance value lower than two chunks");
-			return false;
-		}
-
 		Game.ChunkRenderDistance = Distance;
 		Net.UnloadAndRequestChunks();
 		return true;
