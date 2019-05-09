@@ -22,7 +22,7 @@ public class Items : Node
 	public enum TYPE {ERROR, PLATFORM, WALL, SLOPE}
 
 	public static Dictionary<TYPE, Mesh> Meshes = new Dictionary<TYPE, Mesh>();
-	private static Dictionary<TYPE, Texture> Thumbnails = new Dictionary<TYPE, Texture>();
+	public static Dictionary<TYPE, Texture> Thumbnails = new Dictionary<TYPE, Texture>();
 	public static Dictionary<TYPE, Texture> Textures { get; private set; } = new Dictionary<TYPE, Texture>();
 
 	public static Shader StructureShader { get; private set; }
@@ -50,11 +50,5 @@ public class Items : Node
 			Textures.Add(Type, GD.Load<Texture>($"res://Items/Textures/{Type}.png"));
 			//Assume that every item has a texture, will throw exception on game startup if not
 		}
-	}
-
-
-	public static Texture Thumbnail(TYPE Type)
-	{
-		return Thumbnails[Type];
 	}
 }
