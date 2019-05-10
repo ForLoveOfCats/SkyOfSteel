@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=11 format=2]
+[gd_resource type="Theme" load_steps=10 format=2]
 
 [ext_resource path="res://UI/Theme/ButtonHover.tres" type="StyleBox" id=1]
 [ext_resource path="res://UI/Theme/ButtonNormal.tres" type="StyleBox" id=2]
@@ -10,19 +10,11 @@
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
-[sub_resource type="StyleBoxFlat" id=2]
-content_margin_left = 4.0
-content_margin_right = 4.0
-content_margin_top = 4.0
-content_margin_bottom = 4.0
-bg_color = Color( 0.341176, 0.337255, 0.337255, 1 )
-border_color = Color( 0.341176, 0.337255, 0.337255, 1 )
-
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=2]
 font_data = ExtResource( 7 )
 
 [resource]
-default_font = SubResource( 3 )
+default_font = SubResource( 2 )
 Button/colors/font_color = Color( 0, 0, 0, 1 )
 Button/colors/font_color_disabled = Color( 0, 0, 0, 1 )
 Button/colors/font_color_hover = Color( 0, 0, 0, 1 )
@@ -135,9 +127,9 @@ HScrollBar/icons/decrement = null
 HScrollBar/icons/decrement_highlight = null
 HScrollBar/icons/increment = null
 HScrollBar/icons/increment_highlight = null
-HScrollBar/styles/grabber = SubResource( 2 )
-HScrollBar/styles/grabber_highlight = SubResource( 2 )
-HScrollBar/styles/grabber_pressed = SubResource( 2 )
+HScrollBar/styles/grabber = null
+HScrollBar/styles/grabber_highlight = null
+HScrollBar/styles/grabber_pressed = null
 HScrollBar/styles/scroll = ExtResource( 4 )
 HScrollBar/styles/scroll_focus = ExtResource( 4 )
 HSeparator/constants/separation = 4
