@@ -136,6 +136,8 @@ public class Player : KinematicBody
 		if(GetName() == GetTree().GetNetworkUniqueId().ToString())
 		{
 			Frozen = NewFrozen;
+			if(!Frozen)
+				HUDInstance.HotbarUpdate(); //HACK: make sure it is updated on client after connecting
 		}
 		else
 		{
@@ -590,6 +592,8 @@ public class Player : KinematicBody
 						ToPickUpList.Add(Item);
 				}
 			}
+			if(ToPickUpList.Count > 0)
+				SfxManager.FpPickup();
 			foreach(DroppedItem Item in ToPickUpList)
 			{
 				World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());

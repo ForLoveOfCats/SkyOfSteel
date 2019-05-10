@@ -3,7 +3,7 @@ using static System.Math;
 using static SteelMath;
 
 
-public class BuildRotations
+public class BuildRotations //NOTE: This whole file is going away in 0.1.3
 {
 	private static Vector3 PlatformBranch(Structure Base)
 	{
