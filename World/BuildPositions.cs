@@ -3,7 +3,7 @@ using static System.Math;
 using static SteelMath;
 
 
-public class BuildPositions
+public class BuildPositions //NOTE: This whole file is going away in 0.1.3
 {
 	private static System.Nullable<Vector3> PlatformBranch(Structure Base)
 	{
