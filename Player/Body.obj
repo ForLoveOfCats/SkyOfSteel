@@ -1,6 +1,5 @@
 # Blender v2.79 (sub 4) OBJ File: 'Body.blend'
 # www.blender.org
-mtllib Body.mtl
 o PlayerModel_Sphere
 v 0.191342 6.840744 0.038060
 v 0.375330 6.783839 0.074658

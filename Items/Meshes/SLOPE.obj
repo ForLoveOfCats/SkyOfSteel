@@ -1,6 +1,5 @@
 # Blender v2.79 (sub 6) OBJ File: 'slope.blend'
 # www.blender.org
-mtllib SLOPE.mtl
 o Cube
 v 5.999998 -5.699999 -5.400000
 v -5.999999 -5.699999 -5.400001
