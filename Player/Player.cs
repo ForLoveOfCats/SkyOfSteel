@@ -2,6 +2,7 @@ using Godot;
 using static Godot.Mathf;
 using static SteelMath;
 using System;
+using System.Collections.Generic;
 
 
 public class Player : KinematicBody
@@ -24,6 +25,8 @@ public class Player : KinematicBody
 	private const float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
 	private const float Gravity = 14f;
 	private const float ItemThrowPower = 15f;
+	private const float ItemPickupDistance = 8f;
+	private const float MinItemPickupLife = 1; //In seconds
 	private const float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
@@ -176,6 +179,13 @@ public class Player : KinematicBody
 				return;
 			}
 		}
+	}
+
+
+	[Remote]
+	public void PickupItem(Items.TYPE Type)
+	{
+		ItemGive(new Items.Instance(Type));
 	}
 
 
@@ -549,6 +559,23 @@ public class Player : KinematicBody
 		if(!Possessed || Frozen)
 		{
 			return;
+		}
+
+		{
+			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
+			foreach(DroppedItem Item in World.ItemList)
+			{
+				if(Translation.DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= MinItemPickupLife)
+				{
+					ToPickUpList.Add(Item);
+				}
+			}
+			foreach(DroppedItem Item in ToPickUpList)
+			{
+				World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
+				World.ItemList.Remove(Item);
+				Item.Remove();
+			}
 		}
 
 		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta*WallKickRecoverSpeed, 0, 1);

@@ -13,6 +13,7 @@ public class World : Node
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
 	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
+	public static List<DroppedItem> ItemList = new List<DroppedItem>();
 	public static GridClass Grid = new GridClass();
 
 	public static bool IsOpen = false;
@@ -115,6 +116,7 @@ public class World : Node
 
 		Chunks.Clear();
 		RemoteLoadedChunks.Clear();
+		ItemList.Clear();
 		Grid.Clear();
 
 		IsOpen = false;
@@ -373,11 +375,11 @@ public class World : Node
 
 	//Name is the string GUID name of the dropped item to be removed
 	[Remote]
-	public void RemoveDroppedItem(string Name)
+	public void RemoveDroppedItem(string Guid)
 	{
-		if(ItemsRoot.HasNode(Name))
+		if(ItemsRoot.HasNode(Guid))
 		{
-			DroppedItem Item = ItemsRoot.GetNode(Name) as DroppedItem;
+			DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
 			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
@@ -387,6 +389,7 @@ public class World : Node
 			}
 
 			Grid.QueueRemoveItem(Item);
+			ItemList.Remove(Item);
 			Item.QueueFree();
 		}
 	}
@@ -575,7 +578,39 @@ public class World : Node
 				ToDrop.GetNode<MeshInstance>("MeshInstance").Mesh = Items.Meshes[Type];
 
 				AddItemToChunk(ToDrop);
+				ItemList.Add(ToDrop);
 				ItemsRoot.AddChild(ToDrop);
+			}
+		}
+	}
+
+
+	//Should be able to be called without RPC yet only run on server
+	//Has to be non-static to be RPC-ed
+	[Remote]
+	public void RequestDroppedItem(int Id, string Guid)
+	{
+		if(Self.GetTree().GetNetworkPeer() != null)
+		{
+			if(Self.GetTree().IsNetworkServer())
+			{
+				//On server
+				DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
+				if(Item != null) //Only lookup node once instead of using HasNode
+				{
+					if(Id == Net.Work.GetNetworkUniqueId())
+						Game.PossessedPlayer.PickupItem(Item.Type);
+					else
+						Net.Players[Id].RpcId(Id, nameof(Player.PickupItem), Item.Type);
+
+					Net.SteelRpc(this, nameof(RemoveDroppedItem), Item.GetName());
+					RemoveDroppedItem(Item.GetName());
+				}
+			}
+			else
+			{
+				//Not on server, call on server
+				Self.RpcId(Net.ServerId, nameof(RequestDroppedItem), Id, Guid);
 			}
 		}
 	}
