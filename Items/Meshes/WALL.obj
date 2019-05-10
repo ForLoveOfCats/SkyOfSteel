@@ -1,6 +1,5 @@
 # Blender v2.79 (sub 6) OBJ File: 'wall.blend'
 # www.blender.org
-mtllib WALL.mtl
 o Cube
 v -5.999999 -6.000000 -0.300000
 v 5.999997 -6.000000 -0.300000
