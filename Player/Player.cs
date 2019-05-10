@@ -590,6 +590,8 @@ public class Player : KinematicBody
 						ToPickUpList.Add(Item);
 				}
 			}
+			if(ToPickUpList.Count > 0)
+				SfxManager.FpPickup();
 			foreach(DroppedItem Item in ToPickUpList)
 			{
 				World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
