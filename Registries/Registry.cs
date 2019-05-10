@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-class Registry<T> 
+public class Registry<T> 
 {
 
 	//Represents the entires in a registry.
@@ -23,7 +23,7 @@ class Registry<T>
 			//Cannot use the default identifier.
 			if (id == Identifier.MISSINGNO)
 			{
-				Console.Log("Cannot register objects using identifier skyofsteel:missingo.");
+				Godot.GD.Print("Error: Attempted to register object under id skyofsteel:missingno.");
 				return;
 			}
 
@@ -32,7 +32,7 @@ class Registry<T>
 			{
 				if (entry.Value as object == value as object)
 				{
-					Console.Log("Cannot register objects to the same registry multiple times.");
+					Godot.GD.Print("Error: Attempted to register an object to the same registry multiple times.");
 					return;
 				}
 			}
@@ -76,5 +76,15 @@ class Registry<T>
 		}
 
 		return Identifier.MISSINGNO;
+	}
+
+	//Just a test for registires
+	public static void Test() {
+		Registry<Items.TYPE> testRegistry = new Registry<Items.TYPE>(Items.TYPE.ERROR);
+
+		testRegistry["skyofsteel:platform"] = Items.TYPE.PLATFORM;
+		testRegistry["skyofsteel:slope"] = Items.TYPE.SLOPE;
+		testRegistry["skyofsteel:wall"] = Items.TYPE.WALL;
+		testRegistry["skyofsteel:platform"] = Items.TYPE.PLATFORM;
 	}
 }

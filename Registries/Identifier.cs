@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-class Identifier
+public class Identifier
 {
 	public string domain;
 	public string name;
@@ -27,6 +27,11 @@ class Identifier
 	public override string ToString()
 	{
 		return domain + ":" + name;
+	}
+
+	public static implicit operator Identifier(string from)
+	{
+		return new Identifier(from);
 	}
 
 	public static bool operator== (Identifier left, Identifier right)
