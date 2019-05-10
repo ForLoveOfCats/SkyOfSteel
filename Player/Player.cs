@@ -119,6 +119,12 @@ public class Player : KinematicBody
 	}
 
 
+	public Vector3 CenterPosition()
+	{
+		return new Vector3(0, 3.4f, 0) + Translation;
+	}
+
+
 	[Remote]
 	public void SetFreeze(bool NewFrozen)
 	{
@@ -571,7 +577,7 @@ public class Player : KinematicBody
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
 			foreach(DroppedItem Item in World.ItemList)
 			{
-				if(Translation.DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= MinItemPickupLife)
+				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= MinItemPickupLife)
 				{
 					ToPickUpList.Add(Item);
 				}
