@@ -9,5 +9,4 @@ margin_bottom = 20.0
 custom_fonts/font = ExtResource( 1 )
 text = "Default Load Save Host Button Text"
 script = ExtResource( 2 )
-
 [connection signal="pressed" from="." to="." method="LoadPressed"]

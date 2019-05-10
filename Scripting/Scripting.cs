@@ -1,20 +1,17 @@
 using Godot;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
-using IronPython;
-using IronPython.Hosting;
-using IronPython.Runtime;
-using Microsoft.Scripting;
-using Microsoft.Scripting.Hosting;
+using System.Collections.Immutable;
+using Sc = Microsoft.CodeAnalysis.Scripting;
+using Cs = Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript;
 
 
 public class Scripting : Node
 {
-	public static ScriptEngine ConsoleEngine;
-	public static ScriptScope ConsoleScope;
-	public static ScriptScope StringScope; //Used to convert objects to string
-	public static ScriptEngine GmEngine;
-	public static ScriptScope GmScope;
+	public static Sc.ScriptOptions ScriptOptions;
+
+	public static Sc.ScriptState ConsoleState;
 
 	public static string GamemodeName;
 
@@ -25,188 +22,160 @@ public class Scripting : Node
 
 		Self = this;
 
-		ConsoleEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
-		ConsoleScope = ConsoleEngine.CreateScope();
-		StringScope = ConsoleEngine.CreateScope();
+		ScriptOptions = Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
+			.AddReferences(Assembly.GetAssembly(typeof(System.Dynamic.DynamicObject)),  // System.Code
+						   Assembly.GetAssembly(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo)),  // Microsoft.CSharp
+						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
-		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
-		{
-			ConsoleScope.SetVariable((string)List[0], (Delegate)List[1]);
-		}
-		foreach(API.PyConstructorExposer Exposer in API.ExposeConstructors(API.LEVEL.CONSOLE))
-		{
-			ConsoleScope.SetVariable(Exposer.Name, Exposer.Constructor);
-		}
-
-		SetupGmEngine();
-
-		File SetupScript = new File();
-		SetupScript.Open("res://Scripting/SetupScript.py", 1);
-		try
-		{
-			ScriptSource Source = ConsoleEngine.CreateScriptSourceFromString(SetupScript.GetAsText(), SourceCodeKind.Statements);
-			Source.Execute(ConsoleScope);
-		}
-		catch(Exception Err)
-		{
-			SetupScript.Close();
-			ExceptionOperations EO = ConsoleEngine.GetService<ExceptionOperations>();
-			GD.Print(EO.FormatException(Err));
-			throw new Exception($"Encountered error running SetupScript.py check editor Output pane or stdout");
-		}
-		SetupScript.Close();
+		Sc.Script CEngine = Cs.Create("", ScriptOptions);
+		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
 	}
 
 
-	public static object ToPy(object ToConvert)
+	[Remote]
+	public void RequestGmLoad(string Name)
 	{
-		if(ToConvert is Vector3)
+		Console.Log($"The server requested that gamemode '{Name}' be loaded");
+		if(LoadGamemode(Name))
 		{
-			//Could use two layers of casting to implicitly convert
-			//This is just nicer to read
-			return new PyVector3((Vector3)ToConvert);
+			Console.Log($"Successfully loaded the gamemode '{Name}' as requested by the server");
 		}
-
-		//Does not require intervention
-		return ToConvert;
-	}
-
-
-	public static object[] ToPy(params object[] ConvertArray)
-	{
-		object[] Out = new object[ConvertArray.Length];
-		int Iteration = 0;
-		foreach(object ToConvert in ConvertArray)
+		else
 		{
-			Out[Iteration] = ToPy(ToConvert);
-			Iteration += 1;
-		}
-		return Out;
-	}
-
-	public static void SetupGmEngine()
-	{
-		GmEngine = Python.CreateEngine(new Dictionary<string,object>() { {"DivisionOptions", PythonDivisionOptions.New} });
-		GmScope = ConsoleEngine.CreateScope();
-
-		foreach(List<object> List in API.Expose(API.LEVEL.GAMEMODE, Self))
-		{
-			GmScope.SetVariable((string)List[0], (Delegate)List[1]);
-		}
-		foreach(API.PyConstructorExposer Exposer in API.ExposeConstructors(API.LEVEL.CONSOLE))
-		{
-			GmScope.SetVariable(Exposer.Name, Exposer.Constructor);
+			Console.ThrowLog($"The server requested that your client load the gamemode '{Name}' but your client was unable to");
 		}
 	}
 
 
-	public override void _PhysicsProcess(float Delta)
+	public static bool LoadGamemode(string Name)
 	{
-		object Function = null;
-		ConsoleScope.TryGetVariable("_tick", out Function);
-		if(Function != null && Function is PythonFunction)
-		{
-			try
-			{
-				ConsoleEngine.Operations.Invoke(Function, Delta);
-			}
-			catch(Exception Err)
-			{
-				//TODO figure out a better solution to this
-				//Currently we just dump an error every _tick call
-				//Eventually I need to mark if the _tick functin has an error and not run it
-				//However that would fall apart once one can define functions at runtime
-				ExceptionOperations EO = Scripting.ConsoleEngine.GetService<ExceptionOperations>();
-				Console.Print(EO.FormatException(Err));
-			}
-		}
-
-		if(GamemodeName != null)
-		{
-			Function = null;
-			GmScope.TryGetVariable("_tick", out Function);
-			if(Function != null && Function is PythonFunction)
-			{
-				try
-				{
-					GmEngine.Operations.Invoke(Function, Delta);
-				}
-				catch(Exception Err)
-				{
-					ExceptionOperations EO = Scripting.GmEngine.GetService<ExceptionOperations>();
-					Console.Print(EO.FormatException(Err));
-				}
-			}
-		}
-	}
-
-
-	public static void LoadGameMode(string Name)
-	{
-		UnloadGameMode();
+		UnloadGamemode();
 
 		Directory ModeDir = new Directory();
-		if(ModeDir.FileExists($"user://gamemodes/{Name}/{Name}.py")) //Has a  script
+		if(ModeDir.FileExists($"user://Gamemodes/{Name}/{Name}.json"))
 		{
-			Console.Log($"Loaded gamemode '{Name}', executing");
+			Console.Log($"Found gamemode '{Name}', loading");
 
-			GamemodeName = Name;
-			SetupGmEngine();
-			File ServerScript = new File();
-			ServerScript.Open($"user://gamemodes/{Name}/{Name}.py", 1);
+			GmConfigClass Config;
+			{
+				File ConfigFile = new File();
+				ConfigFile.Open($"user://Gamemodes/{Name}/{Name}.json", 1);
+				try
+				{
+					Config = Newtonsoft.Json.JsonConvert.DeserializeObject<GmConfigClass>(ConfigFile.GetAsText());
+					ConfigFile.Close();
+				}
+				catch(Newtonsoft.Json.JsonReaderException)
+				{
+					ConfigFile.Close();
+					Console.ThrowLog($"Failed to parse config file for gamemode '{Name}'");
+					return false;
+				}
+			}
+			if(Config.MainScript == null)
+			{
+				Console.ThrowLog($"The gamemode '{Name}' did not specify a path for MainScript");
+				return false;
+			}
 
+			File ScriptFile = new File();
+			if(!ScriptFile.FileExists($"user://Gamemodes/{Name}/{Config.MainScript}"))
+			{
+				Console.ThrowLog($"Specified MainScript '{Config.MainScript}' for gamemode '{Name}' does not exist");
+				return false;
+			}
+			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", 1);
+			Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
+			                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}"))
+			                             .WithEmitDebugInformation(true)
+			                             .WithFilePath($"{OS.GetUserDataDir()}/Gamemodes/{Name}")
+			                             .WithFileEncoding(System.Text.Encoding.UTF8)); //NOTE Hardcoding UTF8 should work for now
+			ScriptFile.Close();
+
+			object Returned = null;
 			try
 			{
-				GmEngine.Execute(ServerScript.GetAsText(), GmScope);
+				Sc.ScriptState State = Engine.RunAsync().Result;
+				Returned = State.ReturnValue;
 			}
 			catch(Exception Err)
 			{
-				ExceptionOperations EO = GmEngine.GetService<ExceptionOperations>();
-				Console.Print(EO.FormatException(Err));
-				Scripting.UnloadGameMode();
+				Console.ThrowLog($"Error executing gamemode '{Name}': {Err.Message}");
+				return false;
 			}
 
-			ServerScript.Close();
+			if(Returned is Gamemode)
+			{
+				GamemodeName = Name;
+				Game.Mode = Returned as Gamemode;
+				Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
+				Game.Mode.OwnName = Name;
+				Game.Self.AddChild(Game.Mode);
+				Game.Mode.SetName("Gamemode");
+				return true;
+			}
+			else
+			{
+				Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
+				return false;
+			}
 		}
 		else
 		{
 			Console.ThrowPrint($"No gamemode named '{Name}'");
+			return false;
 		}
 	}
 
 
-	public static void UnloadGameMode()
+	[Remote]
+	public void RequestGmUnload()
+	{
+		UnloadGamemode();
+	}
+
+
+	public static void UnloadGamemode()
 	{
 		if(GamemodeName != null)
 		{
+			try
+			{
+				Game.Mode.OnUnload();
+			}
+			catch(Exception Err)
+			{
+				Console.ThrowLog($"An exception was thrown when calling 'OnUnload' on gamemode '{GamemodeName}': {Err.Message}");
+			}
+
+			Game.Mode.SetName("UnloadedGamemode"); ///Prevents name mangling of new gamemode, important for RPC
+			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
+			Game.Mode = new Gamemode();
+			API.Gm = new API.EmptyCustomCommands();
+
 			Console.Log($"The gamemode '{GamemodeName}' was unloaded");
 			GamemodeName = null;
-			SetupGmEngine();
 		}
-	}
-
-
-	public static string PyToString(object Obj)
-	{
-		StringScope.SetVariable("to_string_object", Obj);
-		return ConsoleEngine.Execute("str(to_string_object)", StringScope);
 	}
 
 
 	public static void RunConsoleLine(string Line)
 	{
+		object Returned = null;
+
 		try
 		{
-			object Returned = ConsoleEngine.Execute(Line, ConsoleScope);
-			if(Returned != null)
-			{
-				Console.Print(PyToString(Returned));
-			}
+			ConsoleState = ConsoleState.ContinueWithAsync(Line).Result;
+			Returned = ConsoleState.ReturnValue as object; //just in case of an issue this should become null
 		}
-		catch(Exception e)
+		catch(Exception Err)
 		{
-			ExceptionOperations eo = ConsoleEngine.GetService<ExceptionOperations>();
-			Console.Print(eo.FormatException(e));
+			Console.Print(Err.Message);
+		}
+
+		if(Returned != null)
+		{
+			Console.Print(Returned);
 		}
 	}
 }

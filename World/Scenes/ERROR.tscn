@@ -3,7 +3,6 @@
 [ext_resource path="res://World/Structure.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/ERROR.obj" type="ArrayMesh" id=2]
 
-
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 1, 0, 0, 1 )
 roughness = 0.0
@@ -21,4 +20,3 @@ material/0 = SubResource( 1 )
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
 disabled = true
-

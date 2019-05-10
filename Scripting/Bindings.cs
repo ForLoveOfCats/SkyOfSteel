@@ -1,14 +1,13 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Sc = Microsoft.CodeAnalysis.Scripting;
 
 
 public class Bindings : Node
 {
-	public enum BIND_TYPE {SCANCODE, MOUSEBUTTON, MOUSEWHEEL, AXIS}
-	private static string[] MouseButtonList = {"MouseOne", "MouseTwo", "MouseThree"};
-	private static string[] MouseWheelList = {"WheelUp", "WheelDown"};
-	private static string[] AxisList = {"MouseUp", "MouseDown", "MouseRight", "MouseLeft"};
+	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, MOUSEAXIS, CONTROLLERBUTTON, CONTROLLERAXIS}
+	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
@@ -19,197 +18,368 @@ public class Bindings : Node
 	}
 
 
-	public static void Bind(string FunctionName, string InputString)
+	public static bool Bind(string KeyName, string FunctionName)
 	{
-		dynamic Variable;
-		Scripting.ConsoleScope.TryGetVariable(FunctionName, out Variable);
-		if(Variable == null || !(Variable is Delegate || Variable is IronPython.Runtime.PythonFunction))
+		BindingObject NewBind = new BindingObject(KeyName);
+		//We need to check that the function exitst and either takes no args or one float arg and get the Action
+		try //First assume it takes a float argument
 		{
-			Console.ThrowPrint($"'{FunctionName}' is not a valid function");
-			return;
+			Sc.ScriptState State = Scripting.ConsoleState.ContinueWithAsync($"return new Action<float>(delegate(float x) {{ {FunctionName}(x); }} );").Result;
+			NewBind.FuncWithArg = State.ReturnValue as Action<float>;
 		}
-
-		Nullable<int> ArgCount = null; //null for the sanity check
-		if(Variable is Delegate)
+		catch //Must either not exist or has different argument requirements
 		{
-			ArgCount = (Variable as Delegate).Method.GetParameters().Length;
-		}
-		else if(Variable is IronPython.Runtime.PythonFunction)
-		{
-			ArgCount = Scripting.ConsoleEngine.Execute($"len({FunctionName}.func_code.co_varnames)");
-		}
-
-		if(ArgCount == null)
-		{
-			//Sanity check
-			Console.ThrowPrint($"Cannot find argument count of '{FunctionName}', please contact the developers'");
-			return;
-		}
-
-		if(ArgCount != 0 && ArgCount != 1)
-		{
-			Console.ThrowPrint($"Function '{FunctionName}' must take either one or two arguments");
-			return;
-		}
-		if(ArgCount == 1 && Variable is Delegate)
-		{
-			//TODO Update this once we move to floats instead of floats
-			if(!((Delegate)Variable).Method.GetParameters()[0].ParameterType.IsInstanceOfType(new float()))
+			try //Next we assume that it exists but without an argument
 			{
-				Console.ThrowPrint($"Builtin command '{FunctionName}' has a single non-float argument");
-				return;
+				Sc.ScriptState State = Scripting.ConsoleState.ContinueWithAsync($"return new Action(delegate() {{ {FunctionName}(); }} );").Result;
+				NewBind.FuncWithoutArg = State.ReturnValue as Action;
+			}
+			catch //At this point we know it either does not exist or has incompatible argument requirements
+			{
+				Console.ThrowPrint($"The supplied function '{FunctionName}' does not exist, does not take a single float argument, or does not take zero arguments");
+				return false;
 			}
 		}
 
-		BIND_TYPE Type = BIND_TYPE.SCANCODE;
-		if(System.Array.IndexOf(MouseButtonList, InputString) >= 0)
+		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
+		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
+		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because
+		int Scancode = 0;
+		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
-			Type = BIND_TYPE.MOUSEBUTTON;
-		}
-		if(System.Array.IndexOf(MouseWheelList, InputString) >= 0)
-		{
-			Type = BIND_TYPE.MOUSEWHEEL;
-		}
-		if(System.Array.IndexOf(AxisList, InputString) >= 0)
-		{
-			Type = BIND_TYPE.AXIS;
-		}
+			case("MouseOne"): {
+				NewBind.Type = TYPE.MOUSEBUTTON;
+				ButtonValue = ButtonList.Left;
+				break;
+			}
+			case("MouseTwo"): {
+				NewBind.Type = TYPE.MOUSEBUTTON;
+				ButtonValue = ButtonList.Right;
+				break;
+			}
+			case("MouseThree"): {
+				NewBind.Type = TYPE.MOUSEBUTTON;
+				ButtonValue = ButtonList.Middle;
+				break;
+			}
 
-		if(InputMap.HasAction(FunctionName))
-		{
-			InputMap.EraseAction(FunctionName);
-			foreach(BindingObject Bind in BindingsWithArg)
-			{
-				if(Bind.Name == FunctionName)
+			case("WheelUp"): {
+				NewBind.Type = TYPE.MOUSEWHEEL;
+				ButtonValue = ButtonList.WheelUp;
+				break;
+			}
+
+			case("WheelDown"): {
+				NewBind.Type = TYPE.MOUSEWHEEL;
+				ButtonValue = ButtonList.WheelDown;
+				break;
+			}
+
+			case("MouseUp"): {
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.UP;
+				break;
+			}
+
+			case("MouseDown"): {
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				break;
+			}
+
+			case("MouseRight"): {
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				break;
+			}
+
+			case("MouseLeft"): {
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				break;
+			}
+
+			case("LeftStickUp"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.UP;
+				ControllerButtonValue = JoystickList.AnalogLy;
+				break;
+			}
+
+			case("LeftStickDown"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				ControllerButtonValue = JoystickList.AnalogLy;
+				break;
+			}
+
+			case("LeftStickLeft"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				ControllerButtonValue = JoystickList.AnalogLx;
+				break;
+			}
+
+			case("LeftStickRight"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				ControllerButtonValue = JoystickList.AnalogLx;
+				break;
+			}
+
+			case("RightStickUp"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.UP;
+				ControllerButtonValue = JoystickList.AnalogRy;
+				break;
+			}
+			case("RightStickDown"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				ControllerButtonValue = JoystickList.AnalogRy;
+				break;
+			}
+			case("RightStickLeft"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				ControllerButtonValue = JoystickList.AnalogRx;
+				break;
+			}
+			case("RightStickRight"): {
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				ControllerButtonValue = JoystickList.AnalogRx;
+				break;
+			}
+
+			case("XboxA"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxA;
+				break;
+			}
+
+			case("XboxB"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxB;
+				break;
+			}
+
+			case("XboxX"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxX;
+				break;
+			}
+
+			case("XboxY"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxY;
+				break;
+			}
+
+			case("XboxLB"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L;
+				break;
+			}
+
+			case("XboxRB"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R;
+				break;
+			}
+
+			case("XboxLT"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L2;
+				break;
+			}
+
+			case("XboxRT"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R2;
+				break;
+			}
+
+			case("RightStickClick"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R3;
+				break;
+			}
+
+			case("LeftStickClick"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L3;
+				break;
+			}
+
+			case("DPadUp"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadUp;
+				break;
+			}
+
+			case("DPadDown"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadDown;
+				break;
+			}
+
+			case("DPadLeft"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadLeft;
+				break;
+			}
+
+			case("DPadRight"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadRight;
+				break;
+			}
+
+			case("XboxStart"): {
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.Start;
+				break;
+			}
+
+			case("XboxSelect"): {
+				// Or Select. Or Share. Or The big thing in the middle of ps4 remotes. Or -.
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.Select;
+				break;
+			}
+
+			default: {
+				//Does not match any custom string literal must either be a Scancode or is invalid
+				int LocalScancode = OS.FindScancodeFromString(KeyName);
+				if(LocalScancode != 0)
 				{
-					//Does not throw exception when not found
-					BindingsWithArg.Remove(Bind);
-					BindingsWithoutArg.Remove(Bind);
-					break;
+					//Is a valid Scancode
+					NewBind.Type = TYPE.SCANCODE;
+					Scancode = LocalScancode;
 				}
+				else
+				{
+					//If not a valid Scancode then the provided key must not be a valid key
+					Console.ThrowPrint($"The supplied key '{KeyName}' is not a valid key");
+					return false;
+				}
+				break;
+			}
+		}
+		//Now we have everything we need to setup the bind with Godot's input system
+
+		//First clear any bind with the same key
+		UnBind(KeyName);
+
+		//Then add new bind
+		InputMap.AddAction(KeyName);
+		switch(NewBind.Type)
+		{
+			case(TYPE.SCANCODE): {
+				InputEventKey Event = new InputEventKey();
+				Event.Scancode = Scancode;
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
+			}
+
+			case(TYPE.MOUSEBUTTON):
+			case(TYPE.MOUSEWHEEL): {
+				InputEventMouseButton Event = new InputEventMouseButton();
+				Event.ButtonIndex = (int)ButtonValue;
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
+			}
+
+			case(TYPE.MOUSEAXIS): {
+				InputEventMouseMotion Event = new InputEventMouseMotion();
+				InputMap.ActionAddEvent(KeyName, Event);
+				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				break;
+			}
+
+			case(TYPE.CONTROLLERAXIS): {
+				InputEventJoypadMotion Event = new InputEventJoypadMotion();
+				Event.Axis = (int)ControllerButtonValue; // Set which Joystick axis we're using
+				switch (AxisDirection) { // Set which direction on the axis we need to trigger the event
+					case(DIRECTION.UP): {
+						Event.AxisValue = -1; // -1, on the Vertical axis is up
+						break;
+					}
+
+					case(DIRECTION.LEFT): {
+						Event.AxisValue = -1; // -1, on the Horizontal axis is left
+						break;
+					}
+
+					case(DIRECTION.DOWN): {
+						Event.AxisValue = 1; // 1, on the Vertical axis is down
+						break;
+					}
+
+					case(DIRECTION.RIGHT): {
+						Event.AxisValue = 1; // 1, on the Horizontal axis is right
+						break;
+					}
+				}
+
+				InputMap.ActionAddEvent(KeyName, Event);
+				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				break;
+			}
+
+			case(TYPE.CONTROLLERBUTTON): {
+				InputEventJoypadButton Event = new InputEventJoypadButton();
+				Event.SetButtonIndex((int)ControllerButtonValue);
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
 			}
 		}
 
-		if(Type == BIND_TYPE.SCANCODE)
+		if(NewBind.FuncWithArg != null)
 		{
-			InputMap.AddAction(FunctionName);
-			InputEventKey Event = new InputEventKey();
-			Event.Scancode = OS.FindScancodeFromString(InputString);
-			InputMap.ActionAddEvent(FunctionName, Event);
+			BindingsWithArg.Add(NewBind);
+		}
+		else if(NewBind.FuncWithoutArg != null)
+		{
+			BindingsWithoutArg.Add(NewBind);
+		}
 
-			if(ArgCount == 1)
-			{
-				BindingsWithArg.Add(new BindingObject(FunctionName, Type));
-			}
-			else if(ArgCount == 0)
-			{
-				BindingsWithoutArg.Add(new BindingObject(FunctionName, Type));
-			}
-			else
-			{
-				Console.ThrowPrint($"Cannot add SCANCODE bind, '{FunctionName}' has an unsuported number of arguments");
-			}
-		}
-		else if(Type == BIND_TYPE.MOUSEBUTTON)
-		{
-			InputMap.AddAction(FunctionName);
-			InputEventMouseButton Event = new InputEventMouseButton();
-			switch(InputString)
-			{
-				case("MouseOne"):
-					Event.ButtonIndex = (int)ButtonList.Left;
-					break;
-				case("MouseTwo"):
-					Event.ButtonIndex = (int)ButtonList.Right;
-					break;
-				case("MouseThree"):
-					Event.ButtonIndex = (int)ButtonList.Middle;
-					break;
-				//No default as this else if will not run unless one of these string will match anyway
-			}
-			InputMap.ActionAddEvent(FunctionName, Event);
-
-			if(ArgCount == 1)
-			{
-				BindingsWithArg.Add(new BindingObject(FunctionName, Type));
-			}
-			else if(ArgCount == 0)
-			{
-				BindingsWithoutArg.Add(new BindingObject(FunctionName, Type));
-			}
-			else
-			{
-				Console.ThrowPrint($"Cannot add MOUSEBUTTON bind, '{FunctionName}' has an unsuported number of arguments");
-			}
-		}
-		else if(Type == BIND_TYPE.MOUSEWHEEL)
-		{
-			InputMap.AddAction(FunctionName);
-			InputEventMouseButton Event = new InputEventMouseButton();
-			switch(InputString)
-			{
-				case("WheelUp"):
-					Event.ButtonIndex = (int)ButtonList.WheelUp;
-					break;
-				case("WheelDown"):
-					Event.ButtonIndex = (int)ButtonList.WheelDown;
-					break;
-			}
-			InputMap.ActionAddEvent(FunctionName, Event);
-
-			if(ArgCount == 1)
-			{
-				BindingsWithArg.Add(new BindingObject(FunctionName, Type));
-			}
-			else if(ArgCount == 0)
-			{
-				BindingsWithoutArg.Add(new BindingObject(FunctionName, Type));
-			}
-			else
-			{
-				Console.ThrowPrint($"Cannot add MOUSEWHEEL bind, '{FunctionName}' has an unsuported number of arguments");
-			}
-		}
-		else if(Type == BIND_TYPE.AXIS)
-		{
-			InputMap.AddAction(FunctionName);
-			InputEventMouseMotion Event = new InputEventMouseMotion();
-			InputMap.ActionAddEvent(FunctionName, Event);
-			BindingObject Bind = new BindingObject(FunctionName, Type);
-			switch(InputString)
-			{
-				case("MouseUp"):
-					Bind.AxisDirection = BindingObject.DIRECTION.UP;
-					break;
-				case("MouseDown"):
-					Bind.AxisDirection = BindingObject.DIRECTION.DOWN;
-					break;
-				case("MouseRight"):
-					Bind.AxisDirection = BindingObject.DIRECTION.RIGHT;
-					break;
-				case("MouseLeft"):
-					Bind.AxisDirection = BindingObject.DIRECTION.LEFT;
-					break;
-			}
-			BindingsWithArg.Add(Bind);
-		}
+		return true;
 	}
 
 
-	public static void UnBind(string FunctionName)
+	public static void UnBind(string KeyName)
 	{
-		if(InputMap.HasAction(FunctionName))
+		if(InputMap.HasAction(KeyName))
 		{
-			InputMap.EraseAction(FunctionName);
+			InputMap.EraseAction(KeyName);
+
+			List<BindingObject> Removing = new List<BindingObject>();
 			foreach(BindingObject Bind in BindingsWithArg)
 			{
-				if(Bind.Name == FunctionName)
+				if(Bind.Name == KeyName)
 				{
-					//Does not throw exception when not found
-					BindingsWithArg.Remove(Bind);
-					BindingsWithoutArg.Remove(Bind);
-					break;
+					Removing.Add(Bind);
 				}
+			}
+			foreach(BindingObject Bind in Removing)
+			{
+				BindingsWithArg.Remove(Bind);
+			}
+
+			Removing.Clear();
+
+			foreach(BindingObject Bind in BindingsWithoutArg)
+			{
+				if(Bind.Name == KeyName)
+				{
+					Removing.Add(Bind);
+				}
+			}
+			foreach(BindingObject Bind in Removing)
+			{
+				BindingsWithoutArg.Remove(Bind);
 			}
 		}
 	}
@@ -225,7 +395,7 @@ public class Bindings : Node
 	}
 
 
-	public override void _Process(float Delta)
+	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Game.BindsEnabled)
 		{
@@ -234,40 +404,99 @@ public class Bindings : Node
 
 		foreach(BindingObject Binding in BindingsWithArg)
 		{
-			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
+					Binding.FuncWithArg.Invoke(1);
 				}
 				else if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Name}(0)", Scripting.ConsoleScope);
+					Binding.FuncWithArg.Invoke(0);
 				}
 			}
-			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
+			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Name}(1)", Scripting.ConsoleScope);
+					Binding.FuncWithArg.Invoke(1);
+				}
+			}
+			else if(Binding.Type == TYPE.CONTROLLERAXIS)
+			{
+				int VerticalAxis = 0;
+				int HorizontalAxis = 0;
+				InputEventJoypadMotion StickEvent = null;
+
+				foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
+					if (Option is InputEventJoypadMotion JoyEvent) {
+						StickEvent = JoyEvent;
+					}
+				}
+
+				if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
+				{
+					// We are using Left stick
+					VerticalAxis = 1;
+					HorizontalAxis = 0;
+				}
+				else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
+				{
+					// We are using Right stick
+					VerticalAxis = 3;
+					HorizontalAxis = 2;
+				}
+				else
+				{
+					Console.ThrowPrint("This joystick doesn't exist! ?????????");
+				}
+
+				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= Game.Deadzone || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= Game.Deadzone)
+				{
+					float HorizontalMovement = Input.GetJoyAxis(0,HorizontalAxis);
+					float VerticalMovement = Input.GetJoyAxis(0,VerticalAxis);
+					switch(Binding.AxisDirection)
+					{
+						case(DIRECTION.UP):
+							Binding.FuncWithArg.Invoke(-VerticalMovement);
+							break;
+						case(DIRECTION.DOWN):
+							Binding.FuncWithArg.Invoke(VerticalMovement);
+							break;
+						case(DIRECTION.RIGHT):
+							Binding.FuncWithArg.Invoke(HorizontalMovement);
+							break;
+						case(DIRECTION.LEFT):
+							Binding.FuncWithArg.Invoke(-HorizontalMovement);
+							break;
+					}
+					Binding.JoyWasInDeadzone = false;
+				}
+				else // Set sens to zero to simulate key release
+				{
+					if (Binding.JoyWasInDeadzone == false) // Only do this if the Binding wasn't zero last time
+					{
+						Binding.FuncWithArg.Invoke(0);
+						Binding.JoyWasInDeadzone = true;
+					}
 				}
 			}
 		}
 
 		foreach(BindingObject Binding in BindingsWithoutArg)
 		{
-			if(Binding.Type == BIND_TYPE.SCANCODE || Binding.Type == BIND_TYPE.MOUSEBUTTON)
+			if(Binding.Type == TYPE.SCANCODE || Binding.Type == TYPE.MOUSEBUTTON || Binding.Type == TYPE.CONTROLLERBUTTON)
 			{
 				if(Input.IsActionJustPressed(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
+					Binding.FuncWithoutArg.Invoke();
 				}
 			}
-			else if(Binding.Type == BIND_TYPE.MOUSEWHEEL)
+			else if(Binding.Type == TYPE.MOUSEWHEEL)
 			{
 				if(Input.IsActionJustReleased(Binding.Name))
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
+					Binding.FuncWithoutArg.Invoke();
 				}
 			}
 		}
@@ -285,21 +514,21 @@ public class Bindings : Node
 		{
 			foreach(BindingObject Binding in BindingsWithArg)
 			{
-				if(Binding.Type == BIND_TYPE.AXIS)
+				if(Binding.Type == TYPE.MOUSEAXIS)
 				{
 					switch(Binding.AxisDirection)
 					{
-						case(BindingObject.DIRECTION.UP):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y*-1))})", Scripting.ConsoleScope);
+						case(DIRECTION.UP):
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.y)/Game.MouseDivisor);
 							break;
-						case(BindingObject.DIRECTION.DOWN):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.y))})", Scripting.ConsoleScope);
+						case(DIRECTION.DOWN):
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.y)/Game.MouseDivisor);
 							break;
-						case(BindingObject.DIRECTION.RIGHT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x))})", Scripting.ConsoleScope);
+						case(DIRECTION.RIGHT):
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.x)/Game.MouseDivisor);
 							break;
-						case(BindingObject.DIRECTION.LEFT):
-							Scripting.ConsoleEngine.Execute($"{Binding.Name}({(float)new decimal (GreaterEqualZero(MotionEvent.Relative.x*-1))})", Scripting.ConsoleScope);
+						case(DIRECTION.LEFT):
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.x)/Game.MouseDivisor);
 							break;
 					}
 				}
@@ -307,9 +536,10 @@ public class Bindings : Node
 
 			foreach(BindingObject Binding in BindingsWithoutArg)
 			{
-				if(Binding.Type == BIND_TYPE.AXIS)
+				if(Binding.Type == TYPE.MOUSEAXIS)
 				{
-					Scripting.ConsoleEngine.Execute($"{Binding.Name}()", Scripting.ConsoleScope);
+					//Don't need to switch on the direction as it doesn't want an argument anyway
+					Binding.FuncWithoutArg.Invoke();
 				}
 			}
 		}

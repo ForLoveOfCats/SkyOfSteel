@@ -12,7 +12,7 @@ public class Console : Node
 	private static RichTextLabel ConsoleLabel;
 	private static RichTextLabel LogLabel;
 	private static List<string> History = new List<string>();
-	private static int HistLocal = 0;
+	private static int HistoryLocation = 0;
 
 
 	private static Console Self;
@@ -40,10 +40,10 @@ public class Console : Node
 			GetTree().SetInputAsHandled();
 			InputLine.GrabFocus();
 
-			if(Input.IsActionJustPressed("ui_up") && HistLocal > 0)
+			if(Input.IsActionJustPressed("ui_up") && HistoryLocation > 0)
 			{
-				HistLocal -= 1;
-				InputLine.Text = History[HistLocal];
+				HistoryLocation -= 1;
+				InputLine.Text = History[HistoryLocation];
 
 				InputLine.CaretPosition = InputLine.Text.Length;
 			}
@@ -54,16 +54,16 @@ public class Console : Node
 			GetTree().SetInputAsHandled();
 			InputLine.GrabFocus();
 
-			if(Input.IsActionJustPressed("ui_down") && HistLocal < History.Count)
+			if(Input.IsActionJustPressed("ui_down") && HistoryLocation < History.Count)
 			{
-				HistLocal += 1;
-				if(HistLocal == History.Count)
+				HistoryLocation += 1;
+				if(HistoryLocation == History.Count)
 				{
 					InputLine.Text = "";
 				}
 				else
 				{
-					InputLine.Text = History[HistLocal];
+					InputLine.Text = History[HistoryLocation];
 				}
 
 				InputLine.CaretPosition = InputLine.Text.Length;
@@ -72,25 +72,25 @@ public class Console : Node
 	}
 
 
-	public static void Print(string ToPrint)
+	public static void Print(object ToPrint)
 	{
-		ConsoleLabel.Text += " " + ToPrint + "\n";
+		ConsoleLabel.Text += " " + ToPrint.ToString() + "\n";
 	}
 
 
-	public static void Log(string ToLog)
+	public static void Log(object ToLog)
 	{
-		LogLabel.Text += " " + ToLog + "\n";
+		LogLabel.Text += " " + ToLog.ToString() + "\n";
 	}
 
 
-	public static void ThrowPrint(string ToThrow)
+	public static void ThrowPrint(object ToThrow)
 	{
 		Print($"ERROR: {ToThrow}");
 	}
 
 
-	public static void ThrowLog(string ToThrow)
+	public static void ThrowLog(object ToThrow)
 	{
 		Log($"ERROR: {ToThrow}");
 	}
@@ -104,15 +104,9 @@ public class Console : Node
 		{
 			History.Add(Command);
 		}
-		HistLocal = History.Count;
+		HistoryLocation = History.Count;
 
 		Scripting.RunConsoleLine(Command);
-	}
-
-
-	public static void ClearLog() //TODO Expose this and a clear print function to console
-	{
-		LogLabel.Text = "";
 	}
 
 
@@ -120,6 +114,7 @@ public class Console : Node
 	{
 		Window.Close();
 		IsOpen = false;
+		HistoryLocation = History.Count;
 
 		if(!Menu.IsOpen)
 		{
@@ -133,6 +128,7 @@ public class Console : Node
 	{
 		Window.Open();
 		IsOpen = true;
+		HistoryLocation = History.Count;
 
 		Input.SetMouseMode(Input.MouseMode.Visible);
 		Game.BindsEnabled = false;

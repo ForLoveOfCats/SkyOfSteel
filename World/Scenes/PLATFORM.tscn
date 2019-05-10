@@ -5,7 +5,6 @@
 [ext_resource path="res://World/Materials/StructureShader.shader" type="Shader" id=3]
 [ext_resource path="res://Items/Textures/PLATFORM.png" type="Texture" id=4]
 
-
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 3 )
 shader_param/texture_albedo = ExtResource( 4 )
@@ -23,4 +22,3 @@ material/0 = SubResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
-

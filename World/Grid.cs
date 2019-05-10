@@ -20,6 +20,7 @@ public class GridClass
 
 	private HashSet<Vector3> QueuedUpdates = new HashSet<Vector3>();
 	private HashSet<IInGrid> QueuedRemovals = new HashSet<IInGrid>();
+	private Dictionary<IInGrid, List<Vector3>> QueuedRemovalAreas = new Dictionary<IInGrid, List<Vector3>>();
 
 
 	private Vector3 CalculateArea(Vector3 Position)
@@ -53,6 +54,7 @@ public class GridClass
 		if(QueuedRemovals.Contains(Item))
 		{
 			QueuedRemovals.Remove(Item);
+			QueuedRemovalAreas.Remove(Item);
 		}
 		else
 		{
@@ -74,11 +76,25 @@ public class GridClass
 	}
 
 
+	public List<IInGrid> GetItems(Vector3 Position)
+	{
+		List<IInGrid> Items;
+		Dict.TryGetValue(CalculateArea(Position), out Items);
+
+		if(Items == null)
+		{
+			return new List<IInGrid>() {};
+		}
+		return Items;
+	}
+
+
 	//Items cannot be removed from the grid while updating
 	//as we cannot modify the List while foreaching it
 	public void QueueRemoveItem(IInGrid Item)
 	{
 		QueuedRemovals.Add(Item);
+		QueuedRemovalAreas[Item] = CalculateAreas(Item.Translation);
 	}
 
 
@@ -87,7 +103,7 @@ public class GridClass
 	{
 		foreach(IInGrid Item in QueuedRemovals)
 		{
-			foreach(Vector3 Area in CalculateAreas(Item.Translation))
+			foreach(Vector3 Area in QueuedRemovalAreas[Item])
 			{
 				List<IInGrid> Items;
 				Dict.TryGetValue(Area, out Items);
@@ -108,19 +124,7 @@ public class GridClass
 			}
 		}
 		QueuedRemovals.Clear();
-	}
-
-
-	public List<IInGrid> GetItems(Vector3 Position)
-	{
-		List<IInGrid> Items;
-		Dict.TryGetValue(CalculateArea(Position), out Items);
-
-		if(Items == null)
-		{
-			return new List<IInGrid>() {};
-		}
-		return Items;
+		QueuedRemovalAreas.Clear();
 	}
 
 
@@ -158,6 +162,7 @@ public class GridClass
 				Item.GridUpdate();
 			}
 		}
+		QueuedUpdates.Clear();
 	}
 
 

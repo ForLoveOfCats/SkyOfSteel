@@ -17,11 +17,14 @@ public class Net : Node
 	public static string Ip { get; private set; }
 
 	public static List<int> PeerList = new List<int>();
+	public static Dictionary<int, Player> Players = new Dictionary<int, Player>();
 	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
 	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
 
 	public static Dictionary<int, string> Nicknames = new Dictionary<int, string>();
+
+	public static MultiplayerAPI Work; //Get it? Net.Work
 
 	public static Net Self;
 	Net()
@@ -34,6 +37,8 @@ public class Net : Node
 
 	public override void _Ready()
 	{
+		Work = Multiplayer; //This means that anywhere we can Net.Work.Whatever instead of Game.Self.GetTree().Whatever
+
 		GetTree().Connect("network_peer_connected", this, "_PlayerConnected");
 		GetTree().Connect("network_peer_disconnected", this, "_PlayerDisconnected");
 		GetTree().Connect("server_disconnected", this, "_ServerDisconnected");
@@ -77,7 +82,7 @@ public class Net : Node
 		}
 		else //Connected to a client OR server
 		{
-			Console.Log("Player '" + Id.ToString() + "' connected");
+			Console.Log($"Player '{Id}' connected");
 		}
 
 		if(GetTree().IsNetworkServer())
@@ -108,8 +113,8 @@ public class Net : Node
 
 		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
-		SetupNewPeer(GetTree().GetRpcSenderId());
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
+		SetupNewPeer(GetTree().GetRpcSenderId());
 		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
 		foreach(int Id in PeerList)
 		{
@@ -127,8 +132,8 @@ public class Net : Node
 	[Remote]
 	public void NotifySuccessConnect() //Run on client
 	{
-		Console.Log("Connected to server at '" + Ip.ToString() + "'");
-		Game.StartWorld();
+		Console.Log($"Connected to server at '{Ip}'");
+		World.Start();
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
@@ -146,6 +151,9 @@ public class Net : Node
 
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
+		World.ChunkLoadDistances[Id] = 0;
+
+		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -171,24 +179,30 @@ public class Net : Node
 
 	public void _PlayerDisconnected(int Id)
 	{
-		Console.Log("Player '" + Id.ToString() + "' disconnected");
+		Console.Log($"Player '{Id}' disconnected");
 
 		if(PeerList.Contains(Id)) //May be disconnecting from a client which did not fully connect
 		{
-			Self.GetTree().GetRoot().GetNode("RuntimeRoot/SkyScene/" + Id.ToString()).QueueFree();
+			Self.GetTree().GetRoot().GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
 			PeerList.Remove(Id);
 		}
+
 		if(Nicknames.ContainsKey(Id))
 		{
 			Nicknames.Remove(Id);
 			Game.PossessedPlayer.HUDInstance.RemoveNickLabel(Id);
 		}
+
+		World.ChunkLoadDistances.Remove(Id);
+		World.RemoteLoadedChunks.Remove(Id);
+
+		Game.Mode.OnPlayerDisconnect(Id);
 	}
 
 
 	public void _ServerDisconnected()
 	{
-		Console.Log("Lost connection to server at '" + Ip.ToString() + "'");
+		Console.Log($"Lost connection to server at '{Ip}'");
 		Disconnect();
 	}
 
@@ -209,14 +223,14 @@ public class Net : Node
 		}
 
 		PeerList.Clear();
-		Game.StartWorld(AsServer: true);
+		World.Start(AsServer: true);
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);
 		Self.GetTree().SetNetworkPeer(Peer);
 		Self.GetTree().SetMeta("network_peer", Peer);
 
-		Console.Log("Started hosting on port '" + Port.ToString()+ "'");
+		Console.Log($"Started hosting on port '{Port}'");
 
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Nicknames[ServerId] = Game.Nickname;
@@ -230,19 +244,6 @@ public class Net : Node
 
 	public static void ConnectTo(string InIp)
 	{
-		if(Self.GetTree().NetworkPeer != null)
-		{
-			if(Self.GetTree().IsNetworkServer())
-			{
-				Console.ThrowPrint("Cannot connect when hosting");
-			}
-			else
-			{
-				Console.ThrowPrint("Cannot connect when already connected to a server");
-			}
-			return;
-		}
-
 		//Set static string Ip
 		Ip = InIp;
 
@@ -256,7 +257,7 @@ public class Net : Node
 
 	public static void Disconnect(bool BuildMenu = true)
 	{
-		Game.CloseWorld();
+		World.Close();
 
 		NetworkedMultiplayerENet EN = Self.GetTree().GetNetworkPeer() as NetworkedMultiplayerENet;
 		if(EN != null)
@@ -266,9 +267,9 @@ public class Net : Node
 
 		Self.GetTree().SetNetworkPeer(null);
 		PeerList.Clear();
-		Game.PlayerList.Clear();
+		Net.Players.Clear();
 		Nicknames.Clear();
-		Game.PlayerList.Clear();
+		Net.Players.Clear();
 
 		IsWaitingForServer = false;
 		WaitingForServerTimer = MaxWaitForServerDelay;
@@ -289,15 +290,14 @@ public class Net : Node
 
 	public static void UnloadAndRequestChunks()
 	{
-		if(!Game.WorldOpen)
+		if(!World.IsOpen)
 		{
 			//World is not setup yet
 			//Prevents NullReferenceException
 			return;
 		}
 
-		List<Tuple<int,int>> ToRemove = new List<Tuple<int,int>>();
-		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks)
+		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks.ToArray())
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
@@ -308,10 +308,16 @@ public class Net : Node
 					{
 						CurrentStructure.Show();
 					}
+
+					foreach(DroppedItem Item in Chunk.Value.Items)
+					{
+						Item.Show();
+					}
 				}
 			}
 			else
 			{
+				List<Structure> StructuresBeingRemoved = new List<Structure>();
 				foreach(Structure CurrentStructure in Chunk.Value.Structures)
 				{
 					if(Self.GetTree().IsNetworkServer())
@@ -320,19 +326,33 @@ public class Net : Node
 					}
 					else
 					{
-						CurrentStructure.QueueFree();
+						StructuresBeingRemoved.Add(CurrentStructure);
 					}
 				}
-				if(!Self.GetTree().IsNetworkServer())
+				foreach(Structure CurrentStructure in StructuresBeingRemoved)
 				{
-					ToRemove.Add(Chunk.Key);
+						CurrentStructure.Remove(Force:true);
+				}
+
+				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
+				foreach(DroppedItem Item in Chunk.Value.Items)
+				{
+					if(Self.GetTree().IsNetworkServer())
+					{
+						Item.Hide();
+					}
+					else
+					{
+						ItemsBeingRemoved.Add(Item);
+					}
+				}
+				foreach(DroppedItem Item in ItemsBeingRemoved)
+				{
+					Item.Remove();
 				}
 			}
 		}
-		foreach(Tuple<int,int> Chunk in ToRemove)
-		{
-			World.Chunks.Remove(Chunk);
-		}
+
 
 		if(!Self.GetTree().IsNetworkServer())
 		{

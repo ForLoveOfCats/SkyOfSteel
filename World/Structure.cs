@@ -8,9 +8,7 @@ public class Structure : StaticBody, IInGrid
 
 
 	public void GridUpdate()
-	{
-		
-	}
+	{}
 
 
 	public void Remove(bool Force=false)
@@ -20,10 +18,24 @@ public class Structure : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		if(ShouldDo.StructureRemove(Type, Translation, RotationDegrees, OwnerId))
+		if(Game.Mode.ShouldRemoveStructure(Type, Translation, RotationDegrees, OwnerId))
 		{
-			Net.SteelRpc(World.Self, nameof(World.Remove), GetName());
-			World.Self.Remove(GetName());
+			World.Self.RemoveStructure(GetName());
+		}
+	}
+
+
+	public void NetRemove(bool Force=false)
+	{
+		if(!Force && OwnerId == 0)
+		{
+			return; //Prevents removing default structures
+		}
+
+		if(Game.Mode.ShouldRemoveStructure(Type, Translation, RotationDegrees, OwnerId))
+		{
+			Net.SteelRpc(World.Self, nameof(World.RemoveStructure), GetName());
+			World.Self.RemoveStructure(GetName());
 		}
 	}
 }

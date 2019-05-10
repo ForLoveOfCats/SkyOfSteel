@@ -9,6 +9,6 @@ public class LoadHostButton : Button
 	public void LoadPressed()
 	{
 		Net.Host();
-		Game.LoadWorld(SaveName);
+		World.Load(SaveName);
 	}
 }

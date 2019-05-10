@@ -2,8 +2,8 @@
 
 ### Welcome to the GitHub repository of the game SkyOfSteel!
 
-SkyOfSteel is a work in progress game built on the Godot game engine with C# and Mono.
-Currently builds with Godot Mono 3.1 Beta 11 and can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
+SkyOfSteel is a work in progress game built on the Godot game engine with C#, currently builds with Godot Mono 3.1.1 Stable
+The current stable release (slightly outdated) can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
 
 Contributions are welcome!
 
@@ -36,23 +36,23 @@ Contributions are welcome!
 
 
 ## Videos
-[View the devlog one video on Youtube (Out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
+[View the devlog one video on Youtube (*Very* out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
 
-[View the introductory video on Youtube(Out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
+[View the introductory video on Youtube(*Very* out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
 
 
 ## Building
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.1 Beta 11
+* A functioning installation of Godot Mono 3.1.1 RC1
   * Decently recent versions of both MSBuild and Nuget must be installed.
 
 
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json and IronPython)
+* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json and Roslyn)
 * Open the Godot editor to the project and let it reimport all the assets then hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
@@ -63,21 +63,22 @@ Contributions are welcome!
 The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
 multiplayer private server setting with high skill movement. As of now multiplayer is fully
 functional, the building is about 95% functional with proper chunk loading/unloading
-over network, world saving and loading to/from file, and air strafing identical to id Tech 3
-and the Source engine.
+over network, world saving and loading to/from file, air strafing identical to id Tech 3
+and the Source engine, and wall kicking.
 
 
 
 ## Modding
 
-SkyOfSteel has a WIP gamemode modding API utilizing [IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page").
-The intention is to allow for fully custom gamemodes to be developed. Currently scripting is server
-side only however client side scripting is on the todo list. In addition there is a full ingame REPL console.
+SkyOfSteel has a gamemode modding system utilizing [Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page") to provide runtime
+C# compilation. The intention is to allow for fully custom gamemodes to be developed with full access to internal game APIs both
+server side *and* client side. In addition there is a full ingame REPL console.
 
-The gamemode API is based around game events. Whenever something occurs ingame it is
+The gamemode API has a concept of game events. Whenever something occurs ingame it is
 processed as an "event" which can be filtered and discarded by gamemode scripts programmatically.
-This allows for a great deal of flexibility even without the normal API for such things
-as setting player positions and the like (which are being worked on).
+This allows for a great deal of flexibility before even touching the normal API.
+
+Read more here: https://github.com/ForLoveOfCats/ModsOfSteel
 
 
 
@@ -143,6 +144,6 @@ Also feel free to follow me (ForLoveOfCats) on
 ## License
 
 SkyOfSteel is licensed under the MIT license and utilizes
-[IronPython](https://github.com/IronLanguages/ironpython2 "IronPython Github Page")
+[Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page")
 and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-which are both under the MIT license as well.
+which are under the Apache-2.0 and the MIT licenses respectively.

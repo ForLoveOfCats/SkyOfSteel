@@ -14,27 +14,26 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Label" parent="." instance=ExtResource( 2 )]
-margin_top = 229.0
+margin_top = 242.0
 margin_right = 1024.0
-margin_bottom = 281.0
+margin_bottom = 282.0
 text = "Select a save to host"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
-margin_top = 285.0
+margin_top = 286.0
 margin_right = 1024.0
-margin_bottom = 309.0
+margin_bottom = 305.0
 
 [node name="ButtonsBelow" type="Node" parent="."]
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
-margin_top = 313.0
+margin_top = 309.0
 margin_right = 1024.0
-margin_bottom = 337.0
+margin_bottom = 328.0
 
 [node name="BackButton" parent="." instance=ExtResource( 4 )]
-margin_top = 341.0
+margin_top = 332.0
 margin_right = 1024.0
-margin_bottom = 371.0
+margin_bottom = 357.0
 text = "Back"
-
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]

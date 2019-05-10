@@ -1,29 +1,30 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://UI/ConsoleWindow.cs" type="Script" id=1]
-[ext_resource path="res://UI/Fonts/MonoFont.tres" type="DynamicFont" id=2]
-
+[ext_resource path="res://UI/Theme/Theme.tres" type="Theme" id=1]
+[ext_resource path="res://UI/ConsoleWindow.cs" type="Script" id=2]
+[ext_resource path="res://UI/Fonts/MonoFont.tres" type="DynamicFont" id=3]
 
 [node name="ConsoleWindow" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 1 )
+theme = ExtResource( 1 )
+script = ExtResource( 2 )
 
 [node name="HBox" type="HBoxContainer" parent="."]
 margin_right = 1024.0
-margin_bottom = 569.0
+margin_bottom = 572.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Console" type="RichTextLabel" parent="HBox"]
 margin_right = 510.0
-margin_bottom = 569.0
+margin_bottom = 572.0
 focus_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/normal_font = ExtResource( 2 )
+custom_fonts/normal_font = ExtResource( 3 )
 custom_colors/default_color = Color( 0, 0, 0, 1 )
 scroll_following = true
 selection_enabled = true
@@ -31,20 +32,19 @@ selection_enabled = true
 [node name="Log" type="RichTextLabel" parent="HBox"]
 margin_left = 514.0
 margin_right = 1024.0
-margin_bottom = 569.0
+margin_bottom = 572.0
 focus_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_fonts/normal_font = ExtResource( 2 )
+custom_fonts/normal_font = ExtResource( 3 )
 custom_colors/default_color = Color( 0, 0, 0, 1 )
 scroll_following = true
 selection_enabled = true
 
 [node name="LineEdit" type="LineEdit" parent="."]
-margin_top = 573.0
+margin_top = 576.0
 margin_right = 1024.0
 margin_bottom = 600.0
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource( 3 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
-
