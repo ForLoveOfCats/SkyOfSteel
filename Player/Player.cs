@@ -66,6 +66,8 @@ public class Player : KinematicBody
 	public int BuildRotation = 0;
 
 	public Camera Cam;
+	public Spatial Center;
+	public RayCast CenterRayCast;
 
 	public HUD HUDInstance;
 	private Ghost GhostInstance;
@@ -83,6 +85,9 @@ public class Player : KinematicBody
 	public override void _Ready()
 	{
 		Cam = GetNode<Camera>("SteelCamera");
+		Center = GetNode<Spatial>("Center");
+		CenterRayCast = Center.GetNode<RayCast>("RayCast");
+		CenterRayCast.AddException(this);
 
 		PositionReset();
 
@@ -121,7 +126,7 @@ public class Player : KinematicBody
 
 	public Vector3 CenterPosition()
 	{
-		return new Vector3(0, 3.4f, 0) + Translation;
+		return Translation + Center.Translation;
 	}
 
 
@@ -579,7 +584,10 @@ public class Player : KinematicBody
 			{
 				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= MinItemPickupLife)
 				{
-					ToPickUpList.Add(Item);
+					CenterRayCast.CastTo = Item.Translation - CenterPosition(); //CastTo is relative
+					CenterRayCast.ForceRaycastUpdate();
+					if(!CenterRayCast.IsColliding())
+						ToPickUpList.Add(Item);
 				}
 			}
 			foreach(DroppedItem Item in ToPickUpList)

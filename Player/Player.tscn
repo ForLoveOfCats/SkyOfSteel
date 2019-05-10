@@ -39,6 +39,11 @@ cast_to = Vector3( 0, 0, 24 )
 transform = Transform( 1, 0, 0, 0, -2.8213e-07, -1, 0, 1, -2.8213e-07, 0, 3.4, 0 )
 shape = SubResource( 2 )
 
+[node name="Center" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, 0 )
+
+[node name="RayCast" type="RayCast" parent="Center"]
+
 [node name="PlayerSfxManager" type="Spatial" parent="."]
 script = ExtResource( 5 )
 
