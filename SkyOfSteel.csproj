@@ -109,6 +109,8 @@
     <Compile Include="UI\Menu\SaveMenu\SaveButton.cs" />
     <Compile Include="UI\Menu\SaveMenu\SaveMenu.cs" />
     <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs" />
+    <Compile Include="Registries\Identifier.cs" />
+    <Compile Include="Registries\Registry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
