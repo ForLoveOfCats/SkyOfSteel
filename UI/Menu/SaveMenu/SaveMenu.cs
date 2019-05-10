@@ -12,10 +12,10 @@ public class SaveMenu : VBoxContainer
 		LabelPieceScene = GD.Load<PackedScene>("res://UI/Menu/Pieces/LabelPiece.tscn");
 
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://saves"))
+		if(SaveDir.DirExists("user://Saves"))
 		{
 			List<string> Names = new List<string>();
-			SaveDir.Open("user://saves");
+			SaveDir.Open("user://Saves");
 			SaveDir.ListDirBegin(skipNavigational: true, skipHidden: true);
 			while(true)
 			{
@@ -47,7 +47,7 @@ public class SaveMenu : VBoxContainer
 	public void SavePressed()
 	{
 		LineEdit NameInput = GetNode<LineEdit>("HBoxContainer/LineEdit");
-		Game.SaveWorld(NameInput.Text);
+		World.Save(NameInput.Text);
 
 		Menu.BuildPause();
 	}

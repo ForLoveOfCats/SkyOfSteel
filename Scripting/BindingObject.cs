@@ -1,19 +1,24 @@
+using System;
+
+
 class BindingObject
 {
-	public string Name = "";
-	public Bindings.BIND_TYPE Type = Bindings.BIND_TYPE.SCANCODE;
-	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
-	public DIRECTION AxisDirection;
+	public string Name = null; //Null to fail early
+	public Action FuncWithoutArg = null;
+	public Action<float> FuncWithArg = null;
+	public Bindings.TYPE Type = Bindings.TYPE.UNSET;
+	public Bindings.DIRECTION AxisDirection; //Only used if Type is AXIS
 
-	public BindingObject(string NameArg, Bindings.BIND_TYPE TypeArg)
+	public bool JoyWasInDeadzone = true;
+
+	public BindingObject(string NameArg)
 	{
-		this.Name = NameArg;
-		this.Type = TypeArg;
+		Name = NameArg;
 	}
 
 
 	public bool Equals(BindingObject Other)
 	{
-		return this.Name == Other.Name;
+		return Name == Other.Name;
 	}
 }

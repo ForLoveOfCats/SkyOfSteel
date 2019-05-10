@@ -3,7 +3,6 @@
 [ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=1]
 
 [sub_resource type="DynamicFont" id=1]
-
 size = 40
 font_data = ExtResource( 1 )
 
@@ -13,4 +12,3 @@ margin_bottom = 14.0
 custom_fonts/font = SubResource( 1 )
 text = "Default Small Title Text"
 align = 1
-

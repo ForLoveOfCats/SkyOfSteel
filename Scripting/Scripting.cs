@@ -1,18 +1,19 @@
 using Godot;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
-using Jurassic;
-using Jurassic.Library;
+using System.Collections.Immutable;
+using Sc = Microsoft.CodeAnalysis.Scripting;
+using Cs = Microsoft.CodeAnalysis.CSharp.Scripting.CSharpScript;
 
 
 public class Scripting : Node
 {
-	public static Jurassic.ScriptEngine ServerGmEngine;
-	public static Jurassic.ScriptEngine ClientGmEngine;
-	public static Jurassic.ScriptEngine ConsoleEngine;
+	public static Sc.ScriptOptions ScriptOptions;
+
+	public static Sc.ScriptState ConsoleState;
 
 	public static string GamemodeName;
-	public static string ClientGmScript;
 
 	public static Scripting Self;
 	Scripting()
@@ -21,178 +22,160 @@ public class Scripting : Node
 
 		Self = this;
 
-		ConsoleEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.CONSOLE, this))
-		{
-			ConsoleEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CONSOLE))
-		{
-			ConsoleEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
-		}
+		ScriptOptions = Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
+			.AddReferences(Assembly.GetAssembly(typeof(System.Dynamic.DynamicObject)),  // System.Code
+						   Assembly.GetAssembly(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo)),  // Microsoft.CSharp
+						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
-		SetupServerEngine();
-		SetupClientEngine();
+		Sc.Script CEngine = Cs.Create("", ScriptOptions);
+		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
 	}
 
 
-	public static object ToJs(object ToConvert)
+	[Remote]
+	public void RequestGmLoad(string Name)
 	{
-		if(ToConvert is Vector3)
+		Console.Log($"The server requested that gamemode '{Name}' be loaded");
+		if(LoadGamemode(Name))
 		{
-			return new JsVector3(Scripting.ConsoleEngine.Object.InstancePrototype, (Vector3)ToConvert);
+			Console.Log($"Successfully loaded the gamemode '{Name}' as requested by the server");
 		}
-
-		if(ToConvert is float)
+		else
 		{
-			return Convert.ToDouble((float)ToConvert);
-		}
-
-		if(ToConvert is int)
-		{
-			return Convert.ToDouble((int)ToConvert);
-		}
-
-		//*Should* be a supported type already
-		return ToConvert;
-	}
-
-
-	public static object[] ToJs(object[] ConvertArray)
-	{
-		object[] Out = new object[ConvertArray.Length];
-		int Iteration = 0;
-		foreach(object ToConvert in ConvertArray)
-		{
-			Out[Iteration] = ToJs(ToConvert);
-			Iteration += 1;
-		}
-		return Out;
-	}
-
-	public static void SetupServerEngine()
-	{
-		ServerGmEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.SERVER_GM, Self))
-		{
-			ServerGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.SERVER_GM))
-		{
-			ServerGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
+			Console.ThrowLog($"The server requested that your client load the gamemode '{Name}' but your client was unable to");
 		}
 	}
 
 
-	public static void SetupClientEngine()
+	public static bool LoadGamemode(string Name)
 	{
-		ClientGmEngine = new Jurassic.ScriptEngine();
-		foreach(List<object> List in API.Expose(API.LEVEL.CLIENT_GM, Self))
-		{
-			ClientGmEngine.SetGlobalFunction((string)List[0], (Delegate)List[1]);
-		}
-		foreach(List<object> List in API.ExposeConstructors(API.LEVEL.CLIENT_GM))
-		{
-			ClientGmEngine.SetGlobalValue((string)List[0], (ClrFunction)List[1]);
-		}
-	}
+		UnloadGamemode();
 
-
-	public override void _Ready()
-	{
-		File SetupScript = new File();
-		SetupScript.Open("res://Scripting/SetupScript.js", 1);
-		ConsoleEngine.Execute(SetupScript.GetAsText());
-		SetupScript.Close();
-	}
-
-
-	public override void _PhysicsProcess(float Delta)
-	{
-		try
+		Directory ModeDir = new Directory();
+		if(ModeDir.FileExists($"user://Gamemodes/{Name}/{Name}.json"))
 		{
-			ConsoleEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
-		}
-		catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
-		catch(JavaScriptException Error)
-		{
-			Console.Print(Error.Message);
-		}
+			Console.Log($"Found gamemode '{Name}', loading");
 
-		try
-		{
-			ClientGmEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
-		}
-		catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
-		catch(JavaScriptException){}
+			GmConfigClass Config;
+			{
+				File ConfigFile = new File();
+				ConfigFile.Open($"user://Gamemodes/{Name}/{Name}.json", 1);
+				try
+				{
+					Config = Newtonsoft.Json.JsonConvert.DeserializeObject<GmConfigClass>(ConfigFile.GetAsText());
+					ConfigFile.Close();
+				}
+				catch(Newtonsoft.Json.JsonReaderException)
+				{
+					ConfigFile.Close();
+					Console.ThrowLog($"Failed to parse config file for gamemode '{Name}'");
+					return false;
+				}
+			}
+			if(Config.MainScript == null)
+			{
+				Console.ThrowLog($"The gamemode '{Name}' did not specify a path for MainScript");
+				return false;
+			}
 
-		if(GetTree().IsNetworkServer())
-		{
+			File ScriptFile = new File();
+			if(!ScriptFile.FileExists($"user://Gamemodes/{Name}/{Config.MainScript}"))
+			{
+				Console.ThrowLog($"Specified MainScript '{Config.MainScript}' for gamemode '{Name}' does not exist");
+				return false;
+			}
+			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", 1);
+			Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
+			                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}"))
+			                             .WithEmitDebugInformation(true)
+			                             .WithFilePath($"{OS.GetUserDataDir()}/Gamemodes/{Name}")
+			                             .WithFileEncoding(System.Text.Encoding.UTF8)); //NOTE Hardcoding UTF8 should work for now
+			ScriptFile.Close();
+
+			object Returned = null;
 			try
 			{
-				ServerGmEngine.CallGlobalFunction("_tick", new object[] {(double)Delta});
+				Sc.ScriptState State = Engine.RunAsync().Result;
+				Returned = State.ReturnValue;
 			}
-			catch(System.InvalidOperationException){} //This just means that _tick is not a delcared function
-			catch(JavaScriptException){}
+			catch(Exception Err)
+			{
+				Console.ThrowLog($"Error executing gamemode '{Name}': {Err.Message}");
+				return false;
+			}
+
+			if(Returned is Gamemode)
+			{
+				GamemodeName = Name;
+				Game.Mode = Returned as Gamemode;
+				Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
+				Game.Mode.OwnName = Name;
+				Game.Self.AddChild(Game.Mode);
+				Game.Mode.SetName("Gamemode");
+				return true;
+			}
+			else
+			{
+				Console.ThrowLog($"Gamemode script '{Name}' did not return a valid Gamemode instance, unloading");
+				return false;
+			}
 		}
-	}
-
-
-	public static void LoadGameMode(string Name)
-	{
-		Directory ModeDir = new Directory();
-		if(ModeDir.DirExists("user://gamemodes/" + Name)) //Gamemode exists
+		else
 		{
-			GamemodeName = Name;
-
-			if(ModeDir.FileExists("user://gamemodes/" + Name + "/server.js")) //Has a server side script
-			{
-				SetupServerEngine();
-				File ServerScript = new File();
-				ServerScript.Open("user://gamemodes/" + Name + "/server.js", 1);
-				ServerGmEngine.Execute(ServerScript.GetAsText());
-				ServerScript.Close();
-			}
-
-			if(ModeDir.FileExists("user://gamemodes/" + Name + "/client.js")) //Has a client side script
-			{
-				SetupClientEngine();
-				File ClientScriptFile = new File();
-				ClientScriptFile.Open("user://gamemodes/" + Name + "/client.js", 1);
-				ClientGmScript = ClientScriptFile.GetAsText();
-				ClientScriptFile.Close();
-				ClientGmEngine.Execute(ClientGmScript);
-				Net.SteelRpc(Self, nameof(NetLoadClientScript), new object[] {ClientGmScript});
-			}
+			Console.ThrowPrint($"No gamemode named '{Name}'");
+			return false;
 		}
 	}
 
 
 	[Remote]
-	public void NetLoadClientScript(string Script)
+	public void RequestGmUnload()
 	{
-		Console.Log("Recieved client.js from server, executing");
-		SetupClientEngine();
-		ClientGmEngine.Execute(Script);
+		UnloadGamemode();
+	}
+
+
+	public static void UnloadGamemode()
+	{
+		if(GamemodeName != null)
+		{
+			try
+			{
+				Game.Mode.OnUnload();
+			}
+			catch(Exception Err)
+			{
+				Console.ThrowLog($"An exception was thrown when calling 'OnUnload' on gamemode '{GamemodeName}': {Err.Message}");
+			}
+
+			Game.Mode.SetName("UnloadedGamemode"); ///Prevents name mangling of new gamemode, important for RPC
+			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
+			Game.Mode = new Gamemode();
+			API.Gm = new API.EmptyCustomCommands();
+
+			Console.Log($"The gamemode '{GamemodeName}' was unloaded");
+			GamemodeName = null;
+		}
 	}
 
 
 	public static void RunConsoleLine(string Line)
 	{
-		object Returned;
+		object Returned = null;
+
 		try
 		{
-			Returned = ConsoleEngine.Evaluate(Line);
+			ConsoleState = ConsoleState.ContinueWithAsync(Line).Result;
+			Returned = ConsoleState.ReturnValue as object; //just in case of an issue this should become null
 		}
-		catch(JavaScriptException Error)
+		catch(Exception Err)
 		{
-			Console.Print(Error.Message);
-			return;
+			Console.Print(Err.Message);
 		}
 
-		if(!(Returned is Jurassic.Undefined))
+		if(Returned != null)
 		{
-			Console.Print(Returned.ToString());
+			Console.Print(Returned);
 		}
 	}
 }

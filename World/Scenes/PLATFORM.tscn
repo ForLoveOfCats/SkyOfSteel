@@ -1,22 +1,19 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Building/Structure.cs" type="Script" id=1]
-[ext_resource path="res://Items/Meshes/WALL.obj" type="ArrayMesh" id=2]
-[ext_resource path="res://Building/Materials/StructureShader.shader" type="Shader" id=3]
-[ext_resource path="res://Building/Textures/WALL.png" type="Texture" id=4]
-
-
+[ext_resource path="res://World/Structure.cs" type="Script" id=1]
+[ext_resource path="res://Items/Meshes/PLATFORM.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://World/Materials/StructureShader.shader" type="Shader" id=3]
+[ext_resource path="res://Items/Textures/PLATFORM.png" type="Texture" id=4]
 
 [sub_resource type="ShaderMaterial" id=1]
-
 shader = ExtResource( 3 )
 shader_param/texture_albedo = ExtResource( 4 )
 
 [sub_resource type="BoxShape" id=2]
+extents = Vector3( 6, 0.3, 6 )
 
-extents = Vector3( 6, 5.7, 0.3 )
-
-[node name="WALL" type="StaticBody"]
+[node name="PLATFORM" type="StaticBody"]
+collision_layer = 3
 script = ExtResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
@@ -25,4 +22,3 @@ material/0 = SubResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
-

@@ -1,5 +1,8 @@
 .mono
 .vscode
 .import
+.vs
+mono_crash.*.json
 packages
 Export
+Docs

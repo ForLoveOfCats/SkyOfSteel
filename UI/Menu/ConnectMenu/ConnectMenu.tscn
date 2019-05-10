@@ -16,30 +16,30 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" parent="." instance=ExtResource( 2 )]
-margin_top = 196.0
+margin_top = 214.0
 margin_right = 1024.0
-margin_bottom = 248.0
+margin_bottom = 254.0
 text = "Connect to IP"
 
 [node name="Subtitle" parent="." instance=ExtResource( 3 )]
-margin_top = 252.0
+margin_top = 258.0
 margin_right = 1024.0
-margin_bottom = 276.0
+margin_bottom = 277.0
 text = "Connect to IP on port 27015"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 280.0
+margin_top = 281.0
 margin_right = 1024.0
-margin_bottom = 304.0
+margin_bottom = 300.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_top = 308.0
+margin_top = 304.0
 margin_right = 1024.0
-margin_bottom = 342.0
+margin_bottom = 333.0
 
 [node name="IpEdit" type="LineEdit" parent="HBoxContainer"]
 margin_right = 784.0
-margin_bottom = 34.0
+margin_bottom = 29.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 5 )
 align = 1
@@ -47,7 +47,7 @@ align = 1
 [node name="ConnectButton" parent="HBoxContainer" instance=ExtResource( 6 )]
 margin_left = 788.0
 margin_right = 1024.0
-margin_bottom = 34.0
+margin_bottom = 29.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.3
 text = "Connect to IP"
@@ -60,16 +60,15 @@ margin_bottom = 342.0
 text = ""
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 4 )]
-margin_top = 346.0
+margin_top = 337.0
 margin_right = 1024.0
-margin_bottom = 370.0
+margin_bottom = 356.0
 
 [node name="BackButton" parent="." instance=ExtResource( 6 )]
-margin_top = 374.0
+margin_top = 360.0
 margin_right = 1024.0
-margin_bottom = 404.0
+margin_bottom = 385.0
 text = "Back"
-
 [connection signal="text_entered" from="HBoxContainer/IpEdit" to="." method="EnterPressed"]
 [connection signal="pressed" from="HBoxContainer/ConnectButton" to="." method="ConnectPressed"]
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]

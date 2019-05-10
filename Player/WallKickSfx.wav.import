@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/WallKickSfx.wav-4315a4a8812180e40b5f907d72aab03c.sample"
+
+[deps]
+
+source_file="res://Player/WallKickSfx.wav"
+dest_files=[ "res://.import/WallKickSfx.wav-4315a4a8812180e40b5f907d72aab03c.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=true
+edit/normalize=true
+edit/loop=false
+compress/mode=0

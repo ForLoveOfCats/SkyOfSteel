@@ -46,8 +46,13 @@ public class HUD : Node
 			NinePatchRect SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild(Slot) as NinePatchRect;
 			if(Game.PossessedPlayer.Inventory[Slot] != null)
 			{
-				SlotPatch.Texture = Items.Thumbnail(Game.PossessedPlayer.Inventory[Slot].Type);
+				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Type];
 			}
+			else
+			{
+				SlotPatch.Texture = Alpha;
+			}
+
 			SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
 
 			NinePatchRect ActiveIndicatorPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Slot) as NinePatchRect;
@@ -128,7 +133,7 @@ public class HUD : Node
 
 		foreach(KeyValuePair<int, Label> Current in NickLabels)
 		{
-			Vector3 PlayerPos = Game.PlayerList[Current.Key].Translation + new Vector3(0,7.5f,0);
+			Vector3 PlayerPos = Net.Players[Current.Key].Translation + new Vector3(0,7.5f,0);
 			if(Game.PossessedPlayer.Cam.IsPositionBehind(PlayerPos))
 			{
 				Current.Value.Visible = false;

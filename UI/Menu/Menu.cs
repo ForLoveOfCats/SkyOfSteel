@@ -6,6 +6,7 @@ public class Menu : Node
 	public static bool IsOpen = true;
 	public static bool PauseOpen = false;
 
+	private static Panel ShadedBackground;
 	private static ScrollContainer Center;
 	private static Node Contents = null;
 
@@ -41,12 +42,15 @@ public class Menu : Node
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
 	{
+		ShadedBackground = Game.RuntimeRoot.GetNode("MenuRoot").GetNode("ShadedBackground") as Panel;
 		Center = Game.RuntimeRoot.GetNode("MenuRoot").GetNode("HBox/Center") as ScrollContainer;
 	}
 
 
 	public static void Reset()
 	{
+		ShadedBackground.Hide();
+
 		if(Contents != null)
 		{
 			Contents.QueueFree();
@@ -162,6 +166,7 @@ public class Menu : Node
 
 		Contents = PauseMenu.Instance();
 		Center.AddChild(Contents);
+		ShadedBackground.Show();
 		PauseOpen = true;
 	}
 
@@ -172,5 +177,7 @@ public class Menu : Node
 
 		Contents = SaveMenu.Instance();
 		Center.AddChild(Contents);
+		ShadedBackground.Show();
+		PauseOpen = true;
 	}
 }

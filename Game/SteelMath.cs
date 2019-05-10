@@ -28,4 +28,10 @@ public class SteelMath
 
 		return Rot;
 	}
+
+
+	public static Vector3 ClampVec3(Vector3 Vec, float Min, float Max)
+	{
+		return Vec.Normalized() * Mathf.Clamp(Vec.Length(), Min, Max);
+	}
 }
