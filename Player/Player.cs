@@ -136,6 +136,8 @@ public class Player : KinematicBody
 		if(GetName() == GetTree().GetNetworkUniqueId().ToString())
 		{
 			Frozen = NewFrozen;
+			if(!Frozen)
+				HUDInstance.HotbarUpdate(); //HACK: make sure it is updated on client after connecting
 		}
 		else
 		{
