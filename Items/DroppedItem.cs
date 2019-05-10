@@ -46,7 +46,7 @@ public class DroppedItem : KinematicBody, IInGrid
 
 		if(PhysicsEnabled)
 		{
-			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:60);
+			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:55);
 			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation))) //We just crossed into a different chunk
 			{
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);
