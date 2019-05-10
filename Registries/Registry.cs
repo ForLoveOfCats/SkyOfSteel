@@ -5,7 +5,7 @@ public class Registry<T>
 	//Represents the entires in a registry.
 	private Dictionary<Identifier, T> entires = new Dictionary<Identifier, T>();
 	//Default value for a registry if something is not registered to a certain identifier.
-	private T defaultVal;
+	private Identifier defaultID;
 	
 	//Indexer for more ergonomic access of entries.
 	public T this[Identifier id]
@@ -16,7 +16,7 @@ public class Registry<T>
 				return entires[id];
 			}
 			else {
-				return defaultVal;
+				return entires[defaultID];
 			}
 		}
 		set {
@@ -43,9 +43,10 @@ public class Registry<T>
 	}
 
 	//Constructor
-	public Registry(T registryDefault)
+	public Registry(Identifier defaultid, T registryDefault)
 	{
-		defaultVal = registryDefault;
+		defaultID = defaultid;
+		entires[defaultid] = registryDefault;
 	}
 
 
@@ -80,7 +81,7 @@ public class Registry<T>
 
 	//Just a test for registires
 	public static void Test() {
-		Registry<Items.TYPE> testRegistry = new Registry<Items.TYPE>(Items.TYPE.ERROR);
+		Registry<Items.TYPE> testRegistry = new Registry<Items.TYPE>("skyofsteel:error", Items.TYPE.ERROR);
 
 		testRegistry["skyofsteel:platform"] = Items.TYPE.PLATFORM;
 		testRegistry["skyofsteel:slope"] = Items.TYPE.SLOPE;
