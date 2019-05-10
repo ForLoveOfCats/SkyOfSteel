@@ -10,7 +10,6 @@ public class Items : Node
 		public int Temperature = 0;
 		public int Count = 1;
 		public int UsesRemaining = 0;
-		public string Description = "This item description is a bug and should not exists";
 
 		public Instance(Items.TYPE TypeArg)
 		{
