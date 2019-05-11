@@ -6,6 +6,8 @@ cp -a -r ../SkyOfSteel ../GithubPages
 
 #then we checkout the correct branch in the copy
 cd ../GithubPages
+pwd
+ls
 git fetch
 git checkout GithubPages
 git reset --hard
