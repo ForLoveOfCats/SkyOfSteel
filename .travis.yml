@@ -1,0 +1,13 @@
+sudo: false
+
+branches:
+  only:
+    - master
+
+addons:
+  apt:
+    packages:
+      - doxygen
+
+script:
+  - sh ./UpdateDocs.sh
