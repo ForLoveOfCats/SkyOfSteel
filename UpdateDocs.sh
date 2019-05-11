@@ -8,7 +8,7 @@ cp -a -r ../SkyOfSteel ../GithubPages
 cd ../GithubPages
 pwd
 ls
-git fetch
+git fetch --all
 git checkout GithubPages
 git reset --hard
 git clean -d -f
