@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 
@@ -15,6 +16,31 @@ public class Items : Node
 		{
 			this.Type = TypeArg;
 		}
+	}
+
+
+	private struct CustomItemEnum //Reference implimentation for 0.1.3
+	{
+		public static int NextSpot = Enum.GetNames(typeof(TYPE)).Length;
+		public int Spot;
+
+		public CustomItemEnum(int SpotArg)
+		{
+			Spot = SpotArg;
+		}
+
+
+		public static implicit operator TYPE(CustomItemEnum ItemEnum)
+		{
+			return (TYPE)(ItemEnum.Spot);
+		}
+	}
+
+	private static CustomItemEnum NewCustomItemEnum() //Reference implimentation for 0.1.3
+	{
+		CustomItemEnum NewItemEnum = new CustomItemEnum(CustomItemEnum.NextSpot);
+		CustomItemEnum.NextSpot++;
+		return NewItemEnum;
 	}
 
 
