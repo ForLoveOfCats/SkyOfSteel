@@ -15,8 +15,12 @@ public class DroppedItem : KinematicBody, IInGrid
 	public float Life = 0f;
 	public Items.TYPE Type;
 
+	public MeshInstance Mesh;
+
 	public override void _Ready()
 	{
+		Mesh = GetNode<MeshInstance>("MeshInstance");
+
 		ShaderMaterial Mat = new ShaderMaterial();
 		Mat.Shader = Items.StructureShader;
 		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
@@ -41,7 +45,7 @@ public class DroppedItem : KinematicBody, IInGrid
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		SetRotationDegrees(new Vector3(0, RotationDegrees.y+(360*Delta*RPS), 0));
+		Mesh.SetRotationDegrees(new Vector3(0, Mesh.RotationDegrees.y+(360*Delta*RPS), 0));
 		Life += Delta;
 
 		if(PhysicsEnabled)
