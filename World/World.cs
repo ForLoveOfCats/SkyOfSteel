@@ -106,8 +106,7 @@ public class World : Node
 			//Free instead of QueueFree to prevent crash when starting new world in same frame
 		}
 		Net.Players.Clear();
-		Game.PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
-		//Prevent crashes when player movement commands are run when world is not initalized
+		Game.PossessedPlayer = null;
 
 		StructureRoot = null;
 		ItemsRoot = null;

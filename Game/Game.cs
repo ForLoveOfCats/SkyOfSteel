@@ -10,8 +10,7 @@ public class Game : Node
 
 	public static int MaxPlayers = 8;
 	public static bool BindsEnabled = false;
-	public static Player PossessedPlayer = GD.Load<PackedScene>("res://Player/Player.tscn").Instance() as Player;
-										   //Prevent crashes when player movement commands are run when world is not initalized
+	public static Player PossessedPlayer;
 
 	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
 
