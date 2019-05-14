@@ -17,7 +17,7 @@ public class Player : KinematicBody
 	public float AirAcceleration = 24; //How many units per second to accelerate
 	public float DecelerateTime = 0.2f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
-	public float JumpSpeedMultiplyer = 1.2f;
+	public float JumpSpeedMultiplyer = 15f;
 	public float JumpStartForce = 8f;
 	public float JumpContinueForce = 6f;
 	public float MaxJumpLength = 0.3f;
