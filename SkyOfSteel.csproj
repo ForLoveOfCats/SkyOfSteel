@@ -76,6 +76,7 @@
     <Compile Include="World\Chunk.cs" />
     <Compile Include="World\Ghost.cs" />
     <Compile Include="World\Grid.cs" />
+    <Compile Include="World\Materials\ShaderCompilerHider.cs" />
     <Compile Include="World\SavedChunk.cs" />
     <Compile Include="World\SavedStructure.cs" />
     <Compile Include="World\Structure.cs" />

@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://default_env.tres" type="Environment" id=1]
+[ext_resource path="res://World/Materials/GreenGhost.tres" type="Material" id=2]
+[ext_resource path="res://World/Materials/ShaderCompilerHider.cs" type="Script" id=3]
+[ext_resource path="res://World/Materials/RedGhost.tres" type="Material" id=4]
+
+[sub_resource type="CubeMesh" id=1]
 
 [node name="SkyScene" type="Node"]
 
@@ -12,3 +17,15 @@ far = 1000.0
 
 [node name="DirectionalLight" type="DirectionalLight" parent="."]
 light_energy = 0.0
+
+[node name="GhostGreenCompiler" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50 )
+mesh = SubResource( 1 )
+material/0 = ExtResource( 2 )
+script = ExtResource( 3 )
+
+[node name="GhostRedCompiler" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50 )
+mesh = SubResource( 1 )
+material/0 = ExtResource( 4 )
+script = ExtResource( 3 )

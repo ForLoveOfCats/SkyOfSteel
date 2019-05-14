@@ -61,7 +61,7 @@ public class Ghost : Area
 		GetParent().AddChild(GhostMesh);
 
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-		if(Item != null) //null means no item in slot
+ 		if(Item != null) //null means no item in slot
 		{
 			GhostMesh.Mesh = Items.Meshes[Item.Type];
 			CurrentMeshType = Item.Type;
