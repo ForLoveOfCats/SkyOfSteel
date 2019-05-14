@@ -543,12 +543,7 @@ public class Player : KinematicBody
 		{
 			if(Inventory[InventorySlot] != null)
 			{
-				Vector3 Vel = Momentum;
-				if(FlyMode || IsOnFloor())
-				{
-					Vel = Vel.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
-				}
-				Vel += new Vector3(0,0,ItemThrowPower)
+				Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
 					.Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical))
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
