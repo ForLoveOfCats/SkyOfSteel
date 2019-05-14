@@ -10,24 +10,25 @@ public class Player : KinematicBody
 	public bool Possessed = false;
 	public int Id = 0;
 
-	private const float BaseMovementSpeed = 20;
-	private const float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
-	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
-	private const float AirAcceleration = 24; //How many units per second to accelerate
-	private const float Friction = MaxMovementSpeed / 0.2f; //The number is how many seconds needed to stop from full speed
-	private const float JumpSpeedMultiplyer = 1.2f;
-	private const float JumpStartForce = 8f;
-	private const float JumpContinueForce = 6f;
-	private const float MaxJumpLength = 0.3f;
-	private const float WallKickJumpForce = 16;
-	private const float WallKickHorzontalForce = 45;
-	private const float MinWallKickRecoverPercentage = 0.2f;
-	private const float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
-	private const float Gravity = 14f;
-	private const float ItemThrowPower = 15f;
-	private const float ItemPickupDistance = 8f;
-	private const float MinItemPickupLife = 1; //In seconds
-	private const float LookDivisor = 6;
+	public float BaseMovementSpeed = 20;
+	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
+	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
+	public float MaxVerticalSpeed = 40f;
+	public float AirAcceleration = 24; //How many units per second to accelerate
+	public float Friction { get { return MaxMovementSpeed / 0.2f; } } //The number is how many seconds needed to stop from full speed
+	public float JumpSpeedMultiplyer = 1.2f;
+	public float JumpStartForce = 8f;
+	public float JumpContinueForce = 6f;
+	public float MaxJumpLength = 0.3f;
+	public float WallKickJumpForce = 16;
+	public float WallKickHorzontalForce = 45;
+	public float MinWallKickRecoverPercentage = 0.2f;
+	public float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
+	public float Gravity = 14f;
+	public float ItemThrowPower = 15f;
+	public float ItemPickupDistance = 8f;
+	public float MinItemPickupLife = 1; //In seconds
+	public float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
 
@@ -622,7 +623,7 @@ public class Player : KinematicBody
 
 		if(!IsJumping && !FlyMode)
 		{
-			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
+			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
 		}
 
 		if(FlyMode && JumpAxis <= 0 && !IsCrouching)
@@ -630,17 +631,17 @@ public class Player : KinematicBody
 			//In flymode and jump is not being held
 			if(Momentum.y > 0)
 			{
-				Momentum.y = Mathf.Clamp(Momentum.y - Friction*Delta, 0, MaxMovementSpeed);
+				Momentum.y = Mathf.Clamp(Momentum.y - Friction*Delta, 0, MaxVerticalSpeed);
 			}
 			else if(Momentum.y < 0)
 			{
-				Momentum.y = Mathf.Clamp(Momentum.y + Friction*Delta, -MaxMovementSpeed, 0);
+				Momentum.y = Mathf.Clamp(Momentum.y + Friction*Delta, -MaxVerticalSpeed, 0);
 			}
 		}
 
 		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
-			float Volume = Abs(Clamp(LastMomentumY, -MaxMovementSpeed, 0))/2 - 30;
+			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/2 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
