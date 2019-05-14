@@ -1,8 +1,5 @@
 sudo: false
-
-branches:
-  only:
-    - master
+language: generic
 
 addons:
   apt:
