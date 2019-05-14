@@ -72,7 +72,7 @@ public class World : Node
 	}
 
 
-	public static void Start(bool AsServer = false)
+	public static void Start()
 	{
 		Close();
 		Menu.Close();
@@ -88,11 +88,6 @@ public class World : Node
 		ItemsRoot = new Node();
 		ItemsRoot.SetName("ItemsRoot");
 		SkyScene.AddChild(ItemsRoot);
-
-		if(AsServer)
-		{
-			DefaultPlatforms();
-		}
 
 		IsOpen = true;
 	}

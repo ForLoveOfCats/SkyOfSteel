@@ -223,7 +223,7 @@ public class Net : Node
 		}
 
 		PeerList.Clear();
-		World.Start(AsServer: true);
+		World.Start();
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);
@@ -235,6 +235,8 @@ public class Net : Node
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Nicknames[ServerId] = Game.Nickname;
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+
+		World.DefaultPlatforms();
 	}
 
 

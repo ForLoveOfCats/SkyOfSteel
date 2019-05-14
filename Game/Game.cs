@@ -107,11 +107,12 @@ public class Game : Node
 		NewPlayer.Id = Id;
 		NewPlayer.SetName(Id.ToString());
 		Net.Players.Add(Id, NewPlayer);
-		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 
 		if(Possess)
 		{
 			PossessedPlayer = NewPlayer;
 		}
+
+		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 	}
 }
