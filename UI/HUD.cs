@@ -34,8 +34,9 @@ public class HUD : Node
 
 		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
 
-		GetTree().Connect("screen_resized", this, "OnScreenResized");
+		GetTree().Connect("screen_resized", this, nameof(OnScreenResized));
 		HotbarUpdate();
+		this.CallDeferred(nameof(OnScreenResized));
 	}
 
 
