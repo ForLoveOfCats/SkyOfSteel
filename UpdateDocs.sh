@@ -1,22 +1,22 @@
 #First we note the current commit
 COMMIT="$(git rev-parse HEAD)"
 
-#then we get the GithubPages branch
-mkdir ../GithubPages
-cd ../GithubPages
-git clone --depth 1 -b GithubPages --single-branch https://github.com/ForLoveOfCats/SkyOfSteel.git
+#then we get the gh-pages branch
+mkdir ../gh-pages
+cd ../gh-pages
+git clone --depth 1 -b gh-pages --single-branch https://github.com/ForLoveOfCats/SkyOfSteel.git
 cd SkyOfSteel
-git checkout GithubPages #just in case
+git checkout gh-pages #just in case
 cd ../../SkyOfSteel
 
 #then we build the docs from the original clone
 doxygen
 
 #almost done, next we copy the results into the copy
-cp -a -r "./Docs" "../GithubPages/SkyOfSteel/Docs"
+cp -a -r "./Docs" "../gh-pages/SkyOfSteel/Docs"
 
 #finally we commit and push to the branch
-cd ../GithubPages/SkyOfSteel
+cd ../gh-pages/SkyOfSteel
 git add * #track and stage any new files
 git stage * #stage any changed files
 git commit -m "Update docs for $COMMIT"
