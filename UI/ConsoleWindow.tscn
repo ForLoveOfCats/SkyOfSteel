@@ -21,15 +21,15 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SpacerLeft" type="Panel" parent="HBox"]
-margin_right = 5.0
+margin_right = 4.0
 margin_bottom = 572.0
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.01
 custom_styles/panel = SubResource( 1 )
 
 [node name="Console" type="RichTextLabel" parent="HBox"]
-margin_left = 9.0
-margin_right = 509.0
+margin_left = 8.0
+margin_right = 504.0
 margin_bottom = 572.0
 focus_mode = 2
 size_flags_horizontal = 3
@@ -39,9 +39,17 @@ custom_colors/default_color = Color( 0, 0, 0, 1 )
 scroll_following = true
 selection_enabled = true
 
+[node name="SpacerMiddle" type="Panel" parent="HBox"]
+margin_left = 508.0
+margin_right = 512.0
+margin_bottom = 572.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+custom_styles/panel = SubResource( 1 )
+
 [node name="Log" type="RichTextLabel" parent="HBox"]
-margin_left = 513.0
-margin_right = 1013.0
+margin_left = 516.0
+margin_right = 1012.0
 margin_bottom = 572.0
 focus_mode = 2
 size_flags_horizontal = 3
@@ -52,7 +60,7 @@ scroll_following = true
 selection_enabled = true
 
 [node name="SpacerRight" type="Panel" parent="HBox"]
-margin_left = 1017.0
+margin_left = 1016.0
 margin_right = 1024.0
 margin_bottom = 572.0
 size_flags_horizontal = 3
