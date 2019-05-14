@@ -74,13 +74,13 @@ public class Console : Node
 
 	public static void Print(object ToPrint)
 	{
-		ConsoleLabel.Text += " " + ToPrint.ToString() + "\n";
+		ConsoleLabel.Text += $"{ToPrint}\n";
 	}
 
 
 	public static void Log(object ToLog)
 	{
-		LogLabel.Text += " " + ToLog.ToString() + "\n";
+		LogLabel.Text += $"{ToLog}\n";
 	}
 
 
@@ -98,7 +98,7 @@ public class Console : Node
 
 	public static void Execute(string Command)
 	{
-		Console.Print("\n >>> " + Command);
+		Console.Print("\n>>> " + Command);
 
 		if(History.Count <= 0 || History[History.Count-1] != Command)
 		{
