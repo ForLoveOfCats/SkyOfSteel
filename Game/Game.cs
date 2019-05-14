@@ -70,7 +70,7 @@ public class Game : Node
 			}
 		}
 
-		if(Input.IsActionJustPressed("ConsoleToggle"))
+		if(Input.IsActionJustPressed("ConsoleToggle") && !Menu.PauseOpen)
 		{
 			if(Console.IsOpen)
 			{
