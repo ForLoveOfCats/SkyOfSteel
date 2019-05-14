@@ -6,22 +6,7 @@ using System.Collections.Generic;
 public class ChunkClass
 {
 	public List<Structure> Structures = new List<Structure>();
-	private List<DroppedItem> _Items = new List<DroppedItem>();
-	public List<DroppedItem> Items
-	{
-		get
-		{
-			return _Items;
-		}
-		set
-		{
-			if(_Items.Count > 1)
-			{
-				// throw new System.Exception("A second dropped item was added to this chunk");
-			}
-			_Items = value;
-		}
-	}
+	public List<DroppedItem> Items = new List<DroppedItem>();
 
 	public ChunkClass()
 	{
