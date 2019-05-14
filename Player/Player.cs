@@ -91,7 +91,7 @@ public class Player : KinematicBody
 		CenterRayCast = Center.GetNode<RayCast>("RayCast");
 		CenterRayCast.AddException(this);
 
-		PositionReset();
+		MovementReset();
 
 		if(Possessed)
 		{
@@ -162,9 +162,10 @@ public class Player : KinematicBody
 	}
 
 
-	public void PositionReset()
+	public void MovementReset()
 	{
-		Translation = new Vector3(0,1,0);
+		Translation = new Vector3(0, 0.6f, 0);
+		Momentum = new Vector3();
 	}
 
 
