@@ -7,10 +7,5 @@ public class ChunkClass
 {
 	public List<Structure> Structures = new List<Structure>();
 	public List<DroppedItem> Items = new List<DroppedItem>();
-
-	public ChunkClass()
-	{
-		Items = new List<DroppedItem>();
-	}
 }
 
