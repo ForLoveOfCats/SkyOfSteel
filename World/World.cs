@@ -354,7 +354,7 @@ public class World : Node
 			Structure Branch = StructureRoot.GetNode(Name) as Structure;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
 			Chunks[ChunkTuple].Structures.Remove(Branch);
-			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
+			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -376,7 +376,7 @@ public class World : Node
 			DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
-			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
+			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);

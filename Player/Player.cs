@@ -594,7 +594,6 @@ public class Player : KinematicBody
 			{
 				World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
 				World.ItemList.Remove(Item);
-				Item.Remove();
 			}
 		}
 
