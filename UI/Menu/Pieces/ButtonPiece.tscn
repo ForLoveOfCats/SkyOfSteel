@@ -2,7 +2,7 @@
 
 [ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.cs" type="Script" id=2]
-[ext_resource path="res://UI/Sfx/ButtomMouseOverSfx.wav" type="AudioStream" id=3]
+[ext_resource path="res://UI/Menu/Pieces/MouseOverSfx.tscn" type="PackedScene" id=3]
 
 [node name="Button" type="Button"]
 margin_right = 12.0
@@ -12,7 +12,5 @@ custom_fonts/font = ExtResource( 1 )
 text = "Default Button Text"
 script = ExtResource( 2 )
 
-[node name="MouseOverSfx" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 3 )
-volume_db = -15.0
+[node name="MouseOverSfx" parent="." instance=ExtResource( 3 )]
 [connection signal="mouse_entered" from="." to="." method="MouseEnter"]
