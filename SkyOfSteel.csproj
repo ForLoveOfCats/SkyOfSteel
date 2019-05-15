@@ -71,6 +71,7 @@
     <Compile Include="Player\PlayerSfxManager.cs" />
     <Compile Include="Scripting\Gamemode.cs" />
     <Compile Include="Scripting\GmConfig.cs" />
+    <Compile Include="UI\Menu\Pieces\ButtonPiece.cs" />
     <Compile Include="World\BuildPositions.cs" />
     <Compile Include="World\BuildRotations.cs" />
     <Compile Include="World\Chunk.cs" />
