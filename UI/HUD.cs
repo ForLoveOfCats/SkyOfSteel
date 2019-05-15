@@ -15,6 +15,8 @@ public class HUD : Node
 	private Label PlayerPositionLabel;
 	private Label FPSLabel;
 
+	public bool Visible = true;
+
 	HUD()
 	{
 		if(Engine.EditorHint) {return;}
@@ -37,6 +39,8 @@ public class HUD : Node
 		GetTree().Connect("screen_resized", this, nameof(OnScreenResized));
 		HotbarUpdate();
 		this.CallDeferred(nameof(OnScreenResized));
+
+		Show(); //To make sure we catch anything which might be wrong after hide then show
 	}
 
 
@@ -87,6 +91,7 @@ public class HUD : Node
 	public void Hide()
 	{
 		HideNodes(GetChildren());
+		Visible = false;
 	}
 
 
@@ -106,6 +111,7 @@ public class HUD : Node
 	public void Show()
 	{
 		ShowNodes(GetChildren());
+		Visible = true;
 	}
 
 
@@ -141,7 +147,7 @@ public class HUD : Node
 			}
 			else
 			{
-				Current.Value.Visible = true;
+				Current.Value.Visible = Visible;
 				Current.Value.MarginLeft = Game.PossessedPlayer.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x/2;
 				Current.Value.MarginTop = Game.PossessedPlayer.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y/2;
 			}
