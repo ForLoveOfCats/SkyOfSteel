@@ -26,7 +26,7 @@ public class Player : KinematicBody
 	public float MinWallKickRecoverPercentage = 0.2f;
 	public float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
 	public float Gravity = 14f;
-	public float ItemThrowPower = 15f;
+	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
 	public float LookDivisor = 6;
 
