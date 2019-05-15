@@ -553,6 +553,8 @@ public class Player : KinematicBody
 				else
 					Inventory[InventorySlot] = null;
 				HUDInstance.HotbarUpdate();
+
+				SfxManager.FpThrow();
 			}
 		}
 	}
