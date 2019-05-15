@@ -17,6 +17,8 @@ public class World : Node
 	public static GridClass Grid = new GridClass();
 
 	public static bool IsOpen = false;
+	public static string SaveName = null;
+
 	public static Node StructureRoot = null;
 	public static Node ItemsRoot = null;
 
@@ -113,6 +115,7 @@ public class World : Node
 		ItemList.Clear();
 		Grid.Clear();
 
+		SaveName = null;
 		IsOpen = false;
 	}
 
@@ -142,32 +145,32 @@ public class World : Node
 	}
 
 
-	public static void Save(string SaveName)
+	public static void Save(string SaveNameArg)
 	{
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://Saves/" + SaveName))
+		if(SaveDir.DirExists("user://Saves/" + SaveNameArg))
 		{
-			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveName, true);
+			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveNameArg, true);
 		}
 
 		int SaveCount = 0;
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
-			SaveCount += SaveChunk(Chunk.Key, SaveName);
+			SaveCount += SaveChunk(Chunk.Key, SaveNameArg);
 		}
-		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
+		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveNameArg}'");
 	}
 
 
-	public static bool Load(string SaveName)
+	public static bool Load(string SaveNameArg)
 	{
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists($"user://Saves/{SaveName}"))
+		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
 		{
 			Clear();
 			DefaultPlatforms();
 
-			SaveDir.Open($"user://Saves/{SaveName}");
+			SaveDir.Open($"user://Saves/{SaveNameArg}");
 			SaveDir.ListDirBegin(true, true);
 
 			int PlaceCount = 0;
@@ -180,19 +183,21 @@ public class World : Node
 					break;
 				}
 
-				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{FileName}"));
+				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{FileName}"));
 				PlaceCount += Returned.Item2;
 				if(!Returned.Item1)
 				{
-					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveName}'");
+					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveNameArg}'");
 				}
 			}
-			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
+			SaveName = SaveNameArg;
+			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveNameArg}'");
 			return true;
 		}
 		else
 		{
-			Console.ThrowLog($"Failed to load save '{SaveName}' as it does not exist");
+			SaveName = null;
+			Console.ThrowLog($"Failed to load save '{SaveNameArg}' as it does not exist");
 			return false;
 		}
 	}
@@ -455,16 +460,16 @@ public class World : Node
 	}
 
 
-	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveName)
+	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveNameArg)
 	{
 		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
 
 		Directory SaveDir = new Directory();
-		if(!SaveDir.DirExists("user://Saves/"+SaveName))
+		if(!SaveDir.DirExists("user://Saves/"+SaveNameArg))
 		{
-			SaveDir.MakeDirRecursive("user://Saves/"+SaveName);
+			SaveDir.MakeDirRecursive("user://Saves/"+SaveNameArg);
 		}
-		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{ChunkTuple.ToString()}.json", SerializedChunk);
+		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
 		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
