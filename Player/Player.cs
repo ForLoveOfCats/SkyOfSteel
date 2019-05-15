@@ -28,7 +28,6 @@ public class Player : KinematicBody
 	public float Gravity = 14f;
 	public float ItemThrowPower = 15f;
 	public float ItemPickupDistance = 8f;
-	public float MinItemPickupLife = 1; //In seconds
 	public float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
@@ -580,7 +579,7 @@ public class Player : KinematicBody
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
 			foreach(DroppedItem Item in World.ItemList)
 			{
-				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= MinItemPickupLife)
+				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
 					CenterRayCast.CastTo = Item.Translation - CenterPosition(); //CastTo is relative
 					CenterRayCast.ForceRaycastUpdate();
