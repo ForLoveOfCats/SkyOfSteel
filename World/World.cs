@@ -367,9 +367,8 @@ public class World : Node
 	}
 
 
-	//Name is the string GUID name of the dropped item to be removed
 	[Remote]
-	public void RemoveDroppedItem(string Guid)
+	public void RemoveDroppedItem(string Guid) //NOTE: Make sure to remove from World.ItemList after client callsite
 	{
 		if(ItemsRoot.HasNode(Guid))
 		{

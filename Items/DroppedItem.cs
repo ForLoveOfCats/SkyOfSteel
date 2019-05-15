@@ -41,6 +41,7 @@ public class DroppedItem : KinematicBody, IInGrid
 	public void Remove()
 	{
 		World.Self.RemoveDroppedItem(this.GetName());
+		World.ItemList.Remove(this);
 	}
 
 
