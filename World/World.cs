@@ -589,7 +589,7 @@ public class World : Node
 			if(Self.GetTree().IsNetworkServer())
 			{
 				//On server
-				DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
+				DroppedItem Item = ItemsRoot.GetNodeOrNull(Guid) as DroppedItem;
 				if(Item != null) //Only lookup node once instead of using HasNode
 				{
 					if(Id == Net.Work.GetNetworkUniqueId())
