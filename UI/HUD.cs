@@ -14,6 +14,7 @@ public class HUD : Node
 	private Label ChunkInfoLabel;
 	private Label PlayerPositionLabel;
 	private Label FPSLabel;
+	public CanvasLayer NickLabelLayer;
 
 	public bool Visible = true;
 
@@ -33,6 +34,7 @@ public class HUD : Node
 		ChunkInfoLabel = GetNode<Label>("CLayer/ChunkInfo");
 		PlayerPositionLabel = GetNode<Label>("CLayer/PlayerPosition");
 		FPSLabel = GetNode<Label>("CLayer/FPSLabel");
+		NickLabelLayer = GetNode<CanvasLayer>("NickLabelLayer");
 
 		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
 
@@ -119,7 +121,7 @@ public class HUD : Node
 	{
 		Label Instance = NickLabelScene.Instance() as Label;
 		Instance.Text = Nick;
-		AddChild(Instance);
+		NickLabelLayer.AddChild(Instance);
 		NickLabels[Id] = Instance;
 	}
 
