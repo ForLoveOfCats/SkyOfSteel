@@ -20,27 +20,26 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" parent="." instance=ExtResource( 2 )]
-margin_top = 26.0
 margin_right = 1024.0
-margin_bottom = 66.0
+margin_bottom = 52.0
 text = "Help"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
-margin_top = 70.0
+margin_top = 56.0
 margin_right = 1024.0
-margin_bottom = 89.0
+margin_bottom = 80.0
 
 [node name="ControlsTitle" parent="." instance=ExtResource( 4 )]
-margin_top = 93.0
+margin_top = 84.0
 margin_right = 1024.0
-margin_bottom = 117.0
+margin_bottom = 115.0
 custom_fonts/font = SubResource( 1 )
 text = "Default Controls"
 
 [node name="Label" parent="." instance=ExtResource( 4 )]
-margin_top = 121.0
+margin_top = 119.0
 margin_right = 1024.0
-margin_bottom = 448.0
+margin_bottom = 548.0
 text = "Forward - W
 Backward - S
 Right - D
@@ -51,6 +50,7 @@ Build - Left Click
 Remove - Right Click
 Switch Hotbar Slot - Mouse Wheel
 Rotate Object Placement - R
+Throw Item - Q
 Teleport to Origin - K
 Toggle Fly Mode - T
 Fly Up - Space
@@ -58,31 +58,31 @@ Fly Down - Control
 Toggle Console - Tilda"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
-margin_top = 452.0
+margin_top = 552.0
 margin_right = 1024.0
-margin_bottom = 471.0
+margin_bottom = 576.0
 
 [node name="NetworkTitle" parent="." instance=ExtResource( 4 )]
-margin_top = 475.0
+margin_top = 580.0
 margin_right = 1024.0
-margin_bottom = 499.0
+margin_bottom = 611.0
 custom_fonts/font = SubResource( 1 )
 text = "Network Information"
 
 [node name="Label2" parent="." instance=ExtResource( 4 )]
-margin_top = 503.0
+margin_top = 615.0
 margin_right = 1024.0
-margin_bottom = 522.0
+margin_bottom = 639.0
 text = "Default Port: 27015"
 
 [node name="SpacerLabel3" parent="." instance=ExtResource( 3 )]
-margin_top = 526.0
+margin_top = 643.0
 margin_right = 1024.0
-margin_bottom = 545.0
+margin_bottom = 667.0
 
 [node name="BackButton" parent="." instance=ExtResource( 6 )]
-margin_top = 549.0
+margin_top = 671.0
 margin_right = 1024.0
-margin_bottom = 574.0
+margin_bottom = 701.0
 text = "Back"
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]
