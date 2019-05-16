@@ -16,6 +16,14 @@ public class PauseMenu : VBoxContainer
 		{
 			PlayingOn.Text = $"Connected to server at: {Net.Ip}";
 		}
+
+		if(!Net.Work.IsNetworkServer())
+		{
+			Button SaveButton = GetNode<Button>("SaveButton");
+			SaveButton.Disabled = true;
+			SaveButton.HintTooltip = "Cannot save as client";
+			SaveButton.MouseDefaultCursorShape = CursorShape.Arrow;
+		}
 	}
 
 

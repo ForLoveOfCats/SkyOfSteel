@@ -13,6 +13,7 @@ public class ButtonPiece : Button
 
 	public void MouseEnter()
 	{
-		MouseOverSfx.Play();
+		if(!Disabled)
+			MouseOverSfx.Play();
 	}
 }
