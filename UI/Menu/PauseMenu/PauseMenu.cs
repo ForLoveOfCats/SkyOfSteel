@@ -35,7 +35,8 @@ public class PauseMenu : VBoxContainer
 
 	public void SavePressed()
 	{
-		Menu.BuildSave();
+		if(Net.Work.IsNetworkServer())
+			World.Save(World.SaveName);
 	}
 
 

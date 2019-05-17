@@ -20,7 +20,6 @@ public class Menu : Node
 	private static PackedScene ConnectMenu;
 	private static PackedScene WaitConnecting;
 	private static PackedScene PauseMenu;
-	private static PackedScene SaveMenu;
 
 	static Menu()
 	{
@@ -37,7 +36,6 @@ public class Menu : Node
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 		WaitConnecting = GD.Load<PackedScene>("res://UI/Menu/WaitConnectingMenu/WaitConnectingMenu.tscn");
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
-		SaveMenu = GD.Load<PackedScene>("res://UI/Menu/SaveMenu/SaveMenu.tscn");
 	}
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
@@ -165,17 +163,6 @@ public class Menu : Node
 		Reset();
 
 		Contents = PauseMenu.Instance();
-		Center.AddChild(Contents);
-		ShadedBackground.Show();
-		PauseOpen = true;
-	}
-
-
-	public static void BuildSave()
-	{
-		Reset();
-
-		Contents = SaveMenu.Instance();
 		Center.AddChild(Contents);
 		ShadedBackground.Show();
 		PauseOpen = true;
