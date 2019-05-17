@@ -164,6 +164,11 @@ public class World : Node
 
 	public static bool Load(string SaveNameArg)
 	{
+		if(string.IsNullOrEmpty(SaveNameArg) || string.IsNullOrWhiteSpace(SaveNameArg))
+		{
+			throw new Exception("Invalid save name passed to World.Save");
+		}
+
 		Directory SaveDir = new Directory();
 		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
 		{
