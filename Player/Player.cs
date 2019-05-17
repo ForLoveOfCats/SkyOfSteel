@@ -68,7 +68,6 @@ public class Player : KinematicBody
 
 	public Camera Cam;
 	public Spatial Center;
-	public RayCast CenterRayCast;
 
 	public HUD HUDInstance;
 	private Ghost GhostInstance;
@@ -87,8 +86,6 @@ public class Player : KinematicBody
 	{
 		Cam = GetNode<Camera>("SteelCamera");
 		Center = GetNode<Spatial>("Center");
-		CenterRayCast = Center.GetNode<RayCast>("RayCast");
-		CenterRayCast.AddException(this);
 
 		MovementReset();
 
@@ -583,9 +580,9 @@ public class Player : KinematicBody
 			{
 				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
-					CenterRayCast.CastTo = Item.Translation - CenterPosition(); //CastTo is relative
-					CenterRayCast.ForceRaycastUpdate();
-					if(!CenterRayCast.IsColliding())
+					PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
+					Godot.Collections.Dictionary Results =State.IntersectRay(CenterPosition(), Item.Translation, new Godot.Collections.Array{this}, 1);
+					if(Results.Count <= 0)
 						ToPickUpList.Add(Item);
 				}
 			}
