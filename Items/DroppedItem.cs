@@ -8,7 +8,7 @@ public class DroppedItem : KinematicBody, IInGrid
 	private const float MaxFallSpeed = -40f;
 	private const float Friction = 15f;
 	private const float RPS = 0.5f; //Revolutions Per Second
-	public static float MinPickupLife = 0.4f; //In seconds
+	public static float MinPickupLife = 0.6f; //In seconds
 
 	public System.Tuple<int, int> CurrentChunkTuple;
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
