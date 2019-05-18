@@ -115,4 +115,27 @@ public class Game : Node
 
 		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 	}
+
+
+	static public void CopyFolder(string SourceFolder, string DestFolder) //TODO: Clean up
+	{
+		if(System.IO.Directory.Exists(DestFolder))
+			System.IO.Directory.CreateDirectory(DestFolder);
+
+		string[] Files = System.IO.Directory.GetFiles(SourceFolder);
+		foreach(string File in Files)
+		{
+			string Name = System.IO.Path.GetFileName(File);
+			string Dest = System.IO.Path.Combine(DestFolder, Name);
+			System.IO.File.Copy(File, Dest);
+		}
+
+		string[] Folders = System.IO.Directory.GetDirectories(SourceFolder);
+		foreach(string Folder in Folders)
+		{
+			string Name = System.IO.Path.GetFileName(Folder);
+			string Dest = System.IO.Path.Combine(DestFolder, Name);
+			CopyFolder(Folder, Dest);
+		}
+	}
 }
