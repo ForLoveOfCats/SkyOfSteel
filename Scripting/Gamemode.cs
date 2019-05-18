@@ -55,6 +55,12 @@ public class Gamemode : Node
 	}
 
 
+	public virtual bool ShouldWallKick()
+	{
+		return true;
+	}
+
+
 	public virtual bool ShouldCrouch()
 	{
 		return true;
