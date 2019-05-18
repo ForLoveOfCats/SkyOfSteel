@@ -499,8 +499,9 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null && GhostInstance.CanBuild)
 					{
-						World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
-						//ID 1 for now so all client own all non-default structures
+						Vector3? PlacePosition = BuildPositions.Calculate(Hit, GhostInstance.CurrentMeshType);
+						if(PlacePosition != null && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType, PlacePosition.Value, BuildRotations.Calculate(Hit, GhostInstance.CurrentMeshType)))
+						   World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1); //ID 1 for now so all client own all non-default structures
 					}
 				}
 			}
@@ -523,7 +524,7 @@ public class Player : KinematicBody
 			if(BuildRayCast.IsColliding())
 			{
 				Structure Hit = BuildRayCast.GetCollider() as Structure;
-				if(Hit != null)
+				if(Hit != null && Game.Mode.ShouldRemoveStructure(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
 				{
 					Hit.NetRemove();
 				}

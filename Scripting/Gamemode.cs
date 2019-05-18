@@ -115,7 +115,7 @@ public class Gamemode : Node
 	}
 
 
-	public virtual bool ShouldPlaceStructure(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public virtual bool ShouldPlaceStructure(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
 	{
 		return true;
 	}

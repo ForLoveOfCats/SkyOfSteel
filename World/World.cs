@@ -308,50 +308,45 @@ public class World : Node
 			}
 		}
 
-		if(Game.Mode.ShouldPlaceStructure(BranchType, Position, Rotation, OwnerId))
+		Structure Branch = Scenes[BranchType].Instance() as Structure;
+		Branch.Type = BranchType;
+		Branch.OwnerId = OwnerId;
+		Branch.Translation = Position;
+		Branch.RotationDegrees = Rotation;
+		Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
+		StructureRoot.AddChild(Branch);
+
+		AddStructureToChunk(Branch);
+		Grid.AddItem(Branch);
+
+		//Nested if to prevent very long line
+		if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 		{
-			Structure Branch = Scenes[BranchType].Instance() as Structure;
-			Branch.Type = BranchType;
-			Branch.OwnerId = OwnerId;
-			Branch.Translation = Position;
-			Branch.RotationDegrees = Rotation;
-			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-			StructureRoot.AddChild(Branch);
-
-			AddStructureToChunk(Branch);
-			Grid.AddItem(Branch);
-
-			//Nested if to prevent very long line
-			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
 			{
-				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
+				//If network is inited, am the server, and platform is to far away then...
+				Branch.Hide(); //...make it not visible but allow it to remain in the world
+			}
+
+			foreach(int Id in Net.PeerList)
+			{
+				if(Id == Net.ServerId) //Skip self (we are the server)
 				{
-					//If network is inited, am the server, and platform is to far away then...
-					Branch.Hide(); //...make it not visible but allow it to remain in the world
+					continue;
 				}
 
-				foreach(int Id in Net.PeerList)
+				Vector3 PlayerPos = Net.Players[Id].Translation;
+				if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
 				{
-					if(Id == Net.ServerId) //Skip self (we are the server)
+					if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
 					{
-						continue;
-					}
-
-					Vector3 PlayerPos = Net.Players[Id].Translation;
-					if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
-					{
-						if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
-						{
-							RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
-						}
+						RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
 					}
 				}
 			}
-
-			return Branch;
 		}
 
-		return null;
+		return Branch;
 	}
 
 
