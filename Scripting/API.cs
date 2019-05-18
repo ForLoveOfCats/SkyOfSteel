@@ -239,4 +239,10 @@ public static class API
 		Console.ThrowPrint("Must be hosting to reload gamemode");
 		return false;
 	}
+
+
+	public static void Quit()
+	{
+		Game.Quit();
+	}
 }
