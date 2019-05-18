@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://UI/Theme/Theme.tres" type="Theme" id=1]
+
+[node name="Label" type="Label"]
+margin_right = 210.0
+margin_bottom = 21.0
+theme = ExtResource( 1 )
+text = "Default ItemCountLabel Text"

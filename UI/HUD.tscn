@@ -27,7 +27,6 @@ texture = ExtResource( 2 )
 expand = true
 
 [node name="HotBarCenter" type="CenterContainer" parent="CLayer"]
-editor/display_folded = true
 anchor_bottom = 1.0
 margin_right = 50.0
 size_flags_vertical = 3

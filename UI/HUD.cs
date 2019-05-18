@@ -6,6 +6,7 @@ public class HUD : Node
 {
 	private Texture Alpha;
 	private Texture Triangle;
+	private PackedScene ItemCountLabelScene;
 	private PackedScene NickLabelScene;
 
 	private Dictionary<int, Label> NickLabels = new Dictionary<int, Label>();
@@ -24,6 +25,7 @@ public class HUD : Node
 
 		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;
 		Triangle = GD.Load("res://UI/Textures/Triangle.png") as Texture;
+		ItemCountLabelScene = GD.Load<PackedScene>("res://UI/ItemCountLabel.tscn");
 		NickLabelScene = GD.Load<PackedScene>("res://UI/NickLabel.tscn");
 	}
 
@@ -54,10 +56,24 @@ public class HUD : Node
 			if(Game.PossessedPlayer.Inventory[Slot] != null)
 			{
 				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Type];
+
+				foreach(Node Child in SlotPatch.GetChildren())
+				{
+					Child.QueueFree();
+				}
+
+				Label CountLabel = ItemCountLabelScene.Instance() as Label;
+				CountLabel.Text = Game.PossessedPlayer.Inventory[Slot].Count.ToString();
+				SlotPatch.AddChild(CountLabel);
 			}
 			else
 			{
 				SlotPatch.Texture = Alpha;
+
+				foreach(Node Child in SlotPatch.GetChildren())
+				{
+					Child.QueueFree();
+				}
 			}
 
 			SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
