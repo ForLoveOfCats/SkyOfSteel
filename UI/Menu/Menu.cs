@@ -15,6 +15,7 @@ public class Menu : Node
 	private static PackedScene Main;
 	private static PackedScene Help;
 	private static PackedScene Credits;
+	private static PackedScene Licenses;
 	private static PackedScene Host;
 	private static PackedScene ConnectMenu;
 	private static PackedScene WaitConnecting;
@@ -30,6 +31,7 @@ public class Menu : Node
 		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
 		Help = GD.Load<PackedScene>("res://UI/Menu/HelpMenu/HelpMenu.tscn");
 		Credits = GD.Load<PackedScene>("res://UI/Menu/CreditsMenu/CreditsMenu.tscn");
+		Licenses = GD.Load<PackedScene>("res://UI/Menu/LicensesMenu/LicensesMenu.tscn");
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 		WaitConnecting = GD.Load<PackedScene>("res://UI/Menu/WaitConnectingMenu/WaitConnectingMenu.tscn");
@@ -115,6 +117,15 @@ public class Menu : Node
 		Reset();
 
 		Contents = Credits.Instance();
+		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildLicenses()
+	{
+		Reset();
+
+		Contents = Licenses.Instance();
 		Center.AddChild(Contents);
 	}
 
