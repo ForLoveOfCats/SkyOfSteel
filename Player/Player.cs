@@ -160,8 +160,11 @@ public class Player : KinematicBody
 
 	public void MovementReset()
 	{
-		Translation = new Vector3(0, 0.6f, 0);
-		Momentum = new Vector3();
+		if(Game.Mode.ShouldMovementReset())
+		{
+			Translation = new Vector3(0, 0.6f, 0);
+			Momentum = new Vector3();
+		}
 	}
 
 

@@ -85,6 +85,12 @@ public class Gamemode : Node
 	}
 
 
+	public virtual bool ShouldMovementReset()
+	{
+		return true;
+	}
+
+
 	public virtual bool ShouldPlayerRotate(float Rotation)
 	{
 		return true;
