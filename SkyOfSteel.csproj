@@ -107,8 +107,6 @@
     <Compile Include="UI\Menu\Menu.cs" />
     <Compile Include="UI\Menu\NickMenu\NickMenu.cs" />
     <Compile Include="UI\Menu\PauseMenu\PauseMenu.cs" />
-    <Compile Include="UI\Menu\LoadWorldHost\LoadHostButton.cs" />
-    <Compile Include="UI\Menu\LoadWorldHost\LoadWorldHost.cs" />
     <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs" />
   </ItemGroup>
   <ItemGroup>

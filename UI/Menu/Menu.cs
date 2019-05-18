@@ -16,7 +16,6 @@ public class Menu : Node
 	private static PackedScene Help;
 	private static PackedScene Credits;
 	private static PackedScene Host;
-	private static PackedScene LoadHost;
 	private static PackedScene ConnectMenu;
 	private static PackedScene WaitConnecting;
 	private static PackedScene PauseMenu;
@@ -32,7 +31,6 @@ public class Menu : Node
 		Help = GD.Load<PackedScene>("res://UI/Menu/HelpMenu/HelpMenu.tscn");
 		Credits = GD.Load<PackedScene>("res://UI/Menu/CreditsMenu/CreditsMenu.tscn");
 		Host = GD.Load<PackedScene>("res://UI/Menu/HostMenu/HostMenu.tscn");
-		LoadHost = GD.Load<PackedScene>("res://UI/Menu/LoadWorldHost/LoadWorldHost.tscn");
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 		WaitConnecting = GD.Load<PackedScene>("res://UI/Menu/WaitConnectingMenu/WaitConnectingMenu.tscn");
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
@@ -126,15 +124,6 @@ public class Menu : Node
 		Reset();
 
 		Contents = Host.Instance();
-		Center.AddChild(Contents);
-	}
-
-
-	public static void BuildLoadHost()
-	{
-		Reset();
-
-		Contents = LoadHost.Instance();
 		Center.AddChild(Contents);
 	}
 
