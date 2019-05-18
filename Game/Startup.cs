@@ -110,8 +110,8 @@ public class Startup : Node
 
 		Bindings.Bind("R", "Game.PossessedPlayer.BuildRotate");
 		Bindings.Bind("XboxX", "Game.PossessedPlayer.BuildRotate");
-		Bindings.Bind("Q", "Game.PossessedPlayer.DropCurrentItem");
-		Bindings.Bind("RightStickClick", "Game.PossessedPlayer.DropCurrentItem");
+		Bindings.Bind("Q", "Game.PossessedPlayer.ThrowCurrentItem");
+		Bindings.Bind("RightStickClick", "Game.PossessedPlayer.ThrowCurrentItem");
 
 		Bindings.Bind("K", "Game.PossessedPlayer.MovementReset");
 		Bindings.Bind("XboxSelect", "Game.PossessedPlayer.MovementReset");

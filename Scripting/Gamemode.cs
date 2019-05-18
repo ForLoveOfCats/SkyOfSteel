@@ -67,6 +67,12 @@ public class Gamemode : Node
 	}
 
 
+	public virtual bool ShouldThrowItem()
+	{
+		return true;
+	}
+
+
 	public virtual bool ShouldToggleFly() //Only prevents ToggleFly called by keybinds, can be overrode by console
 	{
 		return true;

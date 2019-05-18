@@ -533,11 +533,11 @@ public class Player : KinematicBody
 	}
 
 
-	public void DropCurrentItem(float Sens)
+	public void ThrowCurrentItem(float Sens)
 	{
 		if(Sens > 0)
 		{
-			if(Inventory[InventorySlot] != null)
+			if(Inventory[InventorySlot] != null && Game.Mode.ShouldThrowItem())
 			{
 				Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
 					.Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical))
