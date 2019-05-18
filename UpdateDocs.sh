@@ -13,7 +13,7 @@ cd ../../SkyOfSteel
 doxygen
 
 #almost done, next we copy the results into the copy
-cp -a -r "./DoxygenOutput" "../gh-pages/SkyOfSteel/Docs/Master"
+cp -a -r "./DoxygenOutput" "../gh-pages/SkyOfSteel/Docs/Master/DoxygenOutput"
 
 #finally we commit and push to the branch
 cd ../gh-pages/SkyOfSteel
