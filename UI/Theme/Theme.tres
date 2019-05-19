@@ -1,18 +1,17 @@
-[gd_resource type="Theme" load_steps=11 format=2]
+[gd_resource type="Theme" load_steps=10 format=2]
 
 [ext_resource path="res://UI/Theme/ButtonDisabled.tres" type="StyleBox" id=1]
 [ext_resource path="res://UI/Theme/ButtonHover.tres" type="StyleBox" id=2]
 [ext_resource path="res://UI/Theme/ButtonNormal.tres" type="StyleBox" id=3]
 [ext_resource path="res://UI/Theme/ButtonPressed.tres" type="StyleBox" id=4]
 [ext_resource path="res://UI/Theme/ScrollBarBody.tres" type="StyleBox" id=5]
-[ext_resource path="res://UI/Theme/LineEditFocus.tres" type="StyleBox" id=6]
-[ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=7]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=8]
+[ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=6]
+[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
 [sub_resource type="DynamicFont" id=2]
-font_data = ExtResource( 8 )
+font_data = ExtResource( 7 )
 
 [resource]
 default_font = SubResource( 2 )
@@ -183,7 +182,7 @@ LineEdit/constants/minimum_spaces = 12
 LineEdit/fonts/font = null
 LineEdit/icons/clear = null
 LineEdit/styles/focus = ExtResource( 6 )
-LineEdit/styles/normal = ExtResource( 7 )
+LineEdit/styles/normal = ExtResource( 6 )
 LineEdit/styles/read_only = null
 LinkButton/colors/font_color = Color( 0, 0, 0, 1 )
 LinkButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
@@ -335,7 +334,7 @@ TextEdit/fonts/font = null
 TextEdit/icons/tab = null
 TextEdit/styles/completion = null
 TextEdit/styles/focus = null
-TextEdit/styles/normal = ExtResource( 7 )
+TextEdit/styles/normal = ExtResource( 6 )
 TextEdit/styles/read_only = null
 ToolButton/colors/font_color = Color( 0, 0, 0, 1 )
 ToolButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
