@@ -211,6 +211,21 @@ public static class API
 	}
 
 
+	public static bool ReloadSave()
+	{
+		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		{
+			World.Load(World.SaveName);
+			return true;
+		}
+		else
+		{
+			Console.ThrowPrint("Cannot reload savegame when not hosting");
+			return false;
+		}
+	}
+
+
 	public static bool Gamemode(string Name)
 	{
 		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
