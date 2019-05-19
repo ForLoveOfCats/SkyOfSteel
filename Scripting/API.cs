@@ -223,7 +223,7 @@ public static class API
 	}
 
 
-	public static bool Reload()
+	public static bool ReloadGm()
 	{
 		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
 		{
