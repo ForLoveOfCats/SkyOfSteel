@@ -1,7 +1,7 @@
 using Godot;
 
 
-class ConsoleWindow : VBoxContainer
+class ConsoleWindow : Panel
 {
 	bool IsOpen;
 	LineEdit InputLine;
@@ -28,7 +28,7 @@ class ConsoleWindow : VBoxContainer
 
 	public override void _Ready()
 	{
-		InputLine = GetNode("LineEdit") as LineEdit;
+		InputLine = GetNode("VBox/LineEdit") as LineEdit;
 		Close(); //Console.IsOpen should already be false
 	}
 
