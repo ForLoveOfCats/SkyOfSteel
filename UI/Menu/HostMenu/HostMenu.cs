@@ -127,10 +127,13 @@ public class HostMenu : VBoxContainer
 
 	public void ConfirmCreatePressed()
 	{
-		System.IO.Directory.CreateDirectory($"{OS.GetUserDataDir()}/Saves/{CreateEdit.Text}");
+		if(!string.IsNullOrEmpty(CreateEdit.Text) && !string.IsNullOrWhiteSpace(CreateEdit.Text))
+		{
+			System.IO.Directory.CreateDirectory($"{OS.GetUserDataDir()}/Saves/{CreateEdit.Text}");
 
-		CloseCreateToolbar();
-		ResetSlotsVBox();
+			CloseCreateToolbar();
+			ResetSlotsVBox();
+		}
 	}
 
 
@@ -159,16 +162,19 @@ public class HostMenu : VBoxContainer
 
 	public void ConfirmRenamePressed()
 	{
-		string Source = $"{OS.GetUserDataDir()}/Saves/{SelectedSave}";
-		string Destination = $"{OS.GetUserDataDir()}/Saves/{RenameEdit.Text}";
-		if(System.IO.Directory.Exists(Source) && !System.IO.Directory.Exists(Destination))
+		if(!string.IsNullOrEmpty(RenameEdit.Text) && !string.IsNullOrWhiteSpace(RenameEdit.Text))
 		{
-			System.IO.Directory.Move(Source, Destination);
-		}
+			string Source = $"{OS.GetUserDataDir()}/Saves/{SelectedSave}";
+			string Destination = $"{OS.GetUserDataDir()}/Saves/{RenameEdit.Text}";
+			if(System.IO.Directory.Exists(Source) && !System.IO.Directory.Exists(Destination))
+			{
+				System.IO.Directory.Move(Source, Destination);
+			}
 
-		CloseRenameToolbar();
-		ResetSelectedSave();
-		ResetSlotsVBox();
+			CloseRenameToolbar();
+			ResetSelectedSave();
+			ResetSlotsVBox();
+		}
 	}
 
 
