@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://World/Structure.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/SLOPE.obj" type="ArrayMesh" id=2]
@@ -12,6 +12,8 @@ shader_param/texture_albedo = ExtResource( 4 )
 [sub_resource type="BoxShape" id=2]
 extents = Vector3( 6, 0.19591, 8.15559 )
 
+[sub_resource type="BoxShape" id=3]
+
 [node name="PLATFORM" type="StaticBody"]
 collision_layer = 3
 script = ExtResource( 1 )
@@ -21,5 +23,9 @@ mesh = ExtResource( 2 )
 material/0 = SubResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.697415, 0.716667, 0, -0.716667, 0.697415, 0, 0.296062, 0.134224 )
+transform = Transform( 1, 0, 0, 0, 0.698665, 0.715449, 0, -0.715449, 0.698665, 0, 0.267035, 0.104 )
 shape = SubResource( 2 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="."]
+transform = Transform( 6, 0, 0, 0, 0.0177443, 0.118344, 0, -0.0176108, 0.119242, 0, -5.57012, -5.8352 )
+shape = SubResource( 3 )
