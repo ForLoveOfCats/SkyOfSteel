@@ -3,6 +3,8 @@ using Godot;
 
 public class Gamemode : Node
 {
+	public dynamic Self;
+
 	public string LoadPath = null; //Fail early
 	public string OwnName = null; //Fail early
 
