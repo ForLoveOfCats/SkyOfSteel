@@ -186,6 +186,7 @@ public class Net : Node
 			Self.GetTree().GetRoot().GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
 			PeerList.Remove(Id);
 		}
+		Players.Remove(Id);
 
 		if(Nicknames.ContainsKey(Id))
 		{
