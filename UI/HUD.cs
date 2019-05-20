@@ -130,6 +130,7 @@ public class HUD : Node
 	{
 		ShowNodes(GetChildren());
 		Visible = true;
+		CallDeferred(nameof(HotbarUpdate));
 	}
 
 
