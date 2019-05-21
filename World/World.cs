@@ -145,6 +145,13 @@ public class World : Node
 	}
 
 
+	[Remote]
+	public void RequestClear()
+	{
+		Clear();
+	}
+
+
 	public static void Save(string SaveNameArg)
 	{
 		Directory SaveDir = new Directory();
@@ -173,6 +180,7 @@ public class World : Node
 		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
 		{
 			Clear();
+			Net.SteelRpc(Self, nameof(RequestClear));
 			DefaultPlatforms();
 
 			SaveDir.Open($"user://Saves/{SaveNameArg}");
