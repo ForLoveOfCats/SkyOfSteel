@@ -124,11 +124,11 @@ public class Scripting : Node
 			{
 				GamemodeName = Name;
 				Game.Mode = Returned as Gamemode;
+				Game.Mode.SetName("Gamemode");
 				Game.Mode.Self = Game.Mode;
 				Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
 				Game.Mode.OwnName = Name;
 				Game.Self.AddChild(Game.Mode);
-				Game.Mode.SetName("Gamemode");
 				return true;
 			}
 			else
