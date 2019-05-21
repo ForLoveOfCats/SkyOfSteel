@@ -44,7 +44,7 @@ public class Startup : Node
 
 		if(CmdArgs.Length > 0)
 		{
-			Console.Log("");
+			Console.LogLabel.Text += "\n";
 		}
 
 

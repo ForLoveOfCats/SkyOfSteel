@@ -1,7 +1,7 @@
 using Godot;
 
 
-class ConsoleWindow : Panel
+public class ConsoleWindow : Panel
 {
 	bool IsOpen;
 	LineEdit InputLine;
