@@ -152,8 +152,6 @@ public class Net : Node
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
 		World.ChunkLoadDistances[Id] = 0;
-
-		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -174,6 +172,8 @@ public class Net : Node
 				SteelRpc(this, nameof(RecieveNick), Entry.Key, Entry.Value);
 			}
 		}
+
+		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
