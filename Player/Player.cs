@@ -590,13 +590,16 @@ public class Player : KinematicBody
 						ToPickUpList.Add(Item);
 				}
 			}
-			if(ToPickUpList.Count > 0 && Game.Mode.ShouldPickupItem())
+			if(ToPickUpList.Count > 0)
 			{
 				SfxManager.FpPickup();
 				foreach(DroppedItem Item in ToPickUpList)
 				{
-					World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
-					World.ItemList.Remove(Item);
+					if(Game.Mode.ShouldPickupItem(Item.Type))
+					{
+						World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
+						World.ItemList.Remove(Item);
+					}
 				}
 			}
 		}

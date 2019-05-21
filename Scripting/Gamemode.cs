@@ -75,7 +75,7 @@ public class Gamemode : Node
 	}
 
 
-	public virtual bool ShouldPickupItem()
+	public virtual bool ShouldPickupItem(Items.TYPE Type)
 	{
 		return true;
 	}
