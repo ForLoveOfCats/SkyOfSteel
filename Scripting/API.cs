@@ -256,6 +256,20 @@ public static class API
 	}
 
 
+	public static bool UnloadGm()
+	{
+		if(Scripting.GamemodeName != "")
+		{
+			Console.Print($"Successfully unloaded gamemode '{Scripting.GamemodeName}'");
+			Scripting.UnloadGamemode();
+			return true;
+		}
+
+		Console.ThrowPrint("No gamemode loaded to unload");
+		return false;
+	}
+
+
 	public static void Quit()
 	{
 		Game.Quit();
