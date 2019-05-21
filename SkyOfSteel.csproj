@@ -66,16 +66,23 @@
     <Reference Include="System.Collections.Immutable">
       <HintPath>packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Loader">
+      <HintPath>packages\System.Runtime.Loader.4.3.0\lib\netstandard1.5\System.Runtime.Loader.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Player\PlayerSfxManager.cs" />
     <Compile Include="Scripting\Gamemode.cs" />
     <Compile Include="Scripting\GmConfig.cs" />
+    <Compile Include="UI\Menu\HostMenu\SlotButton.cs" />
+    <Compile Include="UI\Menu\LicensesMenu\LicensesMenu.cs" />
+    <Compile Include="UI\Menu\Pieces\ButtonPiece.cs" />
     <Compile Include="World\BuildPositions.cs" />
     <Compile Include="World\BuildRotations.cs" />
     <Compile Include="World\Chunk.cs" />
     <Compile Include="World\Ghost.cs" />
     <Compile Include="World\Grid.cs" />
+    <Compile Include="World\Materials\ShaderCompilerHider.cs" />
     <Compile Include="World\SavedChunk.cs" />
     <Compile Include="World\SavedStructure.cs" />
     <Compile Include="World\Structure.cs" />
@@ -104,10 +111,6 @@
     <Compile Include="UI\Menu\Menu.cs" />
     <Compile Include="UI\Menu\NickMenu\NickMenu.cs" />
     <Compile Include="UI\Menu\PauseMenu\PauseMenu.cs" />
-    <Compile Include="UI\Menu\LoadWorldHost\LoadHostButton.cs" />
-    <Compile Include="UI\Menu\LoadWorldHost\LoadWorldHost.cs" />
-    <Compile Include="UI\Menu\SaveMenu\SaveButton.cs" />
-    <Compile Include="UI\Menu\SaveMenu\SaveMenu.cs" />
     <Compile Include="UI\Menu\WaitConnectingMenu\WaitConnectingMenu.cs" />
     <Compile Include="Registries\Identifier.cs" />
     <Compile Include="Registries\Registry.cs" />

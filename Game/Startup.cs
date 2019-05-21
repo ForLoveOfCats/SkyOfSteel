@@ -44,7 +44,7 @@ public class Startup : Node
 
 		if(CmdArgs.Length > 0)
 		{
-			Console.Log("");
+			Console.LogLabel.Text += "\n";
 		}
 
 
@@ -110,11 +110,11 @@ public class Startup : Node
 
 		Bindings.Bind("R", "Game.PossessedPlayer.BuildRotate");
 		Bindings.Bind("XboxX", "Game.PossessedPlayer.BuildRotate");
-		Bindings.Bind("Q", "Game.PossessedPlayer.DropCurrentItem");
-		Bindings.Bind("RightStickClick", "Game.PossessedPlayer.DropCurrentItem");
+		Bindings.Bind("Q", "Game.PossessedPlayer.ThrowCurrentItem");
+		Bindings.Bind("RightStickClick", "Game.PossessedPlayer.ThrowCurrentItem");
 
-		Bindings.Bind("K", "Game.PossessedPlayer.PositionReset");
-		Bindings.Bind("XboxSelect", "Game.PossessedPlayer.PositionReset");
+		Bindings.Bind("K", "Game.PossessedPlayer.MovementReset");
+		Bindings.Bind("XboxSelect", "Game.PossessedPlayer.MovementReset");
 		Bindings.Bind("T", "Game.PossessedPlayer.ToggleFly");
 		Bindings.Bind("XboxY", "Game.PossessedPlayer.ToggleFly");
 

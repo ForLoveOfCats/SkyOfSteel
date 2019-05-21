@@ -7,15 +7,15 @@ public class Console : Node
 {
 	public static bool IsOpen = false;
 
-	private static ConsoleWindow Window;
-	private static LineEdit InputLine;
-	private static RichTextLabel ConsoleLabel;
-	private static RichTextLabel LogLabel;
-	private static List<string> History = new List<string>();
-	private static int HistoryLocation = 0;
+	public static ConsoleWindow Window;
+	public static LineEdit InputLine;
+	public static RichTextLabel ConsoleLabel;
+	public static RichTextLabel LogLabel;
+	public static List<string> History = new List<string>();
+	public static int HistoryLocation = 0;
 
 
-	private static Console Self;
+	public static Console Self;
 	private Console()
 	{
 		Self = this;
@@ -25,11 +25,11 @@ public class Console : Node
 	public override void _Ready()
 	{
 		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow") as ConsoleWindow;
-		InputLine = Window.GetNode("LineEdit") as LineEdit;
-		ConsoleLabel = Window.GetNode("HBox/Console") as RichTextLabel;
-		LogLabel = Window.GetNode("HBox/Log") as RichTextLabel;
+		InputLine = Window.GetNode("VBox/LineEdit") as LineEdit;
+		ConsoleLabel = Window.GetNode("VBox/HBox/Console") as RichTextLabel;
+		LogLabel = Window.GetNode("VBox/HBox/Log") as RichTextLabel;
 		Console.Print("");
-		Console.Log("");
+		LogLabel.Text += "\n";
 	}
 
 
@@ -74,13 +74,13 @@ public class Console : Node
 
 	public static void Print(object ToPrint)
 	{
-		ConsoleLabel.Text += " " + ToPrint.ToString() + "\n";
+		ConsoleLabel.Text += $"{ToPrint}\n";
 	}
 
 
 	public static void Log(object ToLog)
 	{
-		LogLabel.Text += " " + ToLog.ToString() + "\n";
+		LogLabel.Text += $"{ToLog}\n\n";
 	}
 
 
@@ -98,7 +98,7 @@ public class Console : Node
 
 	public static void Execute(string Command)
 	{
-		Console.Print("\n >>> " + Command);
+		Console.Print("\n>>> " + Command);
 
 		if(History.Count <= 0 || History[History.Count-1] != Command)
 		{

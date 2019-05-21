@@ -22,13 +22,29 @@ public class Scripting : Node
 
 		Self = this;
 
+		#if !TOOLS //We need to extract all assemblies into the filesystem for Roslyn to use
+		System.IO.Directory.CreateDirectory($"{System.IO.Directory.GetCurrentDirectory()}/.mono/assemblies");
+		Directory Dir = new Directory();
+		Dir.Open("res://.mono/assemblies/");
+		Dir.ListDirBegin(skipNavigational:true, skipHidden:true);
+		string Name = Dir.GetNext();
+		while(Name != "")
+		{
+			if(!Dir.FileExists($"{System.IO.Directory.GetCurrentDirectory()}/.mono/assemblies/{Name}"))
+				Dir.Copy($"res://.mono/assemblies/{Name}", $"{System.IO.Directory.GetCurrentDirectory()}/.mono/assemblies/{Name}");
+			Name = Dir.GetNext();
+		}
+		Dir.ListDirEnd();
+		#endif
+
 		ScriptOptions = Sc.ScriptOptions.Default.WithReferences(AppDomain.CurrentDomain.GetAssemblies())
 			.AddReferences(Assembly.GetAssembly(typeof(System.Dynamic.DynamicObject)),  // System.Code
 						   Assembly.GetAssembly(typeof(Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo)),  // Microsoft.CSharp
 						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
 		Sc.Script CEngine = Cs.Create("", ScriptOptions);
-		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API;").RunAsync().Result;
+		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API; using static Items.TYPE;")
+			.RunAsync().Result;
 	}
 
 
@@ -108,10 +124,11 @@ public class Scripting : Node
 			{
 				GamemodeName = Name;
 				Game.Mode = Returned as Gamemode;
+				Game.Mode.SetName("Gamemode");
+				Game.Mode.Self = Game.Mode;
 				Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
 				Game.Mode.OwnName = Name;
 				Game.Self.AddChild(Game.Mode);
-				Game.Mode.SetName("Gamemode");
 				return true;
 			}
 			else

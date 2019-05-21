@@ -10,24 +10,25 @@ public class Player : KinematicBody
 	public bool Possessed = false;
 	public int Id = 0;
 
-	private const float BaseMovementSpeed = 20;
-	private const float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
-	private const float MaxMovementSpeed = BaseMovementSpeed*SprintMultiplyer;
-	private const float AirAcceleration = 24; //How many units per second to accelerate
-	private const float Friction = MaxMovementSpeed / 0.2f; //The number is how many seconds needed to stop from full speed
-	private const float JumpSpeedMultiplyer = 1.2f;
-	private const float JumpStartForce = 8f;
-	private const float JumpContinueForce = 6f;
-	private const float MaxJumpLength = 0.3f;
-	private const float WallKickJumpForce = 16;
-	private const float WallKickHorzontalForce = 45;
-	private const float MinWallKickRecoverPercentage = 0.2f;
-	private const float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
-	private const float Gravity = 14f;
-	private const float ItemThrowPower = 15f;
-	private const float ItemPickupDistance = 8f;
-	private const float MinItemPickupLife = 1; //In seconds
-	private const float LookDivisor = 6;
+	public float BaseMovementSpeed = 20;
+	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
+	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
+	public float MaxVerticalSpeed = 40f;
+	public float AirAcceleration = 24; //How many units per second to accelerate
+	public float DecelerateTime = 0.2f; //How many seconds needed to stop from full speed
+	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
+	public float JumpSpeedMultiplyer = 15f;
+	public float JumpStartForce = 8f;
+	public float JumpContinueForce = 6f;
+	public float MaxJumpLength = 0.3f;
+	public float WallKickJumpForce = 16;
+	public float WallKickHorzontalForce = 45;
+	public float MinWallKickRecoverPercentage = 0.2f;
+	public float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
+	public float Gravity = 14f;
+	public float ItemThrowPower = 20f;
+	public float ItemPickupDistance = 8f;
+	public float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
 
@@ -67,7 +68,6 @@ public class Player : KinematicBody
 
 	public Camera Cam;
 	public Spatial Center;
-	public RayCast CenterRayCast;
 
 	public HUD HUDInstance;
 	private Ghost GhostInstance;
@@ -86,10 +86,8 @@ public class Player : KinematicBody
 	{
 		Cam = GetNode<Camera>("SteelCamera");
 		Center = GetNode<Spatial>("Center");
-		CenterRayCast = Center.GetNode<RayCast>("RayCast");
-		CenterRayCast.AddException(this);
 
-		PositionReset();
+		MovementReset();
 
 		if(Possessed)
 		{
@@ -136,8 +134,6 @@ public class Player : KinematicBody
 		if(GetName() == GetTree().GetNetworkUniqueId().ToString())
 		{
 			Frozen = NewFrozen;
-			if(!Frozen)
-				HUDInstance.HotbarUpdate(); //HACK: make sure it is updated on client after connecting
 		}
 		else
 		{
@@ -162,9 +158,13 @@ public class Player : KinematicBody
 	}
 
 
-	public void PositionReset()
+	public void MovementReset()
 	{
-		Translation = new Vector3(0,1,0);
+		if(Game.Mode.ShouldMovementReset())
+		{
+			Translation = new Vector3(0, 0.6f, 0);
+			Momentum = new Vector3();
+		}
 	}
 
 
@@ -499,8 +499,9 @@ public class Player : KinematicBody
 					Structure Hit = BuildRayCast.GetCollider() as Structure;
 					if(Hit != null && GhostInstance.CanBuild)
 					{
-						World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1);
-						//ID 1 for now so all client own all non-default structures
+						Vector3? PlacePosition = BuildPositions.Calculate(Hit, GhostInstance.CurrentMeshType);
+						if(PlacePosition != null && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType, PlacePosition.Value, BuildRotations.Calculate(Hit, GhostInstance.CurrentMeshType)))
+						   World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1); //ID 1 for now so all client own all non-default structures
 					}
 				}
 			}
@@ -523,7 +524,7 @@ public class Player : KinematicBody
 			if(BuildRayCast.IsColliding())
 			{
 				Structure Hit = BuildRayCast.GetCollider() as Structure;
-				if(Hit != null)
+				if(Hit != null && Game.Mode.ShouldRemoveStructure(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
 				{
 					Hit.NetRemove();
 				}
@@ -536,18 +537,13 @@ public class Player : KinematicBody
 	}
 
 
-	public void DropCurrentItem(float Sens)
+	public void ThrowCurrentItem(float Sens)
 	{
 		if(Sens > 0)
 		{
-			if(Inventory[InventorySlot] != null)
+			if(Inventory[InventorySlot] != null && Game.Mode.ShouldThrowItem())
 			{
-				Vector3 Vel = Momentum;
-				if(FlyMode || IsOnFloor())
-				{
-					Vel = Vel.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
-				}
-				Vel += new Vector3(0,0,ItemThrowPower)
+				Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
 					.Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical))
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
@@ -558,6 +554,8 @@ public class Player : KinematicBody
 				else
 					Inventory[InventorySlot] = null;
 				HUDInstance.HotbarUpdate();
+
+				SfxManager.FpThrow();
 			}
 		}
 	}
@@ -584,21 +582,25 @@ public class Player : KinematicBody
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
 			foreach(DroppedItem Item in World.ItemList)
 			{
-				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= MinItemPickupLife)
+				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
-					CenterRayCast.CastTo = Item.Translation - CenterPosition(); //CastTo is relative
-					CenterRayCast.ForceRaycastUpdate();
-					if(!CenterRayCast.IsColliding())
+					PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
+					Godot.Collections.Dictionary Results =State.IntersectRay(CenterPosition(), Item.Translation, new Godot.Collections.Array{this}, 1);
+					if(Results.Count <= 0)
 						ToPickUpList.Add(Item);
 				}
 			}
 			if(ToPickUpList.Count > 0)
-				SfxManager.FpPickup();
-			foreach(DroppedItem Item in ToPickUpList)
 			{
-				World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
-				World.ItemList.Remove(Item);
-				Item.Remove();
+				SfxManager.FpPickup();
+				foreach(DroppedItem Item in ToPickUpList)
+				{
+					if(Game.Mode.ShouldPickupItem(Item.Type))
+					{
+						World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
+						World.ItemList.Remove(Item);
+					}
+				}
 			}
 		}
 
@@ -624,7 +626,7 @@ public class Player : KinematicBody
 
 		if(!IsJumping && !FlyMode)
 		{
-			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxMovementSpeed, MaxMovementSpeed);
+			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
 		}
 
 		if(FlyMode && JumpAxis <= 0 && !IsCrouching)
@@ -632,17 +634,17 @@ public class Player : KinematicBody
 			//In flymode and jump is not being held
 			if(Momentum.y > 0)
 			{
-				Momentum.y = Mathf.Clamp(Momentum.y - Friction*Delta, 0, MaxMovementSpeed);
+				Momentum.y = Mathf.Clamp(Momentum.y - Friction*Delta, 0, MaxVerticalSpeed);
 			}
 			else if(Momentum.y < 0)
 			{
-				Momentum.y = Mathf.Clamp(Momentum.y + Friction*Delta, -MaxMovementSpeed, 0);
+				Momentum.y = Mathf.Clamp(Momentum.y + Friction*Delta, -MaxVerticalSpeed, 0);
 			}
 		}
 
 		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
-			float Volume = Abs(Clamp(LastMomentumY, -MaxMovementSpeed, 0))/2 - 30;
+			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/2 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
@@ -720,7 +722,7 @@ public class Player : KinematicBody
 		{
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 
-			if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0)
+			if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
 			{
 				WallKickRecoverPercentage = 0;
 

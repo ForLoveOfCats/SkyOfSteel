@@ -6,6 +6,24 @@ public class PauseMenu : VBoxContainer
 	public override void _Ready()
 	{
 		GetNode<Label>("Version").Text = $"Version: {Game.Version}";
+
+		Label PlayingOn = GetNode<Label>("PlayingOn");
+		if(Net.Work.IsNetworkServer())
+		{
+			PlayingOn.Text = $"Hosting map: {World.SaveName}";
+		}
+		else
+		{
+			PlayingOn.Text = $"Connected to server at: {Net.Ip}";
+		}
+
+		if(!Net.Work.IsNetworkServer())
+		{
+			Button SaveButton = GetNode<Button>("SaveButton");
+			SaveButton.Disabled = true;
+			SaveButton.HintTooltip = "Cannot save as client";
+			SaveButton.MouseDefaultCursorShape = CursorShape.Arrow;
+		}
 	}
 
 
@@ -17,7 +35,8 @@ public class PauseMenu : VBoxContainer
 
 	public void SavePressed()
 	{
-		Menu.BuildSave();
+		if(Net.Work.IsNetworkServer())
+			World.Save(World.SaveName);
 	}
 
 

@@ -3,6 +3,8 @@ using Godot;
 
 public class Gamemode : Node
 {
+	public dynamic Self;
+
 	public string LoadPath = null; //Fail early
 	public string OwnName = null; //Fail early
 
@@ -55,13 +57,37 @@ public class Gamemode : Node
 	}
 
 
+	public virtual bool ShouldWallKick()
+	{
+		return true;
+	}
+
+
 	public virtual bool ShouldCrouch()
 	{
 		return true;
 	}
 
 
+	public virtual bool ShouldThrowItem()
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldPickupItem(Items.TYPE Type)
+	{
+		return true;
+	}
+
+
 	public virtual bool ShouldToggleFly() //Only prevents ToggleFly called by keybinds, can be overrode by console
+	{
+		return true;
+	}
+
+
+	public virtual bool ShouldMovementReset()
 	{
 		return true;
 	}
@@ -91,7 +117,7 @@ public class Gamemode : Node
 	}
 
 
-	public virtual bool ShouldPlaceStructure(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public virtual bool ShouldPlaceStructure(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
 	{
 		return true;
 	}

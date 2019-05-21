@@ -16,7 +16,7 @@ public static class API
 
 	public static bool Host()
 	{
-		if(Game.Nickname == "")
+		if(Game.Nickname == Game.DefaultNickname)
 		{
 			Console.ThrowPrint("Please set a multiplayer nickname before hosting");
 			return false;
@@ -41,7 +41,7 @@ public static class API
 			return false;
 		}
 
-		if(Game.Nickname == "")
+		if(Game.Nickname == Game.DefaultNickname)
 		{
 			Console.ThrowPrint("Please set a multiplayer nickname before connecting");
 			return false;
@@ -121,6 +121,13 @@ public static class API
 	{
 		Game.PossessedPlayer.SetFly(!Game.PossessedPlayer.FlyMode);
 		return Game.PossessedPlayer.FlyMode;
+	}
+
+
+	public static bool Give(Items.TYPE Type) //TODO: Allow giving items to other players
+	{
+		Game.PossessedPlayer.ItemGive(new Items.Instance(Type));
+		return true;
 	}
 
 
@@ -204,6 +211,21 @@ public static class API
 	}
 
 
+	public static bool ReloadSave()
+	{
+		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		{
+			World.Load(World.SaveName);
+			return true;
+		}
+		else
+		{
+			Console.ThrowPrint("Cannot reload savegame when not hosting");
+			return false;
+		}
+	}
+
+
 	public static bool Gamemode(string Name)
 	{
 		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
@@ -216,7 +238,7 @@ public static class API
 	}
 
 
-	public static bool Reload()
+	public static bool ReloadGm()
 	{
 		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
 		{
@@ -231,5 +253,25 @@ public static class API
 
 		Console.ThrowPrint("Must be hosting to reload gamemode");
 		return false;
+	}
+
+
+	public static bool UnloadGm()
+	{
+		if(Scripting.GamemodeName != "")
+		{
+			Console.Print($"Successfully unloaded gamemode '{Scripting.GamemodeName}'");
+			Scripting.UnloadGamemode();
+			return true;
+		}
+
+		Console.ThrowPrint("No gamemode loaded to unload");
+		return false;
+	}
+
+
+	public static void Quit()
+	{
+		Game.Quit();
 	}
 }

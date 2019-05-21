@@ -17,6 +17,8 @@ public class World : Node
 	public static GridClass Grid = new GridClass();
 
 	public static bool IsOpen = false;
+	public static string SaveName = null;
+
 	public static Node StructureRoot = null;
 	public static Node ItemsRoot = null;
 
@@ -72,7 +74,7 @@ public class World : Node
 	}
 
 
-	public static void Start(bool AsServer = false)
+	public static void Start()
 	{
 		Close();
 		Menu.Close();
@@ -89,11 +91,6 @@ public class World : Node
 		ItemsRoot.SetName("ItemsRoot");
 		SkyScene.AddChild(ItemsRoot);
 
-		if(AsServer)
-		{
-			DefaultPlatforms();
-		}
-
 		IsOpen = true;
 	}
 
@@ -106,8 +103,7 @@ public class World : Node
 			//Free instead of QueueFree to prevent crash when starting new world in same frame
 		}
 		Net.Players.Clear();
-		Game.PossessedPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
-		//Prevent crashes when player movement commands are run when world is not initalized
+		Game.PossessedPlayer = null;
 
 		StructureRoot = null;
 		ItemsRoot = null;
@@ -119,6 +115,7 @@ public class World : Node
 		ItemList.Clear();
 		Grid.Clear();
 
+		SaveName = null;
 		IsOpen = false;
 	}
 
@@ -148,32 +145,37 @@ public class World : Node
 	}
 
 
-	public static void Save(string SaveName)
+	public static void Save(string SaveNameArg)
 	{
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://Saves/" + SaveName))
+		if(SaveDir.DirExists("user://Saves/" + SaveNameArg))
 		{
-			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveName, true);
+			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveNameArg, true);
 		}
 
 		int SaveCount = 0;
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
-			SaveCount += SaveChunk(Chunk.Key, SaveName);
+			SaveCount += SaveChunk(Chunk.Key, SaveNameArg);
 		}
-		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveName}'");
+		Console.Log($"Saved {SaveCount.ToString()} structures to save '{SaveNameArg}'");
 	}
 
 
-	public static bool Load(string SaveName)
+	public static bool Load(string SaveNameArg)
 	{
+		if(string.IsNullOrEmpty(SaveNameArg) || string.IsNullOrWhiteSpace(SaveNameArg))
+		{
+			throw new Exception("Invalid save name passed to World.Save");
+		}
+
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists($"user://Saves/{SaveName}"))
+		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
 		{
 			Clear();
 			DefaultPlatforms();
 
-			SaveDir.Open($"user://Saves/{SaveName}");
+			SaveDir.Open($"user://Saves/{SaveNameArg}");
 			SaveDir.ListDirBegin(true, true);
 
 			int PlaceCount = 0;
@@ -186,19 +188,21 @@ public class World : Node
 					break;
 				}
 
-				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{FileName}"));
+				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{FileName}"));
 				PlaceCount += Returned.Item2;
 				if(!Returned.Item1)
 				{
-					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveName}'");
+					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveNameArg}'");
 				}
 			}
-			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveName}'");
+			SaveName = SaveNameArg;
+			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveNameArg}'");
 			return true;
 		}
 		else
 		{
-			Console.ThrowLog($"Failed to load save '{SaveName}' as it does not exist");
+			SaveName = null;
+			Console.ThrowLog($"Failed to load save '{SaveNameArg}' as it does not exist");
 			return false;
 		}
 	}
@@ -304,50 +308,45 @@ public class World : Node
 			}
 		}
 
-		if(Game.Mode.ShouldPlaceStructure(BranchType, Position, Rotation, OwnerId))
+		Structure Branch = Scenes[BranchType].Instance() as Structure;
+		Branch.Type = BranchType;
+		Branch.OwnerId = OwnerId;
+		Branch.Translation = Position;
+		Branch.RotationDegrees = Rotation;
+		Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
+		StructureRoot.AddChild(Branch);
+
+		AddStructureToChunk(Branch);
+		Grid.AddItem(Branch);
+
+		//Nested if to prevent very long line
+		if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 		{
-			Structure Branch = Scenes[BranchType].Instance() as Structure;
-			Branch.Type = BranchType;
-			Branch.OwnerId = OwnerId;
-			Branch.Translation = Position;
-			Branch.RotationDegrees = Rotation;
-			Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-			StructureRoot.AddChild(Branch);
-
-			AddStructureToChunk(Branch);
-			Grid.AddItem(Branch);
-
-			//Nested if to prevent very long line
-			if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
+			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
 			{
-				if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
+				//If network is inited, am the server, and platform is to far away then...
+				Branch.Hide(); //...make it not visible but allow it to remain in the world
+			}
+
+			foreach(int Id in Net.PeerList)
+			{
+				if(Id == Net.ServerId) //Skip self (we are the server)
 				{
-					//If network is inited, am the server, and platform is to far away then...
-					Branch.Hide(); //...make it not visible but allow it to remain in the world
+					continue;
 				}
 
-				foreach(int Id in Net.PeerList)
+				Vector3 PlayerPos = Net.Players[Id].Translation;
+				if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
 				{
-					if(Id == Net.ServerId) //Skip self (we are the server)
+					if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
 					{
-						continue;
-					}
-
-					Vector3 PlayerPos = Net.Players[Id].Translation;
-					if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
-					{
-						if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
-						{
-							RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
-						}
+						RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
 					}
 				}
 			}
-
-			return Branch;
 		}
 
-		return null;
+		return Branch;
 	}
 
 
@@ -360,7 +359,7 @@ public class World : Node
 			Structure Branch = StructureRoot.GetNode(Name) as Structure;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
 			Chunks[ChunkTuple].Structures.Remove(Branch);
-			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
+			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -373,16 +372,15 @@ public class World : Node
 	}
 
 
-	//Name is the string GUID name of the dropped item to be removed
 	[Remote]
-	public void RemoveDroppedItem(string Guid)
+	public void RemoveDroppedItem(string Guid) //NOTE: Make sure to remove from World.ItemList after client callsite
 	{
 		if(ItemsRoot.HasNode(Guid))
 		{
 			DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
-			if(!(Chunks[ChunkTuple].Structures.Count > 0 || Chunks[ChunkTuple].Items.Count > 0))
+			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -462,16 +460,16 @@ public class World : Node
 	}
 
 
-	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveName)
+	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveNameArg)
 	{
 		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
 
 		Directory SaveDir = new Directory();
-		if(!SaveDir.DirExists("user://Saves/"+SaveName))
+		if(!SaveDir.DirExists("user://Saves/"+SaveNameArg))
 		{
-			SaveDir.MakeDirRecursive("user://Saves/"+SaveName);
+			SaveDir.MakeDirRecursive("user://Saves/"+SaveNameArg);
 		}
-		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveName}/{ChunkTuple.ToString()}.json", SerializedChunk);
+		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
 		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
@@ -595,7 +593,7 @@ public class World : Node
 			if(Self.GetTree().IsNetworkServer())
 			{
 				//On server
-				DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
+				DroppedItem Item = ItemsRoot.GetNodeOrNull(Guid) as DroppedItem;
 				if(Item != null) //Only lookup node once instead of using HasNode
 				{
 					if(Id == Net.Work.GetNetworkUniqueId())

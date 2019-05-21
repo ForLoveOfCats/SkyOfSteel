@@ -5,13 +5,13 @@ using System;
 public class Game : Node
 {
 	public const string Version = "0.1.2-dev"; //Yes it's a string shush
+	public const string DefaultNickname = "BrianD";
 
 	public static Node RuntimeRoot;
 
 	public static int MaxPlayers = 8;
 	public static bool BindsEnabled = false;
-	public static Player PossessedPlayer = GD.Load<PackedScene>("res://Player/Player.tscn").Instance() as Player;
-										   //Prevent crashes when player movement commands are run when world is not initalized
+	public static Player PossessedPlayer;
 
 	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
 
@@ -20,7 +20,7 @@ public class Game : Node
 	public static float Deadzone = 0.25f;
 	public static int ChunkRenderDistance = 1;
 
-	public static string Nickname = "";
+	public static string Nickname = DefaultNickname;
 
 	public static Game Self;
 	private Game()
@@ -71,7 +71,7 @@ public class Game : Node
 			}
 		}
 
-		if(Input.IsActionJustPressed("ConsoleToggle"))
+		if(Input.IsActionJustPressed("ConsoleToggle") && !Menu.PauseOpen)
 		{
 			if(Console.IsOpen)
 			{
@@ -108,11 +108,35 @@ public class Game : Node
 		NewPlayer.Id = Id;
 		NewPlayer.SetName(Id.ToString());
 		Net.Players.Add(Id, NewPlayer);
-		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 
 		if(Possess)
 		{
 			PossessedPlayer = NewPlayer;
+		}
+
+		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
+	}
+
+
+	static public void CopyFolder(string SourceFolder, string DestFolder) //TODO: Clean up
+	{
+		if(System.IO.Directory.Exists(DestFolder))
+			System.IO.Directory.CreateDirectory(DestFolder);
+
+		string[] Files = System.IO.Directory.GetFiles(SourceFolder);
+		foreach(string File in Files)
+		{
+			string Name = System.IO.Path.GetFileName(File);
+			string Dest = System.IO.Path.Combine(DestFolder, Name);
+			System.IO.File.Copy(File, Dest);
+		}
+
+		string[] Folders = System.IO.Directory.GetDirectories(SourceFolder);
+		foreach(string Folder in Folders)
+		{
+			string Name = System.IO.Path.GetFileName(Folder);
+			string Dest = System.IO.Path.Combine(DestFolder, Name);
+			CopyFolder(Folder, Dest);
 		}
 	}
 }

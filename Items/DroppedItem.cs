@@ -8,6 +8,7 @@ public class DroppedItem : KinematicBody, IInGrid
 	private const float MaxFallSpeed = -40f;
 	private const float Friction = 15f;
 	private const float RPS = 0.5f; //Revolutions Per Second
+	public static float MinPickupLife = 0.6f; //In seconds
 
 	public System.Tuple<int, int> CurrentChunkTuple;
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
@@ -15,8 +16,12 @@ public class DroppedItem : KinematicBody, IInGrid
 	public float Life = 0f;
 	public Items.TYPE Type;
 
+	public MeshInstance Mesh;
+
 	public override void _Ready()
 	{
+		Mesh = GetNode<MeshInstance>("MeshInstance");
+
 		ShaderMaterial Mat = new ShaderMaterial();
 		Mat.Shader = Items.StructureShader;
 		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
@@ -36,17 +41,18 @@ public class DroppedItem : KinematicBody, IInGrid
 	public void Remove()
 	{
 		World.Self.RemoveDroppedItem(this.GetName());
+		World.ItemList.Remove(this);
 	}
 
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		SetRotationDegrees(new Vector3(0, RotationDegrees.y+(360*Delta*RPS), 0));
+		Mesh.SetRotationDegrees(new Vector3(0, Mesh.RotationDegrees.y+(360*Delta*RPS), 0));
 		Life += Delta;
 
 		if(PhysicsEnabled)
 		{
-			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:55);
+			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:50);
 			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation))) //We just crossed into a different chunk
 			{
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);

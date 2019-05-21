@@ -45,7 +45,7 @@ Contributions are welcome!
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.1.1 RC1
+* A functioning installation of Godot Mono 3.1.1 Stable
   * Decently recent versions of both MSBuild and Nuget must be installed (Windows users make sure
   to install [this](https://www.mono-project.com/download/stable/#download-win) and
   [this](https://www.microsoft.com/en-us/download/details.aspx?id=56119), Ubuntu users make

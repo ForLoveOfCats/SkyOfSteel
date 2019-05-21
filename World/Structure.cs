@@ -18,10 +18,7 @@ public class Structure : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		if(Game.Mode.ShouldRemoveStructure(Type, Translation, RotationDegrees, OwnerId))
-		{
-			World.Self.RemoveStructure(GetName());
-		}
+		World.Self.RemoveStructure(GetName());
 	}
 
 
@@ -32,10 +29,7 @@ public class Structure : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		if(Game.Mode.ShouldRemoveStructure(Type, Translation, RotationDegrees, OwnerId))
-		{
-			Net.SteelRpc(World.Self, nameof(World.RemoveStructure), GetName());
-			World.Self.RemoveStructure(GetName());
-		}
+		Net.SteelRpc(World.Self, nameof(World.RemoveStructure), GetName());
+		World.Self.RemoveStructure(GetName());
 	}
 }

@@ -5,4 +5,4 @@
 mono_crash.*.json
 packages
 Export
-Docs
+DoxygenOutput

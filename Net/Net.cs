@@ -152,8 +152,6 @@ public class Net : Node
 		Game.SpawnPlayer(Id, false);
 		PeerList.Add(Id);
 		World.ChunkLoadDistances[Id] = 0;
-
-		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -174,6 +172,8 @@ public class Net : Node
 				SteelRpc(this, nameof(RecieveNick), Entry.Key, Entry.Value);
 			}
 		}
+
+		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -186,6 +186,7 @@ public class Net : Node
 			Self.GetTree().GetRoot().GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
 			PeerList.Remove(Id);
 		}
+		Players.Remove(Id);
 
 		if(Nicknames.ContainsKey(Id))
 		{
@@ -223,7 +224,7 @@ public class Net : Node
 		}
 
 		PeerList.Clear();
-		World.Start(AsServer: true);
+		World.Start();
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);
@@ -235,6 +236,8 @@ public class Net : Node
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Nicknames[ServerId] = Game.Nickname;
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+
+		World.DefaultPlatforms();
 	}
 
 

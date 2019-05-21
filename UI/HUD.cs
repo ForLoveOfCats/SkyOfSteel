@@ -6,6 +6,7 @@ public class HUD : Node
 {
 	private Texture Alpha;
 	private Texture Triangle;
+	private PackedScene ItemCountLabelScene;
 	private PackedScene NickLabelScene;
 
 	private Dictionary<int, Label> NickLabels = new Dictionary<int, Label>();
@@ -14,6 +15,9 @@ public class HUD : Node
 	private Label ChunkInfoLabel;
 	private Label PlayerPositionLabel;
 	private Label FPSLabel;
+	public CanvasLayer NickLabelLayer;
+
+	public bool Visible = true;
 
 	HUD()
 	{
@@ -21,6 +25,7 @@ public class HUD : Node
 
 		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;
 		Triangle = GD.Load("res://UI/Textures/Triangle.png") as Texture;
+		ItemCountLabelScene = GD.Load<PackedScene>("res://UI/ItemCountLabel.tscn");
 		NickLabelScene = GD.Load<PackedScene>("res://UI/NickLabel.tscn");
 	}
 
@@ -31,11 +36,15 @@ public class HUD : Node
 		ChunkInfoLabel = GetNode<Label>("CLayer/ChunkInfo");
 		PlayerPositionLabel = GetNode<Label>("CLayer/PlayerPosition");
 		FPSLabel = GetNode<Label>("CLayer/FPSLabel");
+		NickLabelLayer = GetNode<CanvasLayer>("NickLabelLayer");
 
 		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
 
-		GetTree().Connect("screen_resized", this, "OnScreenResized");
+		GetTree().Connect("screen_resized", this, nameof(OnScreenResized));
 		HotbarUpdate();
+		this.CallDeferred(nameof(OnScreenResized));
+
+		Show(); //To make sure we catch anything which might be wrong after hide then show
 	}
 
 
@@ -47,10 +56,24 @@ public class HUD : Node
 			if(Game.PossessedPlayer.Inventory[Slot] != null)
 			{
 				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Type];
+
+				foreach(Node Child in SlotPatch.GetChildren())
+				{
+					Child.QueueFree();
+				}
+
+				Label CountLabel = ItemCountLabelScene.Instance() as Label;
+				CountLabel.Text = Game.PossessedPlayer.Inventory[Slot].Count.ToString();
+				SlotPatch.AddChild(CountLabel);
 			}
 			else
 			{
 				SlotPatch.Texture = Alpha;
+
+				foreach(Node Child in SlotPatch.GetChildren())
+				{
+					Child.QueueFree();
+				}
 			}
 
 			SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
@@ -86,6 +109,7 @@ public class HUD : Node
 	public void Hide()
 	{
 		HideNodes(GetChildren());
+		Visible = false;
 	}
 
 
@@ -105,6 +129,8 @@ public class HUD : Node
 	public void Show()
 	{
 		ShowNodes(GetChildren());
+		Visible = true;
+		CallDeferred(nameof(HotbarUpdate));
 	}
 
 
@@ -112,7 +138,7 @@ public class HUD : Node
 	{
 		Label Instance = NickLabelScene.Instance() as Label;
 		Instance.Text = Nick;
-		AddChild(Instance);
+		NickLabelLayer.AddChild(Instance);
 		NickLabels[Id] = Instance;
 	}
 
@@ -140,7 +166,7 @@ public class HUD : Node
 			}
 			else
 			{
-				Current.Value.Visible = true;
+				Current.Value.Visible = Visible;
 				Current.Value.MarginLeft = Game.PossessedPlayer.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x/2;
 				Current.Value.MarginTop = Game.PossessedPlayer.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y/2;
 			}

@@ -1,25 +1,43 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://UI/Theme/Theme.tres" type="Theme" id=1]
-[ext_resource path="res://UI/ConsoleWindow.cs" type="Script" id=2]
+[ext_resource path="res://UI/ConsoleWindow.cs" type="Script" id=1]
+[ext_resource path="res://UI/Theme/Theme.tres" type="Theme" id=2]
 [ext_resource path="res://UI/Fonts/MonoFont.tres" type="DynamicFont" id=3]
 
-[node name="ConsoleWindow" type="VBoxContainer"]
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.466667, 0.690196, 1, 1 )
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[node name="ConsoleWindow" type="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/panel = SubResource( 2 )
+script = ExtResource( 1 )
+
+[node name="VBox" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme = ExtResource( 1 )
-script = ExtResource( 2 )
+theme = ExtResource( 2 )
 
-[node name="HBox" type="HBoxContainer" parent="."]
+[node name="HBox" type="HBoxContainer" parent="VBox"]
 margin_right = 1024.0
 margin_bottom = 572.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Console" type="RichTextLabel" parent="HBox"]
-margin_right = 510.0
+[node name="SpacerLeft" type="Panel" parent="VBox/HBox"]
+margin_right = 4.0
+margin_bottom = 572.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+custom_styles/panel = SubResource( 1 )
+
+[node name="Console" type="RichTextLabel" parent="VBox/HBox"]
+margin_left = 8.0
+margin_right = 504.0
 margin_bottom = 572.0
 focus_mode = 2
 size_flags_horizontal = 3
@@ -29,9 +47,17 @@ custom_colors/default_color = Color( 0, 0, 0, 1 )
 scroll_following = true
 selection_enabled = true
 
-[node name="Log" type="RichTextLabel" parent="HBox"]
-margin_left = 514.0
-margin_right = 1024.0
+[node name="SpacerMiddle" type="Panel" parent="VBox/HBox"]
+margin_left = 508.0
+margin_right = 512.0
+margin_bottom = 572.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+custom_styles/panel = SubResource( 1 )
+
+[node name="Log" type="RichTextLabel" parent="VBox/HBox"]
+margin_left = 516.0
+margin_right = 1012.0
 margin_bottom = 572.0
 focus_mode = 2
 size_flags_horizontal = 3
@@ -41,10 +67,18 @@ custom_colors/default_color = Color( 0, 0, 0, 1 )
 scroll_following = true
 selection_enabled = true
 
-[node name="LineEdit" type="LineEdit" parent="."]
+[node name="SpacerRight" type="Panel" parent="VBox/HBox"]
+margin_left = 1016.0
+margin_right = 1024.0
+margin_bottom = 572.0
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.01
+custom_styles/panel = SubResource( 1 )
+
+[node name="LineEdit" type="LineEdit" parent="VBox"]
 margin_top = 576.0
 margin_right = 1024.0
 margin_bottom = 600.0
 custom_fonts/font = ExtResource( 3 )
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="VBox"]

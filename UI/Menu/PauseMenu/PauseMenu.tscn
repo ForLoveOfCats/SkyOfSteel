@@ -15,54 +15,60 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" parent="." instance=ExtResource( 2 )]
-margin_top = 176.0
+margin_top = 136.0
 margin_right = 1024.0
-margin_bottom = 216.0
+margin_bottom = 188.0
 text = "SkyOfSteel"
 
 [node name="Version" parent="." instance=ExtResource( 3 )]
-margin_top = 220.0
+margin_top = 192.0
 margin_right = 1024.0
-margin_bottom = 239.0
+margin_bottom = 216.0
 text = "Version Placeholder Text"
 
-[node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 243.0
+[node name="PlayingOn" parent="." instance=ExtResource( 3 )]
+margin_top = 220.0
 margin_right = 1024.0
-margin_bottom = 262.0
+margin_bottom = 244.0
+text = "Playing On Placeholder Text"
+
+[node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
+margin_top = 248.0
+margin_right = 1024.0
+margin_bottom = 272.0
 
 [node name="ReturnButton" parent="." instance=ExtResource( 5 )]
-margin_top = 266.0
+margin_top = 276.0
 margin_right = 1024.0
-margin_bottom = 291.0
+margin_bottom = 306.0
 text = "Return to Game"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 4 )]
-margin_top = 295.0
+margin_top = 310.0
 margin_right = 1024.0
-margin_bottom = 314.0
+margin_bottom = 334.0
 
 [node name="SaveButton" parent="." instance=ExtResource( 5 )]
-margin_top = 318.0
+margin_top = 338.0
 margin_right = 1024.0
-margin_bottom = 343.0
+margin_bottom = 368.0
 text = "Save"
 
 [node name="SpacerLabel3" parent="." instance=ExtResource( 4 )]
-margin_top = 347.0
+margin_top = 372.0
 margin_right = 1024.0
-margin_bottom = 366.0
+margin_bottom = 396.0
 
 [node name="DisconnectButton" parent="." instance=ExtResource( 5 )]
-margin_top = 370.0
+margin_top = 400.0
 margin_right = 1024.0
-margin_bottom = 395.0
+margin_bottom = 430.0
 text = "Disconnect"
 
 [node name="QuitButton" parent="." instance=ExtResource( 5 )]
-margin_top = 399.0
+margin_top = 434.0
 margin_right = 1024.0
-margin_bottom = 424.0
+margin_bottom = 464.0
 text = "Quit"
 [connection signal="pressed" from="ReturnButton" to="." method="ReturnPressed"]
 [connection signal="pressed" from="SaveButton" to="." method="SavePressed"]
