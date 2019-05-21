@@ -5,6 +5,7 @@ using System;
 public class Game : Node
 {
 	public const string Version = "0.1.2-dev"; //Yes it's a string shush
+	public const string DefaultNickname = "BrianD";
 
 	public static Node RuntimeRoot;
 
@@ -19,7 +20,7 @@ public class Game : Node
 	public static float Deadzone = 0.25f;
 	public static int ChunkRenderDistance = 1;
 
-	public static string Nickname = "BrianD";
+	public static string Nickname = DefaultNickname;
 
 	public static Game Self;
 	private Game()

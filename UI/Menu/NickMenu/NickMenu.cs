@@ -8,7 +8,7 @@ public class NickMenu : VBoxContainer
 
 	public override void _Ready()
 	{
-		if(Game.Nickname != "")
+		if(Game.Nickname != Game.DefaultNickname)
 		{
 			Menu.BuildMain();
 		}
@@ -22,7 +22,7 @@ public class NickMenu : VBoxContainer
 
 	public override void _Process(float Delta)
 	{
-		if(Game.Nickname != "")
+		if(Game.Nickname != Game.DefaultNickname)
 		{
 			Menu.BuildMain();
 		}

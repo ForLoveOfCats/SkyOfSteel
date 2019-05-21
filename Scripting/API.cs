@@ -16,7 +16,7 @@ public static class API
 
 	public static bool Host()
 	{
-		if(Game.Nickname == "")
+		if(Game.Nickname == Game.DefaultNickname)
 		{
 			Console.ThrowPrint("Please set a multiplayer nickname before hosting");
 			return false;
@@ -41,7 +41,7 @@ public static class API
 			return false;
 		}
 
-		if(Game.Nickname == "")
+		if(Game.Nickname == Game.DefaultNickname)
 		{
 			Console.ThrowPrint("Please set a multiplayer nickname before connecting");
 			return false;
