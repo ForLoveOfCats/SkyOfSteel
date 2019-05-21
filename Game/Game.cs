@@ -19,7 +19,7 @@ public class Game : Node
 	public static float Deadzone = 0.25f;
 	public static int ChunkRenderDistance = 1;
 
-	public static string Nickname = "";
+	public static string Nickname = "BrianD";
 
 	public static Game Self;
 	private Game()
