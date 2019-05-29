@@ -722,6 +722,11 @@ public class Player : KinematicBody
 		{
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 
+			if(GetSlideCount() > 0)
+			{
+				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
+			}
+
 			if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
 			{
 				WallKickRecoverPercentage = 0;
