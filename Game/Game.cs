@@ -26,6 +26,8 @@ public class Game : Node
 	public static Game Self;
 	private Game()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 
 		using(System.Net.WebClient WebClient = new System.Net.WebClient())
