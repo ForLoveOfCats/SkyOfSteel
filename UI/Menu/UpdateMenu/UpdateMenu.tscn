@@ -1,0 +1,63 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://UI/Menu/UpdateMenu/UpdateMenu.cs" type="Script" id=1]
+[ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Menu/Pieces/LabelPiece.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=4]
+[ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
+
+[node name="VBoxContainer" type="VBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+script = ExtResource( 1 )
+
+[node name="Title" parent="." instance=ExtResource( 2 )]
+margin_top = 167.0
+margin_right = 1024.0
+margin_bottom = 219.0
+text = "Update Available!"
+
+[node name="MessageLabel" parent="." instance=ExtResource( 3 )]
+margin_top = 223.0
+margin_right = 1024.0
+margin_bottom = 247.0
+text = "Default Message Text"
+
+[node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
+margin_top = 251.0
+margin_right = 1024.0
+margin_bottom = 275.0
+
+[node name="DownloadButton" parent="." instance=ExtResource( 5 )]
+margin_top = 279.0
+margin_right = 1024.0
+margin_bottom = 309.0
+text = "Download from Itch.io"
+
+[node name="SpacerLabel2" parent="." instance=ExtResource( 4 )]
+margin_top = 313.0
+margin_right = 1024.0
+margin_bottom = 337.0
+
+[node name="IgnoreButton" parent="." instance=ExtResource( 5 )]
+margin_top = 341.0
+margin_right = 1024.0
+margin_bottom = 371.0
+text = "Ignore"
+
+[node name="SpacerLabel3" parent="." instance=ExtResource( 4 )]
+margin_top = 375.0
+margin_right = 1024.0
+margin_bottom = 399.0
+
+[node name="QuitButton" parent="." instance=ExtResource( 5 )]
+margin_top = 403.0
+margin_right = 1024.0
+margin_bottom = 433.0
+text = "Quit"
+[connection signal="pressed" from="DownloadButton" to="." method="DownloadPressed"]
+[connection signal="pressed" from="IgnoreButton" to="." method="IgnorePressed"]
+[connection signal="pressed" from="QuitButton" to="." method="QuitPressed"]
