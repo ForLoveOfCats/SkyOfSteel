@@ -520,8 +520,6 @@ public class World : Node
 	[Remote]
 	public void PrepareChunkSpace(Vector2 Pos) //Run on the client to clear a chunk's area before being populated from the server
 	{
-		List<DroppedItem> ItemsToRemove = new List<DroppedItem>();
-
 		ChunkClass ChunkToFree;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out ChunkToFree)) //Chunk might not exist
 		{
@@ -530,17 +528,17 @@ public class World : Node
 				Branch.Free();
 			}
 
+			List<DroppedItem> ItemsToRemove = new List<DroppedItem>();
 			foreach(DroppedItem Item in ChunkToFree.Items)
 			{
 				ItemsToRemove.Add(Item);
 			}
+			foreach(DroppedItem Item in ItemsToRemove)
+			{
+				Item.Remove();
+			}
 
 			Chunks.Remove(new Tuple<int,int>((int)Pos.x, (int)Pos.y));
-		}
-
-		foreach(DroppedItem Item in ItemsToRemove)
-		{
-			Item.Remove();
 		}
 	}
 
