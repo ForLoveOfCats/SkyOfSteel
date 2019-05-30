@@ -268,7 +268,7 @@ public class World : Node
 		else
 		{
 			ChunkClass Chunk = new ChunkClass();
-			Chunk.Items = new List<DroppedItem>{Item};
+			Chunk.Items.Add(Item);
 			Chunks.Add(GetChunkTuple(Item.Translation), Chunk);
 		}
 	}
