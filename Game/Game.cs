@@ -34,7 +34,7 @@ public class Game : Node
 		{
 			try //Make sure game is still playable if url becomes invalid
 			{
-				RemoteVersion = WebClient.DownloadString("https://forloveofcats.github.io/SkyOfSteel/LatestVersion.txt");
+				RemoteVersion = WebClient.DownloadString("http://skyofsteel.org/LatestVersion.txt");
 				RemoteVersion = RemoteVersion.Trim();
 			}
 			catch
