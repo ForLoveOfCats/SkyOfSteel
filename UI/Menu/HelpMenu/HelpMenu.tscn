@@ -80,9 +80,27 @@ margin_top = 643.0
 margin_right = 1024.0
 margin_bottom = 667.0
 
-[node name="BackButton" parent="." instance=ExtResource( 6 )]
+[node name="MoreHelpTitle" parent="." instance=ExtResource( 4 )]
 margin_top = 671.0
 margin_right = 1024.0
-margin_bottom = 701.0
+margin_bottom = 702.0
+custom_fonts/font = SubResource( 1 )
+text = "For More Help"
+
+[node name="Label3" parent="." instance=ExtResource( 4 )]
+margin_top = 706.0
+margin_right = 1024.0
+margin_bottom = 730.0
+text = "Visit:  skyofsteel.org/Help"
+
+[node name="SpacerLabel4" parent="." instance=ExtResource( 3 )]
+margin_top = 734.0
+margin_right = 1024.0
+margin_bottom = 758.0
+
+[node name="BackButton" parent="." instance=ExtResource( 6 )]
+margin_top = 762.0
+margin_right = 1024.0
+margin_bottom = 792.0
 text = "Back"
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]
