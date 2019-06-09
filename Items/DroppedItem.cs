@@ -14,7 +14,7 @@ public class DroppedItem : KinematicBody, IInGrid
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
 	public bool PhysicsEnabled = true;
 	public float Life = 0f;
-	public Items.TYPE Type;
+	public Items.ID Type;
 
 	public MeshInstance Mesh;
 

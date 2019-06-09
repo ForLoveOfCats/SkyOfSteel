@@ -14,7 +14,7 @@ public class BuildRotations //NOTE: This whole file is going away in 0.1.3
 
 	private static Vector3 WallBranch(Structure Base)
 	{
-		if(Base.Type == Items.TYPE.WALL)
+		if(Base.Type == Items.ID.WALL)
 		{
 			return Base.RotationDegrees;
 		}
@@ -39,17 +39,17 @@ public class BuildRotations //NOTE: This whole file is going away in 0.1.3
 	}
 
 
-	public static Vector3 Calculate(Structure Base, Items.TYPE BranchType)
+	public static Vector3 Calculate(Structure Base, Items.ID BranchType)
 	{
 		switch(BranchType)
 		{
-			case(Items.TYPE.PLATFORM):
+			case(Items.ID.PLATFORM):
 				return PlatformBranch(Base);
 
-			case(Items.TYPE.WALL):
+			case(Items.ID.WALL):
 				return WallBranch(Base);
 
-			case(Items.TYPE.SLOPE):
+			case(Items.ID.SLOPE):
 				return SlopeBranch(Base);
 
 			default:

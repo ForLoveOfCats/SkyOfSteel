@@ -116,9 +116,9 @@ public class Player : KinematicBody
 			SetFreeze(false);
 		}
 
-		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
-		ItemGive(new Items.Instance(Items.TYPE.WALL));
-		ItemGive(new Items.Instance(Items.TYPE.SLOPE));
+		ItemGive(new Items.Instance(Items.ID.PLATFORM));
+		ItemGive(new Items.Instance(Items.ID.WALL));
+		ItemGive(new Items.Instance(Items.ID.SLOPE));
 	}
 
 
@@ -196,7 +196,7 @@ public class Player : KinematicBody
 
 
 	[Remote]
-	public void PickupItem(Items.TYPE Type)
+	public void PickupItem(Items.ID Type)
 	{
 		ItemGive(new Items.Instance(Type));
 	}
@@ -242,7 +242,7 @@ public class Player : KinematicBody
 		{
 			switch(Inventory[InventorySlot].Type)
 			{
-				case(Items.TYPE.SLOPE):
+				case(Items.ID.SLOPE):
 					if(BuildRotation == 0)
 					{
 						BuildRotation = 1;

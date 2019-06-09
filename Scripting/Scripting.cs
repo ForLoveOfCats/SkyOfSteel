@@ -28,7 +28,7 @@ public class Scripting : Node
 						   Assembly.GetAssembly(typeof(System.Dynamic.ExpandoObject)));  // System.Dynamic
 
 		Sc.Script CEngine = Cs.Create("", ScriptOptions);
-		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API; using static Items.TYPE;")
+		ConsoleState = CEngine.ContinueWith("using System; using System.Dynamic; using Godot; using static API; using static Items.ID;")
 			.RunAsync().Result;
 	}
 

@@ -7,12 +7,12 @@ public class Items : Node
 {
 	public class Instance
 	{
-		public Items.TYPE Type = Items.TYPE.ERROR;
+		public Items.ID Type = Items.ID.ERROR;
 		public int Temperature = 0;
 		public int Count = 1;
 		public int UsesRemaining = 0;
 
-		public Instance(Items.TYPE TypeArg)
+		public Instance(Items.ID TypeArg)
 		{
 			this.Type = TypeArg;
 		}
@@ -21,7 +21,7 @@ public class Items : Node
 
 	private struct CustomItemEnum //Reference implimentation for 0.1.3
 	{
-		public static int NextSpot = Enum.GetNames(typeof(TYPE)).Length;
+		public static int NextSpot = Enum.GetNames(typeof(ID)).Length;
 		public int Spot;
 
 		public CustomItemEnum(int SpotArg)
@@ -30,9 +30,9 @@ public class Items : Node
 		}
 
 
-		public static implicit operator TYPE(CustomItemEnum ItemEnum)
+		public static implicit operator ID(CustomItemEnum ItemEnum)
 		{
-			return (TYPE)(ItemEnum.Spot);
+			return (ID)(ItemEnum.Spot);
 		}
 	}
 
@@ -44,11 +44,11 @@ public class Items : Node
 	}
 
 
-	public enum TYPE {ERROR, PLATFORM, WALL, SLOPE}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE}
 
-	public static Dictionary<TYPE, Mesh> Meshes = new Dictionary<TYPE, Mesh>();
-	public static Dictionary<TYPE, Texture> Thumbnails = new Dictionary<TYPE, Texture>();
-	public static Dictionary<TYPE, Texture> Textures { get; private set; } = new Dictionary<TYPE, Texture>();
+	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
+	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
+	public static Dictionary<ID, Texture> Textures { get; private set; } = new Dictionary<ID, Texture>();
 
 	public static Shader StructureShader { get; private set; }
 
@@ -58,19 +58,19 @@ public class Items : Node
 
 		StructureShader = GD.Load<Shader>("res://World/Materials/StructureShader.shader");
 
-		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(TYPE)))
+		foreach(Items.ID Type in System.Enum.GetValues(typeof(ID)))
 		{
 			Meshes.Add(Type, GD.Load<Mesh>($"res://Items/Meshes/{Type}.obj"));
 			//Assume that every item has a mesh, will throw exception on game startup if not
 		}
 
-		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
+		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
 		{
 			Thumbnails.Add(Type, GD.Load<Texture>($"res://Items/Thumbnails/{Type}.png"));
 			//Assume that every item has a thumbnail, will throw exception on game startup if not
 		}
 
-		foreach(TYPE Type in System.Enum.GetValues(typeof(TYPE)))
+		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
 		{
 			Textures.Add(Type, GD.Load<Texture>($"res://Items/Textures/{Type}.png"));
 			//Assume that every item has a texture, will throw exception on game startup if not

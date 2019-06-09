@@ -8,10 +8,10 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	public Items.TYPE CurrentMeshType;
+	public Items.ID CurrentMeshType;
 	public bool CanBuild = false;
 
-	List<Items.TYPE> OldType;
+	List<Items.ID> OldType;
 	List<Vector3> OldPositions;
 	List<Vector3> OldRotations;
 	List<bool> OldVisible;
@@ -27,10 +27,10 @@ public class Ghost : Area
 		//Godot's `Area` object likes to not register body entry's for several
 		  //physics ticks so these postion, rotation, and visibility queues
 		  //are required to prevent flashes of the incorrect color/build abilty
-		OldType = new List<Items.TYPE>()
+		OldType = new List<Items.ID>()
 			{
-				Items.TYPE.ERROR,
-				Items.TYPE.ERROR
+				Items.ID.ERROR,
+				Items.ID.ERROR
 			};
 		OldPositions = new List<Vector3>()
 			{

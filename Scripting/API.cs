@@ -124,7 +124,7 @@ public static class API
 	}
 
 
-	public static bool Give(Items.TYPE Type) //TODO: Allow giving items to other players
+	public static bool Give(Items.ID Type) //TODO: Allow giving items to other players
 	{
 		Game.PossessedPlayer.ItemGive(new Items.Instance(Type));
 		return true;

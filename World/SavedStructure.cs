@@ -5,11 +5,11 @@ using System.Linq;
 
 public class SavedStructure
 {
-	public int T = (int)Items.TYPE.ERROR;
+	public int T = (int)Items.ID.ERROR;
 	public float[] P;
 	public float[] R;
 
-	public SavedStructure(Items.TYPE Type, Vector3 Position, Vector3 Rotation)
+	public SavedStructure(Items.ID Type, Vector3 Position, Vector3 Rotation)
 	{
 		this.T = (int)Type;
 		this.P = new float[3] {Position.x, Position.y, Position.z};
@@ -36,7 +36,7 @@ public class SavedStructure
 	}
 
 
-	public Tuple<Items.TYPE,Vector3,Vector3> GetInfoOrNull()
+	public Tuple<Items.ID,Vector3,Vector3> GetInfoOrNull()
 	{
 		//Returns null if data is invalid
 
@@ -52,6 +52,6 @@ public class SavedStructure
 		}
 		Vector3 Rot = new Vector3(R[0], R[1], R[2]);
 
-		return new Tuple<Items.TYPE,Vector3,Vector3>((Items.TYPE)T, Pos, Rot);
+		return new Tuple<Items.ID,Vector3,Vector3>((Items.ID)T, Pos, Rot);
 	}
 }

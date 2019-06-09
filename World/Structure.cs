@@ -3,7 +3,7 @@ using Godot;
 
 public class Structure : StaticBody, IInGrid
 {
-	public Items.TYPE Type = Items.TYPE.ERROR;
+	public Items.ID Type = Items.ID.ERROR;
 	public int OwnerId = 0;
 
 

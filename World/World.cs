@@ -8,7 +8,7 @@ public class World : Node
 	public const int PlatformSize = 12;
 	public const int ChunkSize = 9*PlatformSize;
 
-	public static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
+	public static Dictionary<Items.ID, PackedScene> Scenes = new Dictionary<Items.ID, PackedScene>();
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
@@ -53,7 +53,7 @@ public class World : Node
 			FileName = StructureDir.GetNext();
 		}
 
-		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
+		foreach(Items.ID Type in System.Enum.GetValues(typeof(Items.ID)))
 		{
 			File ToLoad = new File();
 			if(ToLoad.FileExists("res://World/Scenes/" + Type.ToString() + ".tscn"))
@@ -70,7 +70,7 @@ public class World : Node
 
 	public static void DefaultPlatforms()
 	{
-		Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
 	}
 
 
@@ -274,7 +274,7 @@ public class World : Node
 	}
 
 
-	public static Structure PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
+	public static Structure PlaceOn(Structure Base, Items.ID BranchType, int OwnerId)
 	{
 		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
 		if(Position != null) //If null then unsupported branch/base combination
@@ -287,7 +287,7 @@ public class World : Node
 	}
 
 
-	public static Structure Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public static Structure Place(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		string Name = System.Guid.NewGuid().ToString();
 		Structure Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
@@ -302,7 +302,7 @@ public class World : Node
 
 
 	[Remote]
-	public Structure PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	public Structure PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
 		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
@@ -506,7 +506,7 @@ public class World : Node
 		int PlaceCount = 0;
 		foreach(SavedStructure SavedBranch in LoadedChunk.S)
 		{
-			Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
+			Tuple<Items.ID,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 			if(Info != null)
 			{
 				Place(Info.Item1, Info.Item2, Info.Item3, 1);
@@ -546,7 +546,7 @@ public class World : Node
 	//Should be able to be called without RPC yet only run on server
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void DropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
+	public void DropItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum)
 	{
 		if(Self.GetTree().GetNetworkPeer() != null)
 		{
@@ -566,7 +566,7 @@ public class World : Node
 
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void DropOrUpdateItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
+	public void DropOrUpdateItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
 		if(ItemsRoot.HasNode(Name))
 		{
