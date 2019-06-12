@@ -1,10 +1,14 @@
 using Godot;
+using static Godot.Mathf;
 using System;
 using System.Collections.Generic;
 
 
 public class Items : Node
 {
+	public delegate Vector3? BuildInfoDelegate(Structure Base, Vector3 HitPointRelative);
+
+
 	public class Instance
 	{
 		public Items.ID Type = Items.ID.ERROR;
@@ -50,6 +54,9 @@ public class Items : Node
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
 	public static Dictionary<ID, Texture> Textures { get; private set; } = new Dictionary<ID, Texture>();
 
+	public static Dictionary<ID, BuildInfoDelegate> BuildPositions = new Dictionary<ID, BuildInfoDelegate>();
+	public static Dictionary<ID, BuildInfoDelegate> BuildRotations = new Dictionary<ID, BuildInfoDelegate>();
+
 	public static Shader StructureShader { get; private set; }
 
 	Items()
@@ -75,5 +82,75 @@ public class Items : Node
 			Textures.Add(Type, GD.Load<Texture>($"res://Items/Textures/{Type}.png"));
 			//Assume that every item has a texture, will throw exception on game startup if not
 		}
+	}
+
+
+	public static Vector3? TryCalculateBuildPosition(ID Branch, Structure Base, Vector3 Hit)
+	{
+		BuildInfoDelegate Function;
+		BuildPositions.TryGetValue(Branch, out Function);
+
+		if(Function != null)
+			return Function(Base, Hit - Base.Translation);
+
+		return null;
+	}
+
+
+	public static Vector3? TryCalculateBuildRotation(ID Branch, Structure Base, Vector3 Hit)
+	{
+		BuildInfoDelegate Function;
+		BuildRotations.TryGetValue(Branch, out Function);
+
+		if(Function != null)
+			return Function(Base, Hit - Base.Translation);
+
+		return null;
+	}
+
+
+	public static void SetupItems()
+	{
+		BuildPositions = new Dictionary<ID, BuildInfoDelegate>() {
+			{
+				ID.PLATFORM,
+				new BuildInfoDelegate((Structure Base, Vector3 HitRelative) => {
+						switch(Base.Type)
+						{
+							case(ID.PLATFORM):
+							{
+								if(Abs(HitRelative.x) <= 1 && Abs(HitRelative.z) <= 1) //Deadzone
+									return null;
+
+								if(Abs(HitRelative.x) >= Abs(HitRelative.z))
+								{
+									if(HitRelative.x >= 0)
+										return Base.Translation + new Vector3(12,0,0);
+									else
+										return Base.Translation + new Vector3(-12,0,0);
+								}
+								else
+								{
+									if(HitRelative.z >= 0)
+										return Base.Translation + new Vector3(0,0,12);
+									else
+										return Base.Translation + new Vector3(0,0,-12);
+								}
+							}
+						}
+
+						return null;
+					})
+			}
+		};
+
+		BuildRotations = new Dictionary<ID, BuildInfoDelegate>() {
+			{
+				ID.PLATFORM,
+				new BuildInfoDelegate((Structure Base, Vector3 Hit) => {
+						return new Vector3(); //PLATFORM will always have a rotation of 0,0,0
+					})
+			}
+		};
 	}
 }

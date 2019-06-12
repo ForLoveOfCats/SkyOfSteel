@@ -79,6 +79,8 @@ public class World : Node
 		Close();
 		Menu.Close();
 
+		Items.SetupItems();
+
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
 		SkyScene.SetName("SkyScene");
 		Game.RuntimeRoot.AddChild(SkyScene);
@@ -114,6 +116,9 @@ public class World : Node
 		RemoteLoadedChunks.Clear();
 		ItemList.Clear();
 		Grid.Clear();
+
+		Items.BuildPositions.Clear();
+		Items.BuildRotations.Clear();
 
 		SaveName = null;
 		IsOpen = false;
@@ -274,9 +279,10 @@ public class World : Node
 	}
 
 
-	public static Structure PlaceOn(Structure Base, Items.ID BranchType, int OwnerId)
+	public static Structure PlaceOn(Items.ID BranchType, Structure Base, Vector3 HitPoint, int OwnerId)
 	{
-		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
+		// System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
+		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
 			Vector3 Rotation = BuildRotations.Calculate(Base, BranchType);
