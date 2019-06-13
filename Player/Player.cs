@@ -500,9 +500,9 @@ public class Player : KinematicBody
 					if(Base != null && GhostInstance.CanBuild)
 					{
 						// Vector3? PlacePosition = BuildPositions.Calculate(Base, GhostInstance.CurrentMeshType);
-						Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, BuildRayCast.GetCollisionPoint());
+						Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRayCast.GetCollisionPoint());
 						if(PlacePosition != null && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType, PlacePosition.Value, BuildRotations.Calculate(Base, GhostInstance.CurrentMeshType)))
-						   World.PlaceOn(GhostInstance.CurrentMeshType, Base, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
+						   World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
 					}
 				}
 			}

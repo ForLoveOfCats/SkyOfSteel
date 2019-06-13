@@ -90,7 +90,7 @@ public class Ghost : Area
 				if(Base != null)
 				{
 					// System.Nullable<Vector3> GhostPosition = BuildPositions.Calculate(Base, Plr.Inventory[Plr.InventorySlot].Type);
-					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, BuildRayCast.GetCollisionPoint());
+					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
 						Vector3 GhostRotation = BuildRotations.Calculate(Base, Plr.Inventory[Plr.InventorySlot].Type);
