@@ -136,8 +136,8 @@ public class Items : Node
 							{
 								float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4) + 180);
 
-								if(Orientation != LoopRotation((float)Round(Base.RotationDegrees.y))
-								   && LoopRotation(Orientation+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
+								if(Orientation != LoopRotation(Round(Base.RotationDegrees.y))
+								   && LoopRotation(Orientation+180) != LoopRotation(Round(Base.RotationDegrees.y)))
 								{
 									return null;
 								}
@@ -149,14 +149,15 @@ public class Items : Node
 								if(HitRelative.y + Base.Translation.y < Base.Translation.y)
 									yOffset = -6;
 
-								return Base.Translation + (new Vector3(0, yOffset, 6)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation));
+								return new Vector3(0, yOffset, 6).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation)) + Base.Translation;
 							}
 
 							case(ID.SLOPE):
 							{
 								float Orientation = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
 
-								if(Orientation != LoopRotation((float)Round(Base.RotationDegrees.y)) && LoopRotation(Orientation+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
+								if(Orientation != LoopRotation(Round(Base.RotationDegrees.y))
+								   && LoopRotation(Orientation+180) != LoopRotation(Round(Base.RotationDegrees.y)))
 								{
 									return null;
 								}
@@ -165,13 +166,13 @@ public class Items : Node
 								if(BuildRotation == 1 || BuildRotation == 3)
 									zOffset = 0;
 
-								if(Orientation == LoopRotation((float)Round(Base.RotationDegrees.y)))
+								if(Orientation == LoopRotation(Round(Base.RotationDegrees.y)))
 								{
-									return Base.Translation + (new Vector3(0, 6, zOffset)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation));
+									return new Vector3(0, 6, zOffset).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation)) + Base.Translation;
 								}
 								else
 								{
-									return Base.Translation + (new Vector3(0, -6, zOffset)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation));
+									return new Vector3(0, -6, zOffset).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation)) + Base.Translation;
 								}
 							}
 						}
@@ -193,7 +194,7 @@ public class Items : Node
 								if(BuildRotation == 1 || BuildRotation == 3)
 									yOffset = -6;
 
-								return Base.Translation + (new Vector3(0, yOffset, 6)).Rotated(new Vector3(0,1,0), PlayerOrientation);
+								return new Vector3(0, yOffset, 6).Rotated(new Vector3(0,1,0), PlayerOrientation) + Base.Translation;
 							}
 
 							case(ID.WALL):
