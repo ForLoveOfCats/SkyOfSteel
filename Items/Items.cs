@@ -102,7 +102,7 @@ public class Items : Node
 	}
 
 
-	public static Vector3? TryCalculateBuildRotation(ID Branch, Structure Base, float PlayerOrientation, Vector3 Hit)
+	public static Vector3 CalculateBuildRotation(ID Branch, Structure Base, float PlayerOrientation, Vector3 Hit) //Always return a valid rotation
 	{
 		BuildInfoDelegate Function;
 		BuildRotations.TryGetValue(Branch, out Function);
@@ -114,7 +114,7 @@ public class Items : Node
 				return new Vector3(Round(Rotation.x), Round(Rotation.y), Round(Rotation.z));
 		}
 
-		return null;
+		return new Vector3();
 	}
 
 

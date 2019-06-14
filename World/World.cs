@@ -284,7 +284,7 @@ public class World : Node
 		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
-			Vector3 Rotation = BuildRotations.Calculate(Base, BranchType);
+			Vector3 Rotation = Items.CalculateBuildRotation(BranchType, Base, PlayerOrientation, HitPoint);
 			return Place(BranchType, (Vector3)Position, Rotation, OwnerId);
 		}
 

@@ -92,7 +92,7 @@ public class Ghost : Area
 					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
-						Vector3 GhostRotation = BuildRotations.Calculate(Base, Plr.Inventory[Plr.InventorySlot].Type);
+						Vector3 GhostRotation = Items.CalculateBuildRotation(CurrentMeshType, Base, Plr.RotationDegrees.y, BuildRayCast.GetCollisionPoint());
 						Translation = (Vector3)GhostPosition;
 						RotationDegrees = GhostRotation;
 						OldVisible[1] = true;
