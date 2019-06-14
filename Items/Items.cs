@@ -232,6 +232,27 @@ public class Items : Node
 
 						return null;
 					})
+			},
+
+			{
+				ID.SLOPE,
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+						switch(Base.Type)
+						{
+							case(ID.PLATFORM):
+							{
+								float Orientation = SnapToGrid(PlayerOrientation, 360, 4);
+
+								int yOffset = 6;
+								if(BuildRotation == 1 || BuildRotation == 3)
+									yOffset = -6;
+
+								return new Vector3(0, yOffset, 12).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+							}
+						}
+
+						return null;
+					})
 			}
 		};
 
@@ -251,7 +272,18 @@ public class Items : Node
 
 						return new Vector3(0, SnapToGrid(PlayerOrientation, 360, 4), 0);
 					})
-			}
+			},
+
+			{
+				ID.SLOPE,
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
+						if(Base.Type == ID.PLATFORM)
+							if(BuildRotation == 1 || BuildRotation == 3)
+								return new Vector3(0, LoopRotation(SnapToGrid(PlayerOrientation, 360, 4) + 180), 0);
+
+						return new Vector3(0, SnapToGrid(PlayerOrientation, 360, 4), 0);
+					})
+			},
 		};
 	}
 }
