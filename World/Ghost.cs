@@ -89,10 +89,10 @@ public class Ghost : Area
 				Structure Base = BuildRayCast.GetCollider() as Structure;
 				if(Base != null)
 				{
-					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, BuildRayCast.GetCollisionPoint());
+					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
-						Vector3 GhostRotation = Items.CalculateBuildRotation(CurrentMeshType, Base, Plr.RotationDegrees.y, BuildRayCast.GetCollisionPoint());
+						Vector3 GhostRotation = Items.CalculateBuildRotation(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 						Translation = (Vector3)GhostPosition;
 						RotationDegrees = GhostRotation;
 						OldVisible[1] = true;

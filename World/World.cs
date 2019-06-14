@@ -279,12 +279,12 @@ public class World : Node
 	}
 
 
-	public static Structure PlaceOn(Items.ID BranchType, Structure Base, float PlayerOrientation, Vector3 HitPoint, int OwnerId)
+	public static Structure PlaceOn(Items.ID BranchType, Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
 	{
-		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, HitPoint);
+		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
-			Vector3 Rotation = Items.CalculateBuildRotation(BranchType, Base, PlayerOrientation, HitPoint);
+			Vector3 Rotation = Items.CalculateBuildRotation(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 			return Place(BranchType, (Vector3)Position, Rotation, OwnerId);
 		}
 

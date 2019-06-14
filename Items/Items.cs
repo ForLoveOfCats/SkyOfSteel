@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public class Items : Node
 {
-	public delegate Vector3? BuildInfoDelegate(Structure Base, float PlayerOrientation, Vector3 HitPointRelative);
+	public delegate Vector3? BuildInfoDelegate(Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitPointRelative);
 
 
 	public class Instance
@@ -86,14 +86,14 @@ public class Items : Node
 	}
 
 
-	public static Vector3? TryCalculateBuildPosition(ID Branch, Structure Base, float PlayerOrientation, Vector3 Hit)
+	public static Vector3? TryCalculateBuildPosition(ID Branch, Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit)
 	{
 		BuildInfoDelegate Function;
 		BuildPositions.TryGetValue(Branch, out Function);
 
 		if(Function != null)
 		{
-			Vector3? PossiblePosition = Function(Base, PlayerOrientation, Hit - Base.Translation);
+			Vector3? PossiblePosition = Function(Base, PlayerOrientation, BuildRotation, Hit - Base.Translation);
 			if(PossiblePosition is Vector3 Position) //For now round all positions until it causes issues
 				return new Vector3(Round(Position.x), Round(Position.y), Round(Position.z));
 		}
@@ -102,14 +102,14 @@ public class Items : Node
 	}
 
 
-	public static Vector3 CalculateBuildRotation(ID Branch, Structure Base, float PlayerOrientation, Vector3 Hit) //Always return a valid rotation
+	public static Vector3 CalculateBuildRotation(ID Branch, Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) //Always return a valid rotation
 	{
 		BuildInfoDelegate Function;
 		BuildRotations.TryGetValue(Branch, out Function);
 
 		if(Function != null)
 		{
-			Vector3? PossibleRotation = Function(Base, PlayerOrientation, Hit - Base.Translation);
+			Vector3? PossibleRotation = Function(Base, PlayerOrientation, BuildRotation, Hit - Base.Translation);
 			if(PossibleRotation is Vector3 Rotation) //For now round all rotations until it causes issues
 				return new Vector3(Round(Rotation.x), Round(Rotation.y), Round(Rotation.z));
 		}
@@ -123,7 +123,7 @@ public class Items : Node
 		BuildPositions = new Dictionary<ID, BuildInfoDelegate>() {
 			{
 				ID.PLATFORM,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						switch(Base.Type)
 						{
 							case(ID.PLATFORM):
@@ -134,15 +134,22 @@ public class Items : Node
 
 							case(ID.WALL):
 							{
-								float ReverseOrientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4) + 180);
+								float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4) + 180);
 
-								if(ReverseOrientation != LoopRotation((float)Round(Base.RotationDegrees.y))
-								   && LoopRotation(ReverseOrientation+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
+								if(Orientation != LoopRotation((float)Round(Base.RotationDegrees.y))
+								   && LoopRotation(Orientation+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
 								{
 									return null;
 								}
 
-								return Base.Translation + (new Vector3(0,6,6)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(ReverseOrientation));
+								if(BuildRotation == 1 || BuildRotation == 3)
+									Orientation = LoopRotation(Orientation + 180);
+
+								int yOffset = 6;
+								if(HitRelative.y + Base.Translation.y < Base.Translation.y)
+									yOffset = -6;
+
+								return Base.Translation + (new Vector3(0, yOffset, 6)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(Orientation));
 							}
 						}
 
@@ -154,7 +161,7 @@ public class Items : Node
 		BuildRotations = new Dictionary<ID, BuildInfoDelegate>() {
 			{
 				ID.PLATFORM,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, Vector3 Hit) => {
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
 						return new Vector3(); //PLATFORM will always have a rotation of 0,0,0
 					})
 			}
