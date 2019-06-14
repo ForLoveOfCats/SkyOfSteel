@@ -195,6 +195,14 @@ public class Items : Node
 
 								return Base.Translation + (new Vector3(0, yOffset, 6)).Rotated(new Vector3(0,1,0), PlayerOrientation);
 							}
+
+							case(ID.WALL):
+							{
+								if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
+									return new Vector3(0, 12, 0) + Base.Translation;
+								else
+									return new Vector3(0, -12, 0) + Base.Translation;
+							}
 						}
 
 						return null;
@@ -213,6 +221,9 @@ public class Items : Node
 			{
 				ID.WALL,
 				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
+						if(Base.Type == ID.WALL)
+							return Base.RotationDegrees;
+
 						return new Vector3(0, SnapToGrid(PlayerOrientation, 360, 4), 0);
 					})
 			}
