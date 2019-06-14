@@ -178,6 +178,27 @@ public class Items : Node
 
 						return null;
 					})
+			},
+
+			{
+				ID.WALL,
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+						switch(Base.Type)
+						{
+							case(ID.PLATFORM):
+							{
+								PlayerOrientation = Mathf.Deg2Rad(SnapToGrid(PlayerOrientation, 360, 4));
+
+								int yOffset = 6;
+								if(BuildRotation == 1 || BuildRotation == 3)
+									yOffset = -6;
+
+								return Base.Translation + (new Vector3(0, yOffset, 6)).Rotated(new Vector3(0,1,0), PlayerOrientation);
+							}
+						}
+
+						return null;
+					})
 			}
 		};
 
@@ -186,6 +207,13 @@ public class Items : Node
 				ID.PLATFORM,
 				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
 						return new Vector3(); //PLATFORM will always have a rotation of 0,0,0
+					})
+			},
+
+			{
+				ID.WALL,
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
+						return new Vector3(0, SnapToGrid(PlayerOrientation, 360, 4), 0);
 					})
 			}
 		};
