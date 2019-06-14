@@ -131,6 +131,19 @@ public class Items : Node
 								PlayerOrientation = Mathf.Deg2Rad(SnapToGrid(PlayerOrientation, 360, 4));
 								return Base.Translation + (new Vector3(0,0,12)).Rotated(new Vector3(0,1,0), PlayerOrientation);
 							}
+
+							case(ID.WALL):
+							{
+								float ReverseOrientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4) + 180);
+
+								if(ReverseOrientation != LoopRotation((float)Round(Base.RotationDegrees.y))
+								   && LoopRotation(ReverseOrientation+180) != LoopRotation((float)Round(Base.RotationDegrees.y)))
+								{
+									return null;
+								}
+
+								return Base.Translation + (new Vector3(0,6,6)).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(ReverseOrientation));
+							}
 						}
 
 						return null;
