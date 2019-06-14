@@ -154,7 +154,7 @@ public class Items : Node
 
 							case(ID.SLOPE):
 							{
-								float Orientation = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
+								float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4));
 
 								if(Orientation != LoopRotation(Round(Base.RotationDegrees.y))
 								   && LoopRotation(Orientation+180) != LoopRotation(Round(Base.RotationDegrees.y)))
@@ -207,7 +207,7 @@ public class Items : Node
 
 							case(ID.SLOPE):
 							{
-								float Orientation = LoopRotation(SnapToGrid(Game.PossessedPlayer.RotationDegrees.y, 360, 4));
+								float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4));
 
 								if(Orientation != LoopRotation(Round(Base.RotationDegrees.y))
 								   && LoopRotation(Orientation+180) != LoopRotation(Round(Base.RotationDegrees.y)))
