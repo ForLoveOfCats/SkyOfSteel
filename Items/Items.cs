@@ -199,10 +199,20 @@ public class Items : Node
 
 							case(ID.WALL):
 							{
-								if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
-									return new Vector3(0, 12, 0) + Base.Translation;
+								float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4));
+
+								if(Orientation != LoopRotation(Round(Base.RotationDegrees.y))
+								   && LoopRotation(Orientation+180) != LoopRotation(Round(Base.RotationDegrees.y))) //Not facing straight on
+								{
+									return new Vector3(0, 0, 12).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+								}
 								else
-									return new Vector3(0, -12, 0) + Base.Translation;
+								{
+									if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
+										return new Vector3(0, 12, 0) + Base.Translation;
+									else
+										return new Vector3(0, -12, 0) + Base.Translation;
+								}
 							}
 
 							case(ID.SLOPE):
