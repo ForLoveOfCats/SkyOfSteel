@@ -89,7 +89,6 @@ public class Ghost : Area
 				Structure Base = BuildRayCast.GetCollider() as Structure;
 				if(Base != null)
 				{
-					// System.Nullable<Vector3> GhostPosition = BuildPositions.Calculate(Base, Plr.Inventory[Plr.InventorySlot].Type);
 					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
