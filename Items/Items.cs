@@ -92,7 +92,11 @@ public class Items : Node
 		BuildPositions.TryGetValue(Branch, out Function);
 
 		if(Function != null)
-			return Function(Base, PlayerOrientation, Hit - Base.Translation);
+		{
+			Vector3? PossiblePosition = Function(Base, PlayerOrientation, Hit - Base.Translation);
+			if(PossiblePosition is Vector3 Position) //For now round all positions until it causes issues
+				return new Vector3(Round(Position.x), Round(Position.y), Round(Position.z));
+		}
 
 		return null;
 	}
@@ -104,7 +108,11 @@ public class Items : Node
 		BuildRotations.TryGetValue(Branch, out Function);
 
 		if(Function != null)
-			return Function(Base, PlayerOrientation, Hit - Base.Translation);
+		{
+			Vector3? PossibleRotation = Function(Base, PlayerOrientation, Hit - Base.Translation);
+			if(PossibleRotation is Vector3 Rotation) //For now round all rotations until it causes issues
+				return new Vector3(Round(Rotation.x), Round(Rotation.y), Round(Rotation.z));
+		}
 
 		return null;
 	}
