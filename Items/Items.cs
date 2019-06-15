@@ -259,6 +259,41 @@ public class Items : Node
 
 								return new Vector3(0, yOffset, 12).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
 							}
+
+							case(ID.WALL):
+							{
+								float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4));
+								if(Orientation != LoopRotation(Round(Base.RotationDegrees.y))
+								   && LoopRotation(Orientation+180) != LoopRotation(Round(Base.RotationDegrees.y)))
+								{
+									return null;
+								}
+
+								if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
+								{
+									if(BuildRotation == 0)
+										return new Vector3(0, 12, 6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+									if(BuildRotation == 1)
+										return new Vector3(0, 0, 6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+									if(BuildRotation == 2)
+										return new Vector3(0, 12, -6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+									if(BuildRotation == 3)
+										return new Vector3(0, 0, -6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+								}
+								else
+								{
+									if(BuildRotation == 0)
+										return new Vector3(0, 0, 6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+									if(BuildRotation == 1)
+										return new Vector3(0, -12, 6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+									if(BuildRotation == 2)
+										return new Vector3(0, 0, -6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+									if(BuildRotation == 3)
+										return new Vector3(0, -12, -6).Rotated(new Vector3(0,1,0), Deg2Rad(Orientation)) + Base.Translation;
+								}
+
+								return null;
+							}
 						}
 
 						return null;
@@ -269,14 +304,14 @@ public class Items : Node
 		BuildRotations = new Dictionary<ID, BuildInfoDelegate>() {
 			{
 				ID.PLATFORM,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						return new Vector3(); //PLATFORM will always have a rotation of 0,0,0
 					})
 			},
 
 			{
 				ID.WALL,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						if(Base.Type == ID.WALL || Base.Type == ID.SLOPE)
 							return Base.RotationDegrees;
 
@@ -286,10 +321,23 @@ public class Items : Node
 
 			{
 				ID.SLOPE,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) => {
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						if(Base.Type == ID.PLATFORM)
 							if(BuildRotation == 1 || BuildRotation == 3)
 								return new Vector3(0, LoopRotation(SnapToGrid(PlayerOrientation, 360, 4) + 180), 0);
+
+						if(Base.Type == ID.WALL)
+						{
+							float Orientation = SnapToGrid(PlayerOrientation, 360, 4);
+							if(BuildRotation == 0)
+								return new Vector3(0, SnapToGrid(Orientation, 360, 4), 0);
+							if(BuildRotation == 1)
+								return new Vector3(0, SnapToGrid(LoopRotation(Orientation + 180), 360, 4), 0);
+							if(BuildRotation == 2)
+								return new Vector3(0, SnapToGrid(LoopRotation(Orientation + 180), 360, 4), 0);
+							if(BuildRotation == 3)
+								return new Vector3(0, SnapToGrid(Orientation, 360, 4), 0);
+						}
 
 						return new Vector3(0, SnapToGrid(PlayerOrientation, 360, 4), 0);
 					})
