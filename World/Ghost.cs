@@ -86,13 +86,13 @@ public class Ghost : Area
 			RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 			if(BuildRayCast.IsColliding())
 			{
-				Structure Hit = BuildRayCast.GetCollider() as Structure;
-				if(Hit != null)
+				Structure Base = BuildRayCast.GetCollider() as Structure;
+				if(Base != null)
 				{
-					System.Nullable<Vector3> GhostPosition = BuildPositions.Calculate(Hit, Plr.Inventory[Plr.InventorySlot].Type);
+					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
-						Vector3 GhostRotation = BuildRotations.Calculate(Hit, Plr.Inventory[Plr.InventorySlot].Type);
+						Vector3 GhostRotation = Items.CalculateBuildRotation(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 						Translation = (Vector3)GhostPosition;
 						RotationDegrees = GhostRotation;
 						OldVisible[1] = true;

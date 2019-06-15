@@ -78,8 +78,6 @@
     <Compile Include="UI\Menu\LicensesMenu\LicensesMenu.cs" />
     <Compile Include="UI\Menu\Pieces\ButtonPiece.cs" />
     <Compile Include="UI\Menu\UpdateMenu\UpdateMenu.cs" />
-    <Compile Include="World\BuildPositions.cs" />
-    <Compile Include="World\BuildRotations.cs" />
     <Compile Include="World\Chunk.cs" />
     <Compile Include="World\Ghost.cs" />
     <Compile Include="World\Grid.cs" />

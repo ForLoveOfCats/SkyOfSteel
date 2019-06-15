@@ -240,19 +240,9 @@ public class Player : KinematicBody
 	{
 		if(Sens > 0 && Inventory[InventorySlot] != null)
 		{
-			switch(Inventory[InventorySlot].Type)
-			{
-				case(Items.ID.SLOPE):
-					if(BuildRotation == 0)
-					{
-						BuildRotation = 1;
-					}
-					else
-					{
-						BuildRotation = 0;
-					}
-					break;
-			}
+			BuildRotation++;
+			if(BuildRotation > 3)
+				BuildRotation = 0;
 		}
 	}
 
@@ -496,12 +486,16 @@ public class Player : KinematicBody
 				RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
 				if(BuildRayCast.IsColliding())
 				{
-					Structure Hit = BuildRayCast.GetCollider() as Structure;
-					if(Hit != null && GhostInstance.CanBuild)
+					Structure Base = BuildRayCast.GetCollider() as Structure;
+					if(Base != null && GhostInstance.CanBuild)
 					{
-						Vector3? PlacePosition = BuildPositions.Calculate(Hit, GhostInstance.CurrentMeshType);
-						if(PlacePosition != null && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType, PlacePosition.Value, BuildRotations.Calculate(Hit, GhostInstance.CurrentMeshType)))
-						   World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1); //ID 1 for now so all client own all non-default structures
+						Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
+						if(PlacePosition != null
+						   && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType,
+						                                     PlacePosition.Value,
+						                                     Items.CalculateBuildRotation(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint())))
+
+							World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
 					}
 				}
 			}
