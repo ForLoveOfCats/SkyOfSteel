@@ -119,6 +119,7 @@ public class Player : KinematicBody
 		ItemGive(new Items.Instance(Items.ID.PLATFORM));
 		ItemGive(new Items.Instance(Items.ID.WALL));
 		ItemGive(new Items.Instance(Items.ID.SLOPE));
+		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
 	}
 
 

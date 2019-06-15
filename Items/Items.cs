@@ -49,7 +49,7 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -332,6 +332,21 @@ public class Items : Node
 
 						return null;
 					})
+			},
+
+			{
+				ID.TRIANGLE_WALL,
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+						switch(Base.Type)
+						{
+							case(ID.WALL):
+							{
+								return new Vector3(0, 12, 0) + Base.Translation;
+							}
+						}
+
+						return null;
+					})
 			}
 		};
 
@@ -394,6 +409,13 @@ public class Items : Node
 						return new Vector3(0, SnapToGrid(LoopRotation(PlayerOrientation), 360, 4), 0);
 					})
 			},
+
+			{
+				ID.TRIANGLE_WALL,
+				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+						return new Vector3(0, SnapToGrid(LoopRotation(PlayerOrientation), 360, 4), 0);
+					})
+			}
 		};
 	}
 }
