@@ -54,7 +54,7 @@ public class Player : KinematicBody
 	public bool WasOnFloor = false;
 	private float JumpTimer = 0f;
 	private float WallKickRecoverPercentage = 1;
-	private Vector3 Momentum = new Vector3(0,0,0);
+	public Vector3 Momentum = new Vector3(0,0,0);
 	private float LastMomentumY = 0;
 	private float LookHorizontal = 0;
 	private float LookVertical = 0;
@@ -120,6 +120,7 @@ public class Player : KinematicBody
 		ItemGive(new Items.Instance(Items.ID.WALL));
 		ItemGive(new Items.Instance(Items.ID.SLOPE));
 		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
+		ItemGive(new Items.Instance(Items.ID.ROCKET_LAUNCHER));
 	}
 
 
@@ -175,7 +176,7 @@ public class Player : KinematicBody
 		{
 			if(!(Inventory[Slot] is null)) //If inventory item is not null
 			{
-				if(Inventory[Slot].Type == ToGive.Type)
+				if(Inventory[Slot].Id == ToGive.Id)
 				{
 					Inventory[Slot].Count += ToGive.Count;
 					HUDInstance.HotbarUpdate();
@@ -483,21 +484,28 @@ public class Player : KinematicBody
 
 			if(Inventory[InventorySlot] != null)
 			{
-				//Assume for now that all primary fire opertations are to build
-				RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
-				if(BuildRayCast.IsColliding())
+				if(Inventory[InventorySlot].Type == Items.TYPE.BUILDABLE)
 				{
-					Structure Base = BuildRayCast.GetCollider() as Structure;
-					if(Base != null && GhostInstance.CanBuild)
+					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+					if(BuildRayCast.IsColliding())
 					{
-						Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
-						if(PlacePosition != null
-						   && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType,
-						                                     PlacePosition.Value,
-						                                     Items.CalculateBuildRotation(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint())))
+						Structure Base = BuildRayCast.GetCollider() as Structure;
+						if(Base != null && GhostInstance.CanBuild)
+						{
+							Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
+							if(PlacePosition != null
+							   && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType,
+							                                     PlacePosition.Value,
+							                                     Items.CalculateBuildRotation(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint())))
 
-							World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
+								World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
+						}
 					}
+				}
+
+				else if(Inventory[InventorySlot].Type == Items.TYPE.USABLE)
+				{
+					Items.UseItem(Inventory[InventorySlot], this);
 				}
 			}
 		}
@@ -542,7 +550,7 @@ public class Player : KinematicBody
 					.Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical))
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
-				World.Self.DropItem(Inventory[InventorySlot].Type, Translation+Cam.Translation, Vel);
+				World.Self.DropItem(Inventory[InventorySlot].Id, Translation+Cam.Translation, Vel);
 
 				if(Inventory[InventorySlot].Count > 1)
 					Inventory[InventorySlot].Count -= 1;

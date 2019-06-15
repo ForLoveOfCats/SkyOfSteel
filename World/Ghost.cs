@@ -63,8 +63,8 @@ public class Ghost : Area
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
  		if(Item != null) //null means no item in slot
 		{
-			GhostMesh.Mesh = Items.Meshes[Item.Type];
-			CurrentMeshType = Item.Type;
+			GhostMesh.Mesh = Items.Meshes[Item.Id];
+			CurrentMeshType = Item.Id;
 		}
 	}
 
@@ -113,7 +113,7 @@ public class Ghost : Area
 			foreach(Node Body in GetOverlappingBodies())
 			{
 				Items.Instance SelectedItem = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-				if(SelectedItem != null && Body is Structure && ((Structure)Body).Type == SelectedItem.Type)
+				if(SelectedItem != null && Body is Structure && ((Structure)Body).Type == SelectedItem.Id)
 				{
 					GhostMesh.MaterialOverride = RedMat;
 					_CanBuild = false;
@@ -138,10 +138,10 @@ public class Ghost : Area
 		OldRotations.Add(RotationDegrees);
 
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-		if(Item != null && Item.Type != CurrentMeshType) //null means no item in slot
+		if(Item != null && Item.Id != CurrentMeshType) //null means no item in slot
 		{
 			OldType.RemoveAt(0);
-			OldType.Add(Item.Type);
+			OldType.Add(Item.Id);
 		}
 	}
 }

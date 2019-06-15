@@ -119,6 +119,7 @@ public class World : Node
 
 		Items.BuildPositions.Clear();
 		Items.BuildRotations.Clear();
+		Items.UseDelegates.Clear();
 
 		SaveName = null;
 		IsOpen = false;

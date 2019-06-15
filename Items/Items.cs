@@ -8,18 +8,35 @@ using System.Collections.Generic;
 public class Items : Node
 {
 	public delegate Vector3? BuildInfoDelegate(Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitPointRelative);
+	public delegate void UseItemDelegate(Instance Item, Player UsingPlayer);
+
+
+	public static float MaxRocketPush = 100;
+	public static float MaxRocketDistance = 30;
 
 
 	public class Instance
 	{
-		public Items.ID Type = Items.ID.ERROR;
+		public Items.ID Id = Items.ID.ERROR;
+		public Items.TYPE Type = Items.TYPE.ERROR;
 		public int Temperature = 0;
 		public int Count = 1;
 		public int UsesRemaining = 0;
 
-		public Instance(Items.ID TypeArg)
+		public Instance(Items.ID IdArg)
 		{
-			this.Type = TypeArg;
+			this.Id = IdArg;
+
+			switch(IdArg) //NOTE: This could be improved
+			{
+				case(ID.ROCKET_LAUNCHER):
+					Type = TYPE.USABLE;
+					break;
+
+				default:
+					Type = TYPE.BUILDABLE;
+					break;
+			}
 		}
 	}
 
@@ -49,7 +66,8 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_LAUNCHER}
+	public enum TYPE {ERROR, BUILDABLE, USABLE}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -57,6 +75,7 @@ public class Items : Node
 
 	public static Dictionary<ID, BuildInfoDelegate> BuildPositions = new Dictionary<ID, BuildInfoDelegate>();
 	public static Dictionary<ID, BuildInfoDelegate> BuildRotations = new Dictionary<ID, BuildInfoDelegate>();
+	public static Dictionary<ID, UseItemDelegate> UseDelegates = new Dictionary<ID, UseItemDelegate>();
 
 	public static Shader StructureShader { get; private set; }
 
@@ -115,6 +134,17 @@ public class Items : Node
 		}
 
 		return new Vector3();
+	}
+
+
+	public static void UseItem(Instance Item, Player UsingPlayer)
+	{
+		UseItemDelegate PossibleFunc;
+		UseDelegates.TryGetValue(Item.Id, out PossibleFunc);
+		if(PossibleFunc is UseItemDelegate Func)
+		{
+			Func(Item, UsingPlayer);
+		}
 	}
 
 
@@ -414,6 +444,26 @@ public class Items : Node
 				ID.TRIANGLE_WALL,
 				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						return new Vector3(0, SnapToGrid(LoopRotation(PlayerOrientation), 360, 4), 0);
+					})
+			}
+		};
+
+		UseDelegates = new Dictionary<ID, UseItemDelegate>() {
+			{
+				ID.ROCKET_LAUNCHER,
+				new UseItemDelegate((Instance Item, Player UsingPlayer) => {
+						RayCast Cast = UsingPlayer.GetNode<RayCast>("SteelCamera/RocketRayCast");
+						if(Cast.IsColliding())
+						{
+							float Distance = UsingPlayer.CenterPosition().DistanceTo(Cast.GetCollisionPoint());
+							float Power = (MaxRocketPush/MaxRocketDistance) * Clamp(MaxRocketDistance - Distance, 0, MaxRocketDistance);
+
+							Camera Cam = UsingPlayer.GetNode<Camera>("SteelCamera");
+							Vector3 Push = new Vector3(0, 0, Power);
+							Push = Push.Rotated(new Vector3(1,0,0), Deg2Rad(Cam.RotationDegrees.x));
+							Push = Push.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(UsingPlayer.RotationDegrees.y + 180)));
+							UsingPlayer.Momentum += Push;
+						}
 					})
 			}
 		};
