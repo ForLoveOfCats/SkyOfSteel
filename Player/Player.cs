@@ -13,19 +13,19 @@ public class Player : KinematicBody
 	public float BaseMovementSpeed = 20;
 	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
 	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
-	public float MaxVerticalSpeed = 40f;
+	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 24; //How many units per second to accelerate
 	public float DecelerateTime = 0.2f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
 	public float JumpSpeedMultiplyer = 15f;
-	public float JumpStartForce = 8f;
-	public float JumpContinueForce = 6f;
+	public float JumpStartForce = 12f;
+	public float JumpContinueForce = 5f;
 	public float MaxJumpLength = 0.3f;
-	public float WallKickJumpForce = 16;
-	public float WallKickHorzontalForce = 45;
+	public float WallKickJumpForce = 22;
+	public float WallKickHorzontalForce = 35;
 	public float MinWallKickRecoverPercentage = 0.2f;
 	public float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
-	public float Gravity = 14f;
+	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
 	public float LookDivisor = 6;
@@ -647,7 +647,7 @@ public class Player : KinematicBody
 
 		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
-			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/2 - 30;
+			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/3 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
