@@ -13,6 +13,7 @@ public class Items : Node
 
 	public static float MaxRocketPush = 100;
 	public static float MaxRocketDistance = 30;
+	public static float RocketVerticalDivisor = 1.7f;
 
 
 	public class Instance
@@ -462,6 +463,7 @@ public class Items : Node
 							Vector3 Push = new Vector3(0, 0, Power);
 							Push = Push.Rotated(new Vector3(1,0,0), Deg2Rad(Cam.RotationDegrees.x));
 							Push = Push.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(UsingPlayer.RotationDegrees.y + 180)));
+							Push.y /= RocketVerticalDivisor;
 							UsingPlayer.Momentum += Push;
 						}
 					})
