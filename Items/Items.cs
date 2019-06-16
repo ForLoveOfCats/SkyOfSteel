@@ -461,7 +461,7 @@ public class Items : Node
 
 							Camera Cam = UsingPlayer.GetNode<Camera>("SteelCamera");
 							Vector3 Push = new Vector3(0, 0, Power);
-							Push = Push.Rotated(new Vector3(1,0,0), Deg2Rad(Cam.RotationDegrees.x));
+							Push = Push.Rotated(new Vector3(1,0,0), Deg2Rad(LoopRotation(Cam.RotationDegrees.x)));
 							Push = Push.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(UsingPlayer.RotationDegrees.y + 180)));
 							Push.y /= RocketVerticalDivisor;
 							UsingPlayer.Momentum += Push;
