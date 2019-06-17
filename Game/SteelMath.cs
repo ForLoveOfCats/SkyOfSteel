@@ -11,20 +11,13 @@ public class SteelMath
 
 	public static float LoopRotation(float Rot)
 	{
-		while(Rot > 360)
-		{
-			Rot -= 360;
-		}
+		Rot = Rot % 360;
 
-		while(Rot < 0)
-		{
+		if(Rot < 0)
 			Rot += 360;
-		}
 
 		if(Rot == 360)
-		{
 			Rot = 0;
-		}
 
 		return Rot;
 	}
