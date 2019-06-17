@@ -31,7 +31,7 @@ public class Items : Node
 
 			switch(IdArg) //NOTE: This could be improved
 			{
-				case(ID.ROCKET_LAUNCHER):
+				case(ID.ROCKET_JUMPER):
 					Type = TYPE.USABLE;
 					break;
 
@@ -68,7 +68,7 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_LAUNCHER}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER}
 	public enum TYPE {ERROR, BUILDABLE, USABLE}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
@@ -452,7 +452,7 @@ public class Items : Node
 
 		UseDelegates = new Dictionary<ID, UseItemDelegate>() {
 			{
-				ID.ROCKET_LAUNCHER,
+				ID.ROCKET_JUMPER,
 				new UseItemDelegate((Instance Item, Player UsingPlayer) => {
 						RayCast Cast = UsingPlayer.GetNode<RayCast>("SteelCamera/RocketRayCast");
 						if(Cast.IsColliding())

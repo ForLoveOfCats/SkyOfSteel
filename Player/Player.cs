@@ -120,7 +120,7 @@ public class Player : KinematicBody, IPushable
 		ItemGive(new Items.Instance(Items.ID.WALL));
 		ItemGive(new Items.Instance(Items.ID.SLOPE));
 		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
-		ItemGive(new Items.Instance(Items.ID.ROCKET_LAUNCHER));
+		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER));
 	}
 
 

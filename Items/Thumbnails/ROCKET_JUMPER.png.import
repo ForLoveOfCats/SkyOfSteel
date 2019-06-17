@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/ROCKET_LAUNCHER.png-a64f106b078c0af8eb5c874c8bba962e.stex"
+path="res://.import/ROCKET_JUMPER.png-396b5386c394b3d4ee469592f8aa6fed.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Items/Thumbnails/ROCKET_LAUNCHER.png"
-dest_files=[ "res://.import/ROCKET_LAUNCHER.png-a64f106b078c0af8eb5c874c8bba962e.stex" ]
+source_file="res://Items/Thumbnails/ROCKET_JUMPER.png"
+dest_files=[ "res://.import/ROCKET_JUMPER.png-396b5386c394b3d4ee469592f8aa6fed.stex" ]
 
 [params]
 
