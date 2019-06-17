@@ -51,6 +51,7 @@ public class Player : KinematicBody
 	public bool IsCrouching = false;
 	public bool IsSprinting = false;
 	public bool IsJumping = false;
+	public bool HasJumped = false;
 	public bool WasOnFloor = false;
 	public float JumpTimer = 0f;
 	public float RecoverPercentage = 1;
@@ -389,6 +390,7 @@ public class Player : KinematicBody
 				}
 
 				IsJumping = true;
+				HasJumped = true;
 			}
 
 			JumpAxis = 1;
@@ -398,6 +400,7 @@ public class Player : KinematicBody
 		{
 			JumpAxis = 0;
 			IsJumping = false;
+			HasJumped = false;
 		}
 	}
 
@@ -743,9 +746,10 @@ public class Player : KinematicBody
 				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
 			}
 
-			if(JumpAxis > 0 && RecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
+			if(JumpAxis > 0 && !HasJumped && RecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
 			{
 				RecoverPercentage = 0;
+				HasJumped = true;
 
 				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
 				Momentum.y = WallKickJumpForce;
