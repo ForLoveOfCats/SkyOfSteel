@@ -37,9 +37,9 @@ public class Player : KinematicBody
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
-	private int ForwardAxis = 0;
-	private int RightAxis = 0;
-	private int JumpAxis = 0;
+	public int ForwardAxis = 0;
+	public int RightAxis = 0;
+	public int JumpAxis = 0;
 
 	public float ForwardSens = 0;
 	public float BackwardSens = 0;
@@ -52,14 +52,14 @@ public class Player : KinematicBody
 	public bool IsSprinting = false;
 	public bool IsJumping = false;
 	public bool WasOnFloor = false;
-	private float JumpTimer = 0f;
+	public float JumpTimer = 0f;
 	public float RecoverPercentage = 1;
 	public Vector3 Momentum = new Vector3(0,0,0);
-	private float LastMomentumY = 0;
-	private float LookHorizontal = 0;
-	private float LookVertical = 0;
-	private bool IsPrimaryFiring = false;
-	private bool IsSecondaryFiring = false;
+	public float LastMomentumY = 0;
+	public float LookHorizontal = 0;
+	public float LookVertical = 0;
+	public bool IsPrimaryFiring = false;
+	public bool IsSecondaryFiring = false;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -70,7 +70,7 @@ public class Player : KinematicBody
 	public Spatial Center;
 
 	public HUD HUDInstance;
-	private Ghost GhostInstance;
+	public Ghost GhostInstance;
 
 	public PlayerSfxManager SfxManager;
 
