@@ -475,6 +475,7 @@ public class Items : Node
 							Push.y /= RocketVerticalDivisor;
 
 							UsingPlayer.Momentum += Push;
+							UsingPlayer.RecoverPercentage = 0;
 						}
 					})
 			}

@@ -24,7 +24,7 @@ public class Player : KinematicBody
 	public float WallKickJumpForce = 22;
 	public float WallKickHorzontalForce = 35;
 	public float MinWallKickRecoverPercentage = 0.2f;
-	public float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
+	public float RecoverSpeed= 100 / 100; //Latter number percent of a second it takes to fully recover
 	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
@@ -53,7 +53,7 @@ public class Player : KinematicBody
 	public bool IsJumping = false;
 	public bool WasOnFloor = false;
 	private float JumpTimer = 0f;
-	private float WallKickRecoverPercentage = 1;
+	public float RecoverPercentage = 1;
 	public Vector3 Momentum = new Vector3(0,0,0);
 	private float LastMomentumY = 0;
 	private float LookHorizontal = 0;
@@ -377,7 +377,7 @@ public class Player : KinematicBody
 				}
 				IsJumping = false;
 			}
-			else if(WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && Game.Mode.ShouldJump())
+			else if(RecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && Game.Mode.ShouldJump())
 			{
 				Momentum.y = JumpStartForce;
 				if(JumpAxis < 1)
@@ -620,9 +620,9 @@ public class Player : KinematicBody
 			}
 		}
 
-		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta*WallKickRecoverSpeed, 0, 1);
+		RecoverPercentage = Clamp(RecoverPercentage + Delta*RecoverSpeed, 0, 1);
 
-		if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor())
+		if(JumpAxis > 0 && RecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
@@ -714,7 +714,7 @@ public class Player : KinematicBody
 				Z = -BackwardSens;
 
 			Vector3 WishDir = new Vector3(X, 0, Z);
-			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * WallKickRecoverPercentage;
+			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * RecoverPercentage;
 			Momentum = AirAccelerate(Momentum, WishDir, Delta);
 		}
 
@@ -743,9 +743,9 @@ public class Player : KinematicBody
 				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
 			}
 
-			if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
+			if(JumpAxis > 0 && RecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
 			{
-				WallKickRecoverPercentage = 0;
+				RecoverPercentage = 0;
 
 				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
 				Momentum.y = WallKickJumpForce;
