@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 
 
-public class Player : KinematicBody
+public class Player : KinematicBody, IPushable
 {
 	public bool Possessed = false;
 	public int Id = 0;
@@ -157,6 +157,12 @@ public class Player : KinematicBody
 	{
 		if(Game.Mode.ShouldToggleFly())
 			SetFly(!FlyMode);
+	}
+
+
+	public void ApplyPush(Vector3 Push)
+	{
+		Momentum += Push;
 	}
 
 

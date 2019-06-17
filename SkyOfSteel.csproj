@@ -71,6 +71,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IPushable.cs" />
     <Compile Include="Player\PlayerSfxManager.cs" />
     <Compile Include="Scripting\Gamemode.cs" />
     <Compile Include="Scripting\GmConfig.cs" />
