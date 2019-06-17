@@ -237,11 +237,13 @@ public class Player : KinematicBody
 		}
 	}
 
+
 	public void InventorySlotSelect(int Slot)
 	{
 		InventorySlot = Slot;
                 HUDInstance.HotbarUpdate();
 	}
+
 
 	public void InventorySlot0() { InventorySlotSelect(0); }
 	public void InventorySlot1() { InventorySlotSelect(1); }
