@@ -634,6 +634,7 @@ public class Player : KinematicBody, IPushable
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
+			HasJumped = true;
 		}
 
 		if(IsJumping && !WasOnFloor)
