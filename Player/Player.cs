@@ -237,6 +237,27 @@ public class Player : KinematicBody
 		}
 	}
 
+	public void InventorySlotSelect(int Slot)
+	{
+		InventorySlot = Slot;
+
+		if(HUDInstance != null)
+		{
+			HUDInstance.HotbarUpdate();
+		}
+	}
+
+	public void InventorySlot0() { InventorySlotSelect(0); }
+	public void InventorySlot1() { InventorySlotSelect(1); }
+	public void InventorySlot2() { InventorySlotSelect(2); }
+	public void InventorySlot3() { InventorySlotSelect(3); }
+	public void InventorySlot4() { InventorySlotSelect(4); }
+	public void InventorySlot5() { InventorySlotSelect(5); }
+	public void InventorySlot6() { InventorySlotSelect(6); }
+	public void InventorySlot7() { InventorySlotSelect(7); }
+	public void InventorySlot8() { InventorySlotSelect(8); }
+	public void InventorySlot9() { InventorySlotSelect(9); }
+
 
 	public void BuildRotate(float Sens)
 	{
