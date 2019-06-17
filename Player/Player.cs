@@ -214,10 +214,7 @@ public class Player : KinematicBody
 			InventorySlot = 9;
 		}
 
-		if(HUDInstance != null)
-		{
-			HUDInstance.HotbarUpdate();
-		}
+		HUDInstance.HotbarUpdate();
 	}
 
 
@@ -231,10 +228,7 @@ public class Player : KinematicBody
 			InventorySlot = 0;
 		}
 
-		if(HUDInstance != null)
-		{
-			HUDInstance.HotbarUpdate();
-		}
+		HUDInstance.HotbarUpdate();
 	}
 
 
