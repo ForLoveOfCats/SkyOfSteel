@@ -13,6 +13,7 @@ public class Items : Node
 
 	public static float MaxRocketPush = 100;
 	public static float MaxRocketDistance = 30;
+	public static float RocketHorizontalMultiplyer = 1.1f;
 	public static float RocketVerticalDivisor = 1.7f;
 
 
@@ -463,7 +464,16 @@ public class Items : Node
 							Vector3 Push = new Vector3(0, 0, Power);
 							Push = Push.Rotated(new Vector3(1,0,0), Deg2Rad(LoopRotation(Cam.RotationDegrees.x)));
 							Push = Push.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(UsingPlayer.RotationDegrees.y + 180)));
+
+							{
+								Vector3 Flat = Push;
+								Flat.y = 0;
+								Flat *= RocketHorizontalMultiplyer;
+								Push.x = Flat.x;
+								Push.z = Flat.z;
+							}
 							Push.y /= RocketVerticalDivisor;
+
 							UsingPlayer.Momentum += Push;
 						}
 					})
