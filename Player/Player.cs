@@ -23,7 +23,6 @@ public class Player : KinematicBody
 	public float MaxJumpLength = 0.3f;
 	public float WallKickJumpForce = 22;
 	public float WallKickHorzontalForce = 35;
-	public float MinWallKickRecoverPercentage = 0.2f;
 	public float RecoverSpeed= 100 / 75; //Latter number percent of a second it takes to fully recover
 	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
@@ -378,7 +377,7 @@ public class Player : KinematicBody
 				}
 				IsJumping = false;
 			}
-			else if(RecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && Game.Mode.ShouldJump())
+			else if(IsOnFloor() && Game.Mode.ShouldJump())
 			{
 				Momentum.y = JumpStartForce;
 				if(JumpAxis < 1)
@@ -625,7 +624,7 @@ public class Player : KinematicBody
 
 		RecoverPercentage = Clamp(RecoverPercentage + Delta*RecoverSpeed, 0, 1);
 
-		if(JumpAxis > 0 && RecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor())
+		if(JumpAxis > 0 && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
@@ -746,7 +745,7 @@ public class Player : KinematicBody
 				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
 			}
 
-			if(JumpAxis > 0 && !HasJumped && RecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
+			if(JumpAxis > 0 && !HasJumped && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
 			{
 				RecoverPercentage = 0;
 				HasJumped = true;
