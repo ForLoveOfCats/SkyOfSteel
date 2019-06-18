@@ -5,7 +5,7 @@ using static SteelMath;
 
 public class RocketJumper
 {
-	public static float MaxRocketPush = 100;
+	public static float MaxRocketPush = 80;
 	public static float MaxRocketDistance = 30;
 	public static float RocketHorizontalMultiplyer = 1.1f;
 	public static float RocketVerticalDivisor = 1.7f;
