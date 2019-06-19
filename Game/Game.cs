@@ -129,6 +129,8 @@ public class Game : Node
 		}
 
 		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
+
+		NewPlayer.MovementReset();
 	}
 
 

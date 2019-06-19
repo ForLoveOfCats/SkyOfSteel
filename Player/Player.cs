@@ -67,7 +67,6 @@ public class Player : KinematicBody, IPushable
 	public int BuildRotation = 0;
 
 	public Camera Cam;
-	public Spatial Center;
 
 	public HUD HUDInstance;
 	public Ghost GhostInstance;
@@ -85,7 +84,6 @@ public class Player : KinematicBody, IPushable
 	public override void _Ready()
 	{
 		Cam = GetNode<Camera>("SteelCamera");
-		Center = GetNode<Spatial>("Center");
 
 		MovementReset();
 
@@ -121,12 +119,6 @@ public class Player : KinematicBody, IPushable
 		ItemGive(new Items.Instance(Items.ID.SLOPE));
 		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
 		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER));
-	}
-
-
-	public Vector3 CenterPosition()
-	{
-		return Translation + Center.Translation;
 	}
 
 
@@ -170,7 +162,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Game.Mode.ShouldMovementReset())
 		{
-			Translation = new Vector3(0, 0.6f, 0);
+			Translation = new Vector3(0, 3.4f + 0.15f, 0);
 			Momentum = new Vector3();
 		}
 	}
@@ -606,10 +598,10 @@ public class Player : KinematicBody, IPushable
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
 			foreach(DroppedItem Item in World.ItemList)
 			{
-				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
+				if(Translation.DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
 					PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-					Godot.Collections.Dictionary Results =State.IntersectRay(CenterPosition(), Item.Translation, new Godot.Collections.Array{this}, 1);
+					Godot.Collections.Dictionary Results = State.IntersectRay(Translation, Item.Translation, new Godot.Collections.Array{this}, 1);
 					if(Results.Count <= 0)
 						ToPickUpList.Add(Item);
 				}

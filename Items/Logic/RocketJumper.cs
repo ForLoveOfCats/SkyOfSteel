@@ -16,7 +16,7 @@ public class RocketJumper
 		RayCast Cast = UsingPlayer.GetNode<RayCast>("SteelCamera/RocketRayCast");
 		if(Cast.IsColliding())
 		{
-			float Distance = UsingPlayer.CenterPosition().DistanceTo(Cast.GetCollisionPoint());
+			float Distance = UsingPlayer.Translation.DistanceTo(Cast.GetCollisionPoint());
 			float Power = (MaxRocketPush/MaxRocketDistance) * Clamp(MaxRocketDistance - Distance, 0, MaxRocketDistance);
 
 			Camera Cam = UsingPlayer.GetNode<Camera>("SteelCamera");
