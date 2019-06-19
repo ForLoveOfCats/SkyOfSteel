@@ -1,7 +1,7 @@
 using Godot;
 
 
-public class SteelMath
+public static class SteelMath
 {
 	public static float SnapToGrid(float ToSnap, int GridSize, int DivisionCount)
 	{
@@ -26,5 +26,11 @@ public class SteelMath
 	public static Vector3 ClampVec3(Vector3 Vec, float Min, float Max)
 	{
 		return Vec.Normalized() * Mathf.Clamp(Vec.Length(), Min, Max);
+	}
+
+
+	public static Vector3 Flatten(this Vector3 Self)
+	{
+		return new Vector3(Self.x, 0, Self.z);
 	}
 }
