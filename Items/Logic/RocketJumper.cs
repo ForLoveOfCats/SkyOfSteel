@@ -37,8 +37,7 @@ public class RocketJumper : Node
 		Rocket.RotationDegrees = new Vector3(-UsingPlayer.LookVertical, UsingPlayer.LookHorizontal, 0);
 		Rocket.Momentum = new Vector3(0, 0, RocketTravelSpeed)
 			.Rotated(new Vector3(1,0,0), Deg2Rad(Rocket.RotationDegrees.x))
-			.Rotated(new Vector3(0,1,0), Deg2Rad(Rocket.RotationDegrees.y))
-			+ UsingPlayer.Momentum;
+			.Rotated(new Vector3(0,1,0), Deg2Rad(Rocket.RotationDegrees.y));
 		Rocket.Name = System.Guid.NewGuid().ToString();
 		World.EntitiesRoot.AddChild(Rocket);
 
