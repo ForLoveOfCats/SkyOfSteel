@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-public class DroppedItem : KinematicBody, IInGrid
+public class DroppedItem : KinematicBody, IInGrid, IPushable
 {
 	private const float Gravity = 14f;
 	private const float MaxFallSpeed = -40f;
@@ -35,6 +35,13 @@ public class DroppedItem : KinematicBody, IInGrid
 	{
 		PhysicsEnabled = true;
 		World.Grid.QueueRemoveItem(this);
+	}
+
+
+	public void ApplyPush(Vector3 Push)
+	{
+		Momentum += Push;
+		GridUpdate();
 	}
 
 
