@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class JumperRocket : KinematicBody
 {
+	public bool IsLocal;
 	public Node Player; //The player which fired the rocket, to prevent collinding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
 	public Vector3 Momentum;
@@ -14,15 +15,21 @@ public class JumperRocket : KinematicBody
 
 	public void HasCollided(Node Collided)
 	{
-		if(Collided != Player)
-			Triggered = true;
+		if(IsLocal)
+		{
+			if(Collided != Player)
+				Triggered = true;
+		}
 	}
 
 
 	public void EffectAreaEntered(Node Body)
 	{
-		if(Body == Player)
-			return;
+		if(IsLocal)
+		{
+			if(Body == Player)
+				return;
+		}
 
 		if(!AffectedBodies.Contains(Body))
 			AffectedBodies.Add(Body);
@@ -31,18 +38,26 @@ public class JumperRocket : KinematicBody
 
 	public void EffectAreaExited(Node Body)
 	{
-		if(Body == Player)
-			return;
+		if(IsLocal)
+		{
+			if(Body == Player)
+				return;
+		}
 
 		if(AffectedBodies.Contains(Body))
 			AffectedBodies.Remove(Body);
 	}
 
 
+	[Remote]
 	public void Explode()
 	{
-		if((Player as Spatial).Translation.DistanceTo(Translation) <= RocketJumper.MaxRocketDistance)
-			AffectedBodies.Add(Player);
+		if(IsLocal)
+		{
+			if((Player as Spatial).Translation.DistanceTo(Translation) <= RocketJumper.MaxRocketDistance)
+				AffectedBodies.Add(Player);
+		}
+
 		foreach(Node _Body in AffectedBodies)
 		{
 			if(_Body is IPushable Body)
@@ -73,10 +88,19 @@ public class JumperRocket : KinematicBody
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(Triggered && Life >= RocketJumper.RocketArmTime)
-			Explode();
-		else if(Life >= RocketJumper.RocketFuseTime)
-			Explode();
+		if(IsLocal)
+		{
+			if(Triggered && Life >= RocketJumper.RocketArmTime)
+			{
+				Explode();
+				Net.SteelRpc(this, nameof(Explode));
+			}
+			else if(Life >= RocketJumper.RocketFuseTime)
+			{
+				Explode();
+				Net.SteelRpc(this, nameof(Explode));
+			}
+		};
 
 		MoveAndCollide(Momentum * Delta);
 		Life += Delta;

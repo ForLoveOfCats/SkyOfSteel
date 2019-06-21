@@ -42,6 +42,9 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 	{
 		Momentum += Push;
 		GridUpdate();
+
+		if(Net.Work.IsNetworkServer())
+			Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, GetName());
 	}
 
 
