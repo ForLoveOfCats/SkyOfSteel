@@ -7,7 +7,7 @@
 extents = Vector3( 0.7, 0.7, 2.3 )
 
 [sub_resource type="SphereShape" id=2]
-radius = 18.0
+radius = 30.0
 
 [node name="KinematicBody" type="KinematicBody"]
 script = ExtResource( 1 )

@@ -9,7 +9,8 @@ public class RocketJumper : Node
 	public static float RocketArmTime = 0.05f; //In seconds
 	public static float RocketFuseTime = 4f; //In seconds
 	public static float MaxRocketPush = 70; //Units-per-second force applied
-	public static float MaxRocketDistance = 18; //Make sure that radius of AffectArea on JumperRocket matches
+	public static float MaxRocketDistance = 30; //Make sure that radius of AffectArea on JumperRocket matches
+	public static float MinRocketDistance = 8;
 	public static float RocketHorizontalMultiplyer = 1.1f;
 	public static float RocketVerticalDivisor = 1.7f;
 

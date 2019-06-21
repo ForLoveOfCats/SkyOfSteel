@@ -62,11 +62,11 @@ public class JumperRocket : KinematicBody
 		{
 			if(_Body is IPushable Body)
 			{
-				float Distance = Body.Translation.DistanceTo(Body.Translation);
-				float Power = (RocketJumper.MaxRocketPush/RocketJumper.MaxRocketDistance) *
-					Clamp(RocketJumper.MaxRocketDistance - Distance, 0, RocketJumper.MaxRocketDistance);
+				float Distance = Clamp(Translation.DistanceTo(Body.Translation) - RocketJumper.MinRocketDistance, 1, RocketJumper.MaxRocketDistance);
+				float Power = RocketJumper.MaxRocketDistance / Distance / RocketJumper.MaxRocketDistance;
 
-				Vector3 Push = ((Body.Translation - Translation) / RocketJumper.MaxRocketDistance).Normalized() * Power;
+				Vector3 Push = ((Body.Translation - Translation) / RocketJumper.MaxRocketDistance).Normalized()
+					* RocketJumper.MaxRocketPush * Power;
 				{
 					Vector3 Flat = Push.Flattened();
 					Flat *= RocketJumper.RocketHorizontalMultiplyer;
