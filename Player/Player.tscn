@@ -38,11 +38,6 @@ transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0
 enabled = true
 cast_to = Vector3( 0, 0, 24 )
 
-[node name="RocketRayCast" type="RayCast" parent="SteelCamera"]
-transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0 )
-enabled = true
-cast_to = Vector3( 0, 0, 48 )
-
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -2.8213e-07, -1, 0, 1, -2.8213e-07, 0, 0, 0 )
 shape = SubResource( 2 )
