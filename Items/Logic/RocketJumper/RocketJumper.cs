@@ -24,7 +24,7 @@ public class RocketJumper : Node
 
 	static RocketJumper()
 	{
-		JumperRocketScene = GD.Load<PackedScene>("Items/Logic/JumperRocket.tscn");
+		JumperRocketScene = GD.Load<PackedScene>("Items/Logic/RocketJumper/JumperRocket.tscn");
 	}
 
 
