@@ -20,7 +20,7 @@ public class World : Node
 	public static string SaveName = null;
 
 	public static Node StructureRoot = null;
-	public static Node ItemsRoot = null;
+	public static Node EntitiesRoot = null;
 
 	private static PackedScene DroppedItemScene;
 
@@ -89,9 +89,9 @@ public class World : Node
 		StructureRoot.SetName("StructureRoot");
 		SkyScene.AddChild(StructureRoot);
 
-		ItemsRoot = new Node();
-		ItemsRoot.SetName("ItemsRoot");
-		SkyScene.AddChild(ItemsRoot);
+		EntitiesRoot = new Node();
+		EntitiesRoot.SetName("EntitiesRoot");
+		SkyScene.AddChild(EntitiesRoot);
 
 		IsOpen = true;
 	}
@@ -108,7 +108,7 @@ public class World : Node
 		Game.PossessedPlayer = null;
 
 		StructureRoot = null;
-		ItemsRoot = null;
+		EntitiesRoot = null;
 
 		Scripting.UnloadGamemode();
 
@@ -389,9 +389,9 @@ public class World : Node
 	[Remote]
 	public void RemoveDroppedItem(string Guid) //NOTE: Make sure to remove from World.ItemList after client callsite
 	{
-		if(ItemsRoot.HasNode(Guid))
+		if(EntitiesRoot.HasNode(Guid))
 		{
-			DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
+			DroppedItem Item = EntitiesRoot.GetNode(Guid) as DroppedItem;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
 			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
@@ -574,9 +574,9 @@ public class World : Node
 	[Remote]
 	public void DropOrUpdateItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
-		if(ItemsRoot.HasNode(Name))
+		if(EntitiesRoot.HasNode(Name))
 		{
-			DroppedItem Instance = ItemsRoot.GetNode<DroppedItem>(Name);
+			DroppedItem Instance = EntitiesRoot.GetNode<DroppedItem>(Name);
 			Instance.Translation = Position;
 			Instance.Momentum = BaseMomentum;
 			Instance.PhysicsEnabled = true;
@@ -596,7 +596,7 @@ public class World : Node
 
 				AddItemToChunk(ToDrop);
 				ItemList.Add(ToDrop);
-				ItemsRoot.AddChild(ToDrop);
+				EntitiesRoot.AddChild(ToDrop);
 			}
 		}
 	}
@@ -612,7 +612,7 @@ public class World : Node
 			if(Self.GetTree().IsNetworkServer())
 			{
 				//On server
-				DroppedItem Item = ItemsRoot.GetNodeOrNull(Guid) as DroppedItem;
+				DroppedItem Item = EntitiesRoot.GetNodeOrNull(Guid) as DroppedItem;
 				if(Item != null) //Only lookup node once instead of using HasNode
 				{
 					if(Id == Net.Work.GetNetworkUniqueId())
