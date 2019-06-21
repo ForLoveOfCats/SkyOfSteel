@@ -67,6 +67,7 @@ public class Player : KinematicBody, IPushable
 	public int BuildRotation = 0;
 
 	public Camera Cam;
+	public Spatial RocketStart;
 
 	public HUD HUDInstance;
 	public Ghost GhostInstance;
@@ -84,6 +85,7 @@ public class Player : KinematicBody, IPushable
 	public override void _Ready()
 	{
 		Cam = GetNode<Camera>("SteelCamera");
+		RocketStart = GetNode<Spatial>("SteelCamera/RocketStart");
 
 		MovementReset();
 
