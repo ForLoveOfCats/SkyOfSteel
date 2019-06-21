@@ -365,6 +365,16 @@ public class Items : Node
 				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						switch(Base.Type)
 						{
+							case(ID.PLATFORM):
+							{
+								PlayerOrientation = LoopRotation(Deg2Rad(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)));
+
+								int yOffset = 6;
+								if(BuildRotation == 2 || BuildRotation == 3)
+									yOffset = -6;
+
+								return new Vector3(0, yOffset, 6).Rotated(new Vector3(0,1,0), PlayerOrientation) + Base.Translation;
+							}
 							case(ID.WALL):
 							{
 								return new Vector3(0, 12, 0) + Base.Translation;
@@ -439,6 +449,18 @@ public class Items : Node
 			{
 				ID.TRIANGLE_WALL,
 				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+						if(Base.Type == ID.PLATFORM)
+						{
+							if(BuildRotation == 1)
+								return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation + 180), 360, 4)), 0);
+
+							else if(BuildRotation == 2)
+								return new Vector3(180, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)), 0);
+
+							else if(BuildRotation == 3)
+								return new Vector3(180, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation + 180), 360, 4)), 0);
+						}
+
 						return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)), 0);
 					})
 			}
