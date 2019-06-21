@@ -1,6 +1,5 @@
 # Blender v2.79 (sub 7) OBJ File: 'RocketJumper.blend'
 # www.blender.org
-mtllib ROCKET_JUMPER.mtl
 o Cylinder
 v 0.000001 1.129070 -4.206576
 v 0.000001 1.129070 3.568521
