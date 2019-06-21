@@ -590,9 +590,7 @@ public class Player : KinematicBody, IPushable
 	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Possessed || Frozen)
-		{
 			return;
-		}
 
 		{
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
