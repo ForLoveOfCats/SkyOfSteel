@@ -377,7 +377,12 @@ public class Items : Node
 							}
 							case(ID.WALL):
 							{
-								return new Vector3(0, 12, 0) + Base.Translation;
+								float Orientation = LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4));
+
+								if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
+									return new Vector3(0, 12, 0) + Base.Translation;
+								else
+									return new Vector3(0, -12, 0) + Base.Translation;
 							}
 						}
 
@@ -459,6 +464,23 @@ public class Items : Node
 
 							else if(BuildRotation == 3)
 								return new Vector3(180, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation + 180), 360, 4)), 0);
+						}
+
+						else if(Base.Type == ID.WALL)
+						{
+							float yRot = Base.RotationDegrees.y;
+							if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
+							{
+								if(BuildRotation == 1 || BuildRotation == 3)
+									return new Vector3(0, LoopRotation(yRot + 180), 0);
+								return new Vector3(0, LoopRotation(yRot), 0);
+							}
+							else
+							{
+								if(BuildRotation == 1 || BuildRotation == 3)
+									return new Vector3(180, LoopRotation(yRot + 180), 0);
+								return new Vector3(180, LoopRotation(yRot), 0);
+							}
 						}
 
 						return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)), 0);
