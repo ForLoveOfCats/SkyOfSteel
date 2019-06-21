@@ -19,6 +19,8 @@ public class RocketJumper : Node
 
 	RocketJumper()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 	}
 
