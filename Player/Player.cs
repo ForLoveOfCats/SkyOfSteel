@@ -15,7 +15,7 @@ public class Player : KinematicBody, IPushable
 	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 22; //How many units per second to accelerate
-	public float DecelerateTime = 0.2f; //How many seconds needed to stop from full speed
+	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
 	public float JumpSpeedMultiplyer = 15f;
 	public float JumpStartForce = 12f;
