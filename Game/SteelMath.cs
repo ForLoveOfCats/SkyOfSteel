@@ -29,7 +29,7 @@ public static class SteelMath
 	}
 
 
-	public static Vector3 Flatten(this Vector3 Self)
+	public static Vector3 Flattened(this Vector3 Self)
 	{
 		return new Vector3(Self.x, 0, Self.z);
 	}

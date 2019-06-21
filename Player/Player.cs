@@ -698,7 +698,7 @@ public class Player : KinematicBody, IPushable
 				Vector3 WishDir = ClampVec3(new Vector3(X, 0, Z), 0, 1) * SpeedLimit;
 				WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
-				float Multiplyer = Clamp(SpeedLimit - Momentum.Flatten().Length(), 0, SpeedLimit) / SpeedLimit;
+				float Multiplyer = Clamp(SpeedLimit - Momentum.Flattened().Length(), 0, SpeedLimit) / SpeedLimit;
 				WishDir *= Multiplyer;
 
 				Momentum.x += WishDir.x;
