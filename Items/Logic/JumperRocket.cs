@@ -90,17 +90,12 @@ public class JumperRocket : KinematicBody
 	{
 		if(IsLocal)
 		{
-			if(Triggered && Life >= RocketJumper.RocketArmTime)
+			if(Triggered || (Life >= RocketJumper.RocketFuseTime))
 			{
 				Explode();
 				Net.SteelRpc(this, nameof(Explode));
 			}
-			else if(Life >= RocketJumper.RocketFuseTime)
-			{
-				Explode();
-				Net.SteelRpc(this, nameof(Explode));
-			}
-		};
+		}
 
 		MoveAndCollide(Momentum * Delta);
 		Life += Delta;
