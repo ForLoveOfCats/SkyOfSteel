@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body.obj" type="ArrayMesh" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://Player/WallKickSfx.wav" type="AudioStream" id=7]
 [ext_resource path="res://Player/ItemThrowSfx.wav" type="AudioStream" id=8]
 [ext_resource path="res://Player/ItemPickupSfx.wav" type="AudioStream" id=9]
+[ext_resource path="res://Items/Logic/RocketJumper/FireSfx.wav" type="AudioStream" id=10]
+[ext_resource path="res://Items/Logic/RocketJumper/ExplodeSfx.wav" type="AudioStream" id=11]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_texture = ExtResource( 3 )
@@ -82,3 +84,12 @@ volume_db = -15.0
 stream = ExtResource( 9 )
 unit_db = 1.0
 unit_size = 2.0
+
+[node name="FpRocketFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
+stream = ExtResource( 10 )
+volume_db = -1.0
+
+[node name="TpRocketFireSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
+stream = ExtResource( 11 )
+unit_db = 10.0
+unit_size = 40.0

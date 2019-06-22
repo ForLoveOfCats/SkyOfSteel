@@ -44,6 +44,8 @@ public class RocketJumper : Node
 		World.EntitiesRoot.AddChild(Rocket);
 
 		Net.SteelRpc(Self, nameof(RemoteFire), Rocket.Translation, Rocket.RotationDegrees, Rocket.Momentum, Rocket.GetName());
+
+		UsingPlayer.SfxManager.FpRocketFire();
 	}
 
 

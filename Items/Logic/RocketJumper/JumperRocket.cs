@@ -13,6 +13,14 @@ public class JumperRocket : KinematicBody
 	public bool Triggered = false;
 
 
+	public static PackedScene ExplodeSfx;
+
+	static JumperRocket()
+	{
+		ExplodeSfx = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplodeSfx.tscn");
+	}
+
+
 	public void HasCollided(Node Collided)
 	{
 		if(IsLocal)
@@ -81,6 +89,11 @@ public class JumperRocket : KinematicBody
 			}
 		}
 		AffectedBodies.Clear();
+
+		AudioStreamPlayer3D ExplodeSfxInstance = ExplodeSfx.Instance() as AudioStreamPlayer3D;
+		ExplodeSfxInstance.Play();
+		ExplodeSfxInstance.Translation = Translation;
+		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
 
 		QueueFree();
 	}
