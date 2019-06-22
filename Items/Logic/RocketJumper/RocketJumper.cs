@@ -11,7 +11,7 @@ public class RocketJumper : Node
 	public static float MaxRocketDistance = 30; //Make sure that radius of AffectArea on JumperRocket matches
 	public static float MinRocketDistance = 8;
 	public static float RocketHorizontalMultiplyer = 1.1f;
-	public static float RocketVerticalDivisor = 1.7f;
+	public static float RocketVerticalDivisor = 1.6f;
 
 	public static PackedScene JumperRocketScene;
 
