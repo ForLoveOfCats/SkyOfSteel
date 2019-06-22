@@ -14,10 +14,12 @@ public class JumperRocket : KinematicBody
 
 
 	public static PackedScene ExplodeSfx;
+	public static PackedScene ExplodeParticles;
 
 	static JumperRocket()
 	{
 		ExplodeSfx = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplodeSfx.tscn");
+		ExplodeParticles = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplosionParticles.tscn");
 	}
 
 
@@ -94,6 +96,11 @@ public class JumperRocket : KinematicBody
 		ExplodeSfxInstance.Play();
 		ExplodeSfxInstance.Translation = Translation;
 		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
+
+		CPUParticles ParticleSystem = ExplodeParticles.Instance() as CPUParticles;
+		ParticleSystem.Translation = Translation;
+		ParticleSystem.Emitting = true;
+		World.EntitiesRoot.AddChild(ParticleSystem);
 
 		QueueFree();
 	}

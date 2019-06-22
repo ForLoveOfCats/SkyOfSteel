@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\IPushable.cs" />
     <Compile Include="Items\Logic\RocketJumper\ExplodeSfx.cs" />
+    <Compile Include="Items\Logic\RocketJumper\ExplosionParticles.cs" />
     <Compile Include="Items\Logic\RocketJumper\JumperRocket.cs" />
     <Compile Include="Items\Logic\RocketJumper\RocketJumper.cs" />
     <Compile Include="Player\PlayerSfxManager.cs" />
