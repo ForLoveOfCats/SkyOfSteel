@@ -510,7 +510,7 @@ public class World : Node
 		}
 
 		int PlaceCount = 0;
-		foreach(SavedStructure SavedBranch in LoadedChunk.S)
+		foreach(SavedTile SavedBranch in LoadedChunk.S)
 		{
 			Tuple<Items.ID,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 			if(Info != null)

@@ -88,7 +88,7 @@
     <Compile Include="World\Grid.cs" />
     <Compile Include="World\Materials\ShaderCompilerHider.cs" />
     <Compile Include="World\SavedChunk.cs" />
-    <Compile Include="World\SavedStructure.cs" />
+    <Compile Include="World\SavedTile.cs" />
     <Compile Include="World\Tile.cs" />
     <Compile Include="Game\Startup.cs" />
     <Compile Include="Items\DroppedItem.cs" />

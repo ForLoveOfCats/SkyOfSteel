@@ -5,7 +5,7 @@ using System;
 public class SavedChunk
 {
 	public int[] P;
-	public SavedStructure[] S; //Only used when deserializing
+	public SavedTile[] S; //Only used when deserializing
 
 	Tuple<int,int> ChunkTuple;
 
@@ -32,7 +32,7 @@ public class SavedChunk
 				continue;
 			}
 
-			Out += new SavedStructure(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
+			Out += new SavedTile(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
 		}
 
 		if(Out[Out.Length-1] == ',')
