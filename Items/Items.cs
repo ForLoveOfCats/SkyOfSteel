@@ -73,13 +73,13 @@ public class Items : Node
 	public static Dictionary<ID, BuildInfoDelegate> BuildRotations = new Dictionary<ID, BuildInfoDelegate>();
 	public static Dictionary<ID, UseItemDelegate> UseDelegates = new Dictionary<ID, UseItemDelegate>();
 
-	public static Shader StructureShader { get; private set; }
+	public static Shader TileShader { get; private set; }
 
 	Items()
 	{
 		if(Engine.EditorHint) {return;}
 
-		StructureShader = GD.Load<Shader>("res://World/Materials/StructureShader.shader");
+		TileShader = GD.Load<Shader>("res://World/Materials/TileShader.shader");
 
 		foreach(Items.ID Type in System.Enum.GetValues(typeof(ID)))
 		{

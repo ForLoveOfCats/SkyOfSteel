@@ -23,7 +23,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 		Mesh = GetNode<MeshInstance>("MeshInstance");
 
 		ShaderMaterial Mat = new ShaderMaterial();
-		Mat.Shader = Items.StructureShader;
+		Mat.Shader = Items.TileShader;
 		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
 		GetNode<MeshInstance>("MeshInstance").MaterialOverride = Mat;
 
