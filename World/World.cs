@@ -47,7 +47,7 @@ public class World : Node
 			PackedScene Scene = GD.Load("res://World/Scenes/"+FileName) as PackedScene;
 			if((Scene.Instance() as Tile) == null)
 			{
-				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
+				throw new System.Exception($"Tile scene '{FileName}' does not inherit Structure");
 			}
 
 			FileName = TilesDir.GetNext();
