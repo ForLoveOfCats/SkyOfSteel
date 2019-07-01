@@ -1,9 +1,10 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://World/Structure.cs" type="Script" id=1]
+[ext_resource path="res://World/Tile.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/TRIANGLE_WALL.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://World/Materials/StructureShader.shader" type="Shader" id=3]
 [ext_resource path="res://Items/Textures/TRIANGLE_WALL.png" type="Texture" id=4]
+
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = ExtResource( 3 )

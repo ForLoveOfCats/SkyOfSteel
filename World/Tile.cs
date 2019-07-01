@@ -1,7 +1,7 @@
 using Godot;
 
 
-public class Structure : StaticBody, IInGrid
+public class Tile : StaticBody, IInGrid
 {
 	public Items.ID Type = Items.ID.ERROR;
 	public int OwnerId = 0;

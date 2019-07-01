@@ -45,7 +45,7 @@ public class World : Node
 				break;
 			}
 			PackedScene Scene = GD.Load("res://World/Scenes/"+FileName) as PackedScene;
-			if((Scene.Instance() as Structure) == null)
+			if((Scene.Instance() as Tile) == null)
 			{
 				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
 			}
@@ -128,15 +128,15 @@ public class World : Node
 
 	public static void Clear()
 	{
-		List<Structure> Branches = new List<Structure>();
+		List<Tile> Branches = new List<Tile>();
 		foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in Chunks)
 		{
-			foreach(Structure Branch in Chunk.Value.Structures)
+			foreach(Tile Branch in Chunk.Value.Structures)
 			{
 				Branches.Add(Branch);
 			}
 		}
-		foreach(Structure Branch in Branches)
+		foreach(Tile Branch in Branches)
 		{
 			Branch.Remove(Force:true);
 		}
@@ -246,18 +246,18 @@ public class World : Node
 	}
 
 
-	static void AddStructureToChunk(Structure Branch)
+	static void AddStructureToChunk(Tile Branch)
 	{
 		if(ChunkExists(Branch.Translation))
 		{
-			List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
+			List<Tile> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
 			Chunk.Add(Branch);
 			Chunks[GetChunkTuple(Branch.Translation)].Structures = Chunk;
 		}
 		else
 		{
 			ChunkClass Chunk = new ChunkClass();
-			Chunk.Structures = new List<Structure>{Branch};
+			Chunk.Structures = new List<Tile>{Branch};
 			Chunks.Add(GetChunkTuple(Branch.Translation), Chunk);
 		}
 	}
@@ -280,7 +280,7 @@ public class World : Node
 	}
 
 
-	public static Structure PlaceOn(Items.ID BranchType, Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
+	public static Tile PlaceOn(Items.ID BranchType, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
 	{
 		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
@@ -293,10 +293,10 @@ public class World : Node
 	}
 
 
-	public static Structure Place(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public static Tile Place(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		string Name = System.Guid.NewGuid().ToString();
-		Structure Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
+		Tile Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
 
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
@@ -308,7 +308,7 @@ public class World : Node
 
 
 	[Remote]
-	public Structure PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	public Tile PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
 		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
@@ -322,7 +322,7 @@ public class World : Node
 			}
 		}
 
-		Structure Branch = Scenes[BranchType].Instance() as Structure;
+		Tile Branch = Scenes[BranchType].Instance() as Tile;
 		Branch.Type = BranchType;
 		Branch.OwnerId = OwnerId;
 		Branch.Translation = Position;
@@ -370,7 +370,7 @@ public class World : Node
 	{
 		if(StructureRoot.HasNode(Name))
 		{
-			Structure Branch = StructureRoot.GetNode(Name) as Structure;
+			Tile Branch = StructureRoot.GetNode(Name) as Tile;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
 			Chunks[ChunkTuple].Structures.Remove(Branch);
 			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
@@ -462,7 +462,7 @@ public class World : Node
 	{
 		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 
-		foreach(Structure Branch in Chunks[ChunkLocation].Structures)
+		foreach(Tile Branch in Chunks[ChunkLocation].Structures)
 		{
 			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
@@ -486,7 +486,7 @@ public class World : Node
 		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
-		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
+		foreach(Tile Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
 		{
 			if(Branch.OwnerId != 0)
 			{
@@ -529,7 +529,7 @@ public class World : Node
 		ChunkClass ChunkToFree;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out ChunkToFree)) //Chunk might not exist
 		{
-			foreach(Structure Branch in ChunkToFree.Structures)
+			foreach(Tile Branch in ChunkToFree.Structures)
 			{
 				Branch.Free();
 			}

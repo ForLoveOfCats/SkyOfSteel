@@ -86,7 +86,7 @@ public class Ghost : Area
 			RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 			if(BuildRayCast.IsColliding())
 			{
-				Structure Base = BuildRayCast.GetCollider() as Structure;
+				Tile Base = BuildRayCast.GetCollider() as Tile;
 				if(Base != null)
 				{
 					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
@@ -113,7 +113,7 @@ public class Ghost : Area
 			foreach(Node Body in GetOverlappingBodies())
 			{
 				Items.Instance SelectedItem = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-				if(SelectedItem != null && Body is Structure && ((Structure)Body).Type == SelectedItem.Id)
+				if(SelectedItem != null && Body is Tile && ((Tile)Body).Type == SelectedItem.Id)
 				{
 					GhostMesh.MaterialOverride = RedMat;
 					_CanBuild = false;

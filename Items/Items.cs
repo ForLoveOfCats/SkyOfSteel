@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 public class Items : Node
 {
-	public delegate Vector3? BuildInfoDelegate(Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitPointRelative);
+	public delegate Vector3? BuildInfoDelegate(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPointRelative);
 	public delegate void UseItemDelegate(Instance Item, Player UsingPlayer);
 
 
@@ -101,7 +101,7 @@ public class Items : Node
 	}
 
 
-	public static Vector3? TryCalculateBuildPosition(ID Branch, Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit)
+	public static Vector3? TryCalculateBuildPosition(ID Branch, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 Hit)
 	{
 		BuildInfoDelegate Function;
 		BuildPositions.TryGetValue(Branch, out Function);
@@ -117,7 +117,7 @@ public class Items : Node
 	}
 
 
-	public static Vector3 CalculateBuildRotation(ID Branch, Structure Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) //Always return a valid rotation
+	public static Vector3 CalculateBuildRotation(ID Branch, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) //Always return a valid rotation
 	{
 		BuildInfoDelegate Function;
 		BuildRotations.TryGetValue(Branch, out Function);
@@ -149,7 +149,7 @@ public class Items : Node
 		BuildPositions = new Dictionary<ID, BuildInfoDelegate>() {
 			{
 				ID.PLATFORM,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						switch(Base.Type)
 						{
 							case(ID.PLATFORM):
@@ -209,7 +209,7 @@ public class Items : Node
 
 			{
 				ID.WALL,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						switch(Base.Type)
 						{
 							case(ID.PLATFORM):
@@ -272,7 +272,7 @@ public class Items : Node
 
 			{
 				ID.SLOPE,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						switch(Base.Type)
 						{
 							case(ID.PLATFORM):
@@ -362,7 +362,7 @@ public class Items : Node
 
 			{
 				ID.TRIANGLE_WALL,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						switch(Base.Type)
 						{
 							case(ID.PLATFORM):
@@ -417,14 +417,14 @@ public class Items : Node
 		BuildRotations = new Dictionary<ID, BuildInfoDelegate>() {
 			{
 				ID.PLATFORM,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						return new Vector3(); //PLATFORM will always have a rotation of 0,0,0
 					})
 			},
 
 			{
 				ID.WALL,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						if(Base.Type == ID.WALL || Base.Type == ID.SLOPE)
 							return Base.RotationDegrees;
 
@@ -434,7 +434,7 @@ public class Items : Node
 
 			{
 				ID.SLOPE,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						if(Base.Type == ID.PLATFORM)
 							if(BuildRotation == 1 || BuildRotation == 3)
 								return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) + 180, 0);
@@ -476,7 +476,7 @@ public class Items : Node
 
 			{
 				ID.TRIANGLE_WALL,
-				new BuildInfoDelegate((Structure Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
+				new BuildInfoDelegate((Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative) => {
 						if(Base.Type == ID.PLATFORM || Base.Type == ID.SLOPE)
 						{
 							if(BuildRotation == 1)

@@ -504,7 +504,7 @@ public class Player : KinematicBody, IPushable
 					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
 					if(BuildRayCast.IsColliding())
 					{
-						Structure Base = BuildRayCast.GetCollider() as Structure;
+						Tile Base = BuildRayCast.GetCollider() as Tile;
 						if(Base != null && GhostInstance.CanBuild)
 						{
 							Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
@@ -541,7 +541,7 @@ public class Player : KinematicBody, IPushable
 			RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
 			if(BuildRayCast.IsColliding())
 			{
-				Structure Hit = BuildRayCast.GetCollider() as Structure;
+				Tile Hit = BuildRayCast.GetCollider() as Tile;
 				if(Hit != null && Game.Mode.ShouldRemoveStructure(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
 				{
 					Hit.NetRemove();
