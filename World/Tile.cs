@@ -18,7 +18,7 @@ public class Tile : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		World.Self.RemoveStructure(GetName());
+		World.Self.RemoveTile(GetName());
 	}
 
 
@@ -29,7 +29,7 @@ public class Tile : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		Net.SteelRpc(World.Self, nameof(World.RemoveStructure), GetName());
-		World.Self.RemoveStructure(GetName());
+		Net.SteelRpc(World.Self, nameof(World.RemoveTile), GetName());
+		World.Self.RemoveTile(GetName());
 	}
 }

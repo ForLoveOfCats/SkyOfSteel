@@ -509,7 +509,7 @@ public class Player : KinematicBody, IPushable
 						{
 							Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
 							if(PlacePosition != null
-							   && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType,
+							   && Game.Mode.ShouldPlaceTile(GhostInstance.CurrentMeshType,
 							                                     PlacePosition.Value,
 							                                     Items.CalculateBuildRotation(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint())))
 
@@ -542,7 +542,7 @@ public class Player : KinematicBody, IPushable
 			if(BuildRayCast.IsColliding())
 			{
 				Tile Hit = BuildRayCast.GetCollider() as Tile;
-				if(Hit != null && Game.Mode.ShouldRemoveStructure(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+				if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
 				{
 					Hit.NetRemove();
 				}

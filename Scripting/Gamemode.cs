@@ -119,13 +119,13 @@ public class Gamemode : Node
 	}
 
 
-	public virtual bool ShouldPlaceStructure(Items.ID BranchType, Vector3 Position, Vector3 Rotation)
+	public virtual bool ShouldPlaceTile(Items.ID BranchType, Vector3 Position, Vector3 Rotation)
 	{
 		return true;
 	}
 
 
-	public virtual bool ShouldRemoveStructure(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public virtual bool ShouldRemoveTile(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		return true;
 	}

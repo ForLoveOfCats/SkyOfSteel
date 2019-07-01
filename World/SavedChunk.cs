@@ -24,8 +24,8 @@ public class SavedChunk
 	{
 		string Out = $"{{\"P\":[{string.Join(",", P)}],\"S\":[";
 
-		System.Collections.Generic.List<Tile> Structures = World.Chunks[ChunkTuple].Structures;
-		foreach(Tile Branch in Structures)
+		System.Collections.Generic.List<Tile> Tiles = World.Chunks[ChunkTuple].Tiles;
+		foreach(Tile Branch in Tiles)
 		{
 			if(Branch.OwnerId == 0)
 			{

@@ -19,7 +19,7 @@ public class World : Node
 	public static bool IsOpen = false;
 	public static string SaveName = null;
 
-	public static Node StructureRoot = null;
+	public static Node TilesRoot = null;
 	public static Node EntitiesRoot = null;
 
 	private static PackedScene DroppedItemScene;
@@ -34,10 +34,10 @@ public class World : Node
 
 		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
 
-		Directory StructureDir = new Directory();
-		StructureDir.Open("res://World/Scenes/");
-		StructureDir.ListDirBegin(true, true);
-		string FileName = StructureDir.GetNext();
+		Directory TilesDir = new Directory();
+		TilesDir.Open("res://World/Scenes/");
+		TilesDir.ListDirBegin(true, true);
+		string FileName = TilesDir.GetNext();
 		while(true)
 		{
 			if(FileName == "")
@@ -50,7 +50,7 @@ public class World : Node
 				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
 			}
 
-			FileName = StructureDir.GetNext();
+			FileName = TilesDir.GetNext();
 		}
 
 		foreach(Items.ID Type in System.Enum.GetValues(typeof(Items.ID)))
@@ -85,9 +85,9 @@ public class World : Node
 		SkyScene.SetName("SkyScene");
 		Game.RuntimeRoot.AddChild(SkyScene);
 
-		StructureRoot = new Node();
-		StructureRoot.SetName("StructureRoot");
-		SkyScene.AddChild(StructureRoot);
+		TilesRoot = new Node();
+		TilesRoot.SetName("TilesRoot");
+		SkyScene.AddChild(TilesRoot);
 
 		EntitiesRoot = new Node();
 		EntitiesRoot.SetName("EntitiesRoot");
@@ -107,7 +107,7 @@ public class World : Node
 		Net.Players.Clear();
 		Game.PossessedPlayer = null;
 
-		StructureRoot = null;
+		TilesRoot = null;
 		EntitiesRoot = null;
 
 		Scripting.UnloadGamemode();
@@ -131,7 +131,7 @@ public class World : Node
 		List<Tile> Branches = new List<Tile>();
 		foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in Chunks)
 		{
-			foreach(Tile Branch in Chunk.Value.Structures)
+			foreach(Tile Branch in Chunk.Value.Tiles)
 			{
 				Branches.Add(Branch);
 			}
@@ -246,18 +246,18 @@ public class World : Node
 	}
 
 
-	static void AddStructureToChunk(Tile Branch)
+	static void AddTileToChunk(Tile Branch)
 	{
 		if(ChunkExists(Branch.Translation))
 		{
-			List<Tile> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
+			List<Tile> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Tiles;
 			Chunk.Add(Branch);
-			Chunks[GetChunkTuple(Branch.Translation)].Structures = Chunk;
+			Chunks[GetChunkTuple(Branch.Translation)].Tiles = Chunk;
 		}
 		else
 		{
 			ChunkClass Chunk = new ChunkClass();
-			Chunk.Structures = new List<Tile>{Branch};
+			Chunk.Tiles = new List<Tile>{Branch};
 			Chunks.Add(GetChunkTuple(Branch.Translation), Chunk);
 		}
 	}
@@ -328,9 +328,9 @@ public class World : Node
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
 		Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-		StructureRoot.AddChild(Branch);
+		TilesRoot.AddChild(Branch);
 
-		AddStructureToChunk(Branch);
+		AddTileToChunk(Branch);
 		Grid.AddItem(Branch);
 
 		//Nested if to prevent very long line
@@ -366,14 +366,14 @@ public class World : Node
 
 	//Name is the string GUID name of the structure to be removed
 	[Remote]
-	public void RemoveStructure(string Name)
+	public void RemoveTile(string Name)
 	{
-		if(StructureRoot.HasNode(Name))
+		if(TilesRoot.HasNode(Name))
 		{
-			Tile Branch = StructureRoot.GetNode(Name) as Tile;
+			Tile Branch = TilesRoot.GetNode(Name) as Tile;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
-			Chunks[ChunkTuple].Structures.Remove(Branch);
-			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
+			Chunks[ChunkTuple].Tiles.Remove(Branch);
+			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -394,7 +394,7 @@ public class World : Node
 			DroppedItem Item = EntitiesRoot.GetNode(Guid) as DroppedItem;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
-			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
+			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -462,7 +462,7 @@ public class World : Node
 	{
 		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 
-		foreach(Tile Branch in Chunks[ChunkLocation].Structures)
+		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
 		{
 			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
@@ -486,7 +486,7 @@ public class World : Node
 		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
-		foreach(Tile Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
+		foreach(Tile Branch in Chunks[ChunkTuple].Tiles) //I hate to do this because it is rather inefficient
 		{
 			if(Branch.OwnerId != 0)
 			{
@@ -529,7 +529,7 @@ public class World : Node
 		ChunkClass ChunkToFree;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out ChunkToFree)) //Chunk might not exist
 		{
-			foreach(Tile Branch in ChunkToFree.Structures)
+			foreach(Tile Branch in ChunkToFree.Tiles)
 			{
 				Branch.Free();
 			}
