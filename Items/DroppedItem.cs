@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-public class DroppedItem : KinematicBody, IInGrid
+public class DroppedItem : KinematicBody, IInGrid, IPushable
 {
 	private const float Gravity = 14f;
 	private const float MaxFallSpeed = -40f;
@@ -14,7 +14,7 @@ public class DroppedItem : KinematicBody, IInGrid
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
 	public bool PhysicsEnabled = true;
 	public float Life = 0f;
-	public Items.TYPE Type;
+	public Items.ID Type;
 
 	public MeshInstance Mesh;
 
@@ -23,7 +23,7 @@ public class DroppedItem : KinematicBody, IInGrid
 		Mesh = GetNode<MeshInstance>("MeshInstance");
 
 		ShaderMaterial Mat = new ShaderMaterial();
-		Mat.Shader = Items.StructureShader;
+		Mat.Shader = Items.TileShader;
 		Mat.SetShaderParam("texture_albedo", Items.Textures[Type]);
 		GetNode<MeshInstance>("MeshInstance").MaterialOverride = Mat;
 
@@ -35,6 +35,16 @@ public class DroppedItem : KinematicBody, IInGrid
 	{
 		PhysicsEnabled = true;
 		World.Grid.QueueRemoveItem(this);
+	}
+
+
+	public void ApplyPush(Vector3 Push)
+	{
+		Momentum += Push;
+		GridUpdate();
+
+		if(Net.Work.IsNetworkServer())
+			Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, GetName());
 	}
 
 

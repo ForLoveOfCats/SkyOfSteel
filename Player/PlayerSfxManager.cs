@@ -15,6 +15,9 @@ public class PlayerSfxManager : Spatial
 	public AudioStreamPlayer FpPickupSfx;
 	public AudioStreamPlayer3D TpPickupSfx;
 
+	public AudioStreamPlayer FpRocketFireSfx;
+	public AudioStreamPlayer3D TpRocketFireSfx;
+
 	public override void _Ready()
 	{
 		FpLandSfx = GetNode<AudioStreamPlayer>("FpLandSfx");
@@ -28,6 +31,9 @@ public class PlayerSfxManager : Spatial
 
 		FpPickupSfx = GetNode<AudioStreamPlayer>("FpPickupSfx");
 		TpPickupSfx = GetNode<AudioStreamPlayer3D>("TpPickupSfx");
+
+		FpRocketFireSfx = GetNode<AudioStreamPlayer>("FpRocketFireSfx");
+		TpRocketFireSfx = GetNode<AudioStreamPlayer3D>("TpRocketFireSfx");
 	}
 
 
@@ -86,5 +92,19 @@ public class PlayerSfxManager : Spatial
 	{
 		FpPickupSfx.Play();
 		Net.SteelRpc(this, nameof(TpPickup));
+	}
+
+
+	[Remote]
+	public void TpRocketFire()
+	{
+		TpRocketFireSfx.Play();
+	}
+
+
+	public void FpRocketFire()
+	{
+		FpRocketFireSfx.Play();
+		Net.SteelRpc(this, nameof(TpRocketFire));
 	}
 }

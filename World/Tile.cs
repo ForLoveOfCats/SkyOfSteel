@@ -1,9 +1,9 @@
 using Godot;
 
 
-public class Structure : StaticBody, IInGrid
+public class Tile : StaticBody, IInGrid
 {
-	public Items.TYPE Type = Items.TYPE.ERROR;
+	public Items.ID Type = Items.ID.ERROR;
 	public int OwnerId = 0;
 
 
@@ -18,7 +18,7 @@ public class Structure : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		World.Self.RemoveStructure(GetName());
+		World.Self.RemoveTile(GetName());
 	}
 
 
@@ -29,7 +29,7 @@ public class Structure : StaticBody, IInGrid
 			return; //Prevents removing default structures
 		}
 
-		Net.SteelRpc(World.Self, nameof(World.RemoveStructure), GetName());
-		World.Self.RemoveStructure(GetName());
+		Net.SteelRpc(World.Self, nameof(World.RemoveTile), GetName());
+		World.Self.RemoveTile(GetName());
 	}
 }

@@ -20,6 +20,8 @@ public class Gamemode : Node
 	public virtual void OnPlayerDisconnect(int PeerId)
 	{}
 
+	public virtual void OnPlayerCollide(KinematicCollision Collision)
+	{}
 
 	public virtual bool ShouldPlayerMove(Vector3 Position)
 	{
@@ -75,7 +77,7 @@ public class Gamemode : Node
 	}
 
 
-	public virtual bool ShouldPickupItem(Items.TYPE Type)
+	public virtual bool ShouldPickupItem(Items.ID Type)
 	{
 		return true;
 	}
@@ -117,13 +119,13 @@ public class Gamemode : Node
 	}
 
 
-	public virtual bool ShouldPlaceStructure(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation)
+	public virtual bool ShouldPlaceTile(Items.ID BranchType, Vector3 Position, Vector3 Rotation)
 	{
 		return true;
 	}
 
 
-	public virtual bool ShouldRemoveStructure(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public virtual bool ShouldRemoveTile(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		return true;
 	}

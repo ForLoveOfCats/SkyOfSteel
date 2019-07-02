@@ -15,42 +15,43 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" parent="." instance=ExtResource( 2 )]
-margin_top = 130.0
+margin_top = 117.0
 margin_right = 1024.0
-margin_bottom = 182.0
+margin_bottom = 169.0
 text = "Credits"
 
 [node name="Label" parent="." instance=ExtResource( 3 )]
-margin_top = 186.0
+margin_top = 173.0
 margin_right = 1024.0
-margin_bottom = 345.0
+margin_bottom = 359.0
 text = "Lead Dev: ForLoveOfCats
 
 --- Contributors ---
 TriangleDot
 RedstoneParadox
-Stenodyon"
+Stenodyon
+TAAV"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 349.0
+margin_top = 363.0
 margin_right = 1024.0
-margin_bottom = 373.0
+margin_bottom = 387.0
 
 [node name="LicensesButton" parent="." instance=ExtResource( 5 )]
-margin_top = 377.0
+margin_top = 391.0
 margin_right = 1024.0
-margin_bottom = 407.0
+margin_bottom = 421.0
 text = "Licenses"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 4 )]
-margin_top = 411.0
+margin_top = 425.0
 margin_right = 1024.0
-margin_bottom = 435.0
+margin_bottom = 449.0
 
 [node name="BackButton" parent="." instance=ExtResource( 5 )]
-margin_top = 439.0
+margin_top = 453.0
 margin_right = 1024.0
-margin_bottom = 469.0
+margin_bottom = 483.0
 text = "Back"
 [connection signal="pressed" from="LicensesButton" to="." method="LicensesPressed"]
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]

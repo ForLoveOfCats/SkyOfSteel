@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 
 
-public class Player : KinematicBody
+public class Player : KinematicBody, IPushable
 {
 	public bool Possessed = false;
 	public int Id = 0;
@@ -13,19 +13,18 @@ public class Player : KinematicBody
 	public float BaseMovementSpeed = 20;
 	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
 	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
-	public float MaxVerticalSpeed = 40f;
-	public float AirAcceleration = 24; //How many units per second to accelerate
-	public float DecelerateTime = 0.2f; //How many seconds needed to stop from full speed
+	public float MaxVerticalSpeed = 100f;
+	public float AirAcceleration = 22; //How many units per second to accelerate
+	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
 	public float JumpSpeedMultiplyer = 15f;
-	public float JumpStartForce = 8f;
-	public float JumpContinueForce = 6f;
+	public float JumpStartForce = 12f;
+	public float JumpContinueForce = 5f;
 	public float MaxJumpLength = 0.3f;
-	public float WallKickJumpForce = 16;
-	public float WallKickHorzontalForce = 45;
-	public float MinWallKickRecoverPercentage = 0.2f;
-	public float WallKickRecoverSpeed= 100 / 25; //Latter number percent of a second it takes to fully recover
-	public float Gravity = 14f;
+	public float WallKickJumpForce = 22;
+	public float WallKickHorzontalForce = 35;
+	public float RecoverSpeed= 100 / 75; //Latter number percent of a second it takes to fully recover
+	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
 	public float LookDivisor = 6;
@@ -37,9 +36,9 @@ public class Player : KinematicBody
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
-	private int ForwardAxis = 0;
-	private int RightAxis = 0;
-	private int JumpAxis = 0;
+	public int ForwardAxis = 0;
+	public int RightAxis = 0;
+	public int JumpAxis = 0;
 
 	public float ForwardSens = 0;
 	public float BackwardSens = 0;
@@ -51,15 +50,16 @@ public class Player : KinematicBody
 	public bool IsCrouching = false;
 	public bool IsSprinting = false;
 	public bool IsJumping = false;
+	public bool HasJumped = false;
 	public bool WasOnFloor = false;
-	private float JumpTimer = 0f;
-	private float WallKickRecoverPercentage = 1;
-	private Vector3 Momentum = new Vector3(0,0,0);
-	private float LastMomentumY = 0;
-	private float LookHorizontal = 0;
-	private float LookVertical = 0;
-	private bool IsPrimaryFiring = false;
-	private bool IsSecondaryFiring = false;
+	public float JumpTimer = 0f;
+	public float RecoverPercentage = 1;
+	public Vector3 Momentum = new Vector3(0,0,0);
+	public float LastMomentumY = 0;
+	public float LookHorizontal = 0;
+	public float LookVertical = 0;
+	public bool IsPrimaryFiring = false;
+	public bool IsSecondaryFiring = false;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -67,10 +67,10 @@ public class Player : KinematicBody
 	public int BuildRotation = 0;
 
 	public Camera Cam;
-	public Spatial Center;
+	public Spatial RocketStart;
 
 	public HUD HUDInstance;
-	private Ghost GhostInstance;
+	public Ghost GhostInstance;
 
 	public PlayerSfxManager SfxManager;
 
@@ -85,7 +85,7 @@ public class Player : KinematicBody
 	public override void _Ready()
 	{
 		Cam = GetNode<Camera>("SteelCamera");
-		Center = GetNode<Spatial>("Center");
+		RocketStart = GetNode<Spatial>("SteelCamera/RocketStart");
 
 		MovementReset();
 
@@ -116,15 +116,11 @@ public class Player : KinematicBody
 			SetFreeze(false);
 		}
 
-		ItemGive(new Items.Instance(Items.TYPE.PLATFORM));
-		ItemGive(new Items.Instance(Items.TYPE.WALL));
-		ItemGive(new Items.Instance(Items.TYPE.SLOPE));
-	}
-
-
-	public Vector3 CenterPosition()
-	{
-		return Translation + Center.Translation;
+		ItemGive(new Items.Instance(Items.ID.PLATFORM));
+		ItemGive(new Items.Instance(Items.ID.WALL));
+		ItemGive(new Items.Instance(Items.ID.SLOPE));
+		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
+		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER));
 	}
 
 
@@ -158,11 +154,17 @@ public class Player : KinematicBody
 	}
 
 
+	public void ApplyPush(Vector3 Push)
+	{
+		Momentum += Push;
+	}
+
+
 	public void MovementReset()
 	{
 		if(Game.Mode.ShouldMovementReset())
 		{
-			Translation = new Vector3(0, 0.6f, 0);
+			Translation = new Vector3(0, 3.4f + 0.15f, 0);
 			Momentum = new Vector3();
 		}
 	}
@@ -174,7 +176,7 @@ public class Player : KinematicBody
 		{
 			if(!(Inventory[Slot] is null)) //If inventory item is not null
 			{
-				if(Inventory[Slot].Type == ToGive.Type)
+				if(Inventory[Slot].Id == ToGive.Id)
 				{
 					Inventory[Slot].Count += ToGive.Count;
 					HUDInstance.HotbarUpdate();
@@ -196,7 +198,7 @@ public class Player : KinematicBody
 
 
 	[Remote]
-	public void PickupItem(Items.TYPE Type)
+	public void PickupItem(Items.ID Type)
 	{
 		ItemGive(new Items.Instance(Type));
 	}
@@ -212,10 +214,7 @@ public class Player : KinematicBody
 			InventorySlot = 9;
 		}
 
-		if(HUDInstance != null)
-		{
-			HUDInstance.HotbarUpdate();
-		}
+		HUDInstance.HotbarUpdate();
 	}
 
 
@@ -229,30 +228,36 @@ public class Player : KinematicBody
 			InventorySlot = 0;
 		}
 
-		if(HUDInstance != null)
-		{
-			HUDInstance.HotbarUpdate();
-		}
+		HUDInstance.HotbarUpdate();
 	}
+
+
+	public void InventorySlotSelect(int Slot)
+	{
+		InventorySlot = Slot;
+                HUDInstance.HotbarUpdate();
+	}
+
+
+	public void InventorySlot0() { InventorySlotSelect(0); }
+	public void InventorySlot1() { InventorySlotSelect(1); }
+	public void InventorySlot2() { InventorySlotSelect(2); }
+	public void InventorySlot3() { InventorySlotSelect(3); }
+	public void InventorySlot4() { InventorySlotSelect(4); }
+	public void InventorySlot5() { InventorySlotSelect(5); }
+	public void InventorySlot6() { InventorySlotSelect(6); }
+	public void InventorySlot7() { InventorySlotSelect(7); }
+	public void InventorySlot8() { InventorySlotSelect(8); }
+	public void InventorySlot9() { InventorySlotSelect(9); }
 
 
 	public void BuildRotate(float Sens)
 	{
 		if(Sens > 0 && Inventory[InventorySlot] != null)
 		{
-			switch(Inventory[InventorySlot].Type)
-			{
-				case(Items.TYPE.SLOPE):
-					if(BuildRotation == 0)
-					{
-						BuildRotation = 1;
-					}
-					else
-					{
-						BuildRotation = 0;
-					}
-					break;
-			}
+			BuildRotation++;
+			if(BuildRotation > 3)
+				BuildRotation = 0;
 		}
 	}
 
@@ -372,7 +377,7 @@ public class Player : KinematicBody
 				}
 				IsJumping = false;
 			}
-			else if(WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor() && Game.Mode.ShouldJump())
+			else if(IsOnFloor() && Game.Mode.ShouldJump())
 			{
 				Momentum.y = JumpStartForce;
 				if(JumpAxis < 1)
@@ -384,6 +389,7 @@ public class Player : KinematicBody
 				}
 
 				IsJumping = true;
+				HasJumped = true;
 			}
 
 			JumpAxis = 1;
@@ -393,6 +399,7 @@ public class Player : KinematicBody
 		{
 			JumpAxis = 0;
 			IsJumping = false;
+			HasJumped = false;
 		}
 	}
 
@@ -492,17 +499,28 @@ public class Player : KinematicBody
 
 			if(Inventory[InventorySlot] != null)
 			{
-				//Assume for now that all primary fire opertations are to build
-				RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
-				if(BuildRayCast.IsColliding())
+				if(Inventory[InventorySlot].Type == Items.TYPE.BUILDABLE)
 				{
-					Structure Hit = BuildRayCast.GetCollider() as Structure;
-					if(Hit != null && GhostInstance.CanBuild)
+					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+					if(BuildRayCast.IsColliding())
 					{
-						Vector3? PlacePosition = BuildPositions.Calculate(Hit, GhostInstance.CurrentMeshType);
-						if(PlacePosition != null && Game.Mode.ShouldPlaceStructure(GhostInstance.CurrentMeshType, PlacePosition.Value, BuildRotations.Calculate(Hit, GhostInstance.CurrentMeshType)))
-						   World.PlaceOn(Hit, GhostInstance.CurrentMeshType, 1); //ID 1 for now so all client own all non-default structures
+						Tile Base = BuildRayCast.GetCollider() as Tile;
+						if(Base != null && GhostInstance.CanBuild)
+						{
+							Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
+							if(PlacePosition != null
+							   && Game.Mode.ShouldPlaceTile(GhostInstance.CurrentMeshType,
+							                                     PlacePosition.Value,
+							                                     Items.CalculateBuildRotation(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint())))
+
+								World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
+						}
 					}
+				}
+
+				else if(Inventory[InventorySlot].Type == Items.TYPE.USABLE)
+				{
+					Items.UseItem(Inventory[InventorySlot], this);
 				}
 			}
 		}
@@ -523,8 +541,8 @@ public class Player : KinematicBody
 			RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
 			if(BuildRayCast.IsColliding())
 			{
-				Structure Hit = BuildRayCast.GetCollider() as Structure;
-				if(Hit != null && Game.Mode.ShouldRemoveStructure(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+				Tile Hit = BuildRayCast.GetCollider() as Tile;
+				if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
 				{
 					Hit.NetRemove();
 				}
@@ -547,7 +565,7 @@ public class Player : KinematicBody
 					.Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical))
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
-				World.Self.DropItem(Inventory[InventorySlot].Type, Translation+Cam.Translation, Vel);
+				World.Self.DropItem(Inventory[InventorySlot].Id, Translation+Cam.Translation, Vel);
 
 				if(Inventory[InventorySlot].Count > 1)
 					Inventory[InventorySlot].Count -= 1;
@@ -574,18 +592,16 @@ public class Player : KinematicBody
 	public override void _PhysicsProcess(float Delta)
 	{
 		if(!Possessed || Frozen)
-		{
 			return;
-		}
 
 		{
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
 			foreach(DroppedItem Item in World.ItemList)
 			{
-				if(CenterPosition().DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
+				if(Translation.DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
 					PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-					Godot.Collections.Dictionary Results =State.IntersectRay(CenterPosition(), Item.Translation, new Godot.Collections.Array{this}, 1);
+					Godot.Collections.Dictionary Results = State.IntersectRay(Translation, Item.Translation, new Godot.Collections.Array{this}, 1);
 					if(Results.Count <= 0)
 						ToPickUpList.Add(Item);
 				}
@@ -604,12 +620,13 @@ public class Player : KinematicBody
 			}
 		}
 
-		WallKickRecoverPercentage = Clamp(WallKickRecoverPercentage + Delta*WallKickRecoverSpeed, 0, 1);
+		RecoverPercentage = Clamp(RecoverPercentage + Delta*RecoverSpeed, 0, 1);
 
-		if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnFloor())
+		if(JumpAxis > 0 && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
+			HasJumped = true;
 		}
 
 		if(IsJumping && !WasOnFloor)
@@ -644,7 +661,7 @@ public class Player : KinematicBody
 
 		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
-			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/2 - 30;
+			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/3 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
@@ -668,14 +685,6 @@ public class Player : KinematicBody
 			else if(ForwardAxis < 0)
 				Z = -BackwardSens;
 
-			Vector3 WishDir = ClampVec3(new Vector3(X, 0, Z), 0, 1) * (SpeedLimit + Friction*Delta);
-			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
-			if(WishDir.Length() > 0)
-			{
-				Momentum.x = WishDir.x;
-				Momentum.z = WishDir.z;
-			}
-
 			float Speed = Momentum.Length();
 			if(Speed > 0)
 			{
@@ -684,6 +693,18 @@ public class Player : KinematicBody
 				Momentum.x = HorzMomentum.x;
 				Momentum.z = HorzMomentum.z;
 			}
+
+			{
+				Vector3 WishDir = ClampVec3(new Vector3(X, 0, Z), 0, 1) * SpeedLimit;
+				WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+
+				float Multiplyer = Clamp(SpeedLimit - Momentum.Flattened().Length(), 0, SpeedLimit) / SpeedLimit;
+				WishDir *= Multiplyer;
+
+				Momentum.x += WishDir.x;
+				Momentum.z += WishDir.z;
+			}
+
 		}
 		else
 		{
@@ -698,7 +719,7 @@ public class Player : KinematicBody
 				Z = -BackwardSens;
 
 			Vector3 WishDir = new Vector3(X, 0, Z);
-			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * WallKickRecoverPercentage;
+			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * RecoverPercentage;
 			Momentum = AirAccelerate(Momentum, WishDir, Delta);
 		}
 
@@ -722,9 +743,15 @@ public class Player : KinematicBody
 		{
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 
-			if(JumpAxis > 0 && WallKickRecoverPercentage >= MinWallKickRecoverPercentage && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
+			if(GetSlideCount() > 0)
 			{
-				WallKickRecoverPercentage = 0;
+				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
+			}
+
+			if(JumpAxis > 0 && !HasJumped && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
+			{
+				RecoverPercentage = 0;
+				HasJumped = true;
 
 				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
 				Momentum.y = WallKickJumpForce;

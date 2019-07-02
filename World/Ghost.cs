@@ -8,10 +8,10 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	public Items.TYPE CurrentMeshType;
+	public Items.ID CurrentMeshType;
 	public bool CanBuild = false;
 
-	List<Items.TYPE> OldType;
+	List<Items.ID> OldType;
 	List<Vector3> OldPositions;
 	List<Vector3> OldRotations;
 	List<bool> OldVisible;
@@ -27,10 +27,10 @@ public class Ghost : Area
 		//Godot's `Area` object likes to not register body entry's for several
 		  //physics ticks so these postion, rotation, and visibility queues
 		  //are required to prevent flashes of the incorrect color/build abilty
-		OldType = new List<Items.TYPE>()
+		OldType = new List<Items.ID>()
 			{
-				Items.TYPE.ERROR,
-				Items.TYPE.ERROR
+				Items.ID.ERROR,
+				Items.ID.ERROR
 			};
 		OldPositions = new List<Vector3>()
 			{
@@ -63,8 +63,8 @@ public class Ghost : Area
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
  		if(Item != null) //null means no item in slot
 		{
-			GhostMesh.Mesh = Items.Meshes[Item.Type];
-			CurrentMeshType = Item.Type;
+			GhostMesh.Mesh = Items.Meshes[Item.Id];
+			CurrentMeshType = Item.Id;
 		}
 	}
 
@@ -86,13 +86,13 @@ public class Ghost : Area
 			RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 			if(BuildRayCast.IsColliding())
 			{
-				Structure Hit = BuildRayCast.GetCollider() as Structure;
-				if(Hit != null)
+				Tile Base = BuildRayCast.GetCollider() as Tile;
+				if(Base != null)
 				{
-					System.Nullable<Vector3> GhostPosition = BuildPositions.Calculate(Hit, Plr.Inventory[Plr.InventorySlot].Type);
+					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
-						Vector3 GhostRotation = BuildRotations.Calculate(Hit, Plr.Inventory[Plr.InventorySlot].Type);
+						Vector3 GhostRotation = Items.CalculateBuildRotation(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 						Translation = (Vector3)GhostPosition;
 						RotationDegrees = GhostRotation;
 						OldVisible[1] = true;
@@ -113,7 +113,7 @@ public class Ghost : Area
 			foreach(Node Body in GetOverlappingBodies())
 			{
 				Items.Instance SelectedItem = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-				if(SelectedItem != null && Body is Structure && ((Structure)Body).Type == SelectedItem.Type)
+				if(SelectedItem != null && Body is Tile && ((Tile)Body).Type == SelectedItem.Id)
 				{
 					GhostMesh.MaterialOverride = RedMat;
 					_CanBuild = false;
@@ -138,10 +138,10 @@ public class Ghost : Area
 		OldRotations.Add(RotationDegrees);
 
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-		if(Item != null && Item.Type != CurrentMeshType) //null means no item in slot
+		if(Item != null && Item.Id != CurrentMeshType) //null means no item in slot
 		{
 			OldType.RemoveAt(0);
-			OldType.Add(Item.Type);
+			OldType.Add(Item.Id);
 		}
 	}
 }

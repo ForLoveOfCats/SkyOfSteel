@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Items/Logic/RocketJumper/ExplosionParticles.cs" type="Script" id=1]
+
+[sub_resource type="SpatialMaterial" id=2]
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="CubeMesh" id=1]
+material = SubResource( 2 )
+
+[node name="ExplosionParticles" type="CPUParticles"]
+emitting = false
+amount = 75
+lifetime = 0.2
+one_shot = true
+explosiveness = 0.75
+randomness = 1.0
+mesh = SubResource( 1 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 80.0
+script = ExtResource( 1 )

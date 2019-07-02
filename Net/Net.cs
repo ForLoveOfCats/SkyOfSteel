@@ -307,9 +307,9 @@ public class Net : Node
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
-					foreach(Structure CurrentStructure in Chunk.Value.Structures)
+					foreach(Tile CurrentTile in Chunk.Value.Tiles)
 					{
-						CurrentStructure.Show();
+						CurrentTile.Show();
 					}
 
 					foreach(DroppedItem Item in Chunk.Value.Items)
@@ -320,21 +320,21 @@ public class Net : Node
 			}
 			else
 			{
-				List<Structure> StructuresBeingRemoved = new List<Structure>();
-				foreach(Structure CurrentStructure in Chunk.Value.Structures)
+				List<Tile> TilesBeingRemoved = new List<Tile>();
+				foreach(Tile CurrentTile in Chunk.Value.Tiles)
 				{
 					if(Self.GetTree().IsNetworkServer())
 					{
-						CurrentStructure.Hide();
+						CurrentTile.Hide();
 					}
 					else
 					{
-						StructuresBeingRemoved.Add(CurrentStructure);
+						TilesBeingRemoved.Add(CurrentTile);
 					}
 				}
-				foreach(Structure CurrentStructure in StructuresBeingRemoved)
+				foreach(Tile CurrentTile in TilesBeingRemoved)
 				{
-						CurrentStructure.Remove(Force:true);
+						CurrentTile.Remove(Force:true);
 				}
 
 				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();

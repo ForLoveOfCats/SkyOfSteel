@@ -30,6 +30,7 @@ Items="*res://Items/Items.cs"
 WorldAutoload="*res://World/World.cs"
 Menu="*res://UI/Menu/Menu.cs"
 Startup="*res://Game/Startup.cs"
+RocketJumper="*res://Items/Logic/RocketJumper/RocketJumper.cs"
 
 [display]
 
@@ -69,5 +70,6 @@ MenuToggle={
 
 [rendering]
 
+quality/driver/fallback_to_gles2=true
 environment/default_clear_color=Color( 0.466667, 0.690196, 1, 1 )
 environment/default_environment="res://default_env.tres"

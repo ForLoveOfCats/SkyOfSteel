@@ -8,7 +8,7 @@ public class World : Node
 	public const int PlatformSize = 12;
 	public const int ChunkSize = 9*PlatformSize;
 
-	public static Dictionary<Items.TYPE, PackedScene> Scenes = new Dictionary<Items.TYPE, PackedScene>();
+	public static Dictionary<Items.ID, PackedScene> Scenes = new Dictionary<Items.ID, PackedScene>();
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
@@ -19,8 +19,8 @@ public class World : Node
 	public static bool IsOpen = false;
 	public static string SaveName = null;
 
-	public static Node StructureRoot = null;
-	public static Node ItemsRoot = null;
+	public static Node TilesRoot = null;
+	public static Node EntitiesRoot = null;
 
 	private static PackedScene DroppedItemScene;
 
@@ -34,10 +34,10 @@ public class World : Node
 
 		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
 
-		Directory StructureDir = new Directory();
-		StructureDir.Open("res://World/Scenes/");
-		StructureDir.ListDirBegin(true, true);
-		string FileName = StructureDir.GetNext();
+		Directory TilesDir = new Directory();
+		TilesDir.Open("res://World/Scenes/");
+		TilesDir.ListDirBegin(true, true);
+		string FileName = TilesDir.GetNext();
 		while(true)
 		{
 			if(FileName == "")
@@ -45,15 +45,15 @@ public class World : Node
 				break;
 			}
 			PackedScene Scene = GD.Load("res://World/Scenes/"+FileName) as PackedScene;
-			if((Scene.Instance() as Structure) == null)
+			if((Scene.Instance() as Tile) == null)
 			{
-				throw new System.Exception("Structure scene '" + FileName + "' does not inherit Structure");
+				throw new System.Exception($"Tile scene '{FileName}' does not inherit Structure");
 			}
 
-			FileName = StructureDir.GetNext();
+			FileName = TilesDir.GetNext();
 		}
 
-		foreach(Items.TYPE Type in System.Enum.GetValues(typeof(Items.TYPE)))
+		foreach(Items.ID Type in System.Enum.GetValues(typeof(Items.ID)))
 		{
 			File ToLoad = new File();
 			if(ToLoad.FileExists("res://World/Scenes/" + Type.ToString() + ".tscn"))
@@ -70,7 +70,7 @@ public class World : Node
 
 	public static void DefaultPlatforms()
 	{
-		Place(Items.TYPE.PLATFORM, new Vector3(), new Vector3(), 0);
+		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
 	}
 
 
@@ -79,17 +79,19 @@ public class World : Node
 		Close();
 		Menu.Close();
 
+		Items.SetupItems();
+
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
 		SkyScene.SetName("SkyScene");
 		Game.RuntimeRoot.AddChild(SkyScene);
 
-		StructureRoot = new Node();
-		StructureRoot.SetName("StructureRoot");
-		SkyScene.AddChild(StructureRoot);
+		TilesRoot = new Node();
+		TilesRoot.SetName("TilesRoot");
+		SkyScene.AddChild(TilesRoot);
 
-		ItemsRoot = new Node();
-		ItemsRoot.SetName("ItemsRoot");
-		SkyScene.AddChild(ItemsRoot);
+		EntitiesRoot = new Node();
+		EntitiesRoot.SetName("EntitiesRoot");
+		SkyScene.AddChild(EntitiesRoot);
 
 		IsOpen = true;
 	}
@@ -105,8 +107,8 @@ public class World : Node
 		Net.Players.Clear();
 		Game.PossessedPlayer = null;
 
-		StructureRoot = null;
-		ItemsRoot = null;
+		TilesRoot = null;
+		EntitiesRoot = null;
 
 		Scripting.UnloadGamemode();
 
@@ -115,6 +117,10 @@ public class World : Node
 		ItemList.Clear();
 		Grid.Clear();
 
+		Items.BuildPositions.Clear();
+		Items.BuildRotations.Clear();
+		Items.UseDelegates.Clear();
+
 		SaveName = null;
 		IsOpen = false;
 	}
@@ -122,15 +128,15 @@ public class World : Node
 
 	public static void Clear()
 	{
-		List<Structure> Branches = new List<Structure>();
+		List<Tile> Branches = new List<Tile>();
 		foreach(KeyValuePair<Tuple<int,int>, ChunkClass> Chunk in Chunks)
 		{
-			foreach(Structure Branch in Chunk.Value.Structures)
+			foreach(Tile Branch in Chunk.Value.Tiles)
 			{
 				Branches.Add(Branch);
 			}
 		}
-		foreach(Structure Branch in Branches)
+		foreach(Tile Branch in Branches)
 		{
 			Branch.Remove(Force:true);
 		}
@@ -240,18 +246,18 @@ public class World : Node
 	}
 
 
-	static void AddStructureToChunk(Structure Branch)
+	static void AddTileToChunk(Tile Branch)
 	{
 		if(ChunkExists(Branch.Translation))
 		{
-			List<Structure> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Structures;
+			List<Tile> Chunk = Chunks[GetChunkTuple(Branch.Translation)].Tiles;
 			Chunk.Add(Branch);
-			Chunks[GetChunkTuple(Branch.Translation)].Structures = Chunk;
+			Chunks[GetChunkTuple(Branch.Translation)].Tiles = Chunk;
 		}
 		else
 		{
 			ChunkClass Chunk = new ChunkClass();
-			Chunk.Structures = new List<Structure>{Branch};
+			Chunk.Tiles = new List<Tile>{Branch};
 			Chunks.Add(GetChunkTuple(Branch.Translation), Chunk);
 		}
 	}
@@ -268,18 +274,18 @@ public class World : Node
 		else
 		{
 			ChunkClass Chunk = new ChunkClass();
-			Chunk.Items = new List<DroppedItem>{Item};
+			Chunk.Items.Add(Item);
 			Chunks.Add(GetChunkTuple(Item.Translation), Chunk);
 		}
 	}
 
 
-	public static Structure PlaceOn(Structure Base, Items.TYPE BranchType, int OwnerId)
+	public static Tile PlaceOn(Items.ID BranchType, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
 	{
-		System.Nullable<Vector3> Position = BuildPositions.Calculate(Base, BranchType);
+		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
-			Vector3 Rotation = BuildRotations.Calculate(Base, BranchType);
+			Vector3 Rotation = Items.CalculateBuildRotation(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 			return Place(BranchType, (Vector3)Position, Rotation, OwnerId);
 		}
 
@@ -287,10 +293,10 @@ public class World : Node
 	}
 
 
-	public static Structure Place(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
+	public static Tile Place(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
 	{
 		string Name = System.Guid.NewGuid().ToString();
-		Structure Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
+		Tile Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
 
 		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
 		{
@@ -302,7 +308,7 @@ public class World : Node
 
 
 	[Remote]
-	public Structure PlaceWithName(Items.TYPE BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	public Tile PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
 		Vector3 LevelPlayerPos = new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z);
 
@@ -316,15 +322,15 @@ public class World : Node
 			}
 		}
 
-		Structure Branch = Scenes[BranchType].Instance() as Structure;
+		Tile Branch = Scenes[BranchType].Instance() as Tile;
 		Branch.Type = BranchType;
 		Branch.OwnerId = OwnerId;
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
 		Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
-		StructureRoot.AddChild(Branch);
+		TilesRoot.AddChild(Branch);
 
-		AddStructureToChunk(Branch);
+		AddTileToChunk(Branch);
 		Grid.AddItem(Branch);
 
 		//Nested if to prevent very long line
@@ -360,14 +366,14 @@ public class World : Node
 
 	//Name is the string GUID name of the structure to be removed
 	[Remote]
-	public void RemoveStructure(string Name)
+	public void RemoveTile(string Name)
 	{
-		if(StructureRoot.HasNode(Name))
+		if(TilesRoot.HasNode(Name))
 		{
-			Structure Branch = StructureRoot.GetNode(Name) as Structure;
+			Tile Branch = TilesRoot.GetNode(Name) as Tile;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
-			Chunks[ChunkTuple].Structures.Remove(Branch);
-			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
+			Chunks[ChunkTuple].Tiles.Remove(Branch);
+			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -383,12 +389,12 @@ public class World : Node
 	[Remote]
 	public void RemoveDroppedItem(string Guid) //NOTE: Make sure to remove from World.ItemList after client callsite
 	{
-		if(ItemsRoot.HasNode(Guid))
+		if(EntitiesRoot.HasNode(Guid))
 		{
-			DroppedItem Item = ItemsRoot.GetNode(Guid) as DroppedItem;
+			DroppedItem Item = EntitiesRoot.GetNode(Guid) as DroppedItem;
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
-			if(Chunks[ChunkTuple].Structures.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
+			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
 			{
 				//If the chunk is empty then remove it
 				Chunks.Remove(ChunkTuple);
@@ -456,7 +462,7 @@ public class World : Node
 	{
 		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 
-		foreach(Structure Branch in Chunks[ChunkLocation].Structures)
+		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
 		{
 			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
 		}
@@ -480,7 +486,7 @@ public class World : Node
 		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
-		foreach(Structure Branch in Chunks[ChunkTuple].Structures) //I hate to do this because it is rather inefficient
+		foreach(Tile Branch in Chunks[ChunkTuple].Tiles) //I hate to do this because it is rather inefficient
 		{
 			if(Branch.OwnerId != 0)
 			{
@@ -504,9 +510,9 @@ public class World : Node
 		}
 
 		int PlaceCount = 0;
-		foreach(SavedStructure SavedBranch in LoadedChunk.S)
+		foreach(SavedTile SavedBranch in LoadedChunk.S)
 		{
-			Tuple<Items.TYPE,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
+			Tuple<Items.ID,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 			if(Info != null)
 			{
 				Place(Info.Item1, Info.Item2, Info.Item3, 1);
@@ -523,14 +529,19 @@ public class World : Node
 		ChunkClass ChunkToFree;
 		if(Chunks.TryGetValue(new Tuple<int,int>((int)Pos.x, (int)Pos.y), out ChunkToFree)) //Chunk might not exist
 		{
-			foreach(Structure Branch in ChunkToFree.Structures)
+			foreach(Tile Branch in ChunkToFree.Tiles)
 			{
 				Branch.Free();
 			}
 
+			List<DroppedItem> ItemsToRemove = new List<DroppedItem>();
 			foreach(DroppedItem Item in ChunkToFree.Items)
 			{
-				Item.Free();
+				ItemsToRemove.Add(Item);
+			}
+			foreach(DroppedItem Item in ItemsToRemove)
+			{
+				Item.Remove();
 			}
 
 			Chunks.Remove(new Tuple<int,int>((int)Pos.x, (int)Pos.y));
@@ -541,7 +552,7 @@ public class World : Node
 	//Should be able to be called without RPC yet only run on server
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void DropItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum)
+	public void DropItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum)
 	{
 		if(Self.GetTree().GetNetworkPeer() != null)
 		{
@@ -561,11 +572,11 @@ public class World : Node
 
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void DropOrUpdateItem(Items.TYPE Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
+	public void DropOrUpdateItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
-		if(ItemsRoot.HasNode(Name))
+		if(EntitiesRoot.HasNode(Name))
 		{
-			DroppedItem Instance = ItemsRoot.GetNode<DroppedItem>(Name);
+			DroppedItem Instance = EntitiesRoot.GetNode<DroppedItem>(Name);
 			Instance.Translation = Position;
 			Instance.Momentum = BaseMomentum;
 			Instance.PhysicsEnabled = true;
@@ -585,7 +596,7 @@ public class World : Node
 
 				AddItemToChunk(ToDrop);
 				ItemList.Add(ToDrop);
-				ItemsRoot.AddChild(ToDrop);
+				EntitiesRoot.AddChild(ToDrop);
 			}
 		}
 	}
@@ -601,7 +612,7 @@ public class World : Node
 			if(Self.GetTree().IsNetworkServer())
 			{
 				//On server
-				DroppedItem Item = ItemsRoot.GetNodeOrNull(Guid) as DroppedItem;
+				DroppedItem Item = EntitiesRoot.GetNodeOrNull(Guid) as DroppedItem;
 				if(Item != null) //Only lookup node once instead of using HasNode
 				{
 					if(Id == Net.Work.GetNetworkUniqueId())

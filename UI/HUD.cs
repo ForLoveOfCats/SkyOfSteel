@@ -55,7 +55,7 @@ public class HUD : Node
 			NinePatchRect SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild(Slot) as NinePatchRect;
 			if(Game.PossessedPlayer.Inventory[Slot] != null)
 			{
-				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Type];
+				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Id];
 
 				foreach(Node Child in SlotPatch.GetChildren())
 				{

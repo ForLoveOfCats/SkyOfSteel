@@ -99,6 +99,17 @@ public class Startup : Node
 		Bindings.Bind("WheelDown", "Game.PossessedPlayer.InventoryDown");
 		Bindings.Bind("XboxRB", "Game.PossessedPlayer.InventoryDown");
 
+		Bindings.Bind("1", "Game.PossessedPlayer.InventorySlot0");
+		Bindings.Bind("2", "Game.PossessedPlayer.InventorySlot1");
+		Bindings.Bind("3", "Game.PossessedPlayer.InventorySlot2");
+		Bindings.Bind("4", "Game.PossessedPlayer.InventorySlot3");
+		Bindings.Bind("5", "Game.PossessedPlayer.InventorySlot4");
+		Bindings.Bind("6", "Game.PossessedPlayer.InventorySlot5");
+		Bindings.Bind("7", "Game.PossessedPlayer.InventorySlot6");
+		Bindings.Bind("8", "Game.PossessedPlayer.InventorySlot7");
+		Bindings.Bind("9", "Game.PossessedPlayer.InventorySlot8");
+		Bindings.Bind("0", "Game.PossessedPlayer.InventorySlot9");
+
 		Bindings.Bind("MouseUp", "Game.PossessedPlayer.LookUp");
 		Bindings.Bind("RightStickUp", "Game.PossessedPlayer.LookUp");
 		Bindings.Bind("MouseDown", "Game.PossessedPlayer.LookDown");

@@ -5,7 +5,7 @@ using System;
 public class SavedChunk
 {
 	public int[] P;
-	public SavedStructure[] S; //Only used when deserializing
+	public SavedTile[] S; //Only used when deserializing
 
 	Tuple<int,int> ChunkTuple;
 
@@ -24,15 +24,15 @@ public class SavedChunk
 	{
 		string Out = $"{{\"P\":[{string.Join(",", P)}],\"S\":[";
 
-		System.Collections.Generic.List<Structure> Structures = World.Chunks[ChunkTuple].Structures;
-		foreach(Structure Branch in Structures)
+		System.Collections.Generic.List<Tile> Tiles = World.Chunks[ChunkTuple].Tiles;
+		foreach(Tile Branch in Tiles)
 		{
 			if(Branch.OwnerId == 0)
 			{
 				continue;
 			}
 
-			Out += new SavedStructure(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
+			Out += new SavedTile(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
 		}
 
 		if(Out[Out.Length-1] == ',')

@@ -21,6 +21,12 @@ public class MainMenu : VBoxContainer
 	}
 
 
+	public void WebsitePressed()
+	{
+		OS.ShellOpen("https://skyofsteel.org");
+	}
+
+
 	public void DiscordPressed()
 	{
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");
@@ -30,12 +36,6 @@ public class MainMenu : VBoxContainer
 	public void ItchPressed()
 	{
 		OS.ShellOpen("https://forloveofcats.itch.io/skyofsteel");
-	}
-
-
-	public void TwitterPressed()
-	{
-		OS.ShellOpen("https://twitter.com/ForLoveOfCats");
 	}
 
 

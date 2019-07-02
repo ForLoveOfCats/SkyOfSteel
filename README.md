@@ -3,7 +3,7 @@
 ### Welcome to the GitHub repository of the game SkyOfSteel!
 
 SkyOfSteel is a work in progress game built on the Godot game engine with C#, currently builds with Godot Mono 3.1.1 Stable
-The current stable release (slightly outdated) can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
+The current stable release can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
 
 Contributions are welcome!
 
@@ -27,18 +27,20 @@ Contributions are welcome!
     - [License](#license)
 
 
+
 ## Download
 [SkyOfSteel can be downloaded from Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
 
 
+
 ## Newsletter
-[Read the weekly Sunday of Steel news letter here](https://medium.com/@ForLoveOfCats "Sunday of Steel Medium link")
+[Read the weekly Sunday of Steel news letter here](https://skyofsteel.org/Posts "Blog link")
+
 
 
 ## Videos
-[View the devlog one video on Youtube (*Very* out of date)](https://www.youtube.com/watch?v=k-LEUnC75ug "Devlog one video link")
+[0.1.2 Release Video](https://www.youtube.com/watch?v=D9XTBXHrNhc "0.1.2 release video link")
 
-[View the introductory video on Youtube(*Very* out of date)](https://www.youtube.com/watch?v=zhd9OqqL-9Q "Out of date introductory video link")
 
 
 ## Building
@@ -49,8 +51,8 @@ Contributions are welcome!
   * Decently recent versions of both MSBuild and Nuget must be installed (Windows users make sure
   to install [this](https://www.mono-project.com/download/stable/#download-win) and
   [this](https://www.microsoft.com/en-us/download/details.aspx?id=56119), Ubuntu users make
-  sure to add [this](https://www.mono-project.com/download/stable/#download-lin) PPA, update,
-  then install the mono packages)
+  sure to add [this PPA](https://www.mono-project.com/download/stable/#download-lin), update,
+  then install the mono packages as for Arch/Manjaro users make sure to install `msbuild-stable` from the AUR)
 
 
 ### Performing the Build
@@ -64,11 +66,21 @@ Contributions are welcome!
 
 ## Gameplay
 
-The intended gameplay is intended to be a mix of Factorio, SkyBlock, and Unturned in a
-multiplayer private server setting with high skill movement. As of now multiplayer is fully
-functional, the building is about 95% functional with proper chunk loading/unloading
-over network, world saving and loading to/from file, air strafing identical to id Tech 3
-and the Source engine, and wall kicking.
+SkyOfSteel is a sandbox building game set in the sky. Envisioned to be
+a game where one can build intricate factories and sprawling supply
+chains while engaging in a PVP turf war with your fellow server
+inhabitants. Enjoy highly fluid movement while destroying others with
+highly powered weaponry. Fight for technological superiority as you
+race through a deep tech tree constantly edging out your
+opponents. When you tire from the vanilla game, the custom gamemode
+and modding support adds even more depth and content.
+
+Currently we are remarkably far along in achieving this goal. However
+we are admittedly not there yet. At the moment we have a fully
+functional building system, chunk based world save and loading, highly
+stable multiplayer, Quake/Source engine style air strafing, automatic
+bunny hopping, wall kicking, and a rudimentary yet extremely flexible
+system for adding user created gamemodes.
 
 
 
@@ -138,10 +150,10 @@ design please do contribute!
 
 ## Contact
 For questions, comments, or to just discuss please join our
-[Discord](https://www.discord.gg/Ag5Yckw "Discord Server Invite Link")
-Also feel free to follow me (ForLoveOfCats) on
-[Twitter](https://twitter.com/ForLoveOfCats "ForLoveOfCats Twitter Page") and
-[Youtube](https://www.youtube.com/channel/UCbqt-FR7-S2gTWMw0BCEkaw "ForLoveOfCats Youtube Channel")
+[Discord](https://www.discord.gg/Ag5Yckw "Discord Server Invite Link"),
+check out our [Youtube](https://www.youtube.com/channel/UCK3ptxlx1ahtbI8PZa8_Tig "SkyOfSteel Youtube Channel")
+and support my work on [Patreon](https://www.patreon.com/ForLoveOfCats "ForLoveOfCats Patreon Page").
+Also feel free to follow me on [Twitter](https://twitter.com/ForLoveOfCats "ForLoveOfCats Twitter Page")
 
 
 

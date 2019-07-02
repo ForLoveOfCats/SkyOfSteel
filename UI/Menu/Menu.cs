@@ -11,6 +11,7 @@ public class Menu : Node
 	private static Node Contents = null;
 
 	private static PackedScene Intro;
+	private static PackedScene Update;
 	private static PackedScene Nick;
 	private static PackedScene Main;
 	private static PackedScene Help;
@@ -27,6 +28,7 @@ public class Menu : Node
 
 		//All menu scene files are loaded on game startup
 		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
+		Update = GD.Load<PackedScene>("res://UI/Menu/UpdateMenu/UpdateMenu.tscn");
 		Nick = GD.Load<PackedScene>("res://UI/Menu/NickMenu/NickMenu.tscn");
 		Main = GD.Load<PackedScene>("res://UI/Menu/MainMenu/MainMenu.tscn");
 		Help = GD.Load<PackedScene>("res://UI/Menu/HelpMenu/HelpMenu.tscn");
@@ -81,6 +83,15 @@ public class Menu : Node
 		Reset();
 
 		Contents = Intro.Instance();
+		Center.AddChild(Contents);
+	}
+
+
+	public static void BuildUpdate()
+	{
+		Reset();
+
+		Contents = Update.Instance();
 		Center.AddChild(Contents);
 	}
 

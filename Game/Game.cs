@@ -4,7 +4,8 @@ using System;
 
 public class Game : Node
 {
-	public const string Version = "0.1.2-dev"; //Yes it's a string shush
+	public const string Version = "0.1.4-dev"; //Yes it's a string shush
+	public static string RemoteVersion = null; //What is the latest version available online
 	public const string DefaultNickname = "BrianD";
 
 	public static Node RuntimeRoot;
@@ -25,7 +26,20 @@ public class Game : Node
 	public static Game Self;
 	private Game()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
+
+		using(System.Net.WebClient WebClient = new System.Net.WebClient())
+		{
+			try //Make sure game is still playable if url becomes invalid
+			{
+				RemoteVersion = WebClient.DownloadString("http://skyofsteel.org/LatestVersion.txt");
+				RemoteVersion = RemoteVersion.Trim();
+			}
+			catch
+			{}
+		}
 	}
 
 
@@ -115,6 +129,8 @@ public class Game : Node
 		}
 
 		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
+
+		NewPlayer.MovementReset();
 	}
 
 
