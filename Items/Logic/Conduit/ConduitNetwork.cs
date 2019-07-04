@@ -4,7 +4,11 @@ public class ConduitNetwork<T>
 {
     List<Conduit<T>> endpoints = new List<Conduit<T>>();
 
-    public bool Push(T load)
+    /*
+     * Attempts to push something to an endpoint in the network and returns true upon success or
+     * returns false upon failure.
+     */
+    public bool AttemptPush(T load)
     {
         if (endpoints.Count == 0)
         {
@@ -22,11 +26,17 @@ public class ConduitNetwork<T>
         return false;
     }
 
+    /*
+     * Adds a conduit as an endpoint to the network.
+     */
     public void AddEndpoint(Conduit<T> endpoint)
     {
         endpoints.Add(endpoint);
     }
 
+    /*
+     * Removes an endpoint from the network.
+     */
     public void RemoveEndpoint(Conduit<T> endpoint)
     {
         endpoints.Remove(endpoint);
