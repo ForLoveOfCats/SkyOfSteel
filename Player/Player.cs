@@ -96,6 +96,7 @@ public class Player : KinematicBody, IPushable
 			GetNode<RayCast>("SteelCamera/RayCast").AddException(this);
 
 			GetNode<MeshInstance>("FPSMesh").Hide();
+			GetNode<Spatial>("BodyScene").Hide();
 
 			AddChild(HUDInstance);
 
