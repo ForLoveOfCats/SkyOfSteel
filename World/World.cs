@@ -117,9 +117,7 @@ public class World : Node
 		ItemList.Clear();
 		Grid.Clear();
 
-		Items.BuildPositions.Clear();
-		Items.BuildRotations.Clear();
-		Items.UseDelegates.Clear();
+		Items.IdInfos.Clear();
 
 		SaveName = null;
 		IsOpen = false;
