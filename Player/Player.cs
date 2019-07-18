@@ -17,6 +17,7 @@ public class Player : KinematicBody, IPushable
 	public float AirAcceleration = 22; //How many units per second to accelerate
 	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
+	public float CrouchDownForce = -50f;
 	public float JumpSpeedMultiplyer = 15f;
 	public float JumpStartForce = 12f;
 	public float JumpContinueForce = 5f;
@@ -411,18 +412,24 @@ public class Player : KinematicBody, IPushable
 		if(Sens > 0)
 		{
 			IsCrouching = true;
-			JumpAxis = 0;
-			JumpSens = 0;
 
-			if(FlyMode && Game.Mode.ShouldCrouch()) //NOTE Crouching is currently only for going down in flymode
+			if(Game.Mode.ShouldCrouch())
 			{
-				if(IsSprinting)
+				if(FlyMode)
 				{
-					Momentum.y = -BaseMovementSpeed*SprintMultiplyer;
+					JumpAxis = 0;
+					JumpSens = 0;
+
+					if(IsSprinting)
+						Momentum.y = -BaseMovementSpeed*SprintMultiplyer;
+					else
+						Momentum.y = -BaseMovementSpeed;
 				}
-				else
+				else if(!IsOnFloor())
 				{
-					Momentum.y = -BaseMovementSpeed;
+					IsJumping = false;
+					if(Momentum.y > CrouchDownForce)
+						Momentum.y = CrouchDownForce;
 				}
 			}
 		}
@@ -665,7 +672,7 @@ public class Player : KinematicBody, IPushable
 
 		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
-			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/3 - 30;
+			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/4 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
