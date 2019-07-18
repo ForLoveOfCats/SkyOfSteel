@@ -3,7 +3,7 @@ using static Godot.Mathf;
 using System.Collections.Generic;
 
 
-public class JumperRocket : KinematicBody
+public class JumperRocket : KinematicBody, IProjectileCollision
 {
 	public bool IsLocal;
 	public Node Player; //The player which fired the rocket, to prevent collinding fire-er
@@ -11,6 +11,7 @@ public class JumperRocket : KinematicBody
 	public Vector3 Momentum;
 	public float Life = 0;
 	public bool Triggered = false;
+	public Vector3? TriggeredPosition = null;
 
 
 	public static PackedScene ExplodeSfx;
@@ -23,13 +24,10 @@ public class JumperRocket : KinematicBody
 	}
 
 
-	public void HasCollided(Node Collided)
+	public void ProjectileCollided(Vector3 CollisionPointPosition)
 	{
-		if(IsLocal)
-		{
-			if(Collided != Player)
-				Triggered = true;
-		}
+		Triggered = true;
+		TriggeredPosition = CollisionPointPosition;
 	}
 
 
@@ -62,6 +60,9 @@ public class JumperRocket : KinematicBody
 	[Remote]
 	public void Explode()
 	{
+		if(TriggeredPosition != null)
+			Translation = (Vector3)TriggeredPosition;
+
 		if(IsLocal)
 		{
 			if((Player as Spatial).Translation.DistanceTo(Translation) <= RocketJumper.MaxRocketDistance)

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Features/ProjectileCollision/ProjectileCollision.cs" type="Script" id=1]
+
+[node name="ProjectileCollision" type="Spatial"]
+script = ExtResource( 1 )
