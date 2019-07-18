@@ -20,10 +20,10 @@ collision/safe_margin = 0.005
 script = ExtResource( 1 )
 
 [node name="BodyScene" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.40173, 0 )
+transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -5.103, 0 )
 
 [node name="SteelCamera" type="Camera" parent="."]
-transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 2.322, 0 )
+transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 4.12, 0 )
 environment = ExtResource( 3 )
 fov = 100.0
 far = 8000.0
@@ -37,7 +37,7 @@ cast_to = Vector3( 0, 0, 24 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.3 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -2.8213e-07, -1, 0, 1, -2.8213e-07, 0, 0, 0 )
+transform = Transform( 1.5, 0, 0, 0, -6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 0, 0 )
 shape = SubResource( 1 )
 
 [node name="PlayerSfxManager" type="Spatial" parent="."]
