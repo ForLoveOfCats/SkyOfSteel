@@ -156,6 +156,12 @@ public class Items : Node
 	{
 		IdInfos = new Dictionary<ID, IdInfo>() {
 			{
+				ID.ERROR,
+
+				new IdInfo{}
+			},
+
+			{
 				ID.PLATFORM,
 
 				new IdInfo {
