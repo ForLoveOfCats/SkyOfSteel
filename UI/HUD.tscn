@@ -1,9 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://UI/HUD.cs" type="Script" id=1]
 [ext_resource path="res://UI/Textures/Crosshair.png" type="Texture" id=2]
 [ext_resource path="res://Items/Thumbnails/ERROR.png" type="Texture" id=3]
 [ext_resource path="res://UI/Fonts/DebugFont.tres" type="DynamicFont" id=4]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 1, 1, 1, 0.588235 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 0.196078 )
 
 [node name="HUD" type="Node"]
 script = ExtResource( 1 )
@@ -25,6 +31,36 @@ margin_bottom = 309.0
 rect_min_size = Vector2( 18, 18 )
 texture = ExtResource( 2 )
 expand = true
+
+[node name="CooldownCenter" type="CenterContainer" parent="CLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="CLayer/CooldownCenter"]
+margin_left = 479.0
+margin_top = 282.0
+margin_right = 544.0
+margin_bottom = 318.0
+
+[node name="HSeparator" type="HSeparator" parent="CLayer/CooldownCenter/VBox"]
+modulate = Color( 1, 1, 1, 0 )
+self_modulate = Color( 1, 1, 1, 0 )
+margin_right = 65.0
+margin_bottom = 25.0
+custom_constants/separation = 28
+
+[node name="CooldownBar" type="ProgressBar" parent="CLayer/CooldownCenter/VBox"]
+margin_top = 29.0
+margin_right = 65.0
+margin_bottom = 36.0
+rect_min_size = Vector2( 65, 7 )
+size_flags_horizontal = 0
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 50.0
+percent_visible = false
 
 [node name="HotBarCenter" type="CenterContainer" parent="CLayer"]
 anchor_bottom = 1.0

@@ -28,6 +28,8 @@ public class Player : KinematicBody, IPushable
 	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
+	public float SlotSwitchCooldown = 15;
+	public float BuildingCooldown = 15;
 	public float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
@@ -61,6 +63,11 @@ public class Player : KinematicBody, IPushable
 	public float LookVertical = 0;
 	public bool IsPrimaryFiring = false;
 	public bool IsSecondaryFiring = false;
+
+	//For these *please* use SetCooldown
+	public float CurrentMaxCooldown { get; private set;} = 100;
+	public float CurrentCooldown { get; private set;} = 100;
+	public bool PreventSwitch { get; private set;} = false;
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -200,6 +207,14 @@ public class Player : KinematicBody, IPushable
 	}
 
 
+	public void SetCooldown(float NewCooldown, float NewMaxCooldown, bool NewPreventSwitch)
+	{
+		CurrentCooldown = Clamp(NewCooldown, 0, NewMaxCooldown);
+		CurrentMaxCooldown = NewMaxCooldown;
+		PreventSwitch = NewPreventSwitch;
+	}
+
+
 	[Remote]
 	public void PickupItem(Items.ID Type)
 	{
@@ -209,36 +224,47 @@ public class Player : KinematicBody, IPushable
 
 	public void InventoryUp()
 	{
-		BuildRotation = 0;
-
-		InventorySlot--;
-		if(InventorySlot < 0)
+		if(!(CurrentCooldown < CurrentMaxCooldown && PreventSwitch))
 		{
-			InventorySlot = 9;
-		}
+			BuildRotation = 0;
 
-		HUDInstance.HotbarUpdate();
+			InventorySlot--;
+			if(InventorySlot < 0)
+			{
+				InventorySlot = 9;
+			}
+
+			HUDInstance.HotbarUpdate();
+			SetCooldown(0, SlotSwitchCooldown, false);
+		}
 	}
 
 
 	public void InventoryDown()
 	{
-		BuildRotation = 0;
-
-		InventorySlot++;
-		if(InventorySlot > 9)
+		if(!(CurrentCooldown < CurrentMaxCooldown && PreventSwitch))
 		{
-			InventorySlot = 0;
-		}
+			BuildRotation = 0;
 
-		HUDInstance.HotbarUpdate();
+			InventorySlot++;
+			if(InventorySlot > 9)
+			{
+				InventorySlot = 0;
+			}
+
+			HUDInstance.HotbarUpdate();
+			SetCooldown(0, SlotSwitchCooldown, false);
+		}
 	}
 
 
 	public void InventorySlotSelect(int Slot)
 	{
-		InventorySlot = Slot;
-                HUDInstance.HotbarUpdate();
+		if(!(CurrentCooldown < CurrentMaxCooldown && PreventSwitch))
+		{
+			InventorySlot = Slot;
+			HUDInstance.HotbarUpdate();
+		}
 	}
 
 
@@ -504,7 +530,7 @@ public class Player : KinematicBody, IPushable
 
 	public void PrimaryFire(float Sens)
 	{
-		if(Sens > 0 && !IsPrimaryFiring)
+		if(Sens > 0 && !IsPrimaryFiring && CurrentCooldown >= CurrentMaxCooldown)
 		{
 			IsPrimaryFiring = true;
 
@@ -521,10 +547,14 @@ public class Player : KinematicBody, IPushable
 							Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
 							if(PlacePosition != null
 							   && Game.Mode.ShouldPlaceTile(GhostInstance.CurrentMeshType,
-							                                     PlacePosition.Value,
-							                                     Items.CalculateBuildRotation(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint())))
-
+							                                PlacePosition.Value,
+							                                Items.CalculateBuildRotation(GhostInstance.CurrentMeshType,
+							                                                             Base, RotationDegrees.y, BuildRotation,
+							                                                             BuildRayCast.GetCollisionPoint())))
+							{
 								World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
+								SetCooldown(0, BuildingCooldown, true);
+							}
 						}
 					}
 				}
@@ -535,6 +565,7 @@ public class Player : KinematicBody, IPushable
 				}
 			}
 		}
+
 		if(Sens <= 0 && IsPrimaryFiring)
 		{
 			IsPrimaryFiring = false;
@@ -544,7 +575,7 @@ public class Player : KinematicBody, IPushable
 
 	public void SecondaryFire(float Sens)
 	{
-		if(Sens > 0 && !IsSecondaryFiring)
+		if(Sens > 0 && !IsSecondaryFiring && CurrentCooldown >= CurrentMaxCooldown)
 		{
 			IsSecondaryFiring = true;
 
@@ -556,9 +587,11 @@ public class Player : KinematicBody, IPushable
 				if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
 				{
 					Hit.NetRemove();
+					SetCooldown(0, BuildingCooldown, true);
 				}
 			}
 		}
+
 		if(Sens <= 0 && IsSecondaryFiring)
 		{
 			IsSecondaryFiring = false;
@@ -630,6 +663,8 @@ public class Player : KinematicBody, IPushable
 				}
 			}
 		}
+
+		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
 		RecoverPercentage = Clamp(RecoverPercentage + Delta*RecoverSpeed, 0, 1);
 

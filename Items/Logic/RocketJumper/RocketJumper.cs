@@ -12,6 +12,7 @@ public class RocketJumper : Node
 	public static float MinRocketDistance = 8;
 	public static float RocketHorizontalMultiplyer = 1.1f;
 	public static float RocketVerticalDivisor = 1.6f;
+	public static float FireCooldown = 65;
 
 	public static PackedScene JumperRocketScene;
 
@@ -46,6 +47,7 @@ public class RocketJumper : Node
 		Net.SteelRpc(Self, nameof(RemoteFire), Rocket.Translation, Rocket.RotationDegrees, Rocket.Momentum, Rocket.GetName());
 
 		UsingPlayer.SfxManager.FpRocketFire();
+		UsingPlayer.SetCooldown(0, FireCooldown, true);
 	}
 
 
