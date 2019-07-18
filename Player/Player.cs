@@ -67,7 +67,8 @@ public class Player : KinematicBody, IPushable
 	public int BuildRotation = 0;
 
 	public Camera Cam;
-	public Spatial RocketStart;
+	public Spatial ProjectileEmitterHinge;
+	public Spatial ProjectileEmitter;
 
 	public HUD HUDInstance;
 	public Ghost GhostInstance;
@@ -85,7 +86,8 @@ public class Player : KinematicBody, IPushable
 	public override void _Ready()
 	{
 		Cam = GetNode<Camera>("SteelCamera");
-		RocketStart = GetNode<Spatial>("SteelCamera/RocketStart");
+		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
+		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
 		MovementReset();
 
@@ -440,7 +442,8 @@ public class Player : KinematicBody, IPushable
 			if(Game.Mode.ShouldPlayerPitch(Change))
 			{
 				LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
-				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+				Cam.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+				ProjectileEmitterHinge.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
 			}
 		}
 	}
@@ -455,7 +458,8 @@ public class Player : KinematicBody, IPushable
 			if(Game.Mode.ShouldPlayerPitch(-Change))
 			{
 				LookVertical = Mathf.Clamp(LookVertical-Change, -90, 90);
-				GetNode<Camera>("SteelCamera").SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+				Cam.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+				ProjectileEmitterHinge.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
 			}
 		}
 	}

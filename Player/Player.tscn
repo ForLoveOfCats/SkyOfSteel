@@ -22,6 +22,11 @@ script = ExtResource( 1 )
 [node name="BodyScene" parent="." instance=ExtResource( 2 )]
 transform = Transform( 1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -5.103, 0 )
 
+[node name="ProjectileEmitterHinge" type="Spatial" parent="."]
+
+[node name="ProjectileEmitter" type="Spatial" parent="ProjectileEmitterHinge"]
+transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 1.4 )
+
 [node name="SteelCamera" type="Camera" parent="."]
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 4.12, 0 )
 environment = ExtResource( 3 )
@@ -32,9 +37,6 @@ far = 8000.0
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0 )
 enabled = true
 cast_to = Vector3( 0, 0, 24 )
-
-[node name="RocketStart" type="Spatial" parent="SteelCamera"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1.5, 0, 0, 0, -6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 0, 0 )
