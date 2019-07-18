@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Items/Logic/RocketJumper/JumperRocket.cs" type="Script" id=1]
 [ext_resource path="res://Features/ProjectileCollision/ProjectileCollision.tscn" type="PackedScene" id=2]
@@ -10,9 +10,6 @@
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )
 shader_param/texture_albedo = ExtResource( 5 )
-
-[sub_resource type="BoxShape" id=2]
-extents = Vector3( 0.7, 0.7, 2.3 )
 
 [sub_resource type="SphereShape" id=3]
 radius = 30.0
@@ -34,11 +31,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.31 )
 [node name="MeshInstance" type="MeshInstance" parent="."]
 mesh = ExtResource( 3 )
 material/0 = SubResource( 1 )
-
-[node name="CollisionArea" type="Area" parent="."]
-
-[node name="CollisionShape" type="CollisionShape" parent="CollisionArea"]
-shape = SubResource( 2 )
 
 [node name="EffectArea" type="Area" parent="."]
 collision_layer = 3
