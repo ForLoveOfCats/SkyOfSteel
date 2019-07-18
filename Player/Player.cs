@@ -166,7 +166,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Game.Mode.ShouldMovementReset())
 		{
-			Translation = new Vector3(0, 3.4f + 0.15f, 0);
+			Translation = new Vector3(0, 5.1f + 0.15f, 0);
 			Momentum = new Vector3();
 		}
 	}
