@@ -63,9 +63,11 @@ public class JumperRocket : KinematicBody, IProjectileCollision
 		if(TriggeredPosition != null)
 			Translation = (Vector3)TriggeredPosition;
 
+		Vector3 Origin = GetNode<Spatial>("ExplosionOrigin").GetGlobalTransform().origin;
+
 		if(IsLocal)
 		{
-			if((Player as Spatial).Translation.DistanceTo(Translation) <= RocketJumper.MaxRocketDistance)
+			if((Player as Spatial).Translation.DistanceTo(Origin) <= RocketJumper.MaxRocketDistance)
 				AffectedBodies.Add(Player);
 		}
 
@@ -73,10 +75,15 @@ public class JumperRocket : KinematicBody, IProjectileCollision
 		{
 			if(_Body is IPushable Body)
 			{
-				float Distance = Clamp(Translation.DistanceTo(Body.Translation) - RocketJumper.MinRocketDistance, 1, RocketJumper.MaxRocketDistance);
+				PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
+				Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Body.Translation, new Godot.Collections.Array(){Body}, 1);
+				if(Results.Count > 0)
+					continue;
+
+				float Distance = Clamp(Origin.DistanceTo(Body.Translation) - RocketJumper.MinRocketDistance, 1, RocketJumper.MaxRocketDistance);
 				float Power = RocketJumper.MaxRocketDistance / Distance / RocketJumper.MaxRocketDistance;
 
-				Vector3 Push = ((Body.Translation - Translation) / RocketJumper.MaxRocketDistance).Normalized()
+				Vector3 Push = ((Body.Translation - Origin) / RocketJumper.MaxRocketDistance).Normalized()
 					* RocketJumper.MaxRocketPush * Power;
 				{
 					Vector3 Flat = Push.Flattened();

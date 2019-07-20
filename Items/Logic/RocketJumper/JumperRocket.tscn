@@ -11,7 +11,7 @@
 shader = ExtResource( 4 )
 shader_param/texture_albedo = ExtResource( 5 )
 
-[sub_resource type="SphereShape" id=3]
+[sub_resource type="SphereShape" id=2]
 radius = 30.0
 
 [node name="KinematicBody" type="KinematicBody"]
@@ -37,10 +37,13 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="CollisionShape" type="CollisionShape" parent="EffectArea"]
-shape = SubResource( 3 )
+shape = SubResource( 2 )
 
 [node name="ExplodeSfx" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource( 6 )
 unit_size = 100.0
+
+[node name="ExplosionOrigin" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1 )
 [connection signal="body_entered" from="EffectArea" to="." method="EffectAreaEntered"]
 [connection signal="body_exited" from="EffectArea" to="." method="EffectAreaExited"]
