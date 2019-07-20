@@ -23,6 +23,7 @@ public class World : Node
 	public static Node EntitiesRoot = null;
 
 	private static PackedScene DroppedItemScene;
+	private static PackedScene DebugPlotPointScene;
 
 	public static World Self;
 
@@ -33,6 +34,7 @@ public class World : Node
 		Self = this;
 
 		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
+		DebugPlotPointScene = GD.Load<PackedScene>("res://World/DebugPlotPoint.tscn");
 
 		Directory TilesDir = new Directory();
 		TilesDir.Open("res://World/Scenes/");
@@ -65,6 +67,14 @@ public class World : Node
 				Scenes.Add(Type, GD.Load("res://World/Scenes/ERROR.tscn") as PackedScene);
 			}
 		}
+	}
+
+
+	public static void DebugPlot(Vector3 Position)
+	{
+		MeshInstance Point = DebugPlotPointScene.Instance() as MeshInstance;
+		EntitiesRoot.AddChild(Point);
+		Point.Translation = Position;
 	}
 
 
