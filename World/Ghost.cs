@@ -1,5 +1,5 @@
 using Godot;
-using System;
+using System.Linq;
 using System.Collections.Generic;
 
 public class Ghost : Area
@@ -113,7 +113,11 @@ public class Ghost : Area
 			foreach(Node Body in GetOverlappingBodies())
 			{
 				Items.Instance SelectedItem = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-				if(SelectedItem != null && Body is Tile && ((Tile)Body).Type == SelectedItem.Id)
+				if(SelectedItem == null)
+					continue;
+
+				Items.ID[] DisallowedCollisions = Items.IdInfos[SelectedItem.Id].DisallowedCollisions;
+				if(DisallowedCollisions != null && Body is Tile && DisallowedCollisions.Contains(((Tile)Body).Type))
 				{
 					GhostMesh.MaterialOverride = RedMat;
 					_CanBuild = false;

@@ -179,7 +179,7 @@ public class Items : Node
 					PositionDelegate = BuildingLogic.WallBuildPosition,
 					RotationDelegate = BuildingLogic.WallBuildRotation,
 					UseDelegate = null,
-					DisallowedCollisions = new ID[] {ID.WALL}
+					DisallowedCollisions = new ID[] {ID.WALL, ID.TRIANGLE_WALL}
 				}
 			},
 
@@ -201,7 +201,7 @@ public class Items : Node
 					PositionDelegate = BuildingLogic.TriangleWallBuildPosition,
 					RotationDelegate = BuildingLogic.TriangleWallBuildRotation,
 					UseDelegate = null,
-					DisallowedCollisions = new ID[] {ID.TRIANGLE_WALL}
+					DisallowedCollisions = new ID[] {ID.TRIANGLE_WALL, ID.WALL}
 				}
 			},
 
