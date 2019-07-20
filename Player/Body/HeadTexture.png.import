@@ -2,19 +2,21 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/HeadTexture.png-700ffc5d0fbba4ae7b7e58c33b99ba7d.stex"
+path.s3tc="res://.import/HeadTexture.png-700ffc5d0fbba4ae7b7e58c33b99ba7d.s3tc.stex"
+path.etc2="res://.import/HeadTexture.png-700ffc5d0fbba4ae7b7e58c33b99ba7d.etc2.stex"
 metadata={
-"vram_texture": false
+"imported_formats": [ "s3tc", "etc2" ],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://Player/Body/HeadTexture.png"
-dest_files=[ "res://.import/HeadTexture.png-700ffc5d0fbba4ae7b7e58c33b99ba7d.stex" ]
+dest_files=[ "res://.import/HeadTexture.png-700ffc5d0fbba4ae7b7e58c33b99ba7d.s3tc.stex", "res://.import/HeadTexture.png-700ffc5d0fbba4ae7b7e58c33b99ba7d.etc2.stex" ]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0
