@@ -618,6 +618,7 @@ public class Player : KinematicBody, IPushable
 				HUDInstance.HotbarUpdate();
 
 				SfxManager.FpThrow();
+				SetCooldown(0, SlotSwitchCooldown, false);
 			}
 		}
 	}
@@ -653,6 +654,8 @@ public class Player : KinematicBody, IPushable
 			if(ToPickUpList.Count > 0)
 			{
 				SfxManager.FpPickup();
+				SetCooldown(0, SlotSwitchCooldown, false);
+
 				foreach(DroppedItem Item in ToPickUpList)
 				{
 					if(Game.Mode.ShouldPickupItem(Item.Type))
