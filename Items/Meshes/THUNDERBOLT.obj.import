@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/THUNDERBOLT.obj-92856d8d88eb9a1cb43e456bc54bd4de.mesh"
+
+[deps]
+
+files=[ "res://.import/THUNDERBOLT.obj-92856d8d88eb9a1cb43e456bc54bd4de.mesh" ]
+
+source_file="res://Items/Meshes/THUNDERBOLT.obj"
+dest_files=[ "res://.import/THUNDERBOLT.obj-92856d8d88eb9a1cb43e456bc54bd4de.mesh", "res://.import/THUNDERBOLT.obj-92856d8d88eb9a1cb43e456bc54bd4de.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true

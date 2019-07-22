@@ -73,7 +73,7 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER, THUNDERBOLT}
 	public enum TYPE {ERROR, BUILDABLE, USABLE}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
@@ -211,6 +211,12 @@ public class Items : Node
 				new IdInfo {
 					UseDelegate = RocketJumper.Fire
 				}
+			},
+
+			{
+				ID.THUNDERBOLT,
+
+				new IdInfo {}
 			}
 		};
 	}
