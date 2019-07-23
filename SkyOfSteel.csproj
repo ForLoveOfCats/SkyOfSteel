@@ -78,6 +78,7 @@
     <Compile Include="Items\Logic\RocketJumper\ExplosionParticles.cs" />
     <Compile Include="Items\Logic\RocketJumper\JumperRocket.cs" />
     <Compile Include="Items\Logic\RocketJumper\RocketJumper.cs" />
+    <Compile Include="Items\Logic\Thunderbolt\Thunderbolt.cs" />
     <Compile Include="Player\PlayerSfxManager.cs" />
     <Compile Include="Scripting\Gamemode.cs" />
     <Compile Include="Scripting\GmConfig.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="World\Chunk.cs" />
     <Compile Include="World\Ghost.cs" />
     <Compile Include="World\Grid.cs" />
+    <Compile Include="World\Hitscan.cs" />
     <Compile Include="World\Materials\ShaderCompilerHider.cs" />
     <Compile Include="World\SavedChunk.cs" />
     <Compile Include="World\SavedTile.cs" />

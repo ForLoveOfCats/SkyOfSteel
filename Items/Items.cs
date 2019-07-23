@@ -26,6 +26,7 @@ public class Items : Node
 			switch(IdArg) //NOTE: This could be improved
 			{
 				case(ID.ROCKET_JUMPER):
+				case(ID.THUNDERBOLT):
 					Type = TYPE.USABLE;
 					break;
 
@@ -147,6 +148,7 @@ public class Items : Node
 		UseItemDelegate PossibleFunc = IdInfos[Item.Id].UseDelegate;
 		if(PossibleFunc is UseItemDelegate Func)
 		{
+			GD.Print("Calling item's UsingDelegate");
 			Func(Item, UsingPlayer);
 		}
 	}
@@ -216,7 +218,9 @@ public class Items : Node
 			{
 				ID.THUNDERBOLT,
 
-				new IdInfo {}
+				new IdInfo {
+					UseDelegate = Thunderbolt.Fire
+				}
 			}
 		};
 	}

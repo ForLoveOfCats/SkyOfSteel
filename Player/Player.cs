@@ -467,6 +467,14 @@ public class Player : KinematicBody, IPushable
 	}
 
 
+	public void ApplyLookVertical(float Change)
+	{
+		LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
+		Cam.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+		ProjectileEmitterHinge.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+	}
+
+
 	public void LookUp(float Sens)
 	{
 		if(Sens > 0)
@@ -474,11 +482,7 @@ public class Player : KinematicBody, IPushable
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
 			if(Game.Mode.ShouldPlayerPitch(Change))
-			{
-				LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
-				Cam.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
-				ProjectileEmitterHinge.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
-			}
+				ApplyLookVertical(Change);
 		}
 	}
 
@@ -490,11 +494,7 @@ public class Player : KinematicBody, IPushable
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
 
 			if(Game.Mode.ShouldPlayerPitch(-Change))
-			{
-				LookVertical = Mathf.Clamp(LookVertical-Change, -90, 90);
-				Cam.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
-				ProjectileEmitterHinge.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
-			}
+				ApplyLookVertical(-Change);
 		}
 	}
 
