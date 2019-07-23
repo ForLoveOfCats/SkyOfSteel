@@ -3,6 +3,7 @@ using static Godot.Mathf;
 using static SteelMath;
 using System;
 using System.Collections.Generic;
+using static System.Diagnostics.Debug;
 
 
 public class Items : Node
@@ -14,26 +15,13 @@ public class Items : Node
 	public class Instance
 	{
 		public Items.ID Id = Items.ID.ERROR;
-		public Items.TYPE Type = Items.TYPE.ERROR;
 		public int Temperature = 0;
 		public int Count = 1;
 		public int UsesRemaining = 0;
 
 		public Instance(Items.ID IdArg)
 		{
-			this.Id = IdArg;
-
-			switch(IdArg) //NOTE: This could be improved
-			{
-				case(ID.ROCKET_JUMPER):
-				case(ID.THUNDERBOLT):
-					Type = TYPE.USABLE;
-					break;
-
-				default:
-					Type = TYPE.BUILDABLE;
-					break;
-			}
+			Id = IdArg;
 		}
 	}
 
@@ -75,7 +63,6 @@ public class Items : Node
 
 
 	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER, THUNDERBOLT}
-	public enum TYPE {ERROR, BUILDABLE, USABLE}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -222,5 +209,12 @@ public class Items : Node
 				}
 			}
 		};
+
+		//Lets make sure that every ID has an entry
+		//This won't help mods but will help us greatly
+		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
+		{
+			Assert(IdInfos.ContainsKey(Type));
+		}
 	}
 }

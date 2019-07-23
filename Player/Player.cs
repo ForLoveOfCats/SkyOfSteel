@@ -537,7 +537,7 @@ public class Player : KinematicBody, IPushable
 
 			if(Inventory[InventorySlot] != null)
 			{
-				if(Inventory[InventorySlot].Type == Items.TYPE.BUILDABLE)
+				if(Items.IdInfos[Inventory[InventorySlot].Id].PositionDelegate != null)
 				{
 					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
 					if(BuildRayCast.IsColliding())
@@ -560,7 +560,7 @@ public class Player : KinematicBody, IPushable
 					}
 				}
 
-				else if(Inventory[InventorySlot].Type == Items.TYPE.USABLE)
+				if(Items.IdInfos[Inventory[InventorySlot].Id].UseDelegate != null)
 				{
 					Items.UseItem(Inventory[InventorySlot], this);
 				}
