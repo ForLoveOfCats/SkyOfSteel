@@ -26,8 +26,6 @@ public class Hitscan : Spatial
 
 	public static void Fire(float VerticalRecoil, float HorizontalRecoil)
 	{
-		GD.Print("Hitscan.Fire");
-
 		Assert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 
 		Player Plr = Game.PossessedPlayer;

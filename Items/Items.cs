@@ -148,7 +148,6 @@ public class Items : Node
 		UseItemDelegate PossibleFunc = IdInfos[Item.Id].UseDelegate;
 		if(PossibleFunc is UseItemDelegate Func)
 		{
-			GD.Print("Calling item's UsingDelegate");
 			Func(Item, UsingPlayer);
 		}
 	}
