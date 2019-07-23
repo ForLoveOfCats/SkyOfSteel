@@ -30,7 +30,7 @@ Items="*res://Items/Items.cs"
 WorldAutoload="*res://World/World.cs"
 Menu="*res://UI/Menu/Menu.cs"
 Startup="*res://Game/Startup.cs"
-Hitscan="*res://World/Hitscan.cs"
+Hitscan="*res://Items/Logic/Hitscan/Hitscan.cs"
 RocketJumper="*res://Items/Logic/RocketJumper/RocketJumper.cs"
 
 [display]
