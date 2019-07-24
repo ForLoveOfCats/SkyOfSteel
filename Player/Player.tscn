@@ -52,7 +52,7 @@ skeleton = NodePath("")
 material/0 = SubResource( 2 )
 
 [node name="ViewmodelItem" type="MeshInstance" parent="SteelCamera/ViewmodelArm"]
-transform = Transform( 0.015, 4.36557e-10, 6.66134e-16, -4.36557e-10, 0.015, -6.35071e-17, -6.66134e-16, 6.35071e-17, 0.015, -0.323275, 0.0192609, 0.955273 )
+transform = Transform( 0.0200001, 3.49246e-09, 1.33227e-15, -3.49246e-09, 0.0200001, -8.27246e-17, -1.24345e-14, 2.04372e-16, 0.02, -0.323262, 0.156902, 0.848515 )
 mesh = ExtResource( 5 )
 skeleton = NodePath("")
 material/0 = null

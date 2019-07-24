@@ -11,15 +11,15 @@ roughness = 0.0
 albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.827451, 0.827451, 0.827451, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="SpatialMaterial" id=4]
 albedo_color = Color( 0.760784, 0.760784, 0.760784, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="SpatialMaterial" id=5]
 flags_unshaded = true
 albedo_texture = ExtResource( 2 )
 
@@ -28,14 +28,17 @@ albedo_texture = ExtResource( 2 )
 [node name="Cube002" parent="Armature/Skeleton" index="0"]
 material/0 = SubResource( 1 )
 
+[node name="Armature001" parent="." index="1"]
+transform = Transform( -1.55931, 0, 0, 0, 6.81597e-08, -1.55931, 0, 1.55931, 6.81597e-08, 1.13953, 4.65922, 0.0107716 )
+
 [node name="Cube001" parent="Armature001/Skeleton" index="0"]
 material/0 = SubResource( 2 )
 
 [node name="Cube" parent="." index="2"]
-material/0 = SubResource( 4 )
+material/0 = SubResource( 3 )
 
 [node name="Cube003" parent="." index="3"]
-material/0 = SubResource( 5 )
+material/0 = SubResource( 4 )
 
 [node name="Cube004" parent="." index="4"]
-material/0 = SubResource( 3 )
+material/0 = SubResource( 5 )
