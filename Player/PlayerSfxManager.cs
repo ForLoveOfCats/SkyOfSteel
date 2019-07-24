@@ -18,6 +18,9 @@ public class PlayerSfxManager : Spatial
 	public AudioStreamPlayer FpRocketFireSfx;
 	public AudioStreamPlayer3D TpRocketFireSfx;
 
+	public AudioStreamPlayer FpThunderboltFireSfx;
+	public AudioStreamPlayer3D TpThunderboltFireSfx;
+
 	public override void _Ready()
 	{
 		FpLandSfx = GetNode<AudioStreamPlayer>("FpLandSfx");
@@ -34,6 +37,9 @@ public class PlayerSfxManager : Spatial
 
 		FpRocketFireSfx = GetNode<AudioStreamPlayer>("FpRocketFireSfx");
 		TpRocketFireSfx = GetNode<AudioStreamPlayer3D>("TpRocketFireSfx");
+
+		FpThunderboltFireSfx = GetNode<AudioStreamPlayer>("FpThunderboltFireSfx");
+		TpThunderboltFireSfx = GetNode<AudioStreamPlayer3D>("TpThunderboltFireSfx");
 	}
 
 
@@ -106,5 +112,19 @@ public class PlayerSfxManager : Spatial
 	{
 		FpRocketFireSfx.Play();
 		Net.SteelRpc(this, nameof(TpRocketFire));
+	}
+
+
+	[Remote]
+	public void TpThunderboltFire()
+	{
+		TpThunderboltFireSfx.Play();
+	}
+
+
+	public void FpThunderboltFire()
+	{
+		FpThunderboltFireSfx.Play();
+		Net.SteelRpc(this, nameof(TpThunderboltFire));
 	}
 }

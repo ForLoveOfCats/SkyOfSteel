@@ -21,5 +21,6 @@ public class Thunderbolt : Node
 	{
 		Hitscan.Fire(VerticalRecoil, HorizontalRecoil);
 		UsingPlayer.SetCooldown(0, FireCooldown, true);
+		UsingPlayer.SfxManager.FpThunderboltFire();
 	}
 }
