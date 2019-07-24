@@ -121,6 +121,7 @@ public class Player : KinematicBody, IPushable
 		else
 		{
 			GetNode<MeshInstance>("SteelCamera/ViewmodelArm").Hide();
+			GetNode<CPUParticles>("SteelCamera/ViewmodelArm/Forcefield").Hide();
 			SetProcess(false);
 			return;
 		}
