@@ -1,16 +1,22 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body/BodyScene.tscn" type="PackedScene" id=2]
 [ext_resource path="res://default_env.tres" type="Environment" id=3]
-[ext_resource path="res://Player/PlayerSfxManager.cs" type="Script" id=4]
-[ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=5]
-[ext_resource path="res://Player/WallKickSfx.wav" type="AudioStream" id=6]
-[ext_resource path="res://Player/ItemThrowSfx.wav" type="AudioStream" id=7]
-[ext_resource path="res://Player/ItemPickupSfx.wav" type="AudioStream" id=8]
-[ext_resource path="res://Items/Logic/RocketJumper/FireSfx.wav" type="AudioStream" id=9]
-[ext_resource path="res://Items/Logic/RocketJumper/ExplodeSfx.wav" type="AudioStream" id=10]
-[ext_resource path="res://Items/Logic/Hitscan/Thunderbolt.wav" type="AudioStream" id=11]
+[ext_resource path="res://Player/Body/Arm.obj" type="ArrayMesh" id=4]
+[ext_resource path="res://Items/Meshes/ERROR.obj" type="ArrayMesh" id=5]
+[ext_resource path="res://Player/PlayerSfxManager.cs" type="Script" id=6]
+[ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=7]
+[ext_resource path="res://Player/WallKickSfx.wav" type="AudioStream" id=8]
+[ext_resource path="res://Player/ItemThrowSfx.wav" type="AudioStream" id=9]
+[ext_resource path="res://Player/ItemPickupSfx.wav" type="AudioStream" id=10]
+[ext_resource path="res://Items/Logic/RocketJumper/FireSfx.wav" type="AudioStream" id=11]
+[ext_resource path="res://Items/Logic/RocketJumper/ExplodeSfx.wav" type="AudioStream" id=12]
+[ext_resource path="res://Items/Logic/Hitscan/Thunderbolt.wav" type="AudioStream" id=13]
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
+roughness = 0.0
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 1.24303
@@ -39,62 +45,74 @@ transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0
 enabled = true
 cast_to = Vector3( 0, 0, 24 )
 
+[node name="ViewmodelArm" type="MeshInstance" parent="SteelCamera"]
+transform = Transform( -1.39516, -0.116266, -2.11394e-07, -0.116266, 1.39516, 2.03286e-08, 2.08976e-07, 3.78141e-08, -1.4, 0.201131, -0.611706, 0.324564 )
+mesh = ExtResource( 4 )
+skeleton = NodePath("")
+material/0 = SubResource( 2 )
+
+[node name="ViewmodelItem" type="MeshInstance" parent="SteelCamera/ViewmodelArm"]
+transform = Transform( 0.015, 4.36557e-10, 6.66134e-16, -4.36557e-10, 0.015, -6.35071e-17, -6.66134e-16, 6.35071e-17, 0.015, -0.323275, 0.0192609, 0.955273 )
+mesh = ExtResource( 5 )
+skeleton = NodePath("")
+material/0 = null
+
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1.5, 0, 0, 0, -6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 0, 0 )
 shape = SubResource( 1 )
 
 [node name="PlayerSfxManager" type="Spatial" parent="."]
-script = ExtResource( 4 )
+script = ExtResource( 6 )
 
 [node name="FpLandSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 5 )
+stream = ExtResource( 7 )
 bus = "Land"
 
 [node name="TpLandSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 5 )
+stream = ExtResource( 7 )
 unit_size = 2.0
 
 [node name="FpWallKickSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 6 )
+stream = ExtResource( 8 )
 volume_db = -25.0
 
 [node name="TpWallKickSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 6 )
+stream = ExtResource( 8 )
 unit_db = -8.0
 unit_size = 2.0
 
 [node name="FpThrowSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 7 )
+stream = ExtResource( 9 )
 volume_db = -15.0
 
 [node name="TpThrowSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 7 )
+stream = ExtResource( 9 )
 unit_db = 1.0
 unit_size = 2.0
 
 [node name="FpPickupSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 8 )
+stream = ExtResource( 10 )
 volume_db = -15.0
 
 [node name="TpPickupSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 8 )
+stream = ExtResource( 10 )
 unit_db = 1.0
 unit_size = 2.0
 
 [node name="FpRocketFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 9 )
+stream = ExtResource( 11 )
 volume_db = -1.0
 
 [node name="TpRocketFireSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 10 )
+stream = ExtResource( 12 )
 unit_db = 10.0
 unit_size = 40.0
 
 [node name="FpThunderboltFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 11 )
+stream = ExtResource( 13 )
 volume_db = -1.0
 
 [node name="TpThunderboltFireSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 11 )
+stream = ExtResource( 13 )
 unit_db = 10.0
 unit_size = 30.0

@@ -75,6 +75,7 @@ public class Player : KinematicBody, IPushable
 	public int BuildRotation = 0;
 
 	public Camera Cam;
+	public MeshInstance ViewmodelItem;
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
@@ -94,6 +95,10 @@ public class Player : KinematicBody, IPushable
 	public override void _Ready()
 	{
 		Cam = GetNode<Camera>("SteelCamera");
+
+		ViewmodelItem = GetNode<MeshInstance>("SteelCamera/ViewmodelArm/ViewmodelItem");
+		ViewmodelItem.Hide();
+
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
@@ -101,10 +106,8 @@ public class Player : KinematicBody, IPushable
 
 		if(Possessed)
 		{
-			GetNode<Camera>("SteelCamera").MakeCurrent();
-
+			Cam.MakeCurrent();
 			GetNode<RayCast>("SteelCamera/RayCast").AddException(this);
-
 			GetNode<Spatial>("BodyScene").Hide();
 
 			AddChild(HUDInstance);
@@ -117,6 +120,7 @@ public class Player : KinematicBody, IPushable
 		}
 		else
 		{
+			GetNode<MeshInstance>("SteelCamera/ViewmodelArm").Hide();
 			SetProcess(false);
 			return;
 		}
@@ -845,6 +849,27 @@ public class Player : KinematicBody, IPushable
 		if(Game.Mode.ShouldSyncRemotePlayerRotation(Id, Rotation))
 		{
 			RotationDegrees = Rotation;
+		}
+	}
+
+
+	public override void _Process(float Delta)
+	{
+		if(Inventory[InventorySlot] != null)
+		{
+			Items.ID Id = Inventory[InventorySlot].Id;
+			ViewmodelItem.Mesh = Items.Meshes[Id];
+
+			ShaderMaterial Mat = new ShaderMaterial();
+			Mat.Shader = Items.TileShader;
+			Mat.SetShaderParam("texture_albedo", Items.Textures[Id]);
+			ViewmodelItem.MaterialOverride = Mat;
+
+			ViewmodelItem.Show();
+		}
+		else
+		{
+			ViewmodelItem.Hide();
 		}
 	}
 }
