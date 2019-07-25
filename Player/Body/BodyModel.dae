@@ -5,8 +5,8 @@
 		<author>Anonymous</author>
 		<authoring_tool>Collada Exporter for Blender 2.6+, by Juan Linietsky (juan@codenix.com)</authoring_tool>
 	</contributor>
-	<created>2019-07-24T18:16:31Z</created>
-	<modified>2019-07-24T18:16:31Z</modified>
+	<created>2019-07-24T19:56:29Z</created>
+	<modified>2019-07-24T19:56:29Z</modified>
 	<unit meter="1.0" name="meter"/>
 	<up_axis>Z_UP</up_axis>
 </asset>
@@ -643,15 +643,23 @@
 				</bind_material>
 			</instance_geometry>
 		</node>
-		<node id="Head" name="Head" type="NODE">
-			<matrix sid="transform"> 77.96561431884766 0.0 0.0 0.002333502983674407 0.0 77.96561431884766 0.0 -0.07334346324205399 0.0 0.0 77.96564483642578 6.11553430557251 0.0 0.0 0.0 1.0  </matrix>
-			<instance_geometry url="#id-mesh-6">
-				<bind_material>
-					<technique_common>
-						<instance_material symbol="id-trimat-7" target="#id-material-3"/>
-					</technique_common>
-				</bind_material>
-			</instance_geometry>
+		<node id="HeadJoint" name="HeadJoint" type="NODE">
+			<matrix sid="transform"> 1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.4331938922405243 0.0 0.0 1.0 5.981812953948975 0.0 0.0 0.0 1.0  </matrix>
+				<extra>
+					<technique profile="GODOT">
+						<empty_draw_type>PLAIN_AXES</empty_draw_type>
+					</technique>
+				</extra>
+			<node id="Head" name="Head" type="NODE">
+				<matrix sid="transform"> 77.96561431884766 0.0 0.0 0.002333502983674407 0.0 77.96561431884766 0.0 -0.5065373778343201 0.0 0.0 77.96564483642578 0.13372135162353516 0.0 0.0 0.0 1.0  </matrix>
+				<instance_geometry url="#id-mesh-6">
+					<bind_material>
+						<technique_common>
+							<instance_material symbol="id-trimat-7" target="#id-material-3"/>
+						</technique_common>
+					</bind_material>
+				</instance_geometry>
+			</node>
 		</node>
 		<node id="LeftArm" name="LeftArm" type="NODE">
 			<matrix sid="transform"> -1.5593129396438599 0.0 0.0 1.1395349502563477 0.0 1.5593129396438599 0.0 -0.010771632194519043 0.0 0.0 1.5593129396438599 4.65921688079834 0.0 0.0 0.0 1.0  </matrix>
@@ -674,15 +682,23 @@
 				</instance_controller>
 			</node>
 		</node>
-		<node id="Legs" name="Legs" type="NODE">
-			<matrix sid="transform"> 77.96561431884766 0.0 0.0 1.621929186512716e-05 0.0 77.96561431884766 0.0 0.0067219119518995285 0.0 0.0 77.96564483642578 1.3904529809951782 0.0 0.0 0.0 1.0  </matrix>
-			<instance_geometry url="#id-mesh-15">
-				<bind_material>
-					<technique_common>
-						<instance_material symbol="id-trimat-16" target="#id-material-3"/>
-					</technique_common>
-				</bind_material>
-			</instance_geometry>
+		<node id="LegsJoint" name="LegsJoint" type="NODE">
+			<matrix sid="transform"> 1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 1.0 2.8790149688720703 0.0 0.0 0.0 1.0  </matrix>
+				<extra>
+					<technique profile="GODOT">
+						<empty_draw_type>PLAIN_AXES</empty_draw_type>
+					</technique>
+				</extra>
+			<node id="Legs" name="Legs" type="NODE">
+				<matrix sid="transform"> 77.96561431884766 0.0 0.0 1.621929186512716e-05 0.0 77.96561431884766 0.0 0.0067219119518995285 0.0 0.0 77.96564483642578 -1.488561987876892 0.0 0.0 0.0 1.0  </matrix>
+				<instance_geometry url="#id-mesh-15">
+					<bind_material>
+						<technique_common>
+							<instance_material symbol="id-trimat-16" target="#id-material-3"/>
+						</technique_common>
+					</bind_material>
+				</instance_geometry>
+			</node>
 		</node>
 		<node id="RightArm" name="RightArm" type="NODE">
 			<matrix sid="transform"> 1.5593129396438599 0.0 0.0 -1.1395349502563477 0.0 1.5593129396438599 0.0 -0.010771632194519043 0.0 0.0 1.5593129396438599 4.65921688079834 0.0 0.0 0.0 1.0  </matrix>

@@ -30,6 +30,8 @@ public class Player : KinematicBody, IPushable
 	public float ItemPickupDistance = 8f;
 	public float SlotSwitchCooldown = 15;
 	public float BuildingCooldown = 15;
+	public float MaxGroundLegRotation = 50;
+	public float MaxAirLegRotation = 80;
 	public float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
@@ -79,6 +81,12 @@ public class Player : KinematicBody, IPushable
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
+	public Spatial HeadJoint;
+	public Spatial LegsJoint;
+
+	public CPUParticles RightLegFlames;
+	public CPUParticles LeftLegFlames;
+
 	public HUD HUDInstance;
 	public Ghost GhostInstance;
 
@@ -101,6 +109,12 @@ public class Player : KinematicBody, IPushable
 
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
+
+		HeadJoint = GetNode("BodyScene").GetNode<Spatial>("HeadJoint");
+		LegsJoint = GetNode("BodyScene").GetNode<Spatial>("LegsJoint");
+
+		RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Right");
+		LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Left");
 
 		MovementReset();
 
@@ -829,7 +843,8 @@ public class Player : KinematicBody, IPushable
 			Momentum.y = -1f;
 		}
 
-		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees);
+		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical,
+		                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
 
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
@@ -840,7 +855,7 @@ public class Player : KinematicBody, IPushable
 
 
 	[Remote]
-	public void Update(Vector3 Position, Vector3 Rotation)
+	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, float ForwardMomentum)
 	{
 		if(Game.Mode.ShouldSyncRemotePlayerPosition(Id, Position))
 		{
@@ -850,6 +865,20 @@ public class Player : KinematicBody, IPushable
 		if(Game.Mode.ShouldSyncRemotePlayerRotation(Id, Rotation))
 		{
 			RotationDegrees = Rotation;
+		}
+
+		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
+		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MaxMovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);
+
+		if(ForwardMomentum == 0) //Yes this is float equality shush
+		{
+			RightLegFlames.Emitting = false;
+			LeftLegFlames.Emitting = false;
+		}
+		else
+		{
+			RightLegFlames.Emitting = true;
+			LeftLegFlames.Emitting = true;
 		}
 	}
 
