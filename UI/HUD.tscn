@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://UI/HUD.cs" type="Script" id=1]
 [ext_resource path="res://UI/Textures/Crosshair.png" type="Texture" id=2]
@@ -10,6 +10,14 @@ bg_color = Color( 1, 1, 1, 0.588235 )
 
 [sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 1, 1, 1, 0.196078 )
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 1, 0.196078, 0.196078, 1 )
 
 [node name="HUD" type="Node"]
 script = ExtResource( 1 )
@@ -40,27 +48,81 @@ size_flags_vertical = 3
 
 [node name="VBox" type="VBoxContainer" parent="CLayer/CooldownCenter"]
 margin_left = 479.0
-margin_top = 282.0
+margin_top = 280.0
 margin_right = 544.0
-margin_bottom = 318.0
+margin_bottom = 319.0
 
 [node name="HSeparator" type="HSeparator" parent="CLayer/CooldownCenter/VBox"]
 modulate = Color( 1, 1, 1, 0 )
 self_modulate = Color( 1, 1, 1, 0 )
 margin_right = 65.0
-margin_bottom = 25.0
+margin_bottom = 28.0
 custom_constants/separation = 28
 
 [node name="CooldownBar" type="ProgressBar" parent="CLayer/CooldownCenter/VBox"]
-margin_top = 29.0
+margin_top = 32.0
 margin_right = 65.0
-margin_bottom = 36.0
+margin_bottom = 39.0
 rect_min_size = Vector2( 65, 7 )
 size_flags_horizontal = 0
 custom_styles/fg = SubResource( 1 )
 custom_styles/bg = SubResource( 2 )
 value = 50.0
 percent_visible = false
+
+[node name="HealthVBox" type="VBoxContainer" parent="CLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="Panel" parent="CLayer/HealthVBox"]
+margin_right = 1024.0
+margin_bottom = 543.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 3 )
+
+[node name="HealthHBox" type="HBoxContainer" parent="CLayer/HealthVBox"]
+margin_top = 547.0
+margin_right = 1024.0
+margin_bottom = 574.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.05
+
+[node name="Panel" type="Panel" parent="CLayer/HealthVBox/HealthHBox"]
+margin_right = 79.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.17
+custom_styles/panel = SubResource( 3 )
+
+[node name="HealthBar" type="ProgressBar" parent="CLayer/HealthVBox/HealthHBox"]
+margin_left = 83.0
+margin_right = 551.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/fg = SubResource( 4 )
+custom_styles/bg = SubResource( 5 )
+percent_visible = false
+
+[node name="Panel2" type="Panel" parent="CLayer/HealthVBox/HealthHBox"]
+margin_left = 555.0
+margin_right = 1024.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 3 )
+
+[node name="Panel2" type="Panel" parent="CLayer/HealthVBox"]
+margin_top = 578.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.04
+custom_styles/panel = SubResource( 3 )
 
 [node name="HotBarCenter" type="CenterContainer" parent="CLayer"]
 anchor_bottom = 1.0

@@ -13,6 +13,7 @@ public class HUD : Node
 
 	private TextureRect Crosshair;
 	private ProgressBar CooldownBar;
+	private ProgressBar HealthBar;
 	private Label ChunkInfoLabel;
 	private Label PlayerPositionLabel;
 	private Label FPSLabel;
@@ -35,6 +36,7 @@ public class HUD : Node
 	{
 		Crosshair = GetNode<TextureRect>("CLayer/CrossCenter/TextureRect");
 		CooldownBar = GetNode<ProgressBar>("CLayer/CooldownCenter/VBox/CooldownBar");
+		HealthBar = GetNode<ProgressBar>("CLayer/HealthVBox/HealthHBox/HealthBar");
 		ChunkInfoLabel = GetNode<Label>("CLayer/ChunkInfo");
 		PlayerPositionLabel = GetNode<Label>("CLayer/PlayerPosition");
 		FPSLabel = GetNode<Label>("CLayer/FPSLabel");
@@ -158,9 +160,12 @@ public class HUD : Node
 	public override void _Process(float Delta)
 	{
 		Crosshair.Visible = !Menu.IsOpen;
-		CooldownBar.Visible = Crosshair.Visible;
+
 		CooldownBar.MaxValue = Game.PossessedPlayer.CurrentMaxCooldown;
 		CooldownBar.Value = Game.PossessedPlayer.CurrentCooldown;
+
+		HealthBar.MaxValue = Game.PossessedPlayer.MaxHealth;
+		HealthBar.Value = Game.PossessedPlayer.Health;
 
 		foreach(KeyValuePair<int, Label> Current in NickLabels)
 		{

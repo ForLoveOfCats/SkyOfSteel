@@ -32,6 +32,7 @@ public class Player : KinematicBody, IPushable
 	public float BuildingCooldown = 15;
 	public float MaxGroundLegRotation = 50;
 	public float MaxAirLegRotation = 80;
+	public float MaxHealth = 100;
 	public float LookDivisor = 6;
 
 	private const float SfxMinLandMomentumY = 3;
@@ -40,6 +41,8 @@ public class Player : KinematicBody, IPushable
 	public bool FlyMode { get; private set;} = false;
 
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
+
+	public float Health = 0;
 
 	public int ForwardAxis = 0;
 	public int RightAxis = 0;
@@ -116,7 +119,7 @@ public class Player : KinematicBody, IPushable
 		RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Right");
 		LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Left");
 
-		MovementReset();
+		Respawn();
 
 		if(Possessed)
 		{
@@ -197,6 +200,13 @@ public class Player : KinematicBody, IPushable
 			Translation = new Vector3(0, 5.1f + 0.15f, 0);
 			Momentum = new Vector3();
 		}
+	}
+
+
+	public void Respawn()
+	{
+		MovementReset();
+		Health = MaxHealth;
 	}
 
 
@@ -658,6 +668,9 @@ public class Player : KinematicBody, IPushable
 	{
 		if(!Possessed || Frozen)
 			return;
+
+		if(Health <= 0)
+			Respawn();
 
 		{
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
