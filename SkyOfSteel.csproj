@@ -79,6 +79,7 @@
     <Compile Include="Items\Logic\RocketJumper\JumperRocket.cs" />
     <Compile Include="Items\Logic\RocketJumper\RocketJumper.cs" />
     <Compile Include="Items\Logic\Hitscan\Thunderbolt.cs" />
+    <Compile Include="Player\Body\HitboxClass.cs" />
     <Compile Include="Player\PlayerSfxManager.cs" />
     <Compile Include="Scripting\Gamemode.cs" />
     <Compile Include="Scripting\GmConfig.cs" />

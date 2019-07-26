@@ -139,7 +139,14 @@ public class Player : KinematicBody, IPushable
 		{
 			GetNode<MeshInstance>("SteelCamera/ViewmodelArm").Hide();
 			GetNode<CPUParticles>("SteelCamera/ViewmodelArm/Forcefield").Hide();
+
+			Spatial Body = GetNode<Spatial>("BodyScene");
+			Body.GetNode<HitboxClass>("BodyHitbox").OwningPlayer = this;
+			Body.GetNode<HitboxClass>("HeadJoint/HeadHitbox").OwningPlayer = this;
+			Body.GetNode<HitboxClass>("LegsJoint/LegsHitbox").OwningPlayer = this;
+
 			SetProcess(false);
+
 			return;
 		}
 
@@ -207,6 +214,13 @@ public class Player : KinematicBody, IPushable
 	{
 		MovementReset();
 		Health = MaxHealth;
+	}
+
+
+	[Remote]
+	public void ApplyDamage(float Damage)
+	{
+		Health = Clamp(Health - Damage, 0, MaxHealth);
 	}
 
 

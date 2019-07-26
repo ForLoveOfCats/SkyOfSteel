@@ -5,6 +5,8 @@ using static System.Diagnostics.Debug;
 
 public class Hitscan : Spatial
 {
+	public static bool DrawHits = false;
+
 	public static int NextRecoilDirection; //1 for right, -1 for left
 
 
@@ -25,7 +27,7 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void Fire(float VerticalAngle, float HorizontalAngle, float Range)
+	public static void Fire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg)
 	{
 		Assert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 		Player Plr = Game.PossessedPlayer;
@@ -41,7 +43,25 @@ public class Hitscan : Spatial
 			Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 2);
 			if(Results.Count > 0) //We hit something
 			{
-				World.DebugPlot((Vector3)Results["position"]);
+				if(DrawHits)
+					World.DebugPlot((Vector3)Results["position"]);
+
+				if(Results["collider"] is HitboxClass Hitbox)
+				{
+					Player HitPlr = Hitbox.OwningPlayer;
+					switch(Hitbox.Type)
+					{
+						case HitboxClass.TYPE.HEAD:
+							HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), HDmg);
+							break;
+						case HitboxClass.TYPE.BODY:
+							HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), BDmg);
+							break;
+						case HitboxClass.TYPE.LEGS:
+							HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), LDmg);
+							break;
+					}
+				}
 			}
 		}
 	}
