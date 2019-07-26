@@ -883,7 +883,7 @@ public class Player : KinematicBody, IPushable
 		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
 		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MaxMovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);
 
-		if(ForwardMomentum == 0) //Yes this is float equality shush
+		if(Round(ForwardMomentum) == 0)
 		{
 			RightLegFlames.Emitting = false;
 			LeftLegFlames.Emitting = false;
