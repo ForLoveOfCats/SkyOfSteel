@@ -679,7 +679,7 @@ public class Player : KinematicBody, IPushable
 				if(Translation.DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
 					PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-					Godot.Collections.Dictionary Results = State.IntersectRay(Translation, Item.Translation, new Godot.Collections.Array{this}, 1);
+					Godot.Collections.Dictionary Results = State.IntersectRay(Translation, Item.Translation, new Godot.Collections.Array{this}, 2);
 					if(Results.Count <= 0)
 						ToPickUpList.Add(Item);
 				}

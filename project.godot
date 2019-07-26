@@ -69,6 +69,11 @@ MenuToggle={
  ]
 }
 
+[layer_names]
+
+3d_physics/layer_1="Movement"
+3d_physics/layer_2="ProjectileHitscan"
+
 [rendering]
 
 quality/driver/fallback_to_gles2=true

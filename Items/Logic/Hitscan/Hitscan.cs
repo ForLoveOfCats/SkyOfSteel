@@ -38,7 +38,7 @@ public class Hitscan : Spatial
 				.Rotated(new Vector3(1, 0, 0), Deg2Rad(-Plr.LookVertical - VerticalAngle))
 				.Rotated(new Vector3(0, 1, 0), Deg2Rad(Plr.LookHorizontal + HorizontalAngle));
 
-			Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 1);
+			Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 2);
 			if(Results.Count > 0) //We hit something
 			{
 				World.DebugPlot((Vector3)Results["position"]);
