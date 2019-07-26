@@ -37,7 +37,7 @@ public class ProjectileCollision : Spatial
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 		Godot.Collections.Dictionary Results = State.IntersectRay(StartPoint.GetGlobalTransform().origin,
 		                                                          EndPoint.GetGlobalTransform().origin,
-		                                                          new Godot.Collections.Array() { Game.PossessedPlayer }, 1);
+		                                                          new Godot.Collections.Array() { Game.PossessedPlayer }, 2);
 		if(Results.Count > 0)
 			(Parent as IProjectileCollision).ProjectileCollided((Vector3)Results["position"]);
 	}
