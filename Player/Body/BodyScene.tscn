@@ -16,24 +16,24 @@ roughness = 0.0
 flags_unshaded = true
 albedo_texture = ExtResource( 3 )
 
-[sub_resource type="BoxShape" id=9]
+[sub_resource type="BoxShape" id=4]
 extents = Vector3( 0.507801, 0.457467, 0.559671 )
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="SpatialMaterial" id=5]
 albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
 roughness = 0.0
 
-[sub_resource type="SpatialMaterial" id=5]
+[sub_resource type="SpatialMaterial" id=6]
 albedo_color = Color( 0.709804, 0.709804, 0.709804, 1 )
 roughness = 0.0
 
-[sub_resource type="BoxShape" id=6]
+[sub_resource type="BoxShape" id=7]
 extents = Vector3( 1.28191, 0.450353, 0.517264 )
 
-[sub_resource type="BoxShape" id=7]
+[sub_resource type="BoxShape" id=8]
 extents = Vector3( 0.404339, 0.977527, 0.343541 )
 
-[sub_resource type="SpatialMaterial" id=8]
+[sub_resource type="SpatialMaterial" id=9]
 albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
 roughness = 0.0
 
@@ -63,16 +63,16 @@ Type = 0
 
 [node name="HeadShape" type="CollisionShape" parent="HeadJoint/HeadHitbox" index="0"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.170855, 0.392871 )
-shape = SubResource( 9 )
+shape = SubResource( 4 )
 
 [node name="LeftArm" parent="." index="3"]
 transform = Transform( -1.55931, 0, 0, 0, 6.81597e-08, -1.55931, 0, 1.55931, 6.81597e-08, 1.13953, 4.65922, 0.0107716 )
 
 [node name="LeftArmMesh" parent="LeftArm/Skeleton" index="0"]
-material/0 = SubResource( 4 )
+material/0 = SubResource( 5 )
 
 [node name="Legs" parent="LegsJoint" index="0"]
-material/0 = SubResource( 5 )
+material/0 = SubResource( 6 )
 
 [node name="LegsHitbox" type="StaticBody" parent="LegsJoint" index="1"]
 collision_layer = 2
@@ -82,15 +82,15 @@ Type = 2
 
 [node name="CrossbarShape" type="CollisionShape" parent="LegsJoint/LegsHitbox" index="0"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.592747, -0.0534444 )
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 
 [node name="RightLegShape" type="CollisionShape" parent="LegsJoint/LegsHitbox" index="1"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.901648, -1.89211, 0.010013 )
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 
 [node name="LeftLegShape" type="CollisionShape" parent="LegsJoint/LegsHitbox" index="2"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.902, -1.892, 0.01 )
-shape = SubResource( 7 )
+shape = SubResource( 8 )
 
 [node name="LegFlames" type="Position3D" parent="LegsJoint" index="2"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.87878, 0 )
@@ -104,4 +104,4 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.927, 
 angular_velocity = 0.0
 
 [node name="RightArmMesh" parent="RightArm/Skeleton" index="0"]
-material/0 = SubResource( 8 )
+material/0 = SubResource( 9 )
