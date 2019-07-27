@@ -870,7 +870,7 @@ public class Player : KinematicBody, IPushable
 			Momentum.y = -1f;
 		}
 
-		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical,
+		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical, IsJumping,
 		                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
 
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
@@ -882,7 +882,7 @@ public class Player : KinematicBody, IPushable
 
 
 	[Remote]
-	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, float ForwardMomentum)
+	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, float ForwardMomentum)
 	{
 		if(Game.Mode.ShouldSyncRemotePlayerPosition(Id, Position))
 		{
@@ -897,7 +897,7 @@ public class Player : KinematicBody, IPushable
 		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
 		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MaxMovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);
 
-		if(Round(ForwardMomentum) == 0)
+		if(Round(ForwardMomentum) == 0 && !Jumping)
 		{
 			RightLegFlames.Emitting = false;
 			LeftLegFlames.Emitting = false;
