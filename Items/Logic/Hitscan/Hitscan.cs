@@ -58,6 +58,8 @@ public class Hitscan : Spatial
 
 				if(Results["collider"] is HitboxClass Hitbox)
 				{
+					Game.PossessedPlayer.SfxManager.FpHitsound();
+
 					Player HitPlr = Hitbox.OwningPlayer;
 					switch(Hitbox.Type)
 					{
