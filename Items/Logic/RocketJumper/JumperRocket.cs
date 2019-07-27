@@ -93,9 +93,6 @@ public class JumperRocket : KinematicBody, IProjectileCollision
 				}
 				Push.y /= RocketJumper.RocketVerticalDivisor;
 				Body.ApplyPush(Push);
-
-				if(Body is Player AffectedPlayer)
-					AffectedPlayer.RecoverPercentage = 0;
 			}
 		}
 		AffectedBodies.Clear();

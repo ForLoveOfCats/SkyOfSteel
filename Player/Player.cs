@@ -24,7 +24,6 @@ public class Player : KinematicBody, IPushable
 	public float MaxJumpLength = 0.3f;
 	public float WallKickJumpForce = 22;
 	public float WallKickHorzontalForce = 35;
-	public float RecoverSpeed= 100 / 75; //Latter number percent of a second it takes to fully recover
 	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
@@ -61,7 +60,6 @@ public class Player : KinematicBody, IPushable
 	public bool HasJumped = false;
 	public bool WasOnFloor = false;
 	public float JumpTimer = 0f;
-	public float RecoverPercentage = 1;
 	public Vector3 Momentum = new Vector3(0,0,0);
 	public float LastMomentumY = 0;
 	public float LookHorizontal = 0;
@@ -719,8 +717,6 @@ public class Player : KinematicBody, IPushable
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
-		RecoverPercentage = Clamp(RecoverPercentage + Delta*RecoverSpeed, 0, 1);
-
 		if(JumpAxis > 0 && IsOnFloor())
 		{
 			Momentum.y = JumpStartForce;
@@ -818,7 +814,7 @@ public class Player : KinematicBody, IPushable
 				Z = -BackwardSens;
 
 			Vector3 WishDir = new Vector3(X, 0, Z);
-			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal)) * RecoverPercentage;
+			WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 			Momentum = AirAccelerate(Momentum, WishDir, Delta);
 		}
 
@@ -849,7 +845,6 @@ public class Player : KinematicBody, IPushable
 
 			if(JumpAxis > 0 && !HasJumped && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
 			{
-				RecoverPercentage = 0;
 				HasJumped = true;
 
 				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
