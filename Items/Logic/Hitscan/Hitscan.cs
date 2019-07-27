@@ -5,9 +5,12 @@ using static System.Diagnostics.Debug;
 
 public class Hitscan : Spatial
 {
-	public static bool DrawHits = false;
+	public static bool DebugDraw = false;
 
+	public static float TrailStartAdjustment = 1;
 	public static int NextRecoilDirection; //1 for right, -1 for left
+
+	private static PackedScene HitscanTrailScene = null;
 
 
 	public static Hitscan Self;
@@ -15,6 +18,8 @@ public class Hitscan : Spatial
 	Hitscan()
 	{
 		if(Engine.EditorHint) {return;}
+
+		HitscanTrailScene = GD.Load<PackedScene>("res://Items/Logic/Hitscan/HitscanTrail.tscn");
 
 		Self = this;
 		Reset();
@@ -43,8 +48,13 @@ public class Hitscan : Spatial
 			Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 2);
 			if(Results.Count > 0) //We hit something
 			{
-				if(DrawHits)
-					World.DebugPlot((Vector3)Results["position"]);
+				Vector3 HitPoint = (Vector3)Results["position"];
+
+				if(DebugDraw)
+					World.DebugPlot(HitPoint);
+
+				Self.DrawTrail(Origin, HitPoint);
+				Net.SteelRpc(Self, nameof(DrawTrail), Origin, HitPoint);
 
 				if(Results["collider"] is HitboxClass Hitbox)
 				{
@@ -63,6 +73,11 @@ public class Hitscan : Spatial
 					}
 				}
 			}
+			else
+			{
+				Self.DrawTrail(Origin, Endpoint);
+				Net.SteelRpc(Self, nameof(DrawTrail), Origin, Endpoint);
+			}
 		}
 	}
 
@@ -75,5 +90,19 @@ public class Hitscan : Spatial
 		Plr.SetRotationDegrees(new Vector3(0, Plr.LookHorizontal, 0));
 
 		NextRecoilDirection *= -1;
+	}
+
+
+	[Remote]
+	public void DrawTrail(Vector3 Start, Vector3 End) //Must be non-static to be RPC-ed
+	{
+		Start.y -= TrailStartAdjustment;
+		HitscanTrail Trail = HitscanTrailScene.Instance() as HitscanTrail;
+		World.EntitiesRoot.AddChild(Trail);
+		Trail.Translation = (Start + End) / 2;
+
+		Trail.LookAt(End, -End);
+
+		Trail.CallDeferred(nameof(HitscanTrail.ApplyLength), Start.DistanceTo(End));
 	}
 }
