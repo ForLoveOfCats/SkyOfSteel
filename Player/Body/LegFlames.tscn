@@ -7,11 +7,11 @@ albedo_color = Color( 1, 0.392157, 0.392157, 0.823529 )
 
 [sub_resource type="CubeMesh" id=2]
 material = SubResource( 1 )
-size = Vector3( 0.1, 0.1, 0.1 )
+size = Vector3( 0.3, 0.3, 0.3 )
 
-[node name="CPUParticles" type="CPUParticles"]
+[node name="LegFlames" type="CPUParticles"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
-amount = 100
+amount = 40
 lifetime = 0.3
 mesh = SubResource( 2 )
 emission_shape = 2
@@ -19,4 +19,3 @@ emission_box_extents = Vector3( 0.4, 0.4, 0 )
 spread = 30.0
 gravity = Vector3( 0, 0, 0 )
 initial_velocity = 10.0
-angular_velocity = 0.0
