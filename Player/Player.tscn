@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body/BodyScene.tscn" type="PackedScene" id=2]
@@ -14,7 +14,8 @@
 [ext_resource path="res://Items/Logic/RocketJumper/FireSfx.wav" type="AudioStream" id=12]
 [ext_resource path="res://Items/Logic/RocketJumper/ExplodeSfx.wav" type="AudioStream" id=13]
 [ext_resource path="res://Items/Logic/Hitscan/Hitsound.wav" type="AudioStream" id=14]
-[ext_resource path="res://Items/Logic/Hitscan/Thunderbolt.wav" type="AudioStream" id=15]
+[ext_resource path="res://Items/Logic/Hitscan/Killsound.wav" type="AudioStream" id=15]
+[ext_resource path="res://Items/Logic/Hitscan/Thunderbolt.wav" type="AudioStream" id=16]
 
 [sub_resource type="SpatialMaterial" id=1]
 albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
@@ -117,11 +118,15 @@ unit_size = 40.0
 stream = ExtResource( 14 )
 volume_db = -1.0
 
-[node name="FpThunderboltFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
+[node name="FpKillsoundSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
 stream = ExtResource( 15 )
 volume_db = -1.0
 
+[node name="FpThunderboltFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
+stream = ExtResource( 16 )
+volume_db = -1.0
+
 [node name="TpThunderboltFireSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 15 )
+stream = ExtResource( 16 )
 unit_db = 10.0
 unit_size = 30.0

@@ -61,18 +61,25 @@ public class Hitscan : Spatial
 					Game.PossessedPlayer.SfxManager.FpHitsound();
 
 					Player HitPlr = Hitbox.OwningPlayer;
+
+					float Damage = 0;
 					switch(Hitbox.Type)
 					{
 						case HitboxClass.TYPE.HEAD:
-							HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), HDmg);
+							Damage = HDmg;
 							break;
 						case HitboxClass.TYPE.BODY:
-							HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), BDmg);
+							Damage = BDmg;
 							break;
 						case HitboxClass.TYPE.LEGS:
-							HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), LDmg);
+							Damage = LDmg;
 							break;
 					}
+
+					if(HitPlr.Health - Damage <= 0)
+						Game.PossessedPlayer.SfxManager.FpKillsound();
+
+					HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), Damage);
 				}
 			}
 			else

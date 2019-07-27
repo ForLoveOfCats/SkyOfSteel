@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Killsound.wav-ea77bdb9278ee5c812702d0c86404b79.sample"
+
+[deps]
+
+source_file="res://Items/Logic/Hitscan/Killsound.wav"
+dest_files=[ "res://.import/Killsound.wav-ea77bdb9278ee5c812702d0c86404b79.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=true
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

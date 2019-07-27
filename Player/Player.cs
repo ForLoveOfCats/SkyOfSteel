@@ -870,7 +870,7 @@ public class Player : KinematicBody, IPushable
 			Momentum.y = -1f;
 		}
 
-		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical, IsJumping,
+		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical, IsJumping, Health,
 		                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
 
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
@@ -882,8 +882,10 @@ public class Player : KinematicBody, IPushable
 
 
 	[Remote]
-	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, float ForwardMomentum)
+	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, float Hp, float ForwardMomentum)
 	{
+		Health = Hp;
+
 		if(Game.Mode.ShouldSyncRemotePlayerPosition(Id, Position))
 		{
 			Translation = Position;
