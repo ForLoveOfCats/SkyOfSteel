@@ -297,6 +297,7 @@ public class Player : KinematicBody, IPushable
 			}
 
 			HUDInstance.HotbarUpdate();
+			Hitscan.Reset();
 			SetCooldown(0, SlotSwitchCooldown, false);
 		}
 	}
@@ -308,6 +309,8 @@ public class Player : KinematicBody, IPushable
 		{
 			InventorySlot = Slot;
 			HUDInstance.HotbarUpdate();
+			Hitscan.Reset();
+			SetCooldown(0, SlotSwitchCooldown, false);
 		}
 	}
 
