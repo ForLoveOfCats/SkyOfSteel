@@ -3,8 +3,8 @@ using Godot;
 
 public class Thunderbolt : Node
 {
-	public static float VerticalRecoil = 8;
-	public static float HorizontalRecoil = 2;
+	public static float VerticalRecoil = 0; //TODO: Add smooth recoil with recovery
+	public static float HorizontalRecoil = 0;
 	public static float Range = 500;
 	public static float HeadshotDamage = 100;
 	public static float BodyshotDamage = 20;
