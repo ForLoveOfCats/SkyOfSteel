@@ -12,6 +12,7 @@ public class Player : KinematicBody, IPushable
 
 	public float BaseMovementSpeed = 20;
 	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
+	public float SprintFlyingMultiplyer = 6; //Speed while sprint flying is base speed times this value
 	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 22; //How many units per second to accelerate
@@ -443,7 +444,7 @@ public class Player : KinematicBody, IPushable
 			{
 				if(IsSprinting)
 				{
-					Momentum.y = BaseMovementSpeed*SprintMultiplyer;
+					Momentum.y = BaseMovementSpeed*SprintFlyingMultiplyer;
 				}
 				else
 				{
@@ -492,7 +493,7 @@ public class Player : KinematicBody, IPushable
 					JumpSens = 0;
 
 					if(IsSprinting)
-						Momentum.y = -BaseMovementSpeed*SprintMultiplyer;
+						Momentum.y = -BaseMovementSpeed*SprintFlyingMultiplyer;
 					else
 						Momentum.y = -BaseMovementSpeed;
 				}
@@ -767,7 +768,10 @@ public class Player : KinematicBody, IPushable
 			float SpeedLimit = BaseMovementSpeed;
 			if(IsSprinting)
 			{
-				SpeedLimit *= SprintMultiplyer;
+				if(!FlyMode)
+					SpeedLimit *= SprintMultiplyer;
+				else if(FlyMode)
+					SpeedLimit *= SprintFlyingMultiplyer;
 			}
 
 			float X = 0, Z = 0;
