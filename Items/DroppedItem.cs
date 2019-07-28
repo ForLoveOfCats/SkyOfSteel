@@ -4,7 +4,7 @@ using System;
 
 public class DroppedItem : KinematicBody, IInGrid, IPushable
 {
-	private const float Gravity = 14f;
+	private const float Gravity = 20f;
 	private const float MaxFallSpeed = -40f;
 	private const float Friction = 15f;
 	private const float RPS = 0.5f; //Revolutions Per Second
