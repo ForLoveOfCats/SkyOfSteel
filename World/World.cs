@@ -149,6 +149,13 @@ public class World : Node
 			Branch.Remove(Force:true);
 		}
 
+		DroppedItem[] RemovingItems = new DroppedItem[ItemList.Count];
+		ItemList.CopyTo(RemovingItems);
+		foreach(DroppedItem Item in RemovingItems)
+		{
+			Item.Remove();
+		}
+
 		Chunks.Clear();
 		Grid.Clear();
 
