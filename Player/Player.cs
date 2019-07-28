@@ -427,10 +427,26 @@ public class Player : KinematicBody, IPushable
 		if(Sens > 0)
 		{
 			IsSprinting = true;
+
+			if(FlyMode)
+			{
+				if(JumpAxis == 1)
+					Momentum.y = BaseMovementSpeed*SprintFlyingMultiplyer;
+				else if(IsCrouching)
+					Momentum.y = -BaseMovementSpeed*SprintFlyingMultiplyer;
+			}
 		}
 		else
 		{
 			IsSprinting = false;
+
+			if(FlyMode)
+			{
+				if(JumpAxis == 1)
+					Momentum.y = BaseMovementSpeed;
+				else if(IsCrouching)
+					Momentum.y = -BaseMovementSpeed;
+			}
 		}
 	}
 
