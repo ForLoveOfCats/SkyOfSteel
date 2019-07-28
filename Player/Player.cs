@@ -780,11 +780,11 @@ public class Player : KinematicBody, IPushable
 			else if(ForwardAxis < 0)
 				Z = -BackwardSens;
 
-			float Speed = Momentum.Length();
+			float Speed = Momentum.Flattened().Length();
 			if(Speed > 0)
 			{
 				Speed = Clamp(Speed - Friction*Delta, 0, Speed);
-				Vector3 HorzMomentum = new Vector3(Momentum.x, 0, Momentum.z).Normalized() * Speed;
+				Vector3 HorzMomentum = Momentum.Flattened().Normalized() * Speed;
 				Momentum.x = HorzMomentum.x;
 				Momentum.z = HorzMomentum.z;
 			}
