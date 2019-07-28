@@ -85,6 +85,7 @@ public class Player : KinematicBody, IPushable
 
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
+	public MeshInstance ThirdPersonItem;
 
 	public CPUParticles RightLegFlames;
 	public CPUParticles LeftLegFlames;
@@ -112,12 +113,6 @@ public class Player : KinematicBody, IPushable
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
-		HeadJoint = GetNode("BodyScene").GetNode<Spatial>("HeadJoint");
-		LegsJoint = GetNode("BodyScene").GetNode<Spatial>("LegsJoint");
-
-		RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Right");
-		LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Left");
-
 		Respawn();
 
 		if(Possessed)
@@ -136,6 +131,17 @@ public class Player : KinematicBody, IPushable
 		}
 		else
 		{
+			HeadJoint = GetNode("BodyScene").GetNode<Spatial>("HeadJoint");
+			LegsJoint = GetNode("BodyScene").GetNode<Spatial>("LegsJoint");
+
+			RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Right");
+			LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Left");
+
+			ThirdPersonItem = GetNode("BodyScene").GetNode<MeshInstance>("ItemMesh");
+			ShaderMaterial Mat = new ShaderMaterial();
+			Mat.Shader = Items.TileShader;
+			ThirdPersonItem.MaterialOverride = Mat;
+
 			GetNode<MeshInstance>("SteelCamera/ViewmodelArm").Hide();
 			GetNode<CPUParticles>("SteelCamera/ViewmodelArm/Forcefield").Hide();
 
@@ -888,8 +894,16 @@ public class Player : KinematicBody, IPushable
 			Momentum.y = -1f;
 		}
 
-		Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical, IsJumping, Health,
-		                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
+		{
+			Items.ID ItemId;
+			if(Inventory[InventorySlot] != null)
+				ItemId = Inventory[InventorySlot].Id;
+			else
+				ItemId = Items.ID.ERROR;
+
+			Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical, IsJumping, Health, ItemId,
+			                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
+		}
 
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
@@ -900,7 +914,7 @@ public class Player : KinematicBody, IPushable
 
 
 	[Remote]
-	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, float Hp, float ForwardMomentum)
+	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, float Hp, Items.ID ItemId, float ForwardMomentum)
 	{
 		Health = Hp;
 
@@ -926,6 +940,15 @@ public class Player : KinematicBody, IPushable
 		{
 			RightLegFlames.Emitting = true;
 			LeftLegFlames.Emitting = true;
+		}
+
+		if(ItemId == Items.ID.ERROR)
+			ThirdPersonItem.Hide();
+		else
+		{
+			ThirdPersonItem.Mesh = Items.Meshes[ItemId];
+			(ThirdPersonItem.MaterialOverride as ShaderMaterial).SetShaderParam("texture_albedo", Items.Textures[ItemId]);
+			ThirdPersonItem.Show();
 		}
 	}
 
