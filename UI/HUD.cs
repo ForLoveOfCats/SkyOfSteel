@@ -161,11 +161,9 @@ public class HUD : Node
 	}
 
 
-	public void ShowDamageIndicator(Vector2 ShotFirePosition) {
-		// Angle must be in degrees for the DamageIndicator
+	public void ShowDamageIndicator(Vector3 ShotFirePosition) {
 		DamageIndicator Indicator = DamageIndicatorScene.Instance() as DamageIndicator;
-		Indicator.SetTargetAngle(ShotFirePosition);
-		// Add it to its container
+		Indicator.SetShotPosition(ShotFirePosition);
 		DamageIndicatorContainer.AddChild(Indicator);
 	}
 

@@ -223,15 +223,10 @@ public class Player : KinematicBody, IPushable
 
 
 	[Remote]
-	public void ApplyDamage(float Damage, int AttackerId)
+	public void ApplyDamage(float Damage, Vector3 Origin)
 	{
 		Health = Clamp(Health - Damage, 0, MaxHealth);
-		// Calculate DamageIndicator angles
-		Player Attacker = Net.Players[AttackerId];
-		// Convert the attacker's coordinates to 2D to make this easier
-		// aka remove height
-		Vector2 AttackerPoint = new Vector2(Attacker.Translation.x, Attacker.Translation.z);
-		HUDInstance.ShowDamageIndicator(AttackerPoint); // Convert to degrees
+		HUDInstance.ShowDamageIndicator(Origin);
 	}
 
 
