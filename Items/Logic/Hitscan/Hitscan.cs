@@ -79,7 +79,7 @@ public class Hitscan : Spatial
 					if(HitPlr.Health - Damage <= 0)
 						Game.PossessedPlayer.SfxManager.FpKillsound();
 
-					HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), Damage);
+					HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), Damage, Game.PossessedPlayer.Id);
 				}
 			}
 			else

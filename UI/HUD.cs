@@ -8,6 +8,7 @@ public class HUD : Node
 	private Texture Triangle;
 	private PackedScene ItemCountLabelScene;
 	private PackedScene NickLabelScene;
+	private PackedScene DamageIndicatorScene;
 
 	private Dictionary<int, Label> NickLabels = new Dictionary<int, Label>();
 
@@ -17,6 +18,7 @@ public class HUD : Node
 	private Label ChunkInfoLabel;
 	private Label PlayerPositionLabel;
 	private Label FPSLabel;
+	private CenterContainer DamageIndicatorContainer;
 	public CanvasLayer NickLabelLayer;
 
 	public bool Visible = true;
@@ -29,6 +31,7 @@ public class HUD : Node
 		Triangle = GD.Load("res://UI/Textures/Triangle.png") as Texture;
 		ItemCountLabelScene = GD.Load<PackedScene>("res://UI/ItemCountLabel.tscn");
 		NickLabelScene = GD.Load<PackedScene>("res://UI/NickLabel.tscn");
+		DamageIndicatorScene = GD.Load<PackedScene>("res://UI/DamageIndicator.tscn");
 	}
 
 
@@ -40,6 +43,7 @@ public class HUD : Node
 		ChunkInfoLabel = GetNode<Label>("CLayer/ChunkInfo");
 		PlayerPositionLabel = GetNode<Label>("CLayer/PlayerPosition");
 		FPSLabel = GetNode<Label>("CLayer/FPSLabel");
+		DamageIndicatorContainer = GetNode<CenterContainer>("CLayer/DamageIndicatorCenter");
 		NickLabelLayer = GetNode<CanvasLayer>("NickLabelLayer");
 
 		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
@@ -154,6 +158,15 @@ public class HUD : Node
 			NickLabels[Id].QueueFree();
 			NickLabels.Remove(Id);
 		}
+	}
+
+
+	public void ShowDamageIndicator(Vector2 ShotFirePosition) {
+		// Angle must be in degrees for the DamageIndicator
+		DamageIndicator Indicator = DamageIndicatorScene.Instance() as DamageIndicator;
+		Indicator.SetTargetAngle(ShotFirePosition);
+		// Add it to its container
+		DamageIndicatorContainer.AddChild(Indicator);
 	}
 
 
