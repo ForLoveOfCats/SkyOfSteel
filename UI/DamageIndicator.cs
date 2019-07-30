@@ -3,8 +3,11 @@ using Godot;
 
 public class DamageIndicator : TextureRect
 {
-	Vector2 ShotFirePosition;
-	float OriginalRotation;
+    Vector3 ShotFirePosition;
+	Vector2 FlatShotFirePos;
+	float PlayerStartRotation;
+
+
 	public override void _Ready()
 	{
 		// Start transparency Tween in _Ready so we know the Tween has been created
@@ -15,19 +18,19 @@ public class DamageIndicator : TextureRect
 	}
 
 
-	public void SetShotPosition(Vector3 ShotFireArg)
+	public void SetShotPosition(Vector3 ShotFirePositionArg)
 	{
+        ShotFirePosition = ShotFirePositionArg;
 		// Flatted the ShotFirePosition
-		ShotFirePosition = new Vector2(ShotFireArg.x, ShotFireArg.z);
-		OriginalRotation = Game.PossessedPlayer.Rotation.y;
+		FlatShotFirePos = new Vector2(ShotFirePositionArg.x, ShotFirePositionArg.z);
+		PlayerStartRotation = Game.PossessedPlayer.Rotation.y;
 	}
 
 
 	public override void _Process(float delta)
 	{
 		// Calculate our position on a 2D plane
-		Vector2 OurPoint = new Vector2(Game.PossessedPlayer.Translation.x, Game.PossessedPlayer.Translation.z);
-		RectRotation = Mathf.Rad2Deg(OurPoint.AngleToPoint(ShotFirePosition) + OriginalRotation);
+		RectRotation = Mathf.Rad2Deg(new Vector2(Game.PossessedPlayer.Translation.x, Game.PossessedPlayer.Translation.z).AngleToPoint(FlatShotFirePos) + PlayerStartRotation);
 	}
 
 
