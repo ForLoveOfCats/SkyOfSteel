@@ -34,12 +34,15 @@ public class DamageIndicator : TextureRect
 	public override void _Process(float Delta)
 	{
 		Vector2 PlayerPosition2D = new Vector2(Game.PossessedPlayer.Translation.x, Game.PossessedPlayer.Translation.z);
-		RectRotation = Mathf.Rad2Deg(PlayerPosition2D.AngleToPoint(ShotFirePos2D) + PlayerStartRotation);
+		float Rotation = PlayerPosition2D.AngleToPoint(ShotFirePos2D) + PlayerStartRotation;
+		SetRotation(Rotation);
 		RemainingLife -= Delta;
 		Mat.SetShaderParam("alpha", RemainingLife/MaxLife);
-		if (RemainingLife <= 0)
+		if(RemainingLife <= 0)
 		{
-			Free();
+			SetRotation(Rotation);
+			QueueFree();
+			SetRotation(Rotation);
 		}
 	}
 }

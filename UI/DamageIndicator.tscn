@@ -4,12 +4,12 @@
 [ext_resource path="res://UI/Textures/DamageIndicator.png" type="Texture" id=2]
 [ext_resource path="res://UI/DamageIndicator.cs" type="Script" id=3]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 1 )
 shader_param/alpha = 0.5
 
 [node name="DamageIndicator" type="TextureRect"]
-material = SubResource( 2 )
+material = SubResource( 1 )
 margin_right = 400.0
 margin_bottom = 400.0
 rect_pivot_offset = Vector2( 200, 200 )
