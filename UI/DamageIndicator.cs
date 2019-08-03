@@ -1,7 +1,7 @@
 using Godot;
 
 
-public class DamageIndicator : TextureRect
+public class DamageIndicator : Sprite
 {
 	Vector3 ShotFirePosition;
 	Vector2 ShotFirePos2D;
@@ -28,8 +28,13 @@ public class DamageIndicator : TextureRect
 		Mat.Shader = TransparencyShader;
 		Mat.SetShaderParam("alpha", 1);
 		Material = Mat;
+		CenterSprite();
 	}
 
+	private void CenterSprite()
+	{
+		GlobalPosition = OS.GetWindowSize() / new Vector2(2, 2);
+	}
 
 	public override void _Process(float Delta)
 	{
@@ -44,5 +49,6 @@ public class DamageIndicator : TextureRect
 			QueueFree();
 			SetRotation(Rotation);
 		}
+		CenterSprite();
 	}
 }

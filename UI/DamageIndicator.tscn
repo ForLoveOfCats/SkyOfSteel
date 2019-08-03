@@ -8,10 +8,8 @@
 shader = ExtResource( 1 )
 shader_param/alpha = 0.5
 
-[node name="DamageIndicator" type="TextureRect"]
+[node name="DamageIndicator" type="Sprite"]
 material = SubResource( 1 )
-margin_right = 400.0
-margin_bottom = 400.0
-rect_pivot_offset = Vector2( 200, 200 )
+position = Vector2( 202.18, 203.938 )
 texture = ExtResource( 2 )
 script = ExtResource( 3 )
