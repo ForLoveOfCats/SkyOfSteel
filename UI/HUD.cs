@@ -23,6 +23,8 @@ public class HUD : Node
 
 	public bool Visible = true;
 
+	static float DamageIndicatorTime = 0.1f;
+
 	HUD()
 	{
 		if(Engine.EditorHint) {return;}
@@ -161,10 +163,10 @@ public class HUD : Node
 	}
 
 
-	public void ShowDamageIndicator(Vector3 ShotFirePosition)
+	public void ShowDamageIndicator(Vector3 ShotFirePosition, float Damage)
 	{
 		DamageIndicator Indicator = DamageIndicatorScene.Instance() as DamageIndicator;
-		Indicator.SetShotPosition(ShotFirePosition);
+		Indicator.Setup(ShotFirePosition, Damage*DamageIndicatorTime);
 		DamageIndicatorContainer.AddChild(Indicator);
 	}
 

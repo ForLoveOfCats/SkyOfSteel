@@ -226,7 +226,7 @@ public class Player : KinematicBody, IPushable
 	public void ApplyDamage(float Damage, Vector3 Origin)
 	{
 		Health = Clamp(Health - Damage, 0, MaxHealth);
-		HUDInstance.ShowDamageIndicator(Origin);
+		HUDInstance.ShowDamageIndicator(Origin, Damage);
 	}
 
 

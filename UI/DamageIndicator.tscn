@@ -1,16 +1,17 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://UI/Textures/DamageIndicator.png" type="Texture" id=1]
-[ext_resource path="res://UI/DamageIndicator.cs" type="Script" id=2]
+[ext_resource path="res://UI/DamageIndicator.shader" type="Shader" id=1]
+[ext_resource path="res://UI/Textures/DamageIndicator.png" type="Texture" id=2]
+[ext_resource path="res://UI/DamageIndicator.cs" type="Script" id=3]
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 1 )
+shader_param/alpha = 0.5
 
 [node name="DamageIndicator" type="TextureRect"]
-margin_left = 312.0
-margin_top = 100.0
-margin_right = 712.0
-margin_bottom = 500.0
+material = SubResource( 2 )
+margin_right = 400.0
+margin_bottom = 400.0
 rect_pivot_offset = Vector2( 200, 200 )
-texture = ExtResource( 1 )
-script = ExtResource( 2 )
-
-[node name="Tween" type="Tween" parent="."]
-[connection signal="tween_all_completed" from="Tween" to="." method="TweenComplete"]
+texture = ExtResource( 2 )
+script = ExtResource( 3 )
