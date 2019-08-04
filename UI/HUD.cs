@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class HUD : Node
 {
+	public static float DamageIndicatorLifeMultiplyer = 0.1f; //Multipled by damage to calc max life
+
 	private Texture Alpha;
 	private Texture Triangle;
 	private PackedScene ItemCountLabelScene;
@@ -18,12 +20,10 @@ public class HUD : Node
 	private Label ChunkInfoLabel;
 	private Label PlayerPositionLabel;
 	private Label FPSLabel;
-	private CenterContainer DamageIndicatorContainer;
+	private Node2D DamageIndicatorRoot;
 	public CanvasLayer NickLabelLayer;
 
 	public bool Visible = true;
-
-	static float DamageIndicatorTime = 0.1f;
 
 	HUD()
 	{
@@ -45,7 +45,7 @@ public class HUD : Node
 		ChunkInfoLabel = GetNode<Label>("CLayer/ChunkInfo");
 		PlayerPositionLabel = GetNode<Label>("CLayer/PlayerPosition");
 		FPSLabel = GetNode<Label>("CLayer/FPSLabel");
-		DamageIndicatorContainer = GetNode<CenterContainer>("CLayer/DamageIndicatorCenter");
+		DamageIndicatorRoot = GetNode<Node2D>("CLayer/DamageIndicatorRoot");
 		NickLabelLayer = GetNode<CanvasLayer>("NickLabelLayer");
 
 		GetNode<Label>("CLayer/VersionLabel").Text = $"Version: {Game.Version}";
@@ -166,8 +166,8 @@ public class HUD : Node
 	public void ShowDamageIndicator(Vector3 ShotFirePosition, float Damage)
 	{
 		DamageIndicator Indicator = DamageIndicatorScene.Instance() as DamageIndicator;
-		Indicator.Setup(ShotFirePosition, Damage*DamageIndicatorTime);
-		DamageIndicatorContainer.AddChild(Indicator);
+		Indicator.Setup(ShotFirePosition, Damage*DamageIndicatorLifeMultiplyer);
+		DamageIndicatorRoot.AddChild(Indicator);
 	}
 
 
