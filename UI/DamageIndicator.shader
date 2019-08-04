@@ -1,13 +1,9 @@
 shader_type canvas_item;
-uniform float alpha = 0.5;
+uniform float alpha = 1;
 
 
 void fragment()
 {
 	COLOR = texture(TEXTURE, UV);
-
-	if(texture(TEXTURE, UV).a != 0.0)
-	{
-		COLOR.a = (COLOR.a + alpha) / 2.0;
-	}
+	COLOR.a = COLOR.a * alpha;
 }
