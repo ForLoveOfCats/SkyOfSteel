@@ -84,6 +84,7 @@
     <Compile Include="Player\PlayerSfxManager.cs" />
     <Compile Include="Scripting\Gamemode.cs" />
     <Compile Include="Scripting\GmConfig.cs" />
+    <Compile Include="UI\DamageIndicator.cs" />
     <Compile Include="UI\Menu\HostMenu\SlotButton.cs" />
     <Compile Include="UI\Menu\LicensesMenu\LicensesMenu.cs" />
     <Compile Include="UI\Menu\Pieces\ButtonPiece.cs" />

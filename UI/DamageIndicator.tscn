@@ -1,0 +1,15 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://UI/DamageIndicator.shader" type="Shader" id=1]
+[ext_resource path="res://UI/Textures/DamageIndicator.png" type="Texture" id=2]
+[ext_resource path="res://UI/DamageIndicator.cs" type="Script" id=3]
+
+[sub_resource type="ShaderMaterial" id=1]
+shader = ExtResource( 1 )
+shader_param/alpha = 0.5
+
+[node name="DamageIndicator" type="Sprite"]
+material = SubResource( 1 )
+position = Vector2( 202.18, 203.938 )
+texture = ExtResource( 2 )
+script = ExtResource( 3 )
