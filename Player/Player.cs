@@ -113,8 +113,6 @@ public class Player : KinematicBody, IPushable
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
-		Respawn();
-
 		if(Possessed)
 		{
 			Cam.MakeCurrent();
@@ -155,10 +153,9 @@ public class Player : KinematicBody, IPushable
 			return;
 		}
 
+		Respawn();
 		if(GetTree().IsNetworkServer())
-		{
 			SetFreeze(false);
-		}
 
 		ItemGive(new Items.Instance(Items.ID.PLATFORM));
 		ItemGive(new Items.Instance(Items.ID.WALL));
@@ -217,6 +214,7 @@ public class Player : KinematicBody, IPushable
 
 	public void Respawn()
 	{
+		HUDInstance.ClearDamageIndicators();
 		MovementReset();
 		Health = MaxHealth;
 	}
@@ -226,7 +224,7 @@ public class Player : KinematicBody, IPushable
 	public void ApplyDamage(float Damage, Vector3 Origin)
 	{
 		Health = Clamp(Health - Damage, 0, MaxHealth);
-		HUDInstance.ShowDamageIndicator(Origin, Damage);
+		HUDInstance.AddDamageIndicator(Origin, Damage);
 	}
 
 

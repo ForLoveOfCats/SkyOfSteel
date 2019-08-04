@@ -163,11 +163,18 @@ public class HUD : Node
 	}
 
 
-	public void ShowDamageIndicator(Vector3 ShotFirePosition, float Damage)
+	public void AddDamageIndicator(Vector3 ShotFirePosition, float Damage)
 	{
 		DamageIndicator Indicator = DamageIndicatorScene.Instance() as DamageIndicator;
 		Indicator.Setup(ShotFirePosition, Damage*DamageIndicatorLifeMultiplyer);
 		DamageIndicatorRoot.AddChild(Indicator);
+	}
+
+
+	public void ClearDamageIndicators()
+	{
+		foreach(Node Child in DamageIndicatorRoot.GetChildren())
+			Child.QueueFree();
 	}
 
 
