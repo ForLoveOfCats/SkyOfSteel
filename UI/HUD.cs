@@ -190,8 +190,9 @@ public class HUD : Node
 
 		foreach(KeyValuePair<int, Label> Current in NickLabels)
 		{
-			Vector3 PlayerPos = Net.Players[Current.Key].Translation + new Vector3(0,7.5f,0);
-			if(Game.PossessedPlayer.Cam.IsPositionBehind(PlayerPos))
+			Player OwningPlayer = Net.Players[Current.Key];
+			Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0,7.5f,0);
+			if(OwningPlayer.Team != Game.PossessedPlayer.Team || Game.PossessedPlayer.Cam.IsPositionBehind(PlayerPos))
 			{
 				Current.Value.Visible = false;
 			}

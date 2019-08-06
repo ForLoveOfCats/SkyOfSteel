@@ -43,6 +43,16 @@ public class Player : KinematicBody, IPushable
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
 	public float Health = 0;
+	private int __team = 1;
+	public int Team
+	{
+		get { return __team; }
+		set
+		{
+			__team = value;
+			Net.SteelRpc(this, nameof(NotifyTeamChange), value);
+		}
+	}
 
 	public int ForwardAxis = 0;
 	public int RightAxis = 0;
@@ -949,6 +959,13 @@ public class Player : KinematicBody, IPushable
 			(ThirdPersonItem.MaterialOverride as ShaderMaterial).SetShaderParam("texture_albedo", Items.Textures[ItemId]);
 			ThirdPersonItem.Show();
 		}
+	}
+
+
+	[Remote]
+	public void NotifyTeamChange(int NewTeam)
+	{
+		Team = NewTeam;
 	}
 
 
