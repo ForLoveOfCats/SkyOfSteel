@@ -50,7 +50,9 @@ public class Player : KinematicBody, IPushable
 		set
 		{
 			__team = value;
-			Net.SteelRpc(this, nameof(NotifyTeamChange), value);
+
+			if(Net.Work.GetNetworkUniqueId() == Id) //Just in case
+				Net.SteelRpc(this, nameof(NotifyTeamChange), value);
 		}
 	}
 
@@ -965,7 +967,7 @@ public class Player : KinematicBody, IPushable
 	[Remote]
 	public void NotifyTeamChange(int NewTeam)
 	{
-		Team = NewTeam;
+		__team = NewTeam;
 	}
 
 
