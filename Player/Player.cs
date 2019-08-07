@@ -298,6 +298,7 @@ public class Player : KinematicBody, IPushable
 			}
 
 			HUDInstance.HotbarUpdate();
+			Hitscan.Reset();
 			SetCooldown(0, SlotSwitchCooldown, false);
 		}
 	}
