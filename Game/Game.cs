@@ -17,9 +17,9 @@ public class Game : Node
 	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
 
 	public static float LookSensitivity = 15;
-	public static float MouseDivisor = LookSensitivity;
 	public static float Deadzone = 0.25f;
-	public static int ChunkRenderDistance = 1;
+	public static float Fov = 100;
+	public static int ChunkRenderDistance = 1; //Actual default set by SetupDefaults
 
 	public static string Nickname = DefaultNickname;
 

@@ -3,6 +3,7 @@ using static Godot.Mathf;
 using static SteelMath;
 using System;
 using System.Collections.Generic;
+using static System.Diagnostics.Debug;
 
 
 public class Player : KinematicBody, IPushable
@@ -35,7 +36,13 @@ public class Player : KinematicBody, IPushable
 	public float MaxHealth = 100;
 	public float LookDivisor = 6;
 
+	public static float MinAdsMultiplyer = 0.7f;
+	public static float AdsTime = 0.15f; //Seconds to achieve full ads
+
 	private const float SfxMinLandMomentumY = 3;
+
+	public bool Ads = false;
+	public float AdsMultiplyer = 1;
 
 	private bool Frozen = true;
 	public bool FlyMode { get; private set;} = false;
@@ -231,6 +238,7 @@ public class Player : KinematicBody, IPushable
 	{
 		HUDInstance.ClearDamageIndicators();
 		MovementReset();
+		Ads = false;
 		Health = MaxHealth;
 	}
 
@@ -300,6 +308,7 @@ public class Player : KinematicBody, IPushable
 			HUDInstance.HotbarUpdate();
 			Hitscan.Reset();
 			SetCooldown(0, SlotSwitchCooldown, false);
+			Ads = false;
 		}
 	}
 
@@ -319,6 +328,7 @@ public class Player : KinematicBody, IPushable
 			HUDInstance.HotbarUpdate();
 			Hitscan.Reset();
 			SetCooldown(0, SlotSwitchCooldown, false);
+			Ads = false;
 		}
 	}
 
@@ -329,8 +339,10 @@ public class Player : KinematicBody, IPushable
 		{
 			InventorySlot = Slot;
 			HUDInstance.HotbarUpdate();
+
 			Hitscan.Reset();
 			SetCooldown(0, SlotSwitchCooldown, false);
+			Ads = false;
 		}
 	}
 
@@ -567,7 +579,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
 
 			if(Game.Mode.ShouldPlayerPitch(Change))
 				ApplyLookVertical(Change);
@@ -579,7 +591,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
 
 			if(Game.Mode.ShouldPlayerPitch(-Change))
 				ApplyLookVertical(-Change);
@@ -591,7 +603,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
 
 			if(Game.Mode.ShouldPlayerRotate(-Change))
 			{
@@ -606,7 +618,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
 
 			if(Game.Mode.ShouldPlayerRotate(+Change))
 			{
@@ -668,22 +680,33 @@ public class Player : KinematicBody, IPushable
 		{
 			IsSecondaryFiring = true;
 
-			//Assume for now that all secondary fire opertations are to remove
-			RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
-			if(BuildRayCast.IsColliding())
+			Items.Instance CurrentItem = Inventory[InventorySlot];
+
+			if(CurrentItem == null || !Items.IdInfos[CurrentItem.Id].CanAds)
 			{
-				Tile Hit = BuildRayCast.GetCollider() as Tile;
-				if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+				RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+				if(BuildRayCast.IsColliding())
 				{
-					Hit.NetRemove();
-					SetCooldown(0, BuildingCooldown, true);
+					Tile Hit = BuildRayCast.GetCollider() as Tile;
+					if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+					{
+						Hit.NetRemove();
+						SetCooldown(0, BuildingCooldown, true);
+					}
 				}
 			}
+
+			else if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
+				Ads = true;
 		}
 
 		if(Sens <= 0 && IsSecondaryFiring)
 		{
 			IsSecondaryFiring = false;
+
+			Items.Instance CurrentItem = Inventory[InventorySlot];
+			if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
+				Ads = false;
 		}
 	}
 
@@ -983,6 +1006,13 @@ public class Player : KinematicBody, IPushable
 
 	public override void _Process(float Delta)
 	{
+		Assert(MinAdsMultiplyer > 0 && MinAdsMultiplyer <= 1);
+		if(Ads)
+			AdsMultiplyer = Clamp(AdsMultiplyer - (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
+		else
+			AdsMultiplyer = Clamp(AdsMultiplyer + (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
+		Cam.Fov = Game.Fov*AdsMultiplyer;
+
 		var ToRemove = new List<Hitscan.AdditiveRecoil>();
 		foreach(Hitscan.AdditiveRecoil Instance in ActiveAdditiveRecoil)
 		{

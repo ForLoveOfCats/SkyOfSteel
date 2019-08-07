@@ -519,16 +519,16 @@ public class Bindings : Node
 					switch(Binding.AxisDirection)
 					{
 						case(DIRECTION.UP):
-							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.y)/Game.MouseDivisor);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.y)/Game.LookSensitivity);
 							break;
 						case(DIRECTION.DOWN):
-							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.y)/Game.MouseDivisor);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.y)/Game.LookSensitivity);
 							break;
 						case(DIRECTION.RIGHT):
-							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.x)/Game.MouseDivisor);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(MotionEvent.Relative.x)/Game.LookSensitivity);
 							break;
 						case(DIRECTION.LEFT):
-							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.x)/Game.MouseDivisor);
+							Binding.FuncWithArg.Invoke(GreaterEqualZero(-MotionEvent.Relative.x)/Game.LookSensitivity);
 							break;
 					}
 				}

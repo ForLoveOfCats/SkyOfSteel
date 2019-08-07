@@ -32,6 +32,7 @@ public class Items : Node
 		public BuildInfoDelegate RotationDelegate;
 
 		public UseItemDelegate UseDelegate;
+		public bool CanAds;
 
 		public ID[] DisallowedCollisions;
 	}
@@ -156,6 +157,7 @@ public class Items : Node
 					PositionDelegate = BuildingLogic.PlatformBuildPosition,
 					RotationDelegate = BuildingLogic.PlatformBuildRotation,
 					UseDelegate = null,
+					CanAds = false,
 					DisallowedCollisions = new ID[] {ID.PLATFORM}
 				}
 			},
@@ -167,6 +169,7 @@ public class Items : Node
 					PositionDelegate = BuildingLogic.WallBuildPosition,
 					RotationDelegate = BuildingLogic.WallBuildRotation,
 					UseDelegate = null,
+					CanAds = false,
 					DisallowedCollisions = new ID[] {ID.WALL, ID.TRIANGLE_WALL}
 				}
 			},
@@ -178,6 +181,7 @@ public class Items : Node
 					PositionDelegate = BuildingLogic.SlopeBuildPosition,
 					RotationDelegate = BuildingLogic.SlopeBuildRotation,
 					UseDelegate = null,
+					CanAds = false,
 					DisallowedCollisions = new ID[] {ID.SLOPE}
 				}
 			},
@@ -189,6 +193,7 @@ public class Items : Node
 					PositionDelegate = BuildingLogic.TriangleWallBuildPosition,
 					RotationDelegate = BuildingLogic.TriangleWallBuildRotation,
 					UseDelegate = null,
+					CanAds = false,
 					DisallowedCollisions = new ID[] {ID.TRIANGLE_WALL, ID.WALL}
 				}
 			},
@@ -197,7 +202,8 @@ public class Items : Node
 				ID.ROCKET_JUMPER,
 
 				new IdInfo {
-					UseDelegate = RocketJumper.Fire
+					UseDelegate = RocketJumper.Fire,
+					CanAds = false
 				}
 			},
 
@@ -205,7 +211,8 @@ public class Items : Node
 				ID.THUNDERBOLT,
 
 				new IdInfo {
-					UseDelegate = Thunderbolt.Fire
+					UseDelegate = Thunderbolt.Fire,
+					CanAds = true
 				}
 			}
 		};
