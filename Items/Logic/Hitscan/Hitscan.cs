@@ -5,6 +5,27 @@ using static System.Diagnostics.Debug;
 
 public class Hitscan : Spatial
 {
+	public class AdditiveRecoil
+	{
+		public float Height = 0;
+		public float Length = 0;
+		public float Life = 0;
+
+		public AdditiveRecoil(float HeightArg, float LengthArg)
+		{
+			Height = HeightArg;
+			Length = LengthArg;
+		}
+
+
+		public float CaclulateOffset()
+		{
+			float DupStep = 5*(Life/(Length/2));
+			return Pow(DupStep*E, 1-DupStep) * Height;
+		}
+	}
+
+
 	public static bool DebugDraw = false;
 
 	public static float TrailStartAdjustment = 1;
@@ -42,7 +63,7 @@ public class Hitscan : Spatial
 
 			Vector3 Origin = Plr.Cam.GlobalTransform.origin;
 			Vector3 Endpoint = Origin + new Vector3(0, 0, Range)
-				.Rotated(new Vector3(1, 0, 0), Deg2Rad(-Plr.LookVertical - VerticalAngle))
+				.Rotated(new Vector3(1, 0, 0), Deg2Rad(-Plr.ActualLookVertical - VerticalAngle))
 				.Rotated(new Vector3(0, 1, 0), Deg2Rad(Plr.LookHorizontal + HorizontalAngle));
 
 			Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 2);
@@ -91,14 +112,9 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void ApplyRecoil(float VerticalRecoil, float HorizontalRecoil)
+	public static void ApplyAdditiveRecoil(float Height, float Length)
 	{
-		Player Plr = Game.PossessedPlayer;
-		Plr.ApplyLookVertical(VerticalRecoil);
-		Plr.LookHorizontal -= HorizontalRecoil*NextRecoilDirection;
-		Plr.SetRotationDegrees(new Vector3(0, Plr.LookHorizontal, 0));
-
-		NextRecoilDirection *= -1;
+		Game.PossessedPlayer.ActiveAdditiveRecoil.Add(new AdditiveRecoil(Height, Length));
 	}
 
 

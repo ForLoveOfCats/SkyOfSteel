@@ -37,7 +37,7 @@ public class RocketJumper : Node
 		Rocket.IsLocal = true;
 		Rocket.Player = UsingPlayer;
 		Rocket.Translation = UsingPlayer.ProjectileEmitter.GetGlobalTransform().origin;
-		Rocket.RotationDegrees = new Vector3(-UsingPlayer.LookVertical, UsingPlayer.LookHorizontal, 0);
+		Rocket.RotationDegrees = new Vector3(-UsingPlayer.IntendedLookVertical, UsingPlayer.LookHorizontal, 0);
 		Rocket.Momentum = new Vector3(0, 0, RocketTravelSpeed)
 			.Rotated(new Vector3(1,0,0), Deg2Rad(Rocket.RotationDegrees.x))
 			.Rotated(new Vector3(0,1,0), Deg2Rad(Rocket.RotationDegrees.y));

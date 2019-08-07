@@ -76,7 +76,8 @@ public class Player : KinematicBody, IPushable
 	public Vector3 Momentum = new Vector3(0,0,0);
 	public float LastMomentumY = 0;
 	public float LookHorizontal = 0;
-	public float LookVertical = 0;
+	public float IntendedLookVertical = 0; //Mouse input affects this
+	public float ActualLookVertical = 0; //Intended + additive recoil offset
 	public bool IsPrimaryFiring = false;
 	public bool IsSecondaryFiring = false;
 
@@ -84,6 +85,8 @@ public class Player : KinematicBody, IPushable
 	public float CurrentMaxCooldown { get; private set;} = 100;
 	public float CurrentCooldown { get; private set;} = 100;
 	public bool PreventSwitch { get; private set;} = false;
+
+	public List<Hitscan.AdditiveRecoil> ActiveAdditiveRecoil = new List<Hitscan.AdditiveRecoil>();
 
 	public Items.Instance[] Inventory = new Items.Instance[10];
 	public int InventorySlot = 0;
@@ -547,9 +550,15 @@ public class Player : KinematicBody, IPushable
 
 	public void ApplyLookVertical(float Change)
 	{
-		LookVertical = Mathf.Clamp(LookVertical+Change, -90, 90);
-		Cam.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
-		ProjectileEmitterHinge.SetRotationDegrees(new Vector3(LookVertical, 180, 0));
+		IntendedLookVertical = Mathf.Clamp(IntendedLookVertical+Change, -90, 90);
+
+		ActualLookVertical = IntendedLookVertical;
+		foreach(Hitscan.AdditiveRecoil Instance in ActiveAdditiveRecoil)
+		{
+			ActualLookVertical = Clamp(ActualLookVertical + Instance.CaclulateOffset(), -90, 90);
+		}
+		Cam.SetRotationDegrees(new Vector3(ActualLookVertical, 180, 0));
+		ProjectileEmitterHinge.SetRotationDegrees(new Vector3(ActualLookVertical, 180, 0));
 	}
 
 
@@ -685,7 +694,7 @@ public class Player : KinematicBody, IPushable
 			if(Inventory[InventorySlot] != null && Game.Mode.ShouldThrowItem())
 			{
 				Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
-					.Rotated(new Vector3(1,0,0), Deg2Rad(-LookVertical))
+					.Rotated(new Vector3(1,0,0), Deg2Rad(-ActualLookVertical))
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
 				World.Self.DropItem(Inventory[InventorySlot].Id, Translation+Cam.Translation, Vel);
@@ -864,7 +873,7 @@ public class Player : KinematicBody, IPushable
 			FlatVel.y = 0;
 			MoveAndSlide(FlatVel
 			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)))
-			             .Rotated(new Vector3(1,0,0), Mathf.Deg2Rad(LoopRotation(-LookVertical)))
+			             .Rotated(new Vector3(1,0,0), Mathf.Deg2Rad(LoopRotation(-ActualLookVertical)))
 			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(LookHorizontal))),
 			             new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
 
@@ -912,7 +921,7 @@ public class Player : KinematicBody, IPushable
 			else
 				ItemId = Items.ID.ERROR;
 
-			Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, LookVertical, IsJumping, Health, ItemId,
+			Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, ActualLookVertical, IsJumping, Health, ItemId,
 			                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
 		}
 
@@ -973,6 +982,19 @@ public class Player : KinematicBody, IPushable
 
 	public override void _Process(float Delta)
 	{
+		var ToRemove = new List<Hitscan.AdditiveRecoil>();
+		foreach(Hitscan.AdditiveRecoil Instance in ActiveAdditiveRecoil)
+		{
+			Instance.Life += Delta;
+			if(Instance.Life > Instance.Length)
+				ToRemove.Add(Instance);
+		}
+		foreach(Hitscan.AdditiveRecoil Instance in ToRemove)
+			ActiveAdditiveRecoil.Remove(Instance);
+
+		ApplyLookVertical(0);
+
+
 		if(Inventory[InventorySlot] != null)
 		{
 			Items.ID Id = Inventory[InventorySlot].Id;
