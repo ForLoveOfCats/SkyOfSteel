@@ -457,7 +457,7 @@ public class Player : KinematicBody, IPushable
 	public void Sprint(float Sens)
 	{
 		SprintSens = Sens;
-		if(Sens > 0)
+		if(Sens > 0 && !Ads)
 		{
 			IsSprinting = true;
 
@@ -697,7 +697,10 @@ public class Player : KinematicBody, IPushable
 			}
 
 			else if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
+			{
 				Ads = true;
+				IsSprinting = false;
+			}
 		}
 
 		if(Sens <= 0 && IsSecondaryFiring)
@@ -706,7 +709,11 @@ public class Player : KinematicBody, IPushable
 
 			Items.Instance CurrentItem = Inventory[InventorySlot];
 			if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
+			{
 				Ads = false;
+				if(SprintSens > 0)
+					Sprint(SprintSens);
+			}
 		}
 	}
 
@@ -784,7 +791,7 @@ public class Player : KinematicBody, IPushable
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
-		if(JumpAxis > 0 && IsOnFloor())
+		if(JumpAxis > 0 && IsOnFloor() && !Ads)
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
@@ -913,7 +920,7 @@ public class Player : KinematicBody, IPushable
 				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
 			}
 
-			if(JumpAxis > 0 && !HasJumped && IsOnWall() && GetSlideCount() > 0 && Game.Mode.ShouldWallKick())
+			if(JumpAxis > 0 && !HasJumped && IsOnWall() && GetSlideCount() > 0 && !Ads && Game.Mode.ShouldWallKick())
 			{
 				HasJumped = true;
 
