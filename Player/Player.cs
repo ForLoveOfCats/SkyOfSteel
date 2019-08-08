@@ -677,7 +677,7 @@ public class Player : KinematicBody, IPushable
 
 	public void SecondaryFire(float Sens)
 	{
-		if(Sens > 0 && !IsSecondaryFiring && CurrentCooldown >= CurrentMaxCooldown)
+		if(Sens > 0 && !IsSecondaryFiring)
 		{
 			IsSecondaryFiring = true;
 
@@ -685,14 +685,17 @@ public class Player : KinematicBody, IPushable
 
 			if(CurrentItem == null || !Items.IdInfos[CurrentItem.Id].CanAds)
 			{
-				RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
-				if(BuildRayCast.IsColliding())
+				if(CurrentCooldown >= CurrentMaxCooldown)
 				{
-					Tile Hit = BuildRayCast.GetCollider() as Tile;
-					if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+					if(BuildRayCast.IsColliding())
 					{
-						Hit.NetRemove();
-						SetCooldown(0, BuildingCooldown, true);
+						Tile Hit = BuildRayCast.GetCollider() as Tile;
+						if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+						{
+							Hit.NetRemove();
+							SetCooldown(0, BuildingCooldown, true);
+						}
 					}
 				}
 			}
