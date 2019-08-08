@@ -1,7 +1,7 @@
 using Godot;
 
 
-public class Thunderbolt : Node
+public static class Thunderbolt
 {
 	public static float VerticalRecoil = 10;
 	public static float RecoilLength = 2;
@@ -10,15 +10,6 @@ public class Thunderbolt : Node
 	public static float BodyshotDamage = 20;
 	public static float LegshotDamage = 10;
 	public static float FireCooldown = 50;
-
-	public static Thunderbolt Self;
-
-	Thunderbolt()
-	{
-		if(Engine.EditorHint) {return;}
-
-		Self = this;
-	}
 
 
 	public static void Fire(Items.Instance Item, Player UsingPlayer)

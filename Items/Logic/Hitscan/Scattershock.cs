@@ -12,6 +12,7 @@ public static class Scattershock
 	public static float LegshotDamage = 10;
 	public static float FireCooldown = 55;
 
+
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
 		{
