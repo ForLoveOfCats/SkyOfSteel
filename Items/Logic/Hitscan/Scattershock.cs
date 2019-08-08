@@ -32,6 +32,6 @@ public static class Scattershock
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
 
 		UsingPlayer.SetCooldown(0, FireCooldown, true);
-		UsingPlayer.SfxManager.FpThunderboltFire(); //TODO: Add scattershock fire sfx
+		UsingPlayer.SfxManager.FpScattershockFire();
 	}
 }
