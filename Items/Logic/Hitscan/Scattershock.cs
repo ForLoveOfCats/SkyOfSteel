@@ -7,7 +7,7 @@ public static class Scattershock
 	public static float RecoilLength = 6f;
 	public static float Range = 500;
 	public static float AngularOffset = 1.5f;
-	public static float HeadshotDamage = 9;
+	public static float HeadshotDamage = 10;
 	public static float BodyshotDamage = 3;
 	public static float LegshotDamage = 2;
 	public static float FireCooldown = 25;
