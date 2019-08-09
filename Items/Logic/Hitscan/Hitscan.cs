@@ -1,5 +1,6 @@
 using Godot;
 using static Godot.Mathf;
+using System.Collections.Generic;
 using static System.Diagnostics.Debug;
 
 
@@ -30,10 +31,26 @@ public class Hitscan : Spatial
 	}
 
 
+	public class QueuedDamage
+	{
+		public int Id;
+		public float Damage;
+		public Vector3 Origin;
+
+		public QueuedDamage(int IdArg, float DamageArg, Vector3 OriginArg)
+		{
+			Id = IdArg;
+			Damage = DamageArg;
+			Origin = OriginArg;
+		}
+	}
+
+
 	public static bool DebugDraw = false;
 
 	public static float TrailStartAdjustment = 1;
 	public static int NextRecoilDirection; //1 for right, -1 for left
+	public static List<QueuedDamage> QueuedDamageList = new List<QueuedDamage>();
 
 	private static PackedScene HitscanTrailScene = null;
 
@@ -57,7 +74,7 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void Fire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg)
+	public static void QueueFire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg)
 	{
 		Assert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 		Player Plr = Game.PossessedPlayer;
@@ -83,8 +100,6 @@ public class Hitscan : Spatial
 
 				if(Results["collider"] is HitboxClass Hitbox)
 				{
-					Game.PossessedPlayer.SfxManager.FpHitsound();
-
 					Player HitPlr = Hitbox.OwningPlayer;
 
 					float Damage = 0;
@@ -101,13 +116,19 @@ public class Hitscan : Spatial
 							break;
 					}
 
-					if(HitPlr.Health - Damage <= 0)
-						Game.PossessedPlayer.SfxManager.FpKillsound();
 
-					HitPlr.Health -= Damage; //When multiple shots hit in the same frame we still want a killsound
-					//If this is somehow wrong we will have the correct value in a few hundred ms anyway
-
-					HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), Damage, Origin);
+					bool UpdatedExisting = false;
+					foreach(QueuedDamage Instance in QueuedDamageList)
+					{
+						if(Instance.Id == HitPlr.Id)
+						{
+							Instance.Damage += Damage;
+							UpdatedExisting = true;
+							break;
+						}
+					}
+					if(!UpdatedExisting)
+						QueuedDamageList.Add(new QueuedDamage(HitPlr.Id, Damage, Origin));
 				}
 			}
 			else
@@ -116,6 +137,25 @@ public class Hitscan : Spatial
 				Net.SteelRpc(Self, nameof(DrawTrail), Origin, Endpoint);
 			}
 		}
+	}
+
+
+	public static void ApplyQueuedFire()
+	{
+		if(QueuedDamageList.Count > 0)
+			Game.PossessedPlayer.SfxManager.FpHitsound();
+
+		foreach(QueuedDamage Instance in QueuedDamageList)
+		{
+			Player DamagedPlayer = Net.Players[Instance.Id];
+
+			if(DamagedPlayer.Health - Instance.Damage <= 0)
+				Game.PossessedPlayer.SfxManager.FpKillsound();
+
+			DamagedPlayer.RpcId(Instance.Id, nameof(Player.ApplyDamage), Instance.Damage, Instance.Origin);
+		}
+
+		QueuedDamageList.Clear();
 	}
 
 

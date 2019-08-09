@@ -14,10 +14,12 @@ public static class Thunderbolt
 
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
-		Hitscan.Fire(0, 0, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
-		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
+		Hitscan.QueueFire(0, 0, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
+		Hitscan.ApplyQueuedFire();
 
+		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
 		UsingPlayer.SetCooldown(0, FireCooldown, true);
+
 		UsingPlayer.SfxManager.FpThunderboltFire();
 	}
 }

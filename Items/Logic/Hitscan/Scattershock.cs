@@ -24,9 +24,11 @@ public static class Scattershock
 			{
 				for(int y = -2; y <= 2; y++)
 				{
-					Hitscan.Fire(x*AngularOffset*Multiplyer, y*AngularOffset*Multiplyer, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
+					Hitscan.QueueFire(x*AngularOffset*Multiplyer, y*AngularOffset*Multiplyer, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
 				}
 			}
+
+			Hitscan.ApplyQueuedFire();
 		}
 
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
