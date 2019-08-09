@@ -15,6 +15,10 @@ public class Hitscan : Spatial
 		{
 			Height = HeightArg;
 			Length = LengthArg;
+
+			Life = Length/8; //We start the life partway through the curve
+			//The "correct" value would be Length/10 to start at the vertex
+			//Instead it starts *just* before the vertex
 		}
 
 

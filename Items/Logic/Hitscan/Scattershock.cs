@@ -3,8 +3,8 @@ using Godot;
 
 public static class Scattershock
 {
-	public static float VerticalRecoil = 22;
-	public static float RecoilLength = 4;
+	public static float VerticalRecoil = 35;
+	public static float RecoilLength = 6.5f;
 	public static float Range = 500;
 	public static float AngularOffset = 2f;
 	public static float HeadshotDamage = 30;

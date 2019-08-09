@@ -1024,6 +1024,7 @@ public class Player : KinematicBody, IPushable
 			AdsMultiplyer = Clamp(AdsMultiplyer + (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
 		Cam.Fov = Game.Fov*AdsMultiplyer;
 
+		ApplyLookVertical(0);
 		var ToRemove = new List<Hitscan.AdditiveRecoil>();
 		foreach(Hitscan.AdditiveRecoil Instance in ActiveAdditiveRecoil)
 		{
@@ -1033,9 +1034,6 @@ public class Player : KinematicBody, IPushable
 		}
 		foreach(Hitscan.AdditiveRecoil Instance in ToRemove)
 			ActiveAdditiveRecoil.Remove(Instance);
-
-		ApplyLookVertical(0);
-
 
 		if(Inventory[InventorySlot] != null)
 		{
