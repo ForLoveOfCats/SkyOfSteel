@@ -7,8 +7,8 @@ public static class Thunderbolt
 	public static float RecoilLength = 3;
 	public static float Range = 500;
 	public static float HeadshotDamage = 100;
-	public static float BodyshotDamage = 20;
-	public static float LegshotDamage = 10;
+	public static float BodyshotDamage = 35;
+	public static float LegshotDamage = 20;
 	public static float FireCooldown = 50;
 
 

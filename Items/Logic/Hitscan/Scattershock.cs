@@ -3,14 +3,14 @@ using Godot;
 
 public static class Scattershock
 {
-	public static float VerticalRecoil = 35;
-	public static float RecoilLength = 6.5f;
+	public static float VerticalRecoil = 36;
+	public static float RecoilLength = 6f;
 	public static float Range = 500;
-	public static float AngularOffset = 2f;
-	public static float HeadshotDamage = 30;
-	public static float BodyshotDamage = 25;
-	public static float LegshotDamage = 10;
-	public static float FireCooldown = 55;
+	public static float AngularOffset = 1.5f;
+	public static float HeadshotDamage = 9;
+	public static float BodyshotDamage = 3;
+	public static float LegshotDamage = 2;
+	public static float FireCooldown = 25;
 
 
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
@@ -20,9 +20,9 @@ public static class Scattershock
 			if(Game.PossessedPlayer.Ads)
 				Multiplyer = Game.PossessedPlayer.AdsMultiplyer;
 
-			for(int x = -1; x <= 1; x++)
+			for(int x = -2; x <= 2; x++)
 			{
-				for(int y = -1; y <= 1; y++)
+				for(int y = -2; y <= 2; y++)
 				{
 					Hitscan.Fire(x*AngularOffset*Multiplyer, y*AngularOffset*Multiplyer, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
 				}
