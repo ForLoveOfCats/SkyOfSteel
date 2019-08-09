@@ -100,6 +100,9 @@ public class Hitscan : Spatial
 					if(HitPlr.Health - Damage <= 0)
 						Game.PossessedPlayer.SfxManager.FpKillsound();
 
+					HitPlr.Health -= Damage; //When multiple shots hit in the same frame we still want a killsound
+					//If this is somehow wrong we will have the correct value in a few hundred ms anyway
+
 					HitPlr.RpcId(HitPlr.Id, nameof(Player.ApplyDamage), Damage, Origin);
 				}
 			}
