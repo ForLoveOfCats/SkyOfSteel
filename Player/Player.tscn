@@ -117,11 +117,11 @@ unit_size = 40.0
 
 [node name="FpHitsoundSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
 stream = ExtResource( 14 )
-volume_db = -1.0
+volume_db = 3.0
 
 [node name="FpKillsoundSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
 stream = ExtResource( 15 )
-volume_db = -1.0
+volume_db = 1.0
 
 [node name="FpThunderboltFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
 stream = ExtResource( 16 )
@@ -134,9 +134,9 @@ unit_size = 30.0
 
 [node name="FpScattershockFireSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
 stream = ExtResource( 17 )
-volume_db = -1.0
+volume_db = -3.0
 
 [node name="TpScattershockFireSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
 stream = ExtResource( 17 )
-unit_db = 10.0
+unit_db = 5.0
 unit_size = 30.0
