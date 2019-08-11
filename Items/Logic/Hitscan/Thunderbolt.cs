@@ -18,7 +18,7 @@ public static class Thunderbolt
 		Hitscan.ApplyQueuedFire();
 
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
-		UsingPlayer.SetCooldown(0, FireCooldown, true);
+		UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer, true);
 
 		UsingPlayer.SfxManager.FpThunderboltFire();
 	}
