@@ -12,7 +12,7 @@ public class RocketJumper : Node
 	public static float MinRocketDistance = 8;
 	public static float RocketHorizontalMultiplyer = 1.1f;
 	public static float RocketVerticalDivisor = 1.6f;
-	public static float FireCooldown = 65;
+	public static float FireCooldown = 40;
 
 	public static PackedScene JumperRocketScene;
 
