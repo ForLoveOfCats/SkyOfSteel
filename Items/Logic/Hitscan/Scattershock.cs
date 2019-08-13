@@ -1,4 +1,4 @@
-using Godot;
+using static Godot.Mathf;
 
 
 public static class Scattershock
@@ -6,7 +6,7 @@ public static class Scattershock
 	public static float VerticalRecoil = 36;
 	public static float RecoilLength = 6f;
 	public static float Range = 500;
-	public static float AngularOffset = 1.5f;
+	public static float AngularOffset = 2.8f;
 	public static float HeadshotDamage = 10;
 	public static float BodyshotDamage = 3;
 	public static float LegshotDamage = 2;
@@ -16,9 +16,7 @@ public static class Scattershock
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
 		{
-			float Multiplyer = 1;
-			if(Game.PossessedPlayer.Ads)
-				Multiplyer = Game.PossessedPlayer.AdsMultiplyer;
+			float Multiplyer = Pow(UsingPlayer.AdsMultiplyer, 2);
 
 			for(int x = -2; x <= 2; x++)
 			{
