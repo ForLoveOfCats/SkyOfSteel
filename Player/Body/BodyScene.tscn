@@ -19,10 +19,10 @@ flags_unshaded = true
 albedo_texture = ExtResource( 3 )
 
 [sub_resource type="BoxShape" id=4]
-extents = Vector3( 0.507801, 0.457467, 0.559671 )
+extents = Vector3( 0.540618, 0.496908, 0.59228 )
 
 [sub_resource type="BoxShape" id=5]
-extents = Vector3( 0.15, 0.4, 0.15 )
+extents = Vector3( 0.18, 0.4, 0.18 )
 
 [sub_resource type="SpatialMaterial" id=6]
 albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
@@ -117,7 +117,6 @@ angular_velocity = 8.31174e-21
 
 [node name="Left" parent="LegsJoint/LegFlames" index="1" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0.927, -0.052, 0 )
-angular_velocity = 0.0
 
 [node name="RightArmMesh" parent="RightArm/Skeleton" index="0"]
 material/0 = SubResource( 11 )
