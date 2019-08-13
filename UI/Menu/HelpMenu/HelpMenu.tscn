@@ -20,26 +20,27 @@ alignment = 1
 script = ExtResource( 1 )
 
 [node name="Title" parent="." instance=ExtResource( 2 )]
+margin_top = 13.0
 margin_right = 1024.0
-margin_bottom = 52.0
+margin_bottom = 65.0
 text = "Help"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 3 )]
-margin_top = 56.0
+margin_top = 69.0
 margin_right = 1024.0
-margin_bottom = 80.0
+margin_bottom = 93.0
 
 [node name="ControlsTitle" parent="." instance=ExtResource( 4 )]
-margin_top = 84.0
+margin_top = 97.0
 margin_right = 1024.0
-margin_bottom = 115.0
+margin_bottom = 128.0
 custom_fonts/font = SubResource( 1 )
 text = "Default Controls"
 
 [node name="Label" parent="." instance=ExtResource( 4 )]
-margin_top = 119.0
+margin_top = 132.0
 margin_right = 1024.0
-margin_bottom = 548.0
+margin_bottom = 561.0
 text = "Forward - W
 Backward - S
 Right - D
@@ -47,7 +48,7 @@ Left - S
 Jump - Space
 Sprint - Hold Shift
 Build - Left Click
-Remove - Right Click
+ADS/Remove - Right Click
 Switch Hotbar Slot - Mouse Wheel
 Rotate Object Placement - R
 Throw Item - Q
@@ -58,49 +59,49 @@ Fly Down - Control
 Toggle Console - Tilda"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 3 )]
-margin_top = 552.0
+margin_top = 565.0
 margin_right = 1024.0
-margin_bottom = 576.0
+margin_bottom = 589.0
 
 [node name="NetworkTitle" parent="." instance=ExtResource( 4 )]
-margin_top = 580.0
+margin_top = 593.0
 margin_right = 1024.0
-margin_bottom = 611.0
+margin_bottom = 624.0
 custom_fonts/font = SubResource( 1 )
 text = "Network Information"
 
 [node name="Label2" parent="." instance=ExtResource( 4 )]
-margin_top = 615.0
+margin_top = 628.0
 margin_right = 1024.0
-margin_bottom = 639.0
+margin_bottom = 652.0
 text = "Default Port: 27015"
 
 [node name="SpacerLabel3" parent="." instance=ExtResource( 3 )]
-margin_top = 643.0
+margin_top = 656.0
 margin_right = 1024.0
-margin_bottom = 667.0
+margin_bottom = 680.0
 
 [node name="MoreHelpTitle" parent="." instance=ExtResource( 4 )]
-margin_top = 671.0
+margin_top = 684.0
 margin_right = 1024.0
-margin_bottom = 702.0
+margin_bottom = 715.0
 custom_fonts/font = SubResource( 1 )
 text = "For More Help"
 
 [node name="Label3" parent="." instance=ExtResource( 4 )]
-margin_top = 706.0
+margin_top = 719.0
 margin_right = 1024.0
-margin_bottom = 730.0
+margin_bottom = 743.0
 text = "Visit:  skyofsteel.org/Help"
 
 [node name="SpacerLabel4" parent="." instance=ExtResource( 3 )]
-margin_top = 734.0
+margin_top = 747.0
 margin_right = 1024.0
-margin_bottom = 758.0
+margin_bottom = 771.0
 
 [node name="BackButton" parent="." instance=ExtResource( 6 )]
-margin_top = 762.0
+margin_top = 775.0
 margin_right = 1024.0
-margin_bottom = 792.0
+margin_bottom = 805.0
 text = "Back"
 [connection signal="pressed" from="BackButton" to="." method="BackPressed"]
