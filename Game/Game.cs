@@ -4,7 +4,7 @@ using System;
 
 public class Game : Node
 {
-	public const string Version = "0.1.5-dev"; //Yes it's a string shush
+	public const string Version = "0.1.5"; //Yes it's a string shush
 	public static string RemoteVersion = null; //What is the latest version available online
 	public const string DefaultNickname = "BrianD";
 
