@@ -13,12 +13,14 @@ public class Player : KinematicBody, IPushable
 
 	public float BaseMovementSpeed = 20;
 	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
-	public float SprintFlyingMultiplyer = 6; //Speed while sprint flying is base speed times this value
+	public float FlySprintMultiplyer = 6; //Speed while sprint flying is base speed times this value
 	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 22; //How many units per second to accelerate
 	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
+	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
+	public float FlyFriction { get { return (BaseMovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
 	public float CrouchDownForce = -50f;
 	public float JumpSpeedMultiplyer = 15f;
 	public float JumpStartForce = 12f;
@@ -465,9 +467,9 @@ public class Player : KinematicBody, IPushable
 			if(FlyMode)
 			{
 				if(JumpAxis == 1)
-					Momentum.y = BaseMovementSpeed*SprintFlyingMultiplyer;
+					Momentum.y = BaseMovementSpeed*FlySprintMultiplyer;
 				else if(IsCrouching)
-					Momentum.y = -BaseMovementSpeed*SprintFlyingMultiplyer;
+					Momentum.y = -BaseMovementSpeed*FlySprintMultiplyer;
 			}
 		}
 		else
@@ -494,7 +496,7 @@ public class Player : KinematicBody, IPushable
 			{
 				if(IsSprinting)
 				{
-					Momentum.y = BaseMovementSpeed*SprintFlyingMultiplyer;
+					Momentum.y = BaseMovementSpeed*FlySprintMultiplyer;
 				}
 				else
 				{
@@ -543,7 +545,7 @@ public class Player : KinematicBody, IPushable
 					JumpSens = 0;
 
 					if(IsSprinting)
-						Momentum.y = -BaseMovementSpeed*SprintFlyingMultiplyer;
+						Momentum.y = -BaseMovementSpeed*FlySprintMultiplyer;
 					else
 						Momentum.y = -BaseMovementSpeed;
 				}
@@ -824,11 +826,11 @@ public class Player : KinematicBody, IPushable
 			//In flymode and jump is not being held
 			if(Momentum.y > 0)
 			{
-				Momentum.y = Mathf.Clamp(Momentum.y - Friction*Delta, 0, MaxVerticalSpeed);
+				Momentum.y = Mathf.Clamp(Momentum.y - FlyFriction*Delta, 0, MaxVerticalSpeed);
 			}
 			else if(Momentum.y < 0)
 			{
-				Momentum.y = Mathf.Clamp(Momentum.y + Friction*Delta, -MaxVerticalSpeed, 0);
+				Momentum.y = Mathf.Clamp(Momentum.y + FlyFriction*Delta, -MaxVerticalSpeed, 0);
 			}
 		}
 
@@ -848,7 +850,7 @@ public class Player : KinematicBody, IPushable
 				if(!FlyMode)
 					SpeedLimit *= SprintMultiplyer;
 				else if(FlyMode)
-					SpeedLimit *= SprintFlyingMultiplyer;
+					SpeedLimit *= FlySprintMultiplyer;
 			}
 
 			float X = 0, Z = 0;
@@ -864,7 +866,11 @@ public class Player : KinematicBody, IPushable
 			float Speed = Momentum.Flattened().Length();
 			if(Speed > 0)
 			{
-				Speed = Clamp(Speed - Friction*Delta, 0, Speed);
+				if(FlyMode)
+					Speed = Clamp(Speed - FlyFriction*Delta, 0, Speed);
+				else
+					Speed = Clamp(Speed - Friction*Delta, 0, Speed);
+
 				Vector3 HorzMomentum = Momentum.Flattened().Normalized() * Speed;
 				Momentum.x = HorzMomentum.x;
 				Momentum.z = HorzMomentum.z;
