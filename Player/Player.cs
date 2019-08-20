@@ -19,6 +19,7 @@ public class Player : KinematicBody, IPushable
 	public float AirAcceleration = 22; //How many units per second to accelerate
 	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
+	public float SlideFrictionDivisor = 6;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (BaseMovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
 	public float CrouchDownForce = -50f;
@@ -460,7 +461,7 @@ public class Player : KinematicBody, IPushable
 	public void Sprint(float Sens)
 	{
 		SprintSens = Sens;
-		if(Sens > 0 && !Ads)
+		if(Sens > 0 && !IsCrouching && !Ads)
 		{
 			IsSprinting = true;
 
@@ -475,14 +476,6 @@ public class Player : KinematicBody, IPushable
 		else
 		{
 			IsSprinting = false;
-
-			if(FlyMode)
-			{
-				if(JumpAxis == 1)
-					Momentum.y = BaseMovementSpeed;
-				else if(IsCrouching)
-					Momentum.y = -BaseMovementSpeed;
-			}
 		}
 	}
 
@@ -535,6 +528,7 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Sens > 0)
 		{
+			IsSprinting = false;
 			IsCrouching = true;
 
 			if(Game.Mode.ShouldCrouch())
@@ -560,6 +554,9 @@ public class Player : KinematicBody, IPushable
 		else
 		{
 			IsCrouching = false;
+
+			if(SprintSens > 0)
+				Sprint(SprintSens);
 		}
 	}
 
@@ -868,6 +865,8 @@ public class Player : KinematicBody, IPushable
 			{
 				if(FlyMode)
 					Speed = Clamp(Speed - FlyFriction*Delta, 0, Speed);
+				else if(IsCrouching)
+					Speed = Clamp(Speed - (Friction/SlideFrictionDivisor)*Delta, 0, Speed);
 				else
 					Speed = Clamp(Speed - Friction*Delta, 0, Speed);
 
