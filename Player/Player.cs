@@ -514,7 +514,6 @@ public class Player : KinematicBody, IPushable
 			}
 
 			JumpAxis = 1;
-			IsCrouching = false;
 		}
 		else
 		{
