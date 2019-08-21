@@ -24,7 +24,7 @@ public class Player : KinematicBody, IPushable
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (BaseMovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
 	public float CrouchDownForce = -50f;
-	public float JumpSpeedMultiplyer = 15f;
+	public float JumpSpeedAddend = 18f;
 	public float JumpStartForce = 12f;
 	public float JumpContinueForce = 5f;
 	public float MaxJumpLength = 0.3f;
@@ -504,7 +504,7 @@ public class Player : KinematicBody, IPushable
 				if(JumpAxis < 1)
 				{
 					Vector3 FlatMomentum = new Vector3(Momentum.x, 0, Momentum.z);
-					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + JumpSpeedMultiplyer);
+					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + JumpSpeedAddend);
 					Momentum.x = FlatMomentum.x;
 					Momentum.z = FlatMomentum.z;
 				}
