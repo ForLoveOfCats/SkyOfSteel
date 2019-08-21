@@ -15,11 +15,12 @@ public class Player : KinematicBody, IPushable
 	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
 	public float FlySprintMultiplyer = 6; //Speed while sprint flying is base speed times this value
 	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
+	public float CrouchMovementDivisor = 1.5f;
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 22; //How many units per second to accelerate
 	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
-	public float SlideFrictionDivisor = 6;
+	public float SlideFrictionDivisor = 10;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (BaseMovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
 	public float CrouchDownForce = -50f;
@@ -849,6 +850,8 @@ public class Player : KinematicBody, IPushable
 				else if(FlyMode)
 					SpeedLimit *= FlySprintMultiplyer;
 			}
+			else if(IsCrouching)
+				SpeedLimit = BaseMovementSpeed/CrouchMovementDivisor;
 
 			float X = 0, Z = 0;
 			if(RightAxis > 0)
@@ -865,7 +868,7 @@ public class Player : KinematicBody, IPushable
 			{
 				if(FlyMode)
 					Speed = Clamp(Speed - FlyFriction*Delta, 0, Speed);
-				else if(IsCrouching)
+				else if(IsCrouching && Speed > SpeedLimit)
 					Speed = Clamp(Speed - (Friction/SlideFrictionDivisor)*Delta, 0, Speed);
 				else
 					Speed = Clamp(Speed - Friction*Delta, 0, Speed);
