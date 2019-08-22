@@ -64,7 +64,7 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK, SWIFTSPARK}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -229,6 +229,16 @@ public class Items : Node
 				new IdInfo {
 					UseDelegate = Scattershock.Fire,
 					FullAuto = false,
+					CanAds = true
+				}
+			},
+
+			{
+				ID.SWIFTSPARK,
+
+				new IdInfo {
+					UseDelegate = null,
+					FullAuto = true,
 					CanAds = true
 				}
 			}

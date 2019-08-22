@@ -190,6 +190,7 @@ public class Player : KinematicBody, IPushable
 		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER));
 		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT));
 		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK));
+		ItemGive(new Items.Instance(Items.ID.SWIFTSPARK));
 	}
 
 

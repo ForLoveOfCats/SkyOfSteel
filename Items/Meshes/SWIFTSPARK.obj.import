@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/SWIFTSPARK.obj-c8c5cd2e87f5a7aae9700b8c245c7494.mesh"
+
+[deps]
+
+files=[ "res://.import/SWIFTSPARK.obj-c8c5cd2e87f5a7aae9700b8c245c7494.mesh" ]
+
+source_file="res://Items/Meshes/SWIFTSPARK.obj"
+dest_files=[ "res://.import/SWIFTSPARK.obj-c8c5cd2e87f5a7aae9700b8c245c7494.mesh", "res://.import/SWIFTSPARK.obj-c8c5cd2e87f5a7aae9700b8c245c7494.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true
