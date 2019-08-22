@@ -237,7 +237,7 @@ public class Items : Node
 				ID.SWIFTSPARK,
 
 				new IdInfo {
-					UseDelegate = null,
+					UseDelegate = SwiftSpark.Fire,
 					FullAuto = true,
 					CanAds = true
 				}
