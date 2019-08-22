@@ -3,6 +3,8 @@ using Godot;
 
 public static class SwiftSpark
 {
+	public static float VerticalRecoil = 4;
+	public static float HorizontalRecoil = 1;
 	public static float Range = 400;
 	public static float HeadshotDamage = 20;
 	public static float BodyshotDamage = 15;
@@ -15,6 +17,7 @@ public static class SwiftSpark
 		Hitscan.QueueFire(0, 0, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
 		Hitscan.ApplyQueuedFire();
 
+		Hitscan.ApplyEffectiveRecoil(VerticalRecoil, HorizontalRecoil);
 		UsingPlayer.SetCooldown(0, FireCooldown, true);
 
 		UsingPlayer.SfxManager.FpThunderboltFire();

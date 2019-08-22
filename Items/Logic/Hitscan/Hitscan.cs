@@ -76,7 +76,6 @@ public class Hitscan : Spatial
 
 	public static void QueueFire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg)
 	{
-		Assert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 		Player Plr = Game.PossessedPlayer;
 
 		{
@@ -166,6 +165,24 @@ public class Hitscan : Spatial
 		Length *= Game.PossessedPlayer.AdsMultiplyer;
 
 		Game.PossessedPlayer.ActiveAdditiveRecoil.Add(new AdditiveRecoil(Height, Length));
+	}
+
+
+	public static void ApplyEffectiveRecoil(float VerticalRecoil, float HorizontalRecoil)
+	{
+		Assert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
+
+		Player Plr = Game.PossessedPlayer;
+
+		//Lessen recoil when ADS
+		VerticalRecoil *= Plr.AdsMultiplyer;
+		HorizontalRecoil *= Plr.AdsMultiplyer;
+
+		Plr.ApplyLookVertical(VerticalRecoil);
+		Plr.LookHorizontal += HorizontalRecoil * -NextRecoilDirection;
+		Plr.SetRotationDegrees(new Vector3(0, Plr.LookHorizontal, 0));
+
+		NextRecoilDirection = -NextRecoilDirection;
 	}
 
 
