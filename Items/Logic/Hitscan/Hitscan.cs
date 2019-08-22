@@ -46,6 +46,8 @@ public class Hitscan : Spatial
 	}
 
 
+	public static float CrouchRecoilPercentage = 0.6f; //Multiplied by recoil when crouching
+
 	public static bool DebugDraw = false;
 
 	public static float TrailStartAdjustment = 1;
@@ -164,6 +166,13 @@ public class Hitscan : Spatial
 		Height *= Game.PossessedPlayer.AdsMultiplyer;
 		Length *= Game.PossessedPlayer.AdsMultiplyer;
 
+		//Lessen recoil when crouching
+		if(Game.PossessedPlayer.IsCrouching)
+		{
+			Height *= CrouchRecoilPercentage;
+			Length *= CrouchRecoilPercentage;
+		}
+
 		Game.PossessedPlayer.ActiveAdditiveRecoil.Add(new AdditiveRecoil(Height, Length));
 	}
 
@@ -177,6 +186,13 @@ public class Hitscan : Spatial
 		//Lessen recoil when ADS
 		VerticalRecoil *= Plr.AdsMultiplyer;
 		HorizontalRecoil *= Plr.AdsMultiplyer;
+
+		//Lessen recoil when crouching
+		if(Plr.IsCrouching)
+		{
+			VerticalRecoil *= CrouchRecoilPercentage;
+			HorizontalRecoil *= CrouchRecoilPercentage;
+		}
 
 		Plr.ApplyLookVertical(VerticalRecoil);
 		Plr.LookHorizontal += HorizontalRecoil * -NextRecoilDirection;
