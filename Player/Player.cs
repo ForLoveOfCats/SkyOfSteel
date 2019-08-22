@@ -529,8 +529,10 @@ public class Player : KinematicBody, IPushable
 	{
 		if(Sens > 0)
 		{
-			IsSprinting = false;
 			IsCrouching = true;
+
+			if(!FlyMode)
+				IsSprinting = false;
 
 			if(Game.Mode.ShouldCrouch())
 			{
