@@ -31,7 +31,11 @@ public static class Scattershock
 
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
 
-		UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer, true);
+		if(UsingPlayer.IsCrouching)
+			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer*Hitscan.CrouchAffectPercentage, true);
+		else
+			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer, true);
+
 		UsingPlayer.SfxManager.FpScattershockFire();
 	}
 }
