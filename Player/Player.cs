@@ -1053,6 +1053,14 @@ public class Player : KinematicBody, IPushable
 			ViewmodelItem.MaterialOverride = Mat;
 
 			ViewmodelItem.Show();
+
+			{
+				Items.IdInfo Info = Items.IdInfos[Inventory[InventorySlot].Id];
+				if(IsPrimaryFiring && CurrentCooldown >= CurrentMaxCooldown && Info.UseDelegate != null && Info.FullAuto)
+				{
+					Items.UseItem(Inventory[InventorySlot], this);
+				}
+			}
 		}
 		else
 		{
