@@ -176,9 +176,9 @@ public class World : Node
 	public static void Save(string SaveNameArg)
 	{
 		Directory SaveDir = new Directory();
-		if(SaveDir.DirExists("user://Saves/" + SaveNameArg))
+		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
 		{
-			System.IO.Directory.Delete(OS.GetUserDataDir() + "/Saves/" + SaveNameArg, true);
+			System.IO.Directory.Delete($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}", true);
 		}
 
 		int SaveCount = 0;
@@ -204,7 +204,14 @@ public class World : Node
 			Net.SteelRpc(Self, nameof(RequestClear));
 			DefaultPlatforms();
 
-			SaveDir.Open($"user://Saves/{SaveNameArg}");
+			bool ChunksDir = false;
+			if(SaveDir.DirExists($"user://Saves/{SaveNameArg}/Chunks"))
+			{
+				SaveDir.Open($"user://Saves/{SaveNameArg}/Chunks");
+				ChunksDir = true;
+			}
+			else
+				SaveDir.Open($"user://Saves/{SaveNameArg}");
 			SaveDir.ListDirBegin(true, true);
 
 			int PlaceCount = 0;
@@ -217,7 +224,12 @@ public class World : Node
 					break;
 				}
 
-				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{FileName}"));
+				string Path;
+				if(ChunksDir)
+					Path = $"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Chunks/{FileName}";
+				else
+					Path = $"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{FileName}";
+				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText(Path));
 				PlaceCount += Returned.Item2;
 				if(!Returned.Item1)
 				{
@@ -494,11 +506,11 @@ public class World : Node
 		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
 
 		Directory SaveDir = new Directory();
-		if(!SaveDir.DirExists("user://Saves/"+SaveNameArg))
+		if(!SaveDir.DirExists($"user://Saves/{SaveNameArg}/Chunks"))
 		{
-			SaveDir.MakeDirRecursive("user://Saves/"+SaveNameArg);
+			SaveDir.MakeDirRecursive($"user://Saves/{SaveNameArg}/Chunks");
 		}
-		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{ChunkTuple.ToString()}.json", SerializedChunk);
+		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Chunks/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
 		foreach(Tile Branch in Chunks[ChunkTuple].Tiles) //I hate to do this because it is rather inefficient
