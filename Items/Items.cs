@@ -64,7 +64,7 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK, SWIFTSPARK}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, TRIANGLE_PLATFORM, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK, SWIFTSPARK}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -200,6 +200,19 @@ public class Items : Node
 					FullAuto = false,
 					CanAds = false,
 					DisallowedCollisions = new ID[] {ID.TRIANGLE_WALL, ID.WALL}
+				}
+			},
+
+			{
+				ID.TRIANGLE_PLATFORM,
+
+				new IdInfo {
+					PositionDelegate = BuildingLogic.TrianglePlatformBuildPosition,
+					RotationDelegate = BuildingLogic.TrianglePlatformBuildRotation,
+					UseDelegate = null,
+					FullAuto = false,
+					CanAds = false,
+					DisallowedCollisions = new ID[] {ID.PLATFORM}
 				}
 			},
 

@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/TRIANGLE_PLATFORM.obj-7ad848803dc1456dc42ee639f691eb49.mesh"
+
+[deps]
+
+files=[ "res://.import/TRIANGLE_PLATFORM.obj-7ad848803dc1456dc42ee639f691eb49.mesh" ]
+
+source_file="res://Items/Meshes/TRIANGLE_PLATFORM.obj"
+dest_files=[ "res://.import/TRIANGLE_PLATFORM.obj-7ad848803dc1456dc42ee639f691eb49.mesh", "res://.import/TRIANGLE_PLATFORM.obj-7ad848803dc1456dc42ee639f691eb49.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true
