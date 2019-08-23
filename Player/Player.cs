@@ -811,7 +811,7 @@ public class Player : KinematicBody, IPushable
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
-		if(JumpAxis > 0 && IsOnFloor() && !Ads)
+		if(JumpAxis > 0 && IsOnFloor() && !IsCrouching && !Ads)
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
