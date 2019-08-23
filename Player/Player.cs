@@ -109,9 +109,13 @@ public class Player : KinematicBody, IPushable
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
+	public CollisionShape CollisionCapsule;
+
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
 	public MeshInstance ThirdPersonItem;
+
+	public MeshInstance LowerLegs;
 
 	public CPUParticles RightLegFlames;
 	public CPUParticles LeftLegFlames;
@@ -139,6 +143,8 @@ public class Player : KinematicBody, IPushable
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
+		CollisionCapsule = GetNode<CollisionShape>("CollisionShape");
+
 		if(Possessed)
 		{
 			Cam.MakeCurrent();
@@ -158,8 +164,10 @@ public class Player : KinematicBody, IPushable
 			HeadJoint = GetNode("BodyScene").GetNode<Spatial>("HeadJoint");
 			LegsJoint = GetNode("BodyScene").GetNode<Spatial>("LegsJoint");
 
-			RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Right");
-			LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LegFlames/Left");
+			LowerLegs = GetNode("BodyScene").GetNode<MeshInstance>("LegsJoint/LowerLegs");
+
+			RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LowerLegs/LegFlames/Right");
+			LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LowerLegs/LegFlames/Left");
 
 			ThirdPersonItem = GetNode("BodyScene").GetNode<MeshInstance>("ItemMesh");
 			ShaderMaterial Mat = new ShaderMaterial();
@@ -553,6 +561,11 @@ public class Player : KinematicBody, IPushable
 						Momentum.y = CrouchDownForce;
 				}
 			}
+
+			CollisionCapsule.Scale = new Vector3(1.5f, 1.5f, 1);
+			CollisionCapsule.Translation = new Vector3(0, 1.5f, 0);
+			if(IsOnFloor())
+				Translation = new Vector3(Translation.x, Translation.y-1.5f, Translation.z);
 		}
 		else
 		{
@@ -560,6 +573,11 @@ public class Player : KinematicBody, IPushable
 
 			if(SprintSens > 0)
 				Sprint(SprintSens);
+
+			CollisionCapsule.Scale = new Vector3(1.5f, 1.5f, 1.5f);
+			CollisionCapsule.Translation = new Vector3(0, 0, 0);
+			if(IsOnFloor())
+				Translation = new Vector3(Translation.x, Translation.y+1.5f, Translation.z);
 		}
 	}
 
