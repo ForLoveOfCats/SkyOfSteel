@@ -115,8 +115,6 @@ public class Player : KinematicBody, IPushable
 	public Spatial LegsJoint;
 	public MeshInstance ThirdPersonItem;
 
-	public MeshInstance LowerLegs;
-
 	public CPUParticles RightLegFlames;
 	public CPUParticles LeftLegFlames;
 
@@ -163,8 +161,6 @@ public class Player : KinematicBody, IPushable
 		{
 			HeadJoint = GetNode("BodyScene").GetNode<Spatial>("HeadJoint");
 			LegsJoint = GetNode("BodyScene").GetNode<Spatial>("LegsJoint");
-
-			LowerLegs = GetNode("BodyScene").GetNode<MeshInstance>("LegsJoint/LowerLegs");
 
 			RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LowerLegs/LegFlames/Right");
 			LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LowerLegs/LegFlames/Left");
