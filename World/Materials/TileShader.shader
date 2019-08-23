@@ -11,12 +11,11 @@ void vertex() {
 	NORMAL = (WORLD_MATRIX * vec4(NORMAL, 0.0)).xyz;
 }
 
+
 void fragment() {
 	// Calculating how exposed the surface is to the sun (the hardcoded vec3 is the normalized direction to the sun)
 	float dot_to_sun = dot(NORMAL, vec3(0.00299977, 0.99992351, 0.01199908));
-	// Amount of light for the diffuse part of the lighting model
 	float diffuse = (dot_to_sun + 1.0) / 4.3;
-	// Amount of light for the ambient part of the lighting model
 	float ambient = 0.655;
 	
 	vec2 base_uv = UV;
