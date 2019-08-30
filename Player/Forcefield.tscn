@@ -8,13 +8,13 @@ albedo_color = Color( 0.196078, 0.686275, 1, 0.784314 )
 material = SubResource( 1 )
 size = Vector3( 0.01, 0.01, 0.01 )
 
-[sub_resource type="SpatialMaterial" id=4]
+[sub_resource type="SpatialMaterial" id=3]
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 0.196078, 0.784314, 0.196078, 0.784314 )
 
-[sub_resource type="CubeMesh" id=3]
-material = SubResource( 4 )
+[sub_resource type="CubeMesh" id=4]
+material = SubResource( 3 )
 size = Vector3( 0.01, 0.01, 0.01 )
 
 [node name="ForceField" type="CPUParticles"]
@@ -24,19 +24,19 @@ lifetime = 0.8
 mesh = SubResource( 2 )
 emission_shape = 2
 emission_box_extents = Vector3( 0.15, 0.15, 0 )
+direction = Vector3( 0, 0, 0 )
 spread = 20.0
 gravity = Vector3( 0, 0, 0 )
 initial_velocity = 0.15
-angular_velocity = 0.0
 radial_accel = 0.1
 
 [node name="CPUParticles" type="CPUParticles" parent="."]
 transform = Transform( 1, 0, -6.4965e-22, 0, 1, 0, -1.24235e-21, 0, 1, 0, 0, 0.06 )
 amount = 20
-mesh = SubResource( 3 )
+mesh = SubResource( 4 )
 emission_shape = 2
 emission_box_extents = Vector3( 0.15, 0.15, 0.075 )
+direction = Vector3( 0, 0, 0 )
 gravity = Vector3( 0, 0, 0 )
-initial_velocity = 0.0
 angular_velocity = 4.58407e-41
 radial_accel = -1.0
