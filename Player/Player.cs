@@ -109,7 +109,8 @@ public class Player : KinematicBody, IPushable
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
-	public CollisionShape CollisionCapsule;
+	public CollisionShape LargeCollisionCapsule;
+	public CollisionShape SmallCollisionCapsule;
 
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
@@ -141,7 +142,8 @@ public class Player : KinematicBody, IPushable
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
-		CollisionCapsule = GetNode<CollisionShape>("CollisionShape");
+		LargeCollisionCapsule = GetNode<CollisionShape>("LargeCollisionShape");
+		SmallCollisionCapsule = GetNode<CollisionShape>("SmallCollisionShape");
 
 		if(Possessed)
 		{
@@ -558,10 +560,10 @@ public class Player : KinematicBody, IPushable
 				}
 			}
 
-			CollisionCapsule.Scale = new Vector3(1.5f, 1.5f, 1);
-			CollisionCapsule.Translation = new Vector3(0, 1.5f, 0);
+			LargeCollisionCapsule.Disabled = true;
+			SmallCollisionCapsule.Disabled = false;
 			if(IsOnFloor())
-				Translation = new Vector3(Translation.x, Translation.y-1.5f, Translation.z);
+				Translation = new Vector3(Translation.x, Translation.y-3.195f, Translation.z);
 		}
 		else
 		{
@@ -570,8 +572,8 @@ public class Player : KinematicBody, IPushable
 			if(SprintSens > 0)
 				Sprint(SprintSens);
 
-			CollisionCapsule.Scale = new Vector3(1.5f, 1.5f, 1.5f);
-			CollisionCapsule.Translation = new Vector3(0, 0, 0);
+			SmallCollisionCapsule.Disabled = true;
+			LargeCollisionCapsule.Disabled = false;
 			if(IsOnFloor())
 				Translation = new Vector3(Translation.x, Translation.y+1.5f, Translation.z);
 		}
