@@ -162,8 +162,8 @@ public class Player : KinematicBody, IPushable
 			HeadJoint = GetNode("BodyScene").GetNode<Spatial>("HeadJoint");
 			LegsJoint = GetNode("BodyScene").GetNode<Spatial>("LegsJoint");
 
-			RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LowerLegs/LegFlames/Right");
-			LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LowerLegs/LegFlames/Left");
+			RightLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/RightLegFlames");
+			LeftLegFlames = GetNode("BodyScene").GetNode<CPUParticles>("LegsJoint/LeftLegFlames");
 
 			ThirdPersonItem = GetNode("BodyScene").GetNode<MeshInstance>("ItemMesh");
 			ShaderMaterial Mat = new ShaderMaterial();
