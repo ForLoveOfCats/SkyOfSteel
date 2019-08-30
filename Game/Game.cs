@@ -45,7 +45,7 @@ public class Game : Node
 
 	public override void _Ready()
 	{
-		RuntimeRoot = GetTree().GetRoot().GetNode("RuntimeRoot");
+		RuntimeRoot = GetTree().Root.GetNode("RuntimeRoot");
 		GetTree().SetAutoAcceptQuit(false);
 
 		Menu.Setup();
@@ -120,7 +120,7 @@ public class Game : Node
 		Player NewPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 		NewPlayer.Possessed = Possess;
 		NewPlayer.Id = Id;
-		NewPlayer.SetName(Id.ToString());
+		NewPlayer.Name = Id.ToString();
 		Net.Players.Add(Id, NewPlayer);
 
 		if(Possess)

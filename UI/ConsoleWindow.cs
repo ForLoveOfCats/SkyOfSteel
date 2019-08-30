@@ -11,7 +11,7 @@ public class ConsoleWindow : Panel
 	{
 		Show();
 		IsOpen = true;
-		InputLine.SetEditable(true);
+		InputLine.Editable = true;
 		InputLine.Text = "";
 		InputLine.GrabFocus();
 	}
@@ -21,7 +21,7 @@ public class ConsoleWindow : Panel
 	{
 		Hide();
 		IsOpen = false;
-		InputLine.SetEditable(false);
+		InputLine.Editable = false;
 		InputLine.Text = "";
 	}
 

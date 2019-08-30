@@ -201,14 +201,14 @@ public class Player : KinematicBody, IPushable
 	[Remote]
 	public void SetFreeze(bool NewFrozen)
 	{
-		if(GetName() == GetTree().GetNetworkUniqueId().ToString())
+		if(Name == GetTree().GetNetworkUniqueId().ToString())
 		{
 			Frozen = NewFrozen;
 		}
 		else
 		{
 			int Id = 0;
-			Int32.TryParse(GetName(), out Id);
+			Int32.TryParse(Name, out Id);
 			RpcId(Id, nameof(SetFreeze), NewFrozen);
 		}
 	}
@@ -587,8 +587,8 @@ public class Player : KinematicBody, IPushable
 		{
 			ActualLookVertical = Clamp(ActualLookVertical + Instance.CaclulateOffset(), -90, 90);
 		}
-		Cam.SetRotationDegrees(new Vector3(ActualLookVertical, 180, 0));
-		ProjectileEmitterHinge.SetRotationDegrees(new Vector3(ActualLookVertical, 180, 0));
+		Cam.RotationDegrees = new Vector3(ActualLookVertical, 180, 0);
+		ProjectileEmitterHinge.RotationDegrees = new Vector3(ActualLookVertical, 180, 0);
 	}
 
 
@@ -625,7 +625,7 @@ public class Player : KinematicBody, IPushable
 			if(Game.Mode.ShouldPlayerRotate(-Change))
 			{
 				LookHorizontal -= Change;
-				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+				RotationDegrees = new Vector3(0, LookHorizontal, 0);
 			}
 		}
 	}
@@ -640,7 +640,7 @@ public class Player : KinematicBody, IPushable
 			if(Game.Mode.ShouldPlayerRotate(+Change))
 			{
 				LookHorizontal += Change;
-				SetRotationDegrees(new Vector3(0, LookHorizontal, 0));
+				RotationDegrees = new Vector3(0, LookHorizontal, 0);
 			}
 		}
 	}
@@ -802,7 +802,7 @@ public class Player : KinematicBody, IPushable
 				{
 					if(Game.Mode.ShouldPickupItem(Item.Type))
 					{
-						World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.GetName());
+						World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.Name);
 						World.ItemList.Remove(Item);
 					}
 				}

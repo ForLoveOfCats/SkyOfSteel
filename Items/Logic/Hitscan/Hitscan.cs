@@ -196,7 +196,7 @@ public class Hitscan : Spatial
 
 		Plr.ApplyLookVertical(VerticalRecoil);
 		Plr.LookHorizontal += HorizontalRecoil * -NextRecoilDirection;
-		Plr.SetRotationDegrees(new Vector3(0, Plr.LookHorizontal, 0));
+		Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 		NextRecoilDirection = -NextRecoilDirection;
 	}

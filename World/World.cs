@@ -92,15 +92,15 @@ public class World : Node
 		Items.SetupItems();
 
 		Node SkyScene = ((PackedScene)GD.Load("res://World/SkyScene.tscn")).Instance();
-		SkyScene.SetName("SkyScene");
+		SkyScene.Name = "SkyScene";
 		Game.RuntimeRoot.AddChild(SkyScene);
 
 		TilesRoot = new Node();
-		TilesRoot.SetName("TilesRoot");
+		TilesRoot.Name = "TilesRoot";
 		SkyScene.AddChild(TilesRoot);
 
 		EntitiesRoot = new Node();
-		EntitiesRoot.SetName("EntitiesRoot");
+		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
 
 		IsOpen = true;
@@ -354,7 +354,7 @@ public class World : Node
 		Branch.OwnerId = OwnerId;
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
-		Branch.SetName(Name); //Name is a GUID and can be used to reference a structure over network
+		Branch.Name = Name; //Name is a GUID and can be used to reference a structure over network
 		TilesRoot.AddChild(Branch);
 
 		AddTileToChunk(Branch);
@@ -491,12 +491,12 @@ public class World : Node
 
 		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
 		{
-			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.GetName()});
+			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.Name});
 		}
 
 		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)
 		{
-			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.Momentum, Item.GetName());
+			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.Momentum, Item.Name);
 		}
 	}
 
@@ -581,7 +581,7 @@ public class World : Node
 	[Remote]
 	public void DropItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum)
 	{
-		if(Self.GetTree().GetNetworkPeer() != null)
+		if(Self.GetTree().NetworkPeer != null)
 		{
 			if(Self.GetTree().IsNetworkServer())
 			{
@@ -634,7 +634,7 @@ public class World : Node
 	[Remote]
 	public void RequestDroppedItem(int Id, string Guid)
 	{
-		if(Self.GetTree().GetNetworkPeer() != null)
+		if(Self.GetTree().NetworkPeer != null)
 		{
 			if(Self.GetTree().IsNetworkServer())
 			{
@@ -647,8 +647,8 @@ public class World : Node
 					else
 						Net.Players[Id].RpcId(Id, nameof(Player.PickupItem), Item.Type);
 
-					Net.SteelRpc(this, nameof(RemoveDroppedItem), Item.GetName());
-					RemoveDroppedItem(Item.GetName());
+					Net.SteelRpc(this, nameof(RemoveDroppedItem), Item.Name);
+					RemoveDroppedItem(Item.Name);
 				}
 			}
 			else

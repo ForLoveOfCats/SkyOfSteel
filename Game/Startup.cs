@@ -52,7 +52,7 @@ public class Startup : Node
 		File Autoexec = new File();
 		if(Autoexec.FileExists("user://Autoexec.csx"))
 		{
-			Autoexec.Open("user://Autoexec.csx", 1);
+			Autoexec.Open("user://Autoexec.csx", File.ModeFlags.Read);
 			Console.Print("Autoexec loaded");
 			try
 			{

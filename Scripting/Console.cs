@@ -24,7 +24,7 @@ public class Console : Node
 
 	public override void _Ready()
 	{
-		Window = GetTree().GetRoot().GetNode("RuntimeRoot/ConsoleWindow") as ConsoleWindow;
+		Window = GetTree().Root.GetNode("RuntimeRoot/ConsoleWindow") as ConsoleWindow;
 		InputLine = Window.GetNode("VBox/LineEdit") as LineEdit;
 		ConsoleLabel = Window.GetNode("VBox/HBox/Console") as RichTextLabel;
 		LogLabel = Window.GetNode("VBox/HBox/Log") as RichTextLabel;

@@ -23,7 +23,7 @@ public class ConnectMenu : VBoxContainer
 
 	public void ConnectPressed()
 	{
-		string Ip = IpEdit.GetText();
+		string Ip = IpEdit.Text;
 
 		if(Ip == "localhost")
 		{

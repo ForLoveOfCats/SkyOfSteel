@@ -36,14 +36,14 @@ public class DamageIndicator : Sprite
 
 	private void CenterSprite()
 	{
-		GlobalPosition = OS.GetWindowSize() / new Vector2(2, 2);
+		GlobalPosition = OS.WindowSize / new Vector2(2, 2);
 	}
 
 
 	public override void _Process(float Delta)
 	{
 		Vector2 PlayerPosition2D = new Vector2(Game.PossessedPlayer.Translation.x, Game.PossessedPlayer.Translation.z);
-		SetRotation(PlayerPosition2D.AngleToPoint(ShotFirePos2D) + Game.PossessedPlayer.Rotation.y);
+		Rotation = PlayerPosition2D.AngleToPoint(ShotFirePos2D) + Game.PossessedPlayer.Rotation.y;
 
 		RemainingLife -= Delta;
 		if(RemainingLife <= 0)

@@ -35,8 +35,8 @@ public class ProjectileCollision : Spatial
 	public override void _PhysicsProcess(float Delta)
 	{
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-		Godot.Collections.Dictionary Results = State.IntersectRay(StartPoint.GetGlobalTransform().origin,
-		                                                          EndPoint.GetGlobalTransform().origin,
+		Godot.Collections.Dictionary Results = State.IntersectRay(StartPoint.GlobalTransform.origin,
+		                                                          EndPoint.GlobalTransform.origin,
 		                                                          new Godot.Collections.Array() { Game.PossessedPlayer }, 2);
 		if(Results.Count > 0)
 			(Parent as IProjectileCollision).ProjectileCollided((Vector3)Results["position"]);

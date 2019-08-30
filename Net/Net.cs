@@ -104,7 +104,7 @@ public class Net : Node
 		//The client sent its version and we are running on the server
 		if(Version != Game.Version) //Version mismatch
 		{
-			((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(GetTree().GetRpcSenderId());
+			((NetworkedMultiplayerENet)GetTree().NetworkPeer).DisconnectPeer(GetTree().GetRpcSenderId());
 			WaitingForVersion.Remove(GetTree().GetRpcSenderId());
 			return;
 		}
@@ -183,7 +183,7 @@ public class Net : Node
 
 		if(PeerList.Contains(Id)) //May be disconnecting from a client which did not fully connect
 		{
-			Self.GetTree().GetRoot().GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
+			Self.GetTree().Root.GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
 			PeerList.Remove(Id);
 		}
 		Players.Remove(Id);
@@ -228,7 +228,7 @@ public class Net : Node
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);
-		Self.GetTree().SetNetworkPeer(Peer);
+		Self.GetTree().NetworkPeer = Peer;
 		Self.GetTree().SetMeta("network_peer", Peer);
 
 		Console.Log($"Started hosting on port '{Port}'");
@@ -252,7 +252,7 @@ public class Net : Node
 
 		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
 		Peer.CreateClient(Ip, Port);
-		Self.GetTree().SetNetworkPeer(Peer);
+		Self.GetTree().NetworkPeer = Peer;
 
 		IsWaitingForServer = true;
 	}
@@ -262,13 +262,13 @@ public class Net : Node
 	{
 		World.Close();
 
-		NetworkedMultiplayerENet EN = Self.GetTree().GetNetworkPeer() as NetworkedMultiplayerENet;
+		NetworkedMultiplayerENet EN = Self.GetTree().NetworkPeer as NetworkedMultiplayerENet;
 		if(EN != null)
 		{
 			EN.CloseConnection();
 		}
 
-		Self.GetTree().SetNetworkPeer(null);
+		Self.GetTree().NetworkPeer = null;
 		PeerList.Clear();
 		Net.Players.Clear();
 		Nicknames.Clear();
@@ -372,7 +372,7 @@ public class Net : Node
 			if(WaitingForVersion[Id] >= VersionDisconnectDelay)
 			{
 				Console.ThrowLog($"Player '{Id}' did not provide their client version and was kicked");
-				((NetworkedMultiplayerENet)GetTree().GetNetworkPeer()).DisconnectPeer(Id); //Disconnect clients which didn't send their version in time
+				((NetworkedMultiplayerENet)GetTree().NetworkPeer).DisconnectPeer(Id); //Disconnect clients which didn't send their version in time
 				WaitingForVersion.Remove(Id);
 			}
 		}

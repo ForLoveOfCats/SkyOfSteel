@@ -159,13 +159,13 @@ public static class API
 			return;
 		}
 
-		Engine.SetTargetFps(Convert.ToInt32(TargetFps));
+		Engine.TargetFps = Convert.ToInt32(TargetFps);
 	}
 
 
 	public static bool Save(string Name)
 	{
-		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(World.IsOpen && Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			if(Name == "")
 			{
@@ -187,7 +187,7 @@ public static class API
 
 	public static bool Load(string Name)
 	{
-		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(World.IsOpen && Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			if(Name == "")
 			{
@@ -213,7 +213,7 @@ public static class API
 
 	public static bool ReloadSave()
 	{
-		if(World.IsOpen && Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(World.IsOpen && Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			World.Load(World.SaveName);
 			return true;
@@ -228,7 +228,7 @@ public static class API
 
 	public static bool Gamemode(string Name)
 	{
-		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			return Scripting.LoadGamemode(Name);
 		}
@@ -240,7 +240,7 @@ public static class API
 
 	public static bool ReloadGm()
 	{
-		if(Net.Work.GetNetworkPeer() != null && Net.Work.IsNetworkServer())
+		if(Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			if(Scripting.GamemodeName != "")
 			{

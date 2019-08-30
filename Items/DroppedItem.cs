@@ -44,20 +44,20 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 		GridUpdate();
 
 		if(Net.Work.IsNetworkServer())
-			Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, GetName());
+			Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, Name);
 	}
 
 
 	public void Remove()
 	{
-		World.Self.RemoveDroppedItem(this.GetName());
+		World.Self.RemoveDroppedItem(this.Name);
 		World.ItemList.Remove(this);
 	}
 
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		Mesh.SetRotationDegrees(new Vector3(0, Mesh.RotationDegrees.y+(360*Delta*RPS), 0));
+		Mesh.RotationDegrees = new Vector3(0, Mesh.RotationDegrees.y+(360*Delta*RPS), 0);
 		Life += Delta;
 
 		if(PhysicsEnabled)
@@ -68,7 +68,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);
 				CurrentChunkTuple = World.GetChunkTuple(Translation);
 				World.AddItemToChunk(this);
-				Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, GetName());
+				Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, Name);
 			}
 
 			if(IsOnFloor())

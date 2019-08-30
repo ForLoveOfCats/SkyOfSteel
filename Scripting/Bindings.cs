@@ -44,7 +44,7 @@ public class Bindings : Node
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
 		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
 		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because
-		int Scancode = 0;
+		uint Scancode = 0;
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
 			case("MouseOne"): {
@@ -251,7 +251,7 @@ public class Bindings : Node
 
 			default: {
 				//Does not match any custom string literal must either be a Scancode or is invalid
-				int LocalScancode = OS.FindScancodeFromString(KeyName);
+				uint LocalScancode = (uint)OS.FindScancodeFromString(KeyName);
 				if(LocalScancode != 0)
 				{
 					//Is a valid Scancode
@@ -330,7 +330,7 @@ public class Bindings : Node
 
 			case(TYPE.CONTROLLERBUTTON): {
 				InputEventJoypadButton Event = new InputEventJoypadButton();
-				Event.SetButtonIndex((int)ControllerButtonValue);
+				Event.ButtonIndex = (int)ControllerButtonValue;
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}

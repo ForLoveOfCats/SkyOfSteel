@@ -60,7 +60,7 @@ public class Scripting : Node
 			GmConfigClass Config;
 			{
 				File ConfigFile = new File();
-				ConfigFile.Open($"user://Gamemodes/{Name}/{Name}.json", 1);
+				ConfigFile.Open($"user://Gamemodes/{Name}/{Name}.json", File.ModeFlags.Read);
 				try
 				{
 					Config = Newtonsoft.Json.JsonConvert.DeserializeObject<GmConfigClass>(ConfigFile.GetAsText());
@@ -85,7 +85,7 @@ public class Scripting : Node
 				Console.ThrowLog($"Specified MainScript '{Config.MainScript}' for gamemode '{Name}' does not exist");
 				return false;
 			}
-			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", 1);
+			ScriptFile.Open($"user://Gamemodes/{Name}/{Config.MainScript}", File.ModeFlags.Read);
 			Sc.Script Engine = Cs.Create(ScriptFile.GetAsText(),
 			                             ScriptOptions.WithSourceResolver(new Microsoft.CodeAnalysis.SourceFileResolver(ImmutableArray<string>.Empty, $"{OS.GetUserDataDir()}/Gamemodes/{Name}"))
 			                             .WithEmitDebugInformation(true)
@@ -109,7 +109,7 @@ public class Scripting : Node
 			{
 				GamemodeName = Name;
 				Game.Mode = Returned as Gamemode;
-				Game.Mode.SetName("Gamemode");
+				Game.Mode.Name = "Gamemode";
 				Game.Mode.Self = Game.Mode;
 				Game.Mode.LoadPath = $"{OS.GetUserDataDir()}/Gamemodes/{Name}";
 				Game.Mode.OwnName = Name;
@@ -150,7 +150,7 @@ public class Scripting : Node
 				Console.ThrowLog($"An exception was thrown when calling 'OnUnload' on gamemode '{GamemodeName}': {Err.Message}");
 			}
 
-			Game.Mode.SetName("UnloadedGamemode"); ///Prevents name mangling of new gamemode, important for RPC
+			Game.Mode.Name = "UnloadedGamemode"; ///Prevents name mangling of new gamemode, important for RPC
 			Game.Mode.QueueFree(); //NOTE: Could cause issues with functions being called after OnUnload
 			Game.Mode = new Gamemode();
 			API.Gm = new API.EmptyCustomCommands();

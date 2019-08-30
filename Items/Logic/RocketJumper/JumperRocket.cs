@@ -63,7 +63,7 @@ public class JumperRocket : KinematicBody, IProjectileCollision
 		if(TriggeredPosition != null)
 			Translation = (Vector3)TriggeredPosition;
 
-		Vector3 Origin = GetNode<Spatial>("ExplosionOrigin").GetGlobalTransform().origin;
+		Vector3 Origin = GetNode<Spatial>("ExplosionOrigin").GlobalTransform.origin;
 
 		if(IsLocal)
 		{
