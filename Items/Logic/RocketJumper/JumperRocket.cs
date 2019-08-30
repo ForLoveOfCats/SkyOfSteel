@@ -3,7 +3,7 @@ using static Godot.Mathf;
 using System.Collections.Generic;
 
 
-public class JumperRocket : KinematicBody, IProjectileCollision
+public class JumperRocket : Spatial, IProjectileCollision
 {
 	public bool IsLocal;
 	public Node Player; //The player which fired the rocket, to prevent collinding fire-er
@@ -122,7 +122,7 @@ public class JumperRocket : KinematicBody, IProjectileCollision
 			}
 		}
 
-		MoveAndCollide(Momentum * Delta);
+		Translation += Momentum * Delta;
 		Life += Delta;
 	}
 }
