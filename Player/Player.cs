@@ -110,7 +110,9 @@ public class Player : KinematicBody, IPushable
 	public Spatial ProjectileEmitter;
 
 	public CollisionShape LargeCollisionCapsule;
+	public Position3D LargeBottomPoint;
 	public CollisionShape SmallCollisionCapsule;
+	public Position3D SmallBottomPoint;
 
 	public Area WallKickArea;
 	public KinematicCollision LastSlideCollision = null;
@@ -146,7 +148,9 @@ public class Player : KinematicBody, IPushable
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
 		LargeCollisionCapsule = GetNode<CollisionShape>("LargeCollisionShape");
+		LargeBottomPoint = GetNode<Position3D>("LargeBottomPoint");
 		SmallCollisionCapsule = GetNode<CollisionShape>("SmallCollisionShape");
+		SmallBottomPoint = GetNode<Position3D>("SmallBottomPoint");
 
 		WallKickArea = GetNode<Area>("WallKickArea");
 
@@ -958,7 +962,18 @@ public class Player : KinematicBody, IPushable
 		}
 		else
 		{
-			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+			if(IsOnFloor() && Momentum.y <= 0)
+			{
+				Vector3 BottomPoint;
+				if(IsCrouching)
+					BottomPoint = SmallBottomPoint.Translation;
+				else
+					BottomPoint = LargeBottomPoint.Translation;
+
+				Momentum = MoveAndSlideWithSnap(Momentum, BottomPoint, new Vector3(0,1,0), true, 100, Deg2Rad(60));
+			}
+			else
+				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
 
 			if(GetSlideCount() > 0)
 			{
