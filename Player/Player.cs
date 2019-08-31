@@ -112,6 +112,9 @@ public class Player : KinematicBody, IPushable
 	public CollisionShape LargeCollisionCapsule;
 	public CollisionShape SmallCollisionCapsule;
 
+	public Area WallKickArea;
+	public KinematicCollision LastSlideCollision = null;
+
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
 	public MeshInstance ThirdPersonItem;
@@ -144,6 +147,8 @@ public class Player : KinematicBody, IPushable
 
 		LargeCollisionCapsule = GetNode<CollisionShape>("LargeCollisionShape");
 		SmallCollisionCapsule = GetNode<CollisionShape>("SmallCollisionShape");
+
+		WallKickArea = GetNode<Area>("WallKickArea");
 
 		if(Possessed)
 		{
@@ -505,19 +510,29 @@ public class Player : KinematicBody, IPushable
 				}
 				IsJumping = false;
 			}
-			else if(IsOnFloor() && Game.Mode.ShouldJump())
+			else if(IsOnFloor())
 			{
-				Momentum.y = JumpStartForce;
-				if(JumpAxis < 1)
+				if(Game.Mode.ShouldJump())
 				{
-					Vector3 FlatMomentum = new Vector3(Momentum.x, 0, Momentum.z);
-					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + JumpSpeedAddend);
-					Momentum.x = FlatMomentum.x;
-					Momentum.z = FlatMomentum.z;
-				}
+					Momentum.y = JumpStartForce;
+					if(JumpAxis < 1)
+					{
+						Vector3 FlatMomentum = new Vector3(Momentum.x, 0, Momentum.z);
+						FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + JumpSpeedAddend);
+						Momentum.x = FlatMomentum.x;
+						Momentum.z = FlatMomentum.z;
+					}
 
-				IsJumping = true;
-				HasJumped = true;
+					IsJumping = true;
+					HasJumped = true;
+				}
+			}
+			else if(!Ads && !IsCrouching && LastSlideCollision != null
+			        && WallKickArea.GetOverlappingBodies().Count > 0)
+			{
+				Momentum += WallKickHorzontalForce * LastSlideCollision.Normal;
+				Momentum.y = WallKickJumpForce;
+				SfxManager.FpWallKick();
 			}
 
 			JumpAxis = 1;
@@ -948,16 +963,7 @@ public class Player : KinematicBody, IPushable
 			if(GetSlideCount() > 0)
 			{
 				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
-			}
-
-			if(JumpAxis > 0 && !HasJumped && IsOnWall() && GetSlideCount() > 0 && !Ads && Game.Mode.ShouldWallKick())
-			{
-				HasJumped = true;
-
-				Momentum += WallKickHorzontalForce * GetSlideCollision(0).Normal;
-				Momentum.y = WallKickJumpForce;
-
-				SfxManager.FpWallKick();
+				LastSlideCollision = GetSlideCollision(0);
 			}
 		}
 		Vector3 NewPos = Translation;

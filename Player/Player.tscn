@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body/BodyScene.tscn" type="PackedScene" id=2]
@@ -29,6 +29,10 @@ height = 4.26055
 [sub_resource type="CapsuleShape" id=3]
 radius = 1.24303
 height = 2.13
+
+[sub_resource type="CapsuleShape" id=4]
+radius = 1.24303
+height = 2.2
 
 [node name="Player" type="KinematicBody"]
 collision/safe_margin = 0.005
@@ -148,3 +152,11 @@ volume_db = -3.0
 stream = ExtResource( 17 )
 unit_db = 5.0
 unit_size = 30.0
+
+[node name="WallKickArea" type="Area" parent="."]
+collision_layer = 2
+collision_mask = 2
+
+[node name="CollisionShape" type="CollisionShape" parent="WallKickArea"]
+transform = Transform( 1.9, 0, 0, 0, -8.30516e-08, -1.9, 0, 1.9, -8.30516e-08, 0, 0, 0 )
+shape = SubResource( 4 )
