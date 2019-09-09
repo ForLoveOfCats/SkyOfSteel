@@ -70,8 +70,6 @@ public class Items : Node
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
 	public static Dictionary<ID, Texture> Textures { get; private set; } = new Dictionary<ID, Texture>();
 
-	public static Dictionary<ID, UseItemDelegate> UseDelegates = new Dictionary<ID, UseItemDelegate>();
-
 	public static Dictionary<ID, IdInfo> IdInfos = new Dictionary<ID, IdInfo>();
 
 	public static Shader TileShader { get; private set; }
