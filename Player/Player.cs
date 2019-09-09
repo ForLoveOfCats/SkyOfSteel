@@ -203,6 +203,7 @@ public class Player : KinematicBody, IPushable
 		ItemGive(new Items.Instance(Items.ID.SLOPE));
 		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
 		ItemGive(new Items.Instance(Items.ID.PIPE));
+		ItemGive(new Items.Instance(Items.ID.BENT_PIPE));
 		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER));
 		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT));
 		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK));

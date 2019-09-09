@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/BENT_PIPE.obj-1922e1ecc64f0f5660662e9e7af09146.mesh"
+
+[deps]
+
+files=[ "res://.import/BENT_PIPE.obj-1922e1ecc64f0f5660662e9e7af09146.mesh" ]
+
+source_file="res://Items/Meshes/BENT_PIPE.obj"
+dest_files=[ "res://.import/BENT_PIPE.obj-1922e1ecc64f0f5660662e9e7af09146.mesh", "res://.import/BENT_PIPE.obj-1922e1ecc64f0f5660662e9e7af09146.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true

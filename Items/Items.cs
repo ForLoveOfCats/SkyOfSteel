@@ -64,7 +64,7 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, PIPE, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK, SWIFTSPARK}
+	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, PIPE, BENT_PIPE, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK, SWIFTSPARK}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -207,7 +207,17 @@ public class Items : Node
 				new IdInfo {
 					PositionDelegate = BuildingLogic.PipeBuildPosition,
 					RotationDelegate = BuildingLogic.PipeBuildRotation,
-					DisallowedCollisions = new ID[] {ID.PIPE}
+					DisallowedCollisions = new ID[] {ID.PIPE, ID.BENT_PIPE}
+				}
+			},
+
+			{
+				ID.BENT_PIPE,
+
+				new IdInfo {
+					PositionDelegate = BuildingLogic.BentPipeBuildPosition,
+					RotationDelegate = BuildingLogic.BentPipeBuildRotation,
+					DisallowedCollisions = new ID[] {ID.PIPE, ID.BENT_PIPE}
 				}
 			},
 

@@ -406,4 +406,51 @@ public class BuildingLogic
 
 		return null;
 	}
+
+
+	public static Vector3? BentPipeBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
+	{
+		switch(Base.Type)
+		{
+			case(Items.ID.PLATFORM):
+			{
+				return Base.Translation + new Vector3(0, 6, 0);
+			}
+
+			case(Items.ID.PIPE):
+			{
+				if(LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) != LoopRotation(Round(Base.RotationDegrees.y))
+				   && LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) != LoopRotation(Round(Base.RotationDegrees.y) + 180))
+					return null;
+
+				Vector3 Offset = new Vector3(0, 0, 12).Rotated(new Vector3(0,1,0), Deg2Rad(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)));
+				return Base.Translation + Offset;
+			}
+		}
+
+		return null;
+	}
+
+
+	public static Vector3? BentPipeBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
+	{
+		switch(Base.Type)
+		{
+			case(Items.ID.PLATFORM):
+			{
+				float Rotation = 90*BuildRotation;
+				float Snapped = LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4));
+				return new Vector3(0, Snapped, Rotation);
+			}
+
+			case(Items.ID.PIPE):
+			{
+				float Rotation = 90*BuildRotation;
+				float Snapped = LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4));
+				return new Vector3(0, Base.RotationDegrees.y+Snapped, Rotation);
+			}
+		}
+
+		return null;
+	}
 }
