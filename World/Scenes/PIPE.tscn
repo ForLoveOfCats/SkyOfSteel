@@ -10,7 +10,7 @@ shader = ExtResource( 3 )
 shader_param/texture_albedo = ExtResource( 4 )
 
 [sub_resource type="BoxShape" id=2]
-extents = Vector3( 1.5, 1.5, 6 )
+extents = Vector3( 1.05, 1.05, 6 )
 
 [node name="PLATFORM" type="StaticBody"]
 collision_layer = 3
