@@ -241,7 +241,8 @@ public class Player : KinematicBody, IPushable
 
 	public void ApplyPush(Vector3 Push)
 	{
-		Momentum += Push;
+		if(!FlyMode)
+			Momentum += Push;
 	}
 
 
