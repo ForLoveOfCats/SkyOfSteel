@@ -23,7 +23,7 @@ public class Player : KinematicBody, IPushable
 	public float SlideFrictionDivisor = 10;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (BaseMovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
-	public float CrouchDownForce = -50f;
+	public float CrouchGravityMultiplyer = 4;
 	public float JumpSpeedAddend = 18f;
 	public float JumpStartForce = 12f;
 	public float JumpContinueForce = 5f;
@@ -574,8 +574,6 @@ public class Player : KinematicBody, IPushable
 				else if(!IsOnFloor())
 				{
 					IsJumping = false;
-					if(Momentum.y > CrouchDownForce)
-						Momentum.y = CrouchDownForce;
 				}
 			}
 
@@ -853,7 +851,11 @@ public class Player : KinematicBody, IPushable
 
 		if(!IsJumping && !FlyMode)
 		{
-			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
+			float CurrentGravity = Gravity;
+			if(IsCrouching)
+				CurrentGravity *= CrouchGravityMultiplyer;
+
+			Momentum.y = Mathf.Clamp(Momentum.y - CurrentGravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
 		}
 
 		if(FlyMode && JumpAxis <= 0 && !IsCrouching)
