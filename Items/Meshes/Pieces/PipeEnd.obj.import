@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/PipeEnd.obj-a5f22041957291c68905198ff26818fc.mesh"
+
+[deps]
+
+files=[ "res://.import/PipeEnd.obj-a5f22041957291c68905198ff26818fc.mesh" ]
+
+source_file="res://Items/Meshes/Pieces/PipeEnd.obj"
+dest_files=[ "res://.import/PipeEnd.obj-a5f22041957291c68905198ff26818fc.mesh", "res://.import/PipeEnd.obj-a5f22041957291c68905198ff26818fc.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true

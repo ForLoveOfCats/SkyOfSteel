@@ -1,13 +1,14 @@
 using Godot;
 
 
+
 public class Tile : StaticBody, IInGrid
 {
 	public Items.ID Type = Items.ID.ERROR;
 	public int OwnerId = 0;
 
 
-	public void GridUpdate()
+	public virtual void GridUpdate()
 	{}
 
 

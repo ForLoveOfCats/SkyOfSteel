@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://World/Tile.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/PIPE_JOINT.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://World/Materials/TileShader.shader" type="Shader" id=3]
 [ext_resource path="res://Items/Textures/PIPE_JOINT.png" type="Texture" id=4]
+[ext_resource path="res://Items/Logic/OpenEnd.cs" type="Script" id=5]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 3 )
@@ -17,6 +18,9 @@ extents = Vector3( 1.5, 3, 1.5 )
 
 [sub_resource type="BoxShape" id=4]
 extents = Vector3( 1.5, 1.5, 3 )
+
+[sub_resource type="BoxShape" id=5]
+extents = Vector3( 1, 1, 0.2 )
 
 [node name="PLATFORM" type="StaticBody"]
 collision_layer = 3
@@ -35,3 +39,57 @@ shape = SubResource( 3 )
 
 [node name="CollisionShape3" type="CollisionShape" parent="."]
 shape = SubResource( 4 )
+
+[node name="FirstOpenEnd" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6 )
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="FirstOpenEnd"]
+shape = SubResource( 5 )
+
+[node name="SecondOpenEnd" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6 )
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="SecondOpenEnd"]
+shape = SubResource( 5 )
+
+[node name="ThirdOpenEnd" type="StaticBody" parent="."]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, 6, 0, 0 )
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="ThirdOpenEnd"]
+shape = SubResource( 5 )
+
+[node name="ForthOpenEnd" type="StaticBody" parent="."]
+transform = Transform( -1.62921e-07, 0, 1, 0, 1, 0, -1, 0, -1.62921e-07, -6, 0, 0 )
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="ForthOpenEnd"]
+shape = SubResource( 5 )
+
+[node name="FifthOpenEnd" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 6, 0 )
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="FifthOpenEnd"]
+shape = SubResource( 5 )
+
+[node name="SixthOpenEnd" type="StaticBody" parent="."]
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, -6, 0 )
+collision_layer = 4
+collision_mask = 0
+script = ExtResource( 5 )
+
+[node name="CollisionShape" type="CollisionShape" parent="SixthOpenEnd"]
+shape = SubResource( 5 )
