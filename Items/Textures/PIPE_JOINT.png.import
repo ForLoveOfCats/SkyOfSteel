@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/BENT_PIPE.png-6ea987657cf8bd4a963034324e365b05.s3tc.stex"
-path.etc2="res://.import/BENT_PIPE.png-6ea987657cf8bd4a963034324e365b05.etc2.stex"
+path.s3tc="res://.import/PIPE_JOINT.png-f5a9308ef6cd0a661ca57841ea25bde4.s3tc.stex"
+path.etc2="res://.import/PIPE_JOINT.png-f5a9308ef6cd0a661ca57841ea25bde4.etc2.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc2" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Items/Textures/BENT_PIPE.png"
-dest_files=[ "res://.import/BENT_PIPE.png-6ea987657cf8bd4a963034324e365b05.s3tc.stex", "res://.import/BENT_PIPE.png-6ea987657cf8bd4a963034324e365b05.etc2.stex" ]
+source_file="res://Items/Textures/PIPE_JOINT.png"
+dest_files=[ "res://.import/PIPE_JOINT.png-f5a9308ef6cd0a661ca57841ea25bde4.s3tc.stex", "res://.import/PIPE_JOINT.png-f5a9308ef6cd0a661ca57841ea25bde4.etc2.stex" ]
 
 [params]
 

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/BENT_PIPE.png-309541202ad3e0b86b9074942b9e38d4.stex"
+path="res://.import/PIPE_JOINT.png-6d4bb87670df602f0af4c6c88e71cf32.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Items/Thumbnails/BENT_PIPE.png"
-dest_files=[ "res://.import/BENT_PIPE.png-309541202ad3e0b86b9074942b9e38d4.stex" ]
+source_file="res://Items/Thumbnails/PIPE_JOINT.png"
+dest_files=[ "res://.import/PIPE_JOINT.png-6d4bb87670df602f0af4c6c88e71cf32.stex" ]
 
 [params]
 

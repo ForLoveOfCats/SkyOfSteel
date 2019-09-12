@@ -419,7 +419,7 @@ public class BuildingLogic
 	}
 
 
-	public static Vector3? BentPipeBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
+	public static Vector3? PipeJointBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
 		switch(Base.Type)
 		{
@@ -430,6 +430,17 @@ public class BuildingLogic
 
 			case(Items.ID.PIPE):
 			{
+				{
+					Vector3 First = RoundVec3(Base.GetNode<Spatial>("Positions/Position1").GlobalTransform.origin);
+					Vector3 Second = RoundVec3(Base.GetNode<Spatial>("Positions/Position2").GlobalTransform.origin);
+					if(First.y != Second.y)
+					{
+						if(HitRelative.y > 0)
+							return Base.Translation + new Vector3(0, 12, 0);
+						return Base.Translation - new Vector3(0, 12, 0);
+					}
+				}
+
 				if(LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) != LoopRotation(Round(Base.RotationDegrees.y))
 				   && LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) != LoopRotation(Round(Base.RotationDegrees.y) + 180))
 					return null;
@@ -443,25 +454,8 @@ public class BuildingLogic
 	}
 
 
-	public static Vector3? BentPipeBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
+	public static Vector3? PipeJointBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
-		{
-			case(Items.ID.PLATFORM):
-			{
-				float Rotation = 90*BuildRotation;
-				float Snapped = LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4));
-				return new Vector3(0, Snapped, Rotation);
-			}
-
-			case(Items.ID.PIPE):
-			{
-				float Rotation = 90*BuildRotation;
-				float Snapped = LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4));
-				return new Vector3(0, Base.RotationDegrees.y+Snapped, Rotation);
-			}
-		}
-
-		return null;
+		return new Vector3(); //Always 0,0,0
 	}
 }
