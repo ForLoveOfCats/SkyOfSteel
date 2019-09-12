@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://World/Tile.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/PIPE_JOINT.obj" type="ArrayMesh" id=2]
@@ -10,7 +10,13 @@ shader = ExtResource( 3 )
 shader_param/texture_albedo = ExtResource( 4 )
 
 [sub_resource type="BoxShape" id=2]
-extents = Vector3( 3, 3, 3 )
+extents = Vector3( 3, 1.5, 1.5 )
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 1.5, 3, 1.5 )
+
+[sub_resource type="BoxShape" id=4]
+extents = Vector3( 1.5, 1.5, 3 )
 
 [node name="PLATFORM" type="StaticBody"]
 collision_layer = 3
@@ -23,3 +29,9 @@ material/0 = SubResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 2 )
+
+[node name="CollisionShape2" type="CollisionShape" parent="."]
+shape = SubResource( 3 )
+
+[node name="CollisionShape3" type="CollisionShape" parent="."]
+shape = SubResource( 4 )

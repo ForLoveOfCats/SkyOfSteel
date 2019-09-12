@@ -394,6 +394,31 @@ public class BuildingLogic
 				Vector3 Offset = new Vector3(0, 0, 12).Rotated(new Vector3(0,1,0), Deg2Rad(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)));
 				return Base.Translation + Offset;
 			}
+
+			case(Items.ID.PIPE_JOINT):
+			{
+				float xAbs = Abs(HitRelative.x);
+				float yAbs = Abs(HitRelative.y);
+				float zAbs = Abs(HitRelative.z);
+
+				if(xAbs > yAbs && xAbs > zAbs)
+				{
+					//X axis
+					return Base.Translation + (new Vector3(12, 0, 0) * Sign(HitRelative.x));
+				}
+				else if(yAbs > xAbs && yAbs > zAbs)
+				{
+					//Y axis
+					return Base.Translation + (new Vector3(0, 12, 0) * Sign(HitRelative.y));
+				}
+				else if(zAbs > xAbs && zAbs > yAbs)
+				{
+					//Z axis
+					return Base.Translation + (new Vector3(0, 0, 12) * Sign(HitRelative.z));
+				}
+
+				break;
+			}
 		}
 
 		return null;
@@ -412,6 +437,31 @@ public class BuildingLogic
 			case(Items.ID.PIPE):
 			{
 				return Base.RotationDegrees;
+			}
+
+			case(Items.ID.PIPE_JOINT):
+			{
+				float xAbs = Abs(HitRelative.x);
+				float yAbs = Abs(HitRelative.y);
+				float zAbs = Abs(HitRelative.z);
+
+				if(xAbs > yAbs && xAbs > zAbs)
+				{
+					//X axis
+					return new Vector3(0, 90, 0);
+				}
+				else if(yAbs > xAbs && yAbs > zAbs)
+				{
+					//Y axis
+					return new Vector3(90, 0, 0);
+				}
+				else if(zAbs > xAbs && zAbs > yAbs)
+				{
+					//Z axis
+					return new Vector3(0, 0, 0);
+				}
+
+				break;
 			}
 		}
 
@@ -447,6 +497,31 @@ public class BuildingLogic
 
 				Vector3 Offset = new Vector3(0, 0, 12).Rotated(new Vector3(0,1,0), Deg2Rad(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)));
 				return Base.Translation + Offset;
+			}
+
+			case(Items.ID.PIPE_JOINT):
+			{
+				float xAbs = Abs(HitRelative.x);
+				float yAbs = Abs(HitRelative.y);
+				float zAbs = Abs(HitRelative.z);
+
+				if(xAbs > yAbs && xAbs > zAbs)
+				{
+					//X axis
+					return Base.Translation + (new Vector3(12, 0, 0) * Sign(HitRelative.x));
+				}
+				else if(yAbs > xAbs && yAbs > zAbs)
+				{
+					//Y axis
+					return Base.Translation + (new Vector3(0, 12, 0) * Sign(HitRelative.y));
+				}
+				else if(zAbs > xAbs && zAbs > yAbs)
+				{
+					//Z axis
+					return Base.Translation + (new Vector3(0, 0, 12) * Sign(HitRelative.z));
+				}
+
+				break;
 			}
 		}
 
