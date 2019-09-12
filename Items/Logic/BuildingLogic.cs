@@ -376,6 +376,17 @@ public class BuildingLogic
 
 			case(Items.ID.PIPE):
 			{
+				{
+					Vector3 First = RoundVec3(Base.GetNode<Spatial>("Positions/Position1").GlobalTransform.origin);
+					Vector3 Second = RoundVec3(Base.GetNode<Spatial>("Positions/Position2").GlobalTransform.origin);
+					if(First.y != Second.y)
+					{
+						if(HitRelative.y > 0)
+							return Base.Translation + new Vector3(0, 12, 0);
+						return Base.Translation - new Vector3(0, 12, 0);
+					}
+				}
+
 				if(LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) != LoopRotation(Round(Base.RotationDegrees.y))
 				   && LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) != LoopRotation(Round(Base.RotationDegrees.y) + 180))
 					return null;
