@@ -166,6 +166,7 @@ public class GridClass
 	}
 
 
+	//Must be called periodicly from World
 	public void DoWork()
 	{
 		DoRemoves();

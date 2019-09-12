@@ -359,6 +359,7 @@ public class World : Node
 
 		AddTileToChunk(Branch);
 		Grid.AddItem(Branch);
+		Grid.QueueUpdateNearby(Branch.Translation);
 
 		//Nested if to prevent very long line
 		if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
