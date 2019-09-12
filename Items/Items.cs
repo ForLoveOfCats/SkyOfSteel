@@ -207,7 +207,7 @@ public class Items : Node
 				new IdInfo {
 					PositionDelegate = BuildingLogic.PipeBuildPosition,
 					RotationDelegate = BuildingLogic.PipeBuildRotation,
-					DisallowedCollisions = new ID[] {ID.PIPE, ID.PIPE_JOINT}
+					DisallowedCollisions = new ID[] {ID.SLOPE, ID.PIPE, ID.PIPE_JOINT}
 				}
 			},
 
@@ -217,7 +217,7 @@ public class Items : Node
 				new IdInfo {
 					PositionDelegate = BuildingLogic.PipeJointBuildPosition,
 					RotationDelegate = BuildingLogic.PipeJointBuildRotation,
-					DisallowedCollisions = new ID[] {ID.PIPE, ID.PIPE_JOINT}
+					DisallowedCollisions = new ID[] {ID.SLOPE, ID.PIPE, ID.PIPE_JOINT}
 				}
 			},
 
