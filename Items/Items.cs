@@ -184,7 +184,7 @@ public class Items : Node
 					UseDelegate = null,
 					FullAuto = false,
 					CanAds = false,
-					DisallowedCollisions = new ID[] {ID.SLOPE}
+					DisallowedCollisions = new ID[] {ID.SLOPE, ID.PIPE, ID.PIPE_JOINT}
 				}
 			},
 
