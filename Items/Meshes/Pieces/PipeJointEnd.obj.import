@@ -1,0 +1,18 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/PipeJointEnd.obj-f417481478db04bf413f6bb94d6afe8a.mesh"
+
+[deps]
+
+files=[ "res://.import/PipeJointEnd.obj-f417481478db04bf413f6bb94d6afe8a.mesh" ]
+
+source_file="res://Items/Meshes/Pieces/PipeJointEnd.obj"
+dest_files=[ "res://.import/PipeJointEnd.obj-f417481478db04bf413f6bb94d6afe8a.mesh", "res://.import/PipeJointEnd.obj-f417481478db04bf413f6bb94d6afe8a.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+optimize_mesh=true

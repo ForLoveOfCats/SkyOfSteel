@@ -20,7 +20,7 @@ extents = Vector3( 1.05, 1.05, 1.75 )
 [sub_resource type="BoxShape" id=4]
 extents = Vector3( 1, 1, 0.2 )
 
-[node name="PLATFORM" type="StaticBody"]
+[node name="PIPE" type="StaticBody"]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource( 1 )

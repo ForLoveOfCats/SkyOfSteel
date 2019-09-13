@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://World/Tile.cs" type="Script" id=1]
+[ext_resource path="res://Items/Logic/PipeJoint.cs" type="Script" id=1]
 [ext_resource path="res://Items/Meshes/PIPE_JOINT.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://World/Materials/TileShader.shader" type="Shader" id=3]
-[ext_resource path="res://Items/Textures/PIPE_JOINT.png" type="Texture" id=4]
+[ext_resource path="res://Items/Textures/Pieces/PipeJointEnd.png" type="Texture" id=4]
 [ext_resource path="res://Items/Logic/OpenEnd.cs" type="Script" id=5]
+[ext_resource path="res://Items/Meshes/Pieces/PipeJointEnd.obj" type="ArrayMesh" id=6]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 3 )
@@ -22,7 +23,10 @@ extents = Vector3( 1.5, 1.5, 3 )
 [sub_resource type="BoxShape" id=5]
 extents = Vector3( 1, 1, 0.2 )
 
-[node name="PLATFORM" type="StaticBody"]
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 1.5, 1.5, 1.5 )
+
+[node name="PIPE_JOINT" type="StaticBody"]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource( 1 )
@@ -93,3 +97,89 @@ script = ExtResource( 5 )
 
 [node name="CollisionShape" type="CollisionShape" parent="SixthOpenEnd"]
 shape = SubResource( 5 )
+
+[node name="FirstEndMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.5 )
+visible = false
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="SecondEndMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.5 )
+visible = false
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="ThirdEndMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0 )
+visible = false
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="ForthEndMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 0 )
+visible = false
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="FifthEndMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0 )
+visible = false
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="SixthEndMesh" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, 0 )
+visible = false
+mesh = ExtResource( 6 )
+material/0 = SubResource( 1 )
+
+[node name="FirstEndCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.5 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="SecondEndCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.5 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="ThirdEndCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="ForthEndCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 0 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="FifthEndCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.5, 0 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="SixthEndCollision" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, 0 )
+shape = SubResource( 6 )
+disabled = true
+
+[node name="Positions" type="Spatial" parent="."]
+
+[node name="Position1" type="Position3D" parent="Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12 )
+
+[node name="Position2" type="Position3D" parent="Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12 )
+
+[node name="Position3" type="Position3D" parent="Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 0 )
+
+[node name="Position4" type="Position3D" parent="Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, 0 )
+
+[node name="Position5" type="Position3D" parent="Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0 )
+
+[node name="Position6" type="Position3D" parent="Positions"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -12, 0 )
