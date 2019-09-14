@@ -4,8 +4,10 @@ using static SteelMath;
 
 
 
-public class Pipe : Tile
+public class Pipe : Tile, IPipe
 {
+	public PipeSystem System { get; set; }
+
 	Spatial Position1;
 	Spatial Position2;
 
@@ -18,6 +20,8 @@ public class Pipe : Tile
 
 	public override void _Ready()
 	{
+		System = new PipeSystem(this);
+
 		Position1 = GetNode<Spatial>("Positions/Position1");
 		Position2 = GetNode<Spatial>("Positions/Position2");
 
@@ -28,7 +32,7 @@ public class Pipe : Tile
 		SecondEndCollision = GetNode<CollisionShape>("SecondEndCollision");
 		SecondOpenEnd = GetNode<StaticBody>("SecondOpenEnd");
 
-		GridUpdate();
+		CallDeferred(nameof(GridUpdate));
 	}
 
 
@@ -42,6 +46,7 @@ public class Pipe : Tile
 		{
 			FirstEndMesh.Show();
 			FirstEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
@@ -54,6 +59,7 @@ public class Pipe : Tile
 		{
 			SecondEndMesh.Show();
 			SecondEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{

@@ -73,7 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\IPipe.cs" />
     <Compile Include="Features\IPushable.cs" />
+    <Compile Include="Features\PipeSystem.cs" />
     <Compile Include="Features\ProjectileCollision\ProjectileCollision.cs" />
     <Compile Include="Items\Logic\BuildingLogic.cs" />
     <Compile Include="Items\Logic\Hitscan\HitscanTrail.cs" />

@@ -4,8 +4,10 @@ using static SteelMath;
 
 
 
-public class PipeJoint : Tile
+public class PipeJoint : Tile, IPipe
 {
+	public PipeSystem System { get; set; }
+
 	Spatial Position1;
 	Spatial Position2;
 	Spatial Position3;
@@ -39,6 +41,8 @@ public class PipeJoint : Tile
 
 	public override void _Ready()
 	{
+		System = new PipeSystem(this);
+
 		Position1 = GetNode<Spatial>("Positions/Position1");
 		Position2 = GetNode<Spatial>("Positions/Position2");
 		Position3 = GetNode<Spatial>("Positions/Position3");
@@ -70,7 +74,7 @@ public class PipeJoint : Tile
 		SixthEndCollision = GetNode<CollisionShape>("SixthEndCollision");
 		SixthOpenEnd = GetNode<StaticBody>("SixthOpenEnd");
 
-		GridUpdate();
+		CallDeferred(nameof(GridUpdate));
 	}
 
 
@@ -84,6 +88,7 @@ public class PipeJoint : Tile
 		{
 			FirstEndMesh.Show();
 			FirstEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
@@ -96,6 +101,7 @@ public class PipeJoint : Tile
 		{
 			SecondEndMesh.Show();
 			SecondEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
@@ -108,6 +114,7 @@ public class PipeJoint : Tile
 		{
 			ThirdEndMesh.Show();
 			ThirdEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
@@ -120,6 +127,7 @@ public class PipeJoint : Tile
 		{
 			ForthEndMesh.Show();
 			ForthEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
@@ -132,6 +140,7 @@ public class PipeJoint : Tile
 		{
 			FifthEndMesh.Show();
 			FifthEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
@@ -144,6 +153,7 @@ public class PipeJoint : Tile
 		{
 			SixthEndMesh.Show();
 			SixthEndCollision.Disabled = false;
+			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 		}
 		else
 		{
