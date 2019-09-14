@@ -7,7 +7,7 @@ public class PipeSystem
 {
 	public static int Number = 0;
 
-	private List<IPipe> Pipes = null;
+	public List<IPipe> Pipes = null;
 
 	public PipeSystem(IPipe First)
 	{

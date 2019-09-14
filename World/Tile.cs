@@ -23,6 +23,10 @@ public class Tile : StaticBody, IInGrid
 	}
 
 
+	public virtual void OnRemove()
+	{}
+
+
 	public void NetRemove(bool Force=false)
 	{
 		if(!Force && OwnerId == 0)

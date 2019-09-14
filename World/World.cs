@@ -409,6 +409,7 @@ public class World : Node
 
 			Grid.QueueUpdateNearby(Branch.Translation);
 			Grid.QueueRemoveItem(Branch);
+			Branch.OnRemove();
 			Branch.QueueFree();
 		}
 	}
