@@ -5,24 +5,11 @@ using System.Collections.Generic;
 
 public class PipeSystem
 {
-	public static int Number = 0;
-
 	public List<IPipe> Pipes = null;
 
 	public PipeSystem(IPipe First)
 	{
-		Number++;
-		GD.Print($"Constructed, now there are {Number} systems");
-
 		Pipes = new List<IPipe>{ First };
-
-		GD.Print("Created system");
-	}
-
-	~PipeSystem()
-	{
-		Number--;
-		GD.Print($"Destructed, now there are {Number} systems");
 	}
 
 
@@ -40,7 +27,5 @@ public class PipeSystem
 		{
 			CurrentPipe.System = this;
 		}
-
-		GD.Print("Consumed");
 	}
 }
