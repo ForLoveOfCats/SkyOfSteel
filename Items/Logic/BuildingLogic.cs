@@ -533,4 +533,26 @@ public class BuildingLogic
 	{
 		return new Vector3(); //Always 0,0,0
 	}
+
+
+
+	public static Vector3? LockerBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
+	{
+		if(Base.Type == Items.ID.PLATFORM)
+		{
+			return new Vector3(0, 6, 0) + Base.Translation;
+		}
+
+		return null;
+	}
+
+
+	public static Vector3? LockerBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
+	{
+		if(Base.Type == Items.ID.WALL || Base.Type == Items.ID.SLOPE)
+			return Base.RotationDegrees;
+
+		return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)), 0);
+
+	}
 }
