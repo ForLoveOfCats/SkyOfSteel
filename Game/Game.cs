@@ -74,7 +74,7 @@ public class Game : Node
 			}
 			else
 			{
-				if(Menu.PauseOpen)
+				if(Menu.IngameMenuOpen)
 				{
 					Menu.Close();
 				}
@@ -85,7 +85,7 @@ public class Game : Node
 			}
 		}
 
-		if(Input.IsActionJustPressed("ConsoleToggle") && !Menu.PauseOpen)
+		if(Input.IsActionJustPressed("ConsoleToggle") && !Menu.IngameMenuOpen)
 		{
 			if(Console.IsOpen)
 			{

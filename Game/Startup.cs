@@ -124,6 +124,9 @@ public class Startup : Node
 		Bindings.Bind("Q", "Game.PossessedPlayer.ThrowCurrentItem");
 		Bindings.Bind("RightStickClick", "Game.PossessedPlayer.ThrowCurrentItem");
 
+		Bindings.Bind("G", "Menu.BuildInventory");
+		Bindings.Bind("XboxStart", "Menu.BuildInventory");
+
 		Bindings.Bind("K", "Game.PossessedPlayer.Respawn");
 		Bindings.Bind("XboxSelect", "Game.PossessedPlayer.Respawn");
 		Bindings.Bind("T", "Game.PossessedPlayer.ToggleFly");

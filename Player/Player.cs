@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using static System.Diagnostics.Debug;
 
 
-public class Player : KinematicBody, IPushable
+public class Player : KinematicBody, IPushable, IInventory
 {
 	public bool Possessed = false;
 	public int Id = 0;
@@ -99,7 +99,7 @@ public class Player : KinematicBody, IPushable
 
 	public List<Hitscan.AdditiveRecoil> ActiveAdditiveRecoil = new List<Hitscan.AdditiveRecoil>();
 
-	public Items.Instance[] Inventory = new Items.Instance[10];
+	public Items.Instance[] Inventory { get; set; } = new Items.Instance[10];
 	public int InventorySlot = 0;
 
 	public int BuildRotation = 0;

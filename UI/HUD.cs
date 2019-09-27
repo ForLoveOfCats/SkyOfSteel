@@ -181,6 +181,7 @@ public class HUD : Node
 	public override void _Process(float Delta)
 	{
 		Crosshair.Visible = !Menu.IsOpen;
+		CooldownBar.Visible = !Menu.IsOpen;
 
 		CooldownBar.MaxValue = Game.PossessedPlayer.CurrentMaxCooldown;
 		CooldownBar.Value = Game.PossessedPlayer.CurrentCooldown;

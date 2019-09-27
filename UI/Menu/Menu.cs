@@ -4,7 +4,7 @@ using Godot;
 public class Menu : Node
 {
 	public static bool IsOpen = true;
-	public static bool PauseOpen = false;
+	public static bool IngameMenuOpen = false;
 
 	private static Panel ShadedBackground;
 	private static ScrollContainer Center;
@@ -21,6 +21,7 @@ public class Menu : Node
 	private static PackedScene ConnectMenu;
 	private static PackedScene WaitConnecting;
 	private static PackedScene PauseMenu;
+	private static PackedScene InventoryMenu;
 
 	static Menu()
 	{
@@ -38,6 +39,7 @@ public class Menu : Node
 		ConnectMenu = GD.Load<PackedScene>("res://UI/Menu/ConnectMenu/ConnectMenu.tscn");
 		WaitConnecting = GD.Load<PackedScene>("res://UI/Menu/WaitConnectingMenu/WaitConnectingMenu.tscn");
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
+		InventoryMenu = GD.Load<PackedScene>("res://UI/Menu/InventoryMenu/InventoryMenu.tscn");
 	}
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
@@ -58,7 +60,7 @@ public class Menu : Node
 		}
 
 		IsOpen = true;
-		PauseOpen = false;
+		IngameMenuOpen = false;
 		Game.BindsEnabled = false;
 		Input.SetMouseMode(Input.MouseMode.Visible);
 	}
@@ -68,7 +70,7 @@ public class Menu : Node
 	{
 		Reset();
 		IsOpen = false;
-		PauseOpen = false;
+		IngameMenuOpen = false;
 
 		if(!Console.IsOpen)
 		{
@@ -176,6 +178,17 @@ public class Menu : Node
 		Contents = PauseMenu.Instance();
 		Center.AddChild(Contents);
 		ShadedBackground.Show();
-		PauseOpen = true;
+		IngameMenuOpen = true;
+	}
+
+
+	public static void BuildInventory()
+	{
+		Reset();
+
+		Contents = InventoryMenu.Instance();
+		Center.AddChild(Contents);
+		ShadedBackground.Show();
+		IngameMenuOpen = true;
 	}
 }
