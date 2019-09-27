@@ -74,6 +74,10 @@ MenuToggle={
 3d_physics/layer_1="Movement"
 3d_physics/layer_2="ProjectileHitscan"
 
+[mono]
+
+project/auto_update_project=false
+
 [rendering]
 
 quality/driver/fallback_to_gles2=true
