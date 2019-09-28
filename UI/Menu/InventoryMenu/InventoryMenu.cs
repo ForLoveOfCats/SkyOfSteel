@@ -30,6 +30,7 @@ public class InventoryMenu : VBoxContainer
 			PlayerIcons[x] = Icon;
 
 			Icon.UpdateIcon();
+			Icon.CallDeferred(nameof(Icon.UpdateSize)); //The container's size will not populate to non-default values until next frame
 		}
 	}
 }

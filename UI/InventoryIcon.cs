@@ -53,6 +53,12 @@ public class InventoryIcon : TextureButton
 		else
 			TextureNormal = Items.Thumbnails[Source.Inventory[Slot].Id];
 
+		UpdateSize();
+	}
+
+
+	public void UpdateSize()
+	{
 		float VBoxHight = (GetParent() as VBoxContainer).RectSize.y;
 		RectMinSize = new Vector2(VBoxHight/11, VBoxHight/11);
 	}
