@@ -5,13 +5,13 @@ using static System.Diagnostics.Debug;
 
 public class OpenEnd : StaticBody
 {
-	public IPipe Parent { get; private set;}
+	public PipeCoreLogic Parent { get; private set;}
 
 
 	public override void _Ready()
 	{
-		Assert(GetParent() is IPipe);
+		Assert(GetParent() is PipeCoreLogic);
 
-		Parent = GetParent() as IPipe;
+		Parent = GetParent() as PipeCoreLogic;
 	}
 }

@@ -5,10 +5,8 @@ using System.Collections.Generic;
 
 
 
-public class PipeJoint : Tile, IPipe
+public class PipeJoint : PipeCoreLogic
 {
-	public PipeSystem System { get; set; }
-	public HashSet<IPipe> Friends { get; set; }
 	private bool InitiallyFilledFriends = false;
 
 	Spatial Position1;
@@ -45,7 +43,7 @@ public class PipeJoint : Tile, IPipe
 	public override void _Ready()
 	{
 		System = new PipeSystem(this);
-		Friends = new HashSet<IPipe>();
+		Friends = new HashSet<PipeCoreLogic>();
 
 		Position1 = GetNode<Spatial>("Positions/Position1");
 		Position2 = GetNode<Spatial>("Positions/Position2");
@@ -84,8 +82,8 @@ public class PipeJoint : Tile, IPipe
 
 	public override void GridUpdate()
 	{
-		HashSet<IPipe> OriginalFriends = Friends;
-		Friends = new HashSet<IPipe>();
+		HashSet<PipeCoreLogic> OriginalFriends = Friends;
+		Friends = new HashSet<PipeCoreLogic>();
 
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 		Godot.Collections.Dictionary Results;
@@ -179,37 +177,5 @@ public class PipeJoint : Tile, IPipe
 			RecursiveAddFriendsToSystem();
 		}
 		InitiallyFilledFriends = true;
-	}
-
-
-	public void RecursiveAddFriendsToSystem()
-	{
-		foreach(IPipe Friend in Friends)
-		{
-			if(Friend.System == System)
-				continue;
-
-			System.Pipes.Add(Friend);
-			Friend.System = System;
-			Friend.RecursiveAddFriendsToSystem();
-		}
-	}
-
-
-	public override void OnRemove()
-	{
-		List<PipeSystem> JustCreated = new List<PipeSystem>();
-		foreach(IPipe Friend in Friends)
-		{
-			Friend.Friends.Remove(this);
-
-			if(JustCreated.Contains(Friend.System))
-				continue;
-
-			PipeSystem NewSystem = new PipeSystem(Friend);
-			JustCreated.Add(NewSystem);
-			Friend.System = NewSystem;
-			Friend.RecursiveAddFriendsToSystem();
-		}
 	}
 }

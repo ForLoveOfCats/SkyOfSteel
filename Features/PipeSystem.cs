@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 public class PipeSystem
 {
-	public List<IPipe> Pipes = null;
+	public List<PipeCoreLogic> Pipes = null;
 
-	public PipeSystem(IPipe First)
+	public PipeSystem(PipeCoreLogic First)
 	{
-		Pipes = new List<IPipe>{ First };
+		Pipes = new List<PipeCoreLogic>{ First };
 	}
 
 
@@ -18,12 +18,12 @@ public class PipeSystem
 		if(this == Other)
 			return;
 
-		List<IPipe> NewPipes = new List<IPipe>(Pipes.Count + Other.Pipes.Count);
+		List<PipeCoreLogic> NewPipes = new List<PipeCoreLogic>(Pipes.Count + Other.Pipes.Count);
 		NewPipes.AddRange(Pipes);
 		NewPipes.AddRange(Other.Pipes);
 		Pipes = NewPipes;
 
-		foreach(IPipe CurrentPipe in Other.Pipes)
+		foreach(PipeCoreLogic CurrentPipe in Other.Pipes)
 		{
 			CurrentPipe.System = this;
 		}
