@@ -38,7 +38,7 @@ margin_bottom = 466.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TileSizedSpacer" parent="." instance=ExtResource( 3 )]
+[node name="TitleSizedSpacer" parent="." instance=ExtResource( 3 )]
 margin_top = 537.0
 margin_right = 1024.0
 margin_bottom = 577.0
