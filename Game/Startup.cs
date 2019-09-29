@@ -91,7 +91,7 @@ public class Startup : Node
 		Bindings.Bind("LeftStickClick", "Game.PossessedPlayer.FlySprint");
 		Bindings.Bind("Space", "Game.PossessedPlayer.Jump");
 		Bindings.Bind("XboxA", "Game.PossessedPlayer.Jump");
-		Bindings.Bind("Control", "Game.PossessedPlayer.Crouch");
+		Bindings.Bind("Shift", "Game.PossessedPlayer.Crouch");
 		Bindings.Bind("XboxB", "Game.PossessedPlayer.Crouch");
 
 		Bindings.Bind("WheelUp", "Game.PossessedPlayer.InventoryUp");
