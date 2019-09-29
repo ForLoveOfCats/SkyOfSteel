@@ -87,8 +87,8 @@ public class Startup : Node
 		Bindings.Bind("LeftStickRight", "Game.PossessedPlayer.RightMove");
 		Bindings.Bind("A", "Game.PossessedPlayer.LeftMove");
 		Bindings.Bind("LeftStickLeft", "Game.PossessedPlayer.LeftMove");
-		Bindings.Bind("Shift", "Game.PossessedPlayer.Sprint");
-		Bindings.Bind("LeftStickClick", "Game.PossessedPlayer.Sprint");
+		Bindings.Bind("Alt", "Game.PossessedPlayer.FlySprint");
+		Bindings.Bind("LeftStickClick", "Game.PossessedPlayer.FlySprint");
 		Bindings.Bind("Space", "Game.PossessedPlayer.Jump");
 		Bindings.Bind("XboxA", "Game.PossessedPlayer.Jump");
 		Bindings.Bind("Control", "Game.PossessedPlayer.Crouch");

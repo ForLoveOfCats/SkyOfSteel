@@ -11,18 +11,16 @@ public class Player : KinematicBody, IPushable, IInventory
 	public bool Possessed = false;
 	public int Id = 0;
 
-	public float BaseMovementSpeed = 20;
-	public float SprintMultiplyer = 2; //Speed while sprinting is base speed times this value
-	public float FlySprintMultiplyer = 6; //Speed while sprint flying is base speed times this value
-	public float MaxMovementSpeed { get { return BaseMovementSpeed*SprintMultiplyer; } }
-	public float CrouchMovementDivisor = 1.5f;
+	public float MovementSpeed = 45;
+	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
+	public float CrouchMovementDivisor = 2.6f;
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 22; //How many units per second to accelerate
 	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
-	public float Friction { get { return MaxMovementSpeed / DecelerateTime; } }
+	public float Friction { get { return MovementSpeed / DecelerateTime; } }
 	public float SlideFrictionDivisor = 10;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
-	public float FlyFriction { get { return (BaseMovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
+	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
 	public float CrouchGravityMultiplyer = 4;
 	public float JumpSpeedAddend = 18f;
 	public float JumpStartForce = 12f;
@@ -75,11 +73,11 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float BackwardSens = 0;
 	public float RightSens = 0;
 	public float LeftSens = 0;
-	public float SprintSens = 0;
+	public float FlySprintSens = 0;
 	public float JumpSens = 0;
 
 	public bool IsCrouching = false;
-	public bool IsSprinting = false;
+	public bool IsFlySprinting = false;
 	public bool IsJumping = false;
 	public bool HasJumped = false;
 	public bool WasOnFloor = false;
@@ -479,24 +477,22 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
-	public void Sprint(float Sens)
+	public void FlySprint(float Sens)
 	{
-		SprintSens = Sens;
-		if(Sens > 0 && !IsCrouching && !Ads)
+		FlySprintSens = Sens;
+		if(Sens > 0 && FlyMode)
 		{
-			IsSprinting = true;
+			IsFlySprinting = true;
 
-			if(FlyMode)
-			{
-				if(JumpAxis == 1)
-					Momentum.y = BaseMovementSpeed*FlySprintMultiplyer;
-				else if(IsCrouching)
-					Momentum.y = -BaseMovementSpeed*FlySprintMultiplyer;
-			}
+			if(JumpAxis == 1)
+				Momentum.y = MovementSpeed*FlySprintMultiplyer;
+			else if(IsCrouching)
+				Momentum.y = -MovementSpeed*FlySprintMultiplyer;
 		}
 		else
 		{
-			IsSprinting = false;
+			IsFlySprinting = false;
+			Momentum.y = Clamp(Momentum.y, -MovementSpeed, MovementSpeed);
 		}
 	}
 
@@ -508,13 +504,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			if(FlyMode)
 			{
-				if(IsSprinting)
+				if(IsFlySprinting)
 				{
-					Momentum.y = BaseMovementSpeed*FlySprintMultiplyer;
+					Momentum.y = MovementSpeed*FlySprintMultiplyer;
 				}
 				else
 				{
-					Momentum.y = BaseMovementSpeed;
+					Momentum.y = MovementSpeed;
 				}
 				IsJumping = false;
 			}
@@ -561,7 +557,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			IsCrouching = true;
 
 			if(!FlyMode)
-				IsSprinting = false;
+				IsFlySprinting = false;
 
 			if(Game.Mode.ShouldCrouch())
 			{
@@ -570,10 +566,10 @@ public class Player : KinematicBody, IPushable, IInventory
 					JumpAxis = 0;
 					JumpSens = 0;
 
-					if(IsSprinting)
-						Momentum.y = -BaseMovementSpeed*FlySprintMultiplyer;
+					if(IsFlySprinting)
+						Momentum.y = -MovementSpeed*FlySprintMultiplyer;
 					else
-						Momentum.y = -BaseMovementSpeed;
+						Momentum.y = -MovementSpeed;
 				}
 				else if(!IsOnFloor())
 				{
@@ -590,8 +586,8 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			IsCrouching = false;
 
-			if(SprintSens > 0)
-				Sprint(SprintSens);
+			if(FlySprintSens > 0)
+				FlySprint(FlySprintSens);
 
 			SmallCollisionCapsule.Disabled = true;
 			LargeCollisionCapsule.Disabled = false;
@@ -742,7 +738,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			else if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
 			{
 				Ads = true;
-				IsSprinting = false;
+				IsFlySprinting = false;
 			}
 		}
 
@@ -754,8 +750,8 @@ public class Player : KinematicBody, IPushable, IInventory
 			if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
 			{
 				Ads = false;
-				if(SprintSens > 0)
-					Sprint(SprintSens);
+				if(FlySprintSens > 0)
+					FlySprint(FlySprintSens);
 			}
 		}
 	}
@@ -788,9 +784,9 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	private Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
 	{
-		WishDir = ClampVec3(WishDir, 0, 1) * ((MaxMovementSpeed + BaseMovementSpeed) / 2);
+		WishDir = ClampVec3(WishDir, 0, 1) * ((MovementSpeed + MovementSpeed) / 2);
 		float CurrentSpeed = Vel.Dot(WishDir);
-		float AddSpeed = MaxMovementSpeed - CurrentSpeed;
+		float AddSpeed = MovementSpeed - CurrentSpeed;
 		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*Delta);
 		return Vel + WishDir * AddSpeed;
 	}
@@ -885,16 +881,11 @@ public class Player : KinematicBody, IPushable, IInventory
 
 		if(!IsJumping && (IsOnFloor() || FlyMode))
 		{
-			float SpeedLimit = BaseMovementSpeed;
-			if(IsSprinting)
-			{
-				if(!FlyMode)
-					SpeedLimit *= SprintMultiplyer;
-				else if(FlyMode)
-					SpeedLimit *= FlySprintMultiplyer;
-			}
+			float SpeedLimit = MovementSpeed;
+			if(FlyMode && IsFlySprinting)
+				SpeedLimit *= FlySprintMultiplyer;
 			else if(IsCrouching)
-				SpeedLimit = BaseMovementSpeed/CrouchMovementDivisor;
+				SpeedLimit = MovementSpeed/CrouchMovementDivisor;
 
 			float X = 0, Z = 0;
 			if(RightAxis > 0)
@@ -1037,7 +1028,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		}
 
 		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
-		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MaxMovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);
+		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);
 
 		if(Round(ForwardMomentum) == 0 && !Jumping)
 		{
