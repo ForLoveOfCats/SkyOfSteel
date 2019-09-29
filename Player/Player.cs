@@ -832,13 +832,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		}
 
 		if(!IsJumping && !FlyMode)
-		{
-			float CurrentGravity = Gravity;
-			if(IsCrouching)
-				CurrentGravity *= CrouchGravityMultiplyer;
-
-			Momentum.y = Mathf.Clamp(Momentum.y - CurrentGravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
-		}
+			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
 
 		if(FlyMode && JumpAxis <= 0 && !IsCrouching)
 		{
