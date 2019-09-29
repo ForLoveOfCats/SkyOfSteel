@@ -79,7 +79,6 @@ public class Player : KinematicBody, IPushable, IInventory
 	public bool IsCrouching = false;
 	public bool IsFlySprinting = false;
 	public bool IsJumping = false;
-	public bool HasJumped = false;
 	public bool WasOnFloor = false;
 	public float JumpTimer = 0f;
 	public Vector3 Momentum = new Vector3(0,0,0);
@@ -528,7 +527,6 @@ public class Player : KinematicBody, IPushable, IInventory
 					}
 
 					IsJumping = true;
-					HasJumped = true;
 				}
 			}
 			else if(!Ads && !IsCrouching && LastSlideCollision != null
@@ -545,7 +543,6 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			JumpAxis = 0;
 			IsJumping = false;
-			HasJumped = false;
 		}
 	}
 
@@ -834,7 +831,6 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
-			HasJumped = true;
 		}
 
 		if(IsJumping && !WasOnFloor)
