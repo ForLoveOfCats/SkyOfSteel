@@ -22,10 +22,10 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
 	public float CrouchGravityMultiplyer = 4;
-	public float JumpSpeedAddend = 18f;
-	public float JumpStartForce = 12f;
-	public float JumpContinueForce = 5f;
-	public float MaxJumpLength = 0.3f;
+	public float SlideJumpBoost = 30f;
+	public float JumpStartForce = 9f;
+	public float JumpContinueForce = 7f;
+	public float MaxJumpLength = 0.4f;
 	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
@@ -74,6 +74,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float FlySprintSens = 0;
 	public float JumpSens = 0;
 
+	public bool AlreadySlideJumpBoosted = false;
 	public bool IsCrouching = false;
 	public bool IsFlySprinting = false;
 	public bool IsJumping = false;
@@ -511,12 +512,15 @@ public class Player : KinematicBody, IPushable, IInventory
 				if(Game.Mode.ShouldJump())
 				{
 					Momentum.y = JumpStartForce;
-					if(JumpAxis < 1)
+
+					if(IsCrouching && !AlreadySlideJumpBoosted)
 					{
-						Vector3 FlatMomentum = new Vector3(Momentum.x, 0, Momentum.z);
-						FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + JumpSpeedAddend);
+						Vector3 FlatMomentum = Momentum.Flattened();
+						FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + SlideJumpBoost);
 						Momentum.x = FlatMomentum.x;
 						Momentum.z = FlatMomentum.z;
+
+						AlreadySlideJumpBoosted = true;
 					}
 
 					IsJumping = true;
@@ -538,6 +542,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		if(Sens > 0)
 		{
 			IsCrouching = true;
+			AlreadySlideJumpBoosted = false;
 
 			if(!FlyMode)
 				IsFlySprinting = false;
