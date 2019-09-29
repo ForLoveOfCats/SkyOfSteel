@@ -26,8 +26,6 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float JumpStartForce = 12f;
 	public float JumpContinueForce = 5f;
 	public float MaxJumpLength = 0.3f;
-	public float WallKickJumpForce = 22;
-	public float WallKickHorzontalForce = 35;
 	public float Gravity = 25f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
@@ -111,9 +109,6 @@ public class Player : KinematicBody, IPushable, IInventory
 	public CollisionShape SmallCollisionCapsule;
 	public Position3D SmallBottomPoint;
 
-	public Area WallKickArea;
-	public KinematicCollision LastSlideCollision = null;
-
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
 	public MeshInstance ThirdPersonItem;
@@ -148,8 +143,6 @@ public class Player : KinematicBody, IPushable, IInventory
 		LargeBottomPoint = GetNode<Position3D>("LargeBottomPoint");
 		SmallCollisionCapsule = GetNode<CollisionShape>("SmallCollisionShape");
 		SmallBottomPoint = GetNode<Position3D>("SmallBottomPoint");
-
-		WallKickArea = GetNode<Area>("WallKickArea");
 
 		if(Possessed)
 		{
@@ -528,13 +521,6 @@ public class Player : KinematicBody, IPushable, IInventory
 
 					IsJumping = true;
 				}
-			}
-			else if(!Ads && !IsCrouching && LastSlideCollision != null
-			        && WallKickArea.GetOverlappingBodies().Count > 0)
-			{
-				Momentum += WallKickHorzontalForce * LastSlideCollision.Normal;
-				Momentum.y = WallKickJumpForce;
-				SfxManager.FpWallKick();
 			}
 
 			JumpAxis = 1;
@@ -969,10 +955,7 @@ public class Player : KinematicBody, IPushable, IInventory
 				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
 
 			if(GetSlideCount() > 0)
-			{
 				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
-				LastSlideCollision = GetSlideCollision(0);
-			}
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
