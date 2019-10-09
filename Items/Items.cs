@@ -15,9 +15,7 @@ public class Items : Node
 	public class Instance
 	{
 		public Items.ID Id = Items.ID.ERROR;
-		public int Temperature = 0;
 		public int Count = 1;
-		public int UsesRemaining = 0;
 
 		public Instance(Items.ID IdArg)
 		{

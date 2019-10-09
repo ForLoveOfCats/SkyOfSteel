@@ -440,7 +440,8 @@ public class World : Node
 	public void InitialNetWorldLoad(int Id, Vector3 PlayerPosition, int RenderDistance)
 	{
 		RequestChunks(Id, PlayerPosition, RenderDistance);
-		((Player)Game.RuntimeRoot.GetNode("SkyScene").GetNode(Id.ToString())).SetFreeze(false); //I hate casting syntax
+		Net.Players[Id].SetFreeze(false);
+		Net.Players[Id].GiveDefaultItems();
 	}
 
 
@@ -636,18 +637,15 @@ public class World : Node
 	[Remote]
 	public void RequestDroppedItem(int Id, string Guid)
 	{
-		if(Self.GetTree().NetworkPeer != null)
+		if(Net.Work.NetworkPeer != null)
 		{
-			if(Self.GetTree().IsNetworkServer())
+			if(Net.Work.IsNetworkServer())
 			{
 				//On server
 				DroppedItem Item = EntitiesRoot.GetNodeOrNull(Guid) as DroppedItem;
 				if(Item != null) //Only lookup node once instead of using HasNode
 				{
-					if(Id == Net.Work.GetNetworkUniqueId())
-						Game.PossessedPlayer.PickupItem(Item.Type);
-					else
-						Net.Players[Id].RpcId(Id, nameof(Player.PickupItem), Item.Type);
+					Net.Players[Id].ItemGive(new Items.Instance(Item.Type));
 
 					Net.SteelRpc(this, nameof(RemoveDroppedItem), Item.Name);
 					RemoveDroppedItem(Item.Name);

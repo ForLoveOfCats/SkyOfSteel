@@ -124,8 +124,14 @@ public static class API
 	}
 
 
-	public static bool Give(Items.ID Type) //TODO: Allow giving items to other players
+	public static bool Give(Items.ID Type) //TODO: Allow as client and giving items to other players
 	{
+		if(!Net.Work.IsNetworkServer())
+		{
+			Console.ThrowPrint("Cannot give item as client");
+			return false;
+		}
+
 		Game.PossessedPlayer.ItemGive(new Items.Instance(Type));
 		return true;
 	}

@@ -186,9 +186,17 @@ public class Player : KinematicBody, IPushable, IInventory
 		}
 
 		Respawn();
-		if(GetTree().IsNetworkServer())
-			SetFreeze(false);
 
+		if(Net.Work.IsNetworkServer())
+		{
+			SetFreeze(false);
+			GiveDefaultItems();
+		}
+	}
+
+
+	public void GiveDefaultItems()
+	{
 		ItemGive(new Items.Instance(Items.ID.PLATFORM));
 		ItemGive(new Items.Instance(Items.ID.WALL));
 		ItemGive(new Items.Instance(Items.ID.SLOPE));
@@ -269,6 +277,9 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public void ItemGive(Items.Instance ToGive)
 	{
+		if(!Net.Work.IsNetworkServer())
+			throw new Exception("Attempted to give item on client");
+
 		for(int Slot = 0; Slot <= 9; Slot++)
 		{
 			if(!(Inventory[Slot] is null)) //If inventory item is not null
@@ -276,7 +287,12 @@ public class Player : KinematicBody, IPushable, IInventory
 				if(Inventory[Slot].Id == ToGive.Id)
 				{
 					Inventory[Slot].Count += ToGive.Count;
-					HUDInstance.HotbarUpdate();
+
+					if(Possessed)
+						HUDInstance.HotbarUpdate();
+					else
+						RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, ToGive.Count);
+
 					return;
 				}
 			}
@@ -287,7 +303,12 @@ public class Player : KinematicBody, IPushable, IInventory
 			if(Inventory[Slot] is null)
 			{
 				Inventory[Slot] = ToGive;
-				HUDInstance.HotbarUpdate();
+
+				if(Possessed)
+					HUDInstance.HotbarUpdate();
+				else
+					RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, ToGive.Count);
+
 				return;
 			}
 		}
@@ -749,20 +770,47 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		if(Sens > 0)
 		{
-			if(Inventory[InventorySlot] != null && Game.Mode.ShouldThrowItem())
+			Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
+				.Rotated(new Vector3(1,0,0), Deg2Rad(-ActualLookVertical))
+				.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+
+			if(Net.Work.IsNetworkServer())
+				ThrowItemFromSlot(InventorySlot, Vel);
+			else
 			{
-				Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
-					.Rotated(new Vector3(1,0,0), Deg2Rad(-ActualLookVertical))
-					.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+				RpcId(Net.ServerId, nameof(ThrowItemFromSlot), InventorySlot, Vel);
+				SfxManager.FpThrow();
+				SetCooldown(0, SlotSwitchCooldown, false);
+			}
+		}
+	}
 
-				World.Self.DropItem(Inventory[InventorySlot].Id, Translation+Cam.Translation, Vel);
 
-				if(Inventory[InventorySlot].Count > 1)
-					Inventory[InventorySlot].Count -= 1;
-				else
-					Inventory[InventorySlot] = null;
+	[Remote]
+	public void ThrowItemFromSlot(int Slot, Vector3 Vel)
+	{
+		if(Inventory[Slot] != null && Game.Mode.ShouldThrowItem())
+		{
+			World.Self.DropItem(Inventory[Slot].Id, Translation+Cam.Translation, Vel);
+
+			if(Inventory[Slot].Count > 1)
+			{
+				Inventory[Slot].Count -= 1;
+
+				if(Id != Net.Work.GetNetworkUniqueId())
+					RpcId(Id, nameof(NetUpdateInventorySlot), Slot, Inventory[Slot].Id, Inventory[Slot].Count);
+			}
+			else
+			{
+				Inventory[Slot] = null;
+
+				if(Id != Net.Work.GetNetworkUniqueId())
+					RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
+			}
+
+			if(Id == Net.Work.GetNetworkUniqueId())
+			{
 				HUDInstance.HotbarUpdate();
-
 				SfxManager.FpThrow();
 				SetCooldown(0, SlotSwitchCooldown, false);
 			}
@@ -1034,6 +1082,25 @@ public class Player : KinematicBody, IPushable, IInventory
 	public void NotifyTeamChange(int NewTeam)
 	{
 		__team = NewTeam;
+	}
+
+
+	[Remote]
+	public void NetUpdateInventorySlot(int Slot, Items.ID Id, int Count)
+	{
+		Inventory[Slot] = new Items.Instance(Id);
+		Inventory[Slot].Count = Count;
+
+		HUDInstance.HotbarUpdate();
+	}
+
+
+	[Remote]
+	public void NetEmptyInventorySlot(int Slot)
+	{
+		Inventory[Slot] = null;
+
+		HUDInstance.HotbarUpdate();
 	}
 
 
