@@ -10,6 +10,7 @@ public interface IInventory
 	[Remote]
 	void NetUpdateInventorySlot(int Slot, Items.ID Id, int Count);
 
+
 	[Remote]
 	void NetEmptyInventorySlot(int Slot);
 }
