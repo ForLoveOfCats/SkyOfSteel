@@ -16,7 +16,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float CrouchMovementDivisor = 2.6f;
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 22; //How many units per second to accelerate
-	public float DecelerateTime = 0.15f; //How many seconds needed to stop from full speed
+	public float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MovementSpeed / DecelerateTime; } }
 	public float SlideFrictionDivisor = 10;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
