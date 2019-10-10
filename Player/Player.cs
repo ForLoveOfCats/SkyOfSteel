@@ -11,6 +11,8 @@ public class Player : KinematicBody, IPushable, IInventory
 	public bool Possessed = false;
 	public int Id = 0;
 
+	public float Hight = 10;
+	public float RequiredUncrouchHight = 11;
 	public float MovementSpeed = 45;
 	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
 	public float CrouchMovementDivisor = 2.6f;
@@ -66,6 +68,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public int ForwardAxis = 0;
 	public int RightAxis = 0;
 	public int JumpAxis = 0;
+	public int CrouchAxis = 0;
 
 	public float ForwardSens = 0;
 	public float BackwardSens = 0;
@@ -562,6 +565,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		if(Sens > 0)
 		{
+			CrouchAxis = 1;
 			IsCrouching = true;
 			AlreadySlideJumpBoosted = false;
 
@@ -588,20 +592,13 @@ public class Player : KinematicBody, IPushable, IInventory
 
 			LargeCollisionCapsule.Disabled = true;
 			SmallCollisionCapsule.Disabled = false;
-			if(IsOnFloor())
-				Translation = new Vector3(Translation.x, Translation.y-3.195f, Translation.z);
 		}
 		else
 		{
-			IsCrouching = false;
+			CrouchAxis = 0;
 
 			if(FlySprintSens > 0)
 				FlySprint(FlySprintSens);
-
-			SmallCollisionCapsule.Disabled = true;
-			LargeCollisionCapsule.Disabled = false;
-			if(IsOnFloor())
-				Translation = new Vector3(Translation.x, Translation.y+1.5f, Translation.z);
 		}
 	}
 
@@ -1015,8 +1012,39 @@ public class Player : KinematicBody, IPushable, IInventory
 		}
 
 		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
-		{
 			Momentum.y = -1f;
+
+		if(IsCrouching && CrouchAxis == 0)
+		{
+			PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
+
+			Godot.Collections.Dictionary DownResults = State.IntersectRay(Translation, Translation - new Vector3(0, Hight, 0), new Godot.Collections.Array{this}, 1);
+			Godot.Collections.Dictionary UpResults = State.IntersectRay(Translation, Translation + new Vector3(0, Hight, 0), new Godot.Collections.Array{this}, 1);
+
+			bool UnCrouch = true;
+			if(DownResults.Count > 0 && UpResults.Count > 0)
+			{
+				float DownY = ((Vector3)DownResults["position"]).y;
+				float UpY = ((Vector3)UpResults["position"]).y;
+
+				GD.Print(UpY - DownY);
+				if(UpY - DownY <= RequiredUncrouchHight)
+					UnCrouch = false;
+			}
+
+			if(UnCrouch)
+			{
+				IsCrouching = false;
+				SmallCollisionCapsule.Disabled = true;
+				LargeCollisionCapsule.Disabled = false;
+
+				if(DownResults.Count > 0)
+				{
+					float DownY = ((Vector3)DownResults["position"]).y;
+					GD.Print($"Setting Y to {DownY + (Hight/2)} instead of original Y of {Translation.y}");
+					Translation = new Vector3(Translation.x, DownY + (Hight/2), Translation.z);
+				}
+			}
 		}
 
 		{
