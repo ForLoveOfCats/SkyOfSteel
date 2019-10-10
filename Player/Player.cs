@@ -1026,7 +1026,6 @@ public class Player : KinematicBody, IPushable, IInventory
 				float DownY = ((Vector3)DownResults["position"]).y;
 				float UpY = ((Vector3)UpResults["position"]).y;
 
-				GD.Print(UpY - DownY);
 				if(UpY - DownY <= RequiredUncrouchHight)
 					UnCrouch = false;
 			}
@@ -1040,7 +1039,6 @@ public class Player : KinematicBody, IPushable, IInventory
 				if(DownResults.Count > 0)
 				{
 					float DownY = ((Vector3)DownResults["position"]).y;
-					GD.Print($"Setting Y to {DownY + (Hight/2)} instead of original Y of {Translation.y}");
 					Translation = new Vector3(Translation.x, DownY + (Hight/2), Translation.z);
 				}
 			}
