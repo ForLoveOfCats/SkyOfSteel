@@ -13,21 +13,21 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public float Hight = 10;
 	public float RequiredUncrouchHight = 11;
-	public float MovementSpeed = 45;
+	public float MovementSpeed = 40;
 	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
 	public float CrouchMovementDivisor = 2.6f;
 	public float MaxVerticalSpeed = 100f;
-	public float AirAcceleration = 22; //How many units per second to accelerate
+	public float AirAcceleration = 18; //How many units per second to accelerate
 	public float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MovementSpeed / DecelerateTime; } }
 	public float SlideFrictionDivisor = 10;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
-	public float SlideJumpBoost = 30f;
-	public float JumpStartForce = 9f;
-	public float JumpContinueForce = 7f;
+	public float SlideJumpBoost = 36f;
+	public float JumpStartForce = 16f;
+	public float JumpContinueForce = 1f;
 	public float MaxJumpLength = 0.4f;
-	public float Gravity = 25f;
+	public float Gravity = 32f;
 	public float ItemThrowPower = 20f;
 	public float ItemPickupDistance = 8f;
 	public float SlotSwitchCooldown = 15;
@@ -582,10 +582,6 @@ public class Player : KinematicBody, IPushable, IInventory
 						Momentum.y = -MovementSpeed*FlySprintMultiplyer;
 					else
 						Momentum.y = -MovementSpeed;
-				}
-				else if(!IsOnFloor())
-				{
-					IsJumping = false;
 				}
 			}
 
