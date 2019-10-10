@@ -23,7 +23,6 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float SlideFrictionDivisor = 10;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
-	public float CrouchGravityMultiplyer = 4;
 	public float SlideJumpBoost = 30f;
 	public float JumpStartForce = 9f;
 	public float JumpContinueForce = 7f;
