@@ -1039,7 +1039,8 @@ public class Player : KinematicBody, IPushable, IInventory
 				if(DownResults.Count > 0)
 				{
 					float DownY = ((Vector3)DownResults["position"]).y;
-					Translation = new Vector3(Translation.x, DownY + (Hight/2), Translation.z);
+					if(Translation.y - DownY <= Hight/2)
+						Translation = new Vector3(Translation.x, DownY + (Hight/2), Translation.z);
 				}
 			}
 		}
