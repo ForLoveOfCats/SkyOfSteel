@@ -153,6 +153,10 @@ public class Hitscan : Spatial
 			if(DamagedPlayer.Health - Instance.Damage <= 0)
 				Game.PossessedPlayer.SfxManager.FpKillsound();
 
+			DamagedPlayer.Health = DamagedPlayer.Health - Instance.Damage; //For high fire rate and high ping
+			if(DamagedPlayer.Health < 0)
+				DamagedPlayer.Health = 0;
+
 			DamagedPlayer.RpcId(Instance.Id, nameof(Player.ApplyDamage), Instance.Damage, Instance.Origin);
 		}
 
