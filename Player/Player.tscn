@@ -1,11 +1,9 @@
-[gd_scene load_steps=21 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body/BodyScene.tscn" type="PackedScene" id=2]
 [ext_resource path="res://default_env.tres" type="Environment" id=3]
-[ext_resource path="res://Player/Body/Arm.obj" type="ArrayMesh" id=4]
 [ext_resource path="res://Items/Meshes/ERROR.obj" type="ArrayMesh" id=5]
-[ext_resource path="res://Player/Forcefield.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Player/PlayerSfxManager.cs" type="Script" id=7]
 [ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=8]
 [ext_resource path="res://Player/WallKickSfx.wav" type="AudioStream" id=9]
@@ -18,15 +16,11 @@
 [ext_resource path="res://Items/Logic/Hitscan/Thunderbolt.wav" type="AudioStream" id=16]
 [ext_resource path="res://Items/Logic/Hitscan/Scattershock.wav" type="AudioStream" id=17]
 
-[sub_resource type="SpatialMaterial" id=1]
-albedo_color = Color( 0.682353, 0.682353, 0.682353, 1 )
-roughness = 0.0
-
-[sub_resource type="CapsuleShape" id=2]
+[sub_resource type="CapsuleShape" id=1]
 radius = 1.24303
 height = 4.26055
 
-[sub_resource type="CapsuleShape" id=3]
+[sub_resource type="CapsuleShape" id=2]
 radius = 1.24303
 height = 2.13
 
@@ -53,31 +47,22 @@ transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 0
 enabled = true
 cast_to = Vector3( 0, 0, 24 )
 
-[node name="ViewmodelArm" type="MeshInstance" parent="SteelCamera"]
-transform = Transform( -1.39516, -0.116266, -2.11394e-07, -0.116266, 1.39516, 2.03286e-08, 2.08976e-07, 3.78141e-08, -1.4, 0.201131, -0.672992, 0.324564 )
-mesh = ExtResource( 4 )
-skeleton = NodePath("")
-material/0 = SubResource( 1 )
-
-[node name="ViewmodelItem" type="MeshInstance" parent="SteelCamera/ViewmodelArm"]
-transform = Transform( 0.0200001, 3.84171e-09, 1.33227e-15, -3.84171e-09, 0.0200001, -8.27246e-17, -1.31006e-14, 2.09576e-16, 0.02, -0.325838, 0.187806, 0.848515 )
+[node name="ViewmodelItem" type="MeshInstance" parent="SteelCamera"]
+transform = Transform( -0.0280001, 0, 9.12356e-09, 0, 0.0280001, 0, -9.12358e-09, 0, -0.028, 0.480166, -0.313771, -0.626332 )
 mesh = ExtResource( 5 )
 skeleton = NodePath("")
 material/0 = null
 
-[node name="Forcefield" parent="SteelCamera/ViewmodelArm" instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 2.98023e-08, -2.98023e-08, -4.37114e-08, 1, 2.84217e-14, -1, -4.37114e-08, -0.327588, 0.0190516, 0.849 )
-
 [node name="LargeCollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1.5, 0, 0, 0, -6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 0, 0 )
-shape = SubResource( 2 )
+shape = SubResource( 1 )
 
 [node name="LargeBottomPoint" type="Position3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.06, 0 )
 
 [node name="SmallCollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1.5, 0, 0, 0, -6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, 0, 1.6, 0 )
-shape = SubResource( 3 )
+shape = SubResource( 2 )
 
 [node name="SmallBottomPoint" type="Position3D" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.86, 0 )

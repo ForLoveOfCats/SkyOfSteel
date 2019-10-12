@@ -40,10 +40,10 @@ public class Player : KinematicBody, IPushable, IInventory
 	public static float MinAdsMultiplyer = 0.7f;
 	public static float AdsTime = 0.15f; //Seconds to achieve full ads
 
-	private const float SfxMinLandMomentumY = 3;
-
 	public bool Ads = false;
 	public float AdsMultiplyer = 1;
+
+	private const float SfxMinLandMomentumY = 3;
 
 	private bool Frozen = true;
 	public bool FlyMode { get; private set;} = false;
@@ -104,6 +104,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public Camera Cam;
 	public MeshInstance ViewmodelItem;
+	public float NormalViewmodelX = 0;
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
@@ -136,7 +137,9 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		Cam = GetNode<Camera>("SteelCamera");
 
-		ViewmodelItem = GetNode<MeshInstance>("SteelCamera/ViewmodelArm/ViewmodelItem");
+		ViewmodelItem = GetNode<MeshInstance>("SteelCamera/ViewmodelItem");
+		NormalViewmodelX = ViewmodelItem.Translation.x;
+		ViewmodelItem.Translation = new Vector3(NormalViewmodelX, ViewmodelItem.Translation.y, ViewmodelItem.Translation.z);
 		ViewmodelItem.Hide();
 
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
@@ -173,9 +176,6 @@ public class Player : KinematicBody, IPushable, IInventory
 			ShaderMaterial Mat = new ShaderMaterial();
 			Mat.Shader = Items.TileShader;
 			ThirdPersonItem.MaterialOverride = Mat;
-
-			GetNode<MeshInstance>("SteelCamera/ViewmodelArm").Hide();
-			GetNode<CPUParticles>("SteelCamera/ViewmodelArm/Forcefield").Hide();
 
 			Spatial Body = GetNode<Spatial>("BodyScene");
 			Body.GetNode<HitboxClass>("BodyHitbox").OwningPlayer = this;
@@ -1134,6 +1134,8 @@ public class Player : KinematicBody, IPushable, IInventory
 		else
 			AdsMultiplyer = Clamp(AdsMultiplyer + (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
 		Cam.Fov = Game.Fov*AdsMultiplyer;
+		ViewmodelItem.Translation = new Vector3(NormalViewmodelX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
+		                                        ViewmodelItem.Translation.y, ViewmodelItem.Translation.z);
 
 		ApplyLookVertical(0);
 		var ToRemove = new List<Hitscan.AdditiveRecoil>();
