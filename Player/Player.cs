@@ -843,7 +843,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
 	{
-		WishDir = ClampVec3(WishDir, 0, 1) * (MovementSpeed*GetAdsMovementMultiplyer());
+		WishDir = ClampVec3(WishDir, 0, 1) * (AirAcceleration*GetAdsMovementMultiplyer());
 		float CurrentSpeed = Vel.Dot(WishDir);
 		float AddSpeed = AirAcceleration*GetAdsMovementMultiplyer() - CurrentSpeed;
 		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*GetAdsMovementMultiplyer()*Delta);
