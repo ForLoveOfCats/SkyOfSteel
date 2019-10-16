@@ -13,17 +13,17 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public float Hight = 10;
 	public float RequiredUncrouchHight = 11;
-	public float MovementSpeed = 40;
+	public float MovementSpeed = 36;
 	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
-	public float CrouchMovementDivisor = 2.6f;
+	public float CrouchMovementDivisor = 2.8f;
 	public float MaxVerticalSpeed = 100f;
-	public float AirAcceleration = 18; //How many units per second to accelerate
+	public float AirAcceleration = 23; //How many units per second to accelerate
 	public float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MovementSpeed / DecelerateTime; } }
-	public float SlideFrictionDivisor = 10;
+	public float SlideFrictionDivisor = 13;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
-	public float SlideJumpBoost = 36f;
+	public float SlideJumpBoost = 32f;
 	public float JumpStartForce = 16f;
 	public float JumpContinueForce = 1f;
 	public float MaxJumpLength = 0.4f;
@@ -41,7 +41,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
 	public float ViewmodelMomentumFriction = 0.8f;
 
-	public static float AdsMultiplyerMovementEffect = 1.7f;
+	public static float AdsMultiplyerMovementEffect = 1.66f;
 	public static float MinAdsMultiplyer = 0.7f;
 	public static float AdsTime = 0.15f; //Seconds to achieve full ads
 
