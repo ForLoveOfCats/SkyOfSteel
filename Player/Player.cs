@@ -845,7 +845,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		WishDir = ClampVec3(WishDir, 0, 1) * (MovementSpeed*GetAdsMovementMultiplyer());
 		float CurrentSpeed = Vel.Dot(WishDir);
-		float AddSpeed = MovementSpeed*GetAdsMovementMultiplyer() - CurrentSpeed;
+		float AddSpeed = AirAcceleration*GetAdsMovementMultiplyer() - CurrentSpeed;
 		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*GetAdsMovementMultiplyer()*Delta);
 		return Vel + WishDir * AddSpeed;
 	}
