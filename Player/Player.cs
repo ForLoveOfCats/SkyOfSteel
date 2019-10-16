@@ -41,6 +41,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
 	public float ViewmodelMomentumFriction = 0.8f;
 
+	public static float AdsMultiplyerMovementEffect = 1.7f;
 	public static float MinAdsMultiplyer = 0.7f;
 	public static float AdsTime = 0.15f; //Seconds to achieve full ads
 
@@ -834,12 +835,18 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
-	private Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
+	public float GetAdsMovementMultiplyer()
 	{
-		WishDir = ClampVec3(WishDir, 0, 1) * ((MovementSpeed + MovementSpeed) / 2);
+		return Clamp(((AdsMultiplyer-1) * AdsMultiplyerMovementEffect)+1, 0, 1);
+	}
+
+
+	public Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
+	{
+		WishDir = ClampVec3(WishDir, 0, 1) * (MovementSpeed*GetAdsMovementMultiplyer());
 		float CurrentSpeed = Vel.Dot(WishDir);
-		float AddSpeed = MovementSpeed - CurrentSpeed;
-		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*Delta);
+		float AddSpeed = MovementSpeed*GetAdsMovementMultiplyer() - CurrentSpeed;
+		AddSpeed = Clamp(AddSpeed, 0, AirAcceleration*GetAdsMovementMultiplyer()*Delta);
 		return Vel + WishDir * AddSpeed;
 	}
 
@@ -926,11 +933,11 @@ public class Player : KinematicBody, IPushable, IInventory
 
 		if(!IsJumping && (IsOnFloor() || FlyMode))
 		{
-			float SpeedLimit = MovementSpeed;
+			float SpeedLimit = MovementSpeed*GetAdsMovementMultiplyer();
 			if(FlyMode && IsFlySprinting)
 				SpeedLimit *= FlySprintMultiplyer;
 			else if(IsCrouching)
-				SpeedLimit = MovementSpeed/CrouchMovementDivisor;
+				SpeedLimit = (MovementSpeed*GetAdsMovementMultiplyer())/CrouchMovementDivisor;
 
 			float X = 0, Z = 0;
 			if(RightAxis > 0)
