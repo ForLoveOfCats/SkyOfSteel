@@ -40,4 +40,10 @@ public static class SteelMath
 	{
 		return new Vector3(Self.x, 0, Self.z);
 	}
+
+
+	public static Vector2 ClampVec2(Vector2 Vec, float Min, float Max)
+	{
+		return Vec.Normalized() * Mathf.Clamp(Vec.Length(), Min, Max);
+	}
 }

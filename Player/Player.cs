@@ -36,6 +36,10 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float MaxAirLegRotation = 80;
 	public float MaxHealth = 100;
 	public float LookDivisor = 6;
+	public float ViewmodelMomentumMax = 15;
+	public float ViewmodelMomentumHorzInputMultiplyer = 0.6f;
+	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
+	public float ViewmodelMomentumFriction = 0.8f;
 
 	public static float MinAdsMultiplyer = 0.7f;
 	public static float AdsTime = 0.15f; //Seconds to achieve full ads
@@ -76,6 +80,8 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float FlySprintSens = 0;
 	public float JumpSens = 0;
 
+	public Vector2 ViewmodelMomentum = new Vector2();
+
 	public bool AlreadySlideJumpBoosted = false;
 	public bool IsCrouching = false;
 	public bool IsFlySprinting = false;
@@ -104,7 +110,9 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public Camera Cam;
 	public MeshInstance ViewmodelItem;
-	public float NormalViewmodelX = 0;
+	public Position3D ViewmodelTiltJoint;
+	public Position3D ViewmodelArmJoint;
+	public float NormalViewmodelArmX = 0;
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
@@ -137,10 +145,14 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		Cam = GetNode<Camera>("SteelCamera");
 
-		ViewmodelItem = GetNode<MeshInstance>("SteelCamera/ViewmodelItem");
-		NormalViewmodelX = ViewmodelItem.Translation.x;
-		ViewmodelItem.Translation = new Vector3(NormalViewmodelX, ViewmodelItem.Translation.y, ViewmodelItem.Translation.z);
+		ViewmodelItem = GetNode<MeshInstance>("SteelCamera/ViewmodelArmJoint/ViewmodelTiltJoint/ViewmodelItem");
+		ViewmodelItem.RotationDegrees = new Vector3(0, 180, 0);
 		ViewmodelItem.Hide();
+		ViewmodelTiltJoint = GetNode<Position3D>("SteelCamera/ViewmodelArmJoint/ViewmodelTiltJoint");
+		ViewmodelArmJoint = GetNode<Position3D>("SteelCamera/ViewmodelArmJoint");
+		ViewmodelArmJoint.RotationDegrees = new Vector3();
+		NormalViewmodelArmX = ViewmodelArmJoint.Translation.x;
+		ViewmodelArmJoint.Translation = new Vector3(NormalViewmodelArmX, ViewmodelArmJoint.Translation.y, ViewmodelArmJoint.Translation.z);
 
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
@@ -619,7 +631,11 @@ public class Player : KinematicBody, IPushable, IInventory
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
 
 			if(Game.Mode.ShouldPlayerPitch(Change))
+			{
 				ApplyLookVertical(Change);
+
+				ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y - Sens*ViewmodelMomentumVertInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax));
+			}
 		}
 	}
 
@@ -631,7 +647,11 @@ public class Player : KinematicBody, IPushable, IInventory
 			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
 
 			if(Game.Mode.ShouldPlayerPitch(-Change))
+			{
 				ApplyLookVertical(-Change);
+
+				ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y + Sens*ViewmodelMomentumVertInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax));
+			}
 		}
 	}
 
@@ -646,6 +666,8 @@ public class Player : KinematicBody, IPushable, IInventory
 			{
 				LookHorizontal -= Change;
 				RotationDegrees = new Vector3(0, LookHorizontal, 0);
+
+				ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x + Sens*ViewmodelMomentumHorzInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax), ViewmodelMomentum.y);
 			}
 		}
 	}
@@ -661,6 +683,8 @@ public class Player : KinematicBody, IPushable, IInventory
 			{
 				LookHorizontal += Change;
 				RotationDegrees = new Vector3(0, LookHorizontal, 0);
+
+				ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x - Sens*ViewmodelMomentumHorzInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax), ViewmodelMomentum.y);
 			}
 		}
 	}
@@ -1133,9 +1157,23 @@ public class Player : KinematicBody, IPushable, IInventory
 			AdsMultiplyer = Clamp(AdsMultiplyer - (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
 		else
 			AdsMultiplyer = Clamp(AdsMultiplyer + (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
+
 		Cam.Fov = Game.Fov*AdsMultiplyer;
-		ViewmodelItem.Translation = new Vector3(NormalViewmodelX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
-		                                        ViewmodelItem.Translation.y, ViewmodelItem.Translation.z);
+
+		if(ViewmodelMomentum.x > 0)
+			ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x - ViewmodelMomentumFriction, 0, ViewmodelMomentumMax), ViewmodelMomentum.y);
+		else if(ViewmodelMomentum.x < 0)
+			ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x + ViewmodelMomentumFriction, -ViewmodelMomentumMax, 0), ViewmodelMomentum.y);
+		if(ViewmodelMomentum.y > 0)
+			ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y - ViewmodelMomentumFriction, 0, ViewmodelMomentumMax));
+		else if(ViewmodelMomentum.y < 0)
+			ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y + ViewmodelMomentumFriction, -ViewmodelMomentumMax, 0));
+		ViewmodelMomentum = ClampVec2(ViewmodelMomentum, -ViewmodelMomentumMax, ViewmodelMomentumMax);
+
+		ViewmodelItem.RotationDegrees = new Vector3(-ViewmodelMomentum.y*AdsMultiplyer, 180 + -ViewmodelMomentum.x*AdsMultiplyer, 0);
+		ViewmodelArmJoint.RotationDegrees = new Vector3(ViewmodelMomentum.y*AdsMultiplyer, ViewmodelMomentum.x*AdsMultiplyer, 0);
+		ViewmodelArmJoint.Translation = new Vector3(NormalViewmodelArmX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
+		                                        ViewmodelArmJoint.Translation.y, ViewmodelArmJoint.Translation.z);
 
 		ApplyLookVertical(0);
 		var ToRemove = new List<Hitscan.AdditiveRecoil>();
