@@ -7,15 +7,12 @@ public class Startup : Node
 	//Ensures folders exist, sets up defaults, processes command line arguments and runs Autoexec.csx
 	public override void _Ready()
 	{
-		//First we make sure that the Saves and Gamemodes folders exist
+		//First we make sure that the Saves folder exists
 		{
 			Directory Dir = new Directory();
 
 			if(!Dir.DirExists("user://Saves"))
 				Dir.MakeDir("user://Saves");
-
-			if(!Dir.DirExists("user//Gamemodes"))
-				Dir.MakeDir("user://Gamemodes");
 		}
 
 

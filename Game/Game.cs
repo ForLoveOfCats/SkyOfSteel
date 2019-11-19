@@ -14,8 +14,6 @@ public class Game : Node
 	public static bool BindsEnabled = false;
 	public static Player PossessedPlayer;
 
-	public static Gamemode Mode = new Gamemode(); //Get it? Game.Mode Mwa ha ha ha
-
 	public static float LookSensitivity = 15;
 	public static float Deadzone = 0.25f;
 	public static float Fov = 100;

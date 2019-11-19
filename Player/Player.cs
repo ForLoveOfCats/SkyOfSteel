@@ -253,8 +253,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public static void ToggleFly()
 	{
 		Player Plr = Game.PossessedPlayer;
-		if(Game.Mode.ShouldToggleFly())
-			Plr.SetFly(!Plr.FlyMode);
+		Plr.SetFly(!Plr.FlyMode);
 	}
 
 
@@ -267,11 +266,8 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public void MovementReset()
 	{
-		if(Game.Mode.ShouldMovementReset())
-		{
-			Translation = new Vector3(0, 5.1f + 0.15f, 0);
-			Momentum = new Vector3();
-		}
+		Translation = new Vector3(0, 5.1f + 0.15f, 0);
+		Momentum = new Vector3();
 	}
 
 
@@ -459,20 +455,17 @@ public class Player : KinematicBody, IPushable, IInventory
 	public static void ForwardMove(float Sens)
 	{
 		Player Plr = Game.PossessedPlayer;
-		if(Game.Mode.ShouldMoveForward(Sens))
+		Plr.ForwardSens = Sens;
+		if(Sens > 0)
 		{
-			Plr.ForwardSens = Sens;
-			if(Sens > 0)
+			Plr.ForwardAxis = 1;
+		}
+		else if(Plr.ForwardAxis > 0)
+		{
+			Plr.ForwardAxis = 0;
+			if(Plr.BackwardSens > 0)
 			{
-				Plr.ForwardAxis = 1;
-			}
-			else if(Plr.ForwardAxis > 0)
-			{
-				Plr.ForwardAxis = 0;
-				if(Plr.BackwardSens > 0)
-				{
-					Plr.ForwardAxis = -1;
-				}
+				Plr.ForwardAxis = -1;
 			}
 		}
 	}
@@ -482,20 +475,17 @@ public class Player : KinematicBody, IPushable, IInventory
 	public static void BackwardMove(float Sens)
 	{
 		Player Plr = Game.PossessedPlayer;
-		if(Game.Mode.ShouldMoveBackward(Sens))
+		Plr.BackwardSens = Sens;
+		if(Sens > 0)
 		{
-			Plr.BackwardSens = Sens;
-			if(Sens > 0)
+			Plr.ForwardAxis = -1;
+		}
+		else if(Plr.ForwardAxis < 0)
+		{
+			Plr.ForwardAxis = 0;
+			if(Plr.ForwardSens > 0)
 			{
-				Plr.ForwardAxis = -1;
-			}
-			else if(Plr.ForwardAxis < 0)
-			{
-				Plr.ForwardAxis = 0;
-				if(Plr.ForwardSens > 0)
-				{
-					Plr.ForwardAxis = 1;
-				}
+				Plr.ForwardAxis = 1;
 			}
 		}
 	}
@@ -505,20 +495,17 @@ public class Player : KinematicBody, IPushable, IInventory
 	public static void RightMove(float Sens)
 	{
 		Player Plr = Game.PossessedPlayer;
-		if(Game.Mode.ShouldMoveRight(Sens))
+		Plr.RightSens = Sens;
+		if(Sens > 0)
 		{
-			Plr.RightSens = Sens;
-			if(Sens > 0)
+			Plr.RightAxis = 1;
+		}
+		else if(Plr.RightAxis > 0)
+		{
+			Plr.RightAxis = 0;
+			if(Plr.LeftSens > 0)
 			{
-				Plr.RightAxis = 1;
-			}
-			else if(Plr.RightAxis > 0)
-			{
-				Plr.RightAxis = 0;
-				if(Plr.LeftSens > 0)
-				{
-					Plr.RightAxis = -1;
-				}
+				Plr.RightAxis = -1;
 			}
 		}
 	}
@@ -528,20 +515,17 @@ public class Player : KinematicBody, IPushable, IInventory
 	public static void LeftMove(float Sens)
 	{
 		Player Plr = Game.PossessedPlayer;
-		if(Game.Mode.ShouldMoveLeft(Sens))
+		Plr.LeftSens = Sens;
+		if(Sens > 0)
 		{
-			Plr.LeftSens = Sens;
-			if(Sens > 0)
+			Plr.RightAxis = -1;
+		}
+		else if(Plr.RightAxis < 0)
+		{
+			Plr.RightAxis = 0;
+			if(Plr.RightSens >0)
 			{
-				Plr.RightAxis = -1;
-			}
-			else if(Plr.RightAxis < 0)
-			{
-				Plr.RightAxis = 0;
-				if(Plr.RightSens >0)
-				{
-					Plr.RightAxis = 1;
-				}
+				Plr.RightAxis = 1;
 			}
 		}
 	}
@@ -590,22 +574,19 @@ public class Player : KinematicBody, IPushable, IInventory
 			}
 			else if(Plr.IsOnFloor())
 			{
-				if(Game.Mode.ShouldJump())
+				Plr.Momentum.y = Plr.JumpStartForce;
+
+				if(Plr.IsCrouching && !Plr.AlreadySlideJumpBoosted)
 				{
-					Plr.Momentum.y = Plr.JumpStartForce;
+					Vector3 FlatMomentum = Plr.Momentum.Flattened();
+					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + Plr.SlideJumpBoost);
+					Plr.Momentum.x = FlatMomentum.x;
+					Plr.Momentum.z = FlatMomentum.z;
 
-					if(Plr.IsCrouching && !Plr.AlreadySlideJumpBoosted)
-					{
-						Vector3 FlatMomentum = Plr.Momentum.Flattened();
-						FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + Plr.SlideJumpBoost);
-						Plr.Momentum.x = FlatMomentum.x;
-						Plr.Momentum.z = FlatMomentum.z;
-
-						Plr.AlreadySlideJumpBoosted = true;
-					}
-
-					Plr.IsJumping = true;
+					Plr.AlreadySlideJumpBoosted = true;
 				}
+
+				Plr.IsJumping = true;
 			}
 
 			Plr.JumpAxis = 1;
@@ -631,18 +612,15 @@ public class Player : KinematicBody, IPushable, IInventory
 			if(!Plr.FlyMode)
 				Plr.IsFlySprinting = false;
 
-			if(Game.Mode.ShouldCrouch())
+			if(Plr.FlyMode)
 			{
-				if(Plr.FlyMode)
-				{
-					Plr.JumpAxis = 0;
-					Plr.JumpSens = 0;
+				Plr.JumpAxis = 0;
+				Plr.JumpSens = 0;
 
-					if(Plr.IsFlySprinting)
-						Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplyer;
-					else
-						Plr.Momentum.y = -Plr.MovementSpeed;
-				}
+				if(Plr.IsFlySprinting)
+					Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+				else
+					Plr.Momentum.y = -Plr.MovementSpeed;
 			}
 
 			Plr.LargeCollisionCapsule.Disabled = true;
@@ -680,15 +658,12 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerPitch(Change))
-			{
-				Plr.ApplyLookVertical(Change);
+			Plr.ApplyLookVertical(Change);
 
-				Plr.ViewmodelMomentum = new Vector2(
-					Plr.ViewmodelMomentum.x,
-					Clamp(Plr.ViewmodelMomentum.y - Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
-				);
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Plr.ViewmodelMomentum.x,
+				Clamp(Plr.ViewmodelMomentum.y - Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+			);
 		}
 	}
 
@@ -701,15 +676,12 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerPitch(-Change))
-			{
-				Plr.ApplyLookVertical(-Change);
+			Plr.ApplyLookVertical(-Change);
 
-				Plr.ViewmodelMomentum = new Vector2(
-					Plr.ViewmodelMomentum.x,
-					Clamp(Plr.ViewmodelMomentum.y + Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
-				);
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Plr.ViewmodelMomentum.x,
+				Clamp(Plr.ViewmodelMomentum.y + Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+			);
 		}
 	}
 
@@ -722,16 +694,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerRotate(-Change))
-			{
-				Plr.LookHorizontal -= Change;
-				Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
+			Plr.LookHorizontal -= Change;
+			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
-				Plr.ViewmodelMomentum = new Vector2(
-					Clamp(Plr.ViewmodelMomentum.x + Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
-					Plr.ViewmodelMomentum.y
-				);
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Clamp(Plr.ViewmodelMomentum.x + Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Plr.ViewmodelMomentum.y
+			);
 		}
 	}
 
@@ -744,16 +713,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerRotate(+Change))
-			{
-				Plr.LookHorizontal += Change;
-				Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
+			Plr.LookHorizontal += Change;
+			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
-				Plr.ViewmodelMomentum = new Vector2(
-					Clamp(Plr.ViewmodelMomentum.x - Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
-					Plr.ViewmodelMomentum.y
-				);
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Clamp(Plr.ViewmodelMomentum.x - Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Plr.ViewmodelMomentum.y
+			);
 		}
 	}
 
@@ -783,16 +749,7 @@ public class Player : KinematicBody, IPushable, IInventory
 								BuildRayCast.GetCollisionPoint()
 							);
 
-							if(PlacePosition != null
-							   && Game.Mode.ShouldPlaceTile(
-								   Plr.GhostInstance.CurrentMeshType,
-								   PlacePosition.Value,
-								   Items.CalculateBuildRotation(
-									   Plr.GhostInstance.CurrentMeshType,
-									   Base,
-									   Plr.RotationDegrees.y,
-									   Plr.BuildRotation,
-									   BuildRayCast.GetCollisionPoint())))
+							if(PlacePosition != null)
 							{
 								World.PlaceOn(
 									Plr.GhostInstance.CurrentMeshType,
@@ -840,7 +797,7 @@ public class Player : KinematicBody, IPushable, IInventory
 					if(BuildRayCast.IsColliding())
 					{
 						Tile Hit = BuildRayCast.GetCollider() as Tile;
-						if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+						if(Hit != null)
 						{
 							Hit.NetRemove();
 							Plr.SetCooldown(0, Plr.BuildingCooldown, true);
@@ -896,7 +853,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	[Remote]
 	public void ThrowItemFromSlot(int Slot, Vector3 Vel)
 	{
-		if(Inventory[Slot] != null && Game.Mode.ShouldThrowItem())
+		if(Inventory[Slot] != null)
 		{
 			World.Self.DropItem(Inventory[Slot].Id, Translation+Cam.Translation, Vel);
 
@@ -968,11 +925,8 @@ public class Player : KinematicBody, IPushable, IInventory
 
 				foreach(DroppedItem Item in ToPickUpList)
 				{
-					if(Game.Mode.ShouldPickupItem(Item.Type))
-					{
-						World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.Name);
-						World.ItemList.Remove(Item);
-					}
+					World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.Name);
+					World.ItemList.Remove(Item);
 				}
 			}
 		}
@@ -1114,17 +1068,12 @@ public class Player : KinematicBody, IPushable, IInventory
 			else
 				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
 
-			if(GetSlideCount() > 0)
-				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
 		if(NewPos != OldPos)
 		{
-			if(Game.Mode.ShouldPlayerMove(NewPos))
-			{
-				Translation = NewPos;
-			}
+			Translation = NewPos;
 		}
 
 		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
@@ -1186,15 +1135,8 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		Health = Hp;
 
-		if(Game.Mode.ShouldSyncRemotePlayerPosition(Id, Position))
-		{
-			Translation = Position;
-		}
-
-		if(Game.Mode.ShouldSyncRemotePlayerRotation(Id, Rotation))
-		{
-			RotationDegrees = Rotation;
-		}
+		Translation = Position;
+		RotationDegrees = Rotation;
 
 		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
 		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);

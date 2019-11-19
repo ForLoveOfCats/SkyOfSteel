@@ -172,8 +172,6 @@ public class Net : Node
 				SteelRpc(this, nameof(RecieveNick), Entry.Key, Entry.Value);
 			}
 		}
-
-		Game.Mode.OnPlayerConnect(Id);
 	}
 
 
@@ -196,8 +194,6 @@ public class Net : Node
 
 		World.ChunkLoadDistances.Remove(Id);
 		World.RemoteLoadedChunks.Remove(Id);
-
-		Game.Mode.OnPlayerDisconnect(Id);
 	}
 
 
