@@ -17,13 +17,12 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
 	public float CrouchMovementDivisor = 2.8f;
 	public float MaxVerticalSpeed = 100f;
-	public float AirAcceleration = 23; //How many units per second to accelerate
+	public float AirAcceleration = 25; //How many units per second to accelerate
 	public float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
 	public float Friction { get { return MovementSpeed / DecelerateTime; } }
 	public float SlideFrictionDivisor = 13;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
-	public float SlideJumpBoost = 32f;
 	public float JumpStartForce = 22f;
 	public float JumpContinueForce = 0.41f;
 	public float MaxJumpLength = 0.22f;
@@ -83,7 +82,6 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public Vector2 ViewmodelMomentum = new Vector2();
 
-	public bool AlreadySlideJumpBoosted = false;
 	public bool IsCrouching = false;
 	public bool IsFlySprinting = false;
 	public bool IsJumping = false;
@@ -575,17 +573,6 @@ public class Player : KinematicBody, IPushable, IInventory
 			else if(Plr.IsOnFloor())
 			{
 				Plr.Momentum.y = Plr.JumpStartForce;
-
-				if(Plr.IsCrouching && !Plr.AlreadySlideJumpBoosted)
-				{
-					Vector3 FlatMomentum = Plr.Momentum.Flattened();
-					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + Plr.SlideJumpBoost);
-					Plr.Momentum.x = FlatMomentum.x;
-					Plr.Momentum.z = FlatMomentum.z;
-
-					Plr.AlreadySlideJumpBoosted = true;
-				}
-
 				Plr.IsJumping = true;
 			}
 
@@ -607,7 +594,6 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			Plr.CrouchAxis = 1;
 			Plr.IsCrouching = true;
-			Plr.AlreadySlideJumpBoosted = false;
 
 			if(!Plr.FlyMode)
 				Plr.IsFlySprinting = false;
