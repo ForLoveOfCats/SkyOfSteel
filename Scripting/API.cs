@@ -6,13 +6,6 @@ using System.Collections.Generic;
 
 public static class API
 {
-	public class EmptyCustomCommands //Use this instead of null for better error message in console
-	{}
-
-
-	public static dynamic Gm = new EmptyCustomCommands();
-
-
 	public static bool Host()
 	{
 		if(Game.Nickname == Game.DefaultNickname)
