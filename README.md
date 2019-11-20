@@ -72,42 +72,26 @@ chains while engaging in a PVP turf war with your fellow server
 inhabitants. Enjoy highly fluid movement while destroying others with
 highly powered weaponry. Fight for technological superiority as you
 race through a deep tech tree constantly edging out your
-opponents. When you tire from the vanilla game, the custom gamemode
-and modding support adds even more depth and content.
+opponents.
 
-Currently we are remarkably far along in achieving this goal. However
-we are admittedly not there yet. At the moment we have a fully
-functional building system, chunk based world save and loading, highly
-stable multiplayer, Quake/Source engine style air strafing, automatic
-bunny hopping, wall kicking, and a rudimentary yet extremely flexible
-system for adding user created gamemodes.
-
-
-
-## Modding
-
-SkyOfSteel has a gamemode modding system utilizing [Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page") to provide runtime
-C# compilation. The intention is to allow for fully custom gamemodes to be developed with full access to internal game APIs both
-server side *and* client side. In addition there is a full ingame REPL console.
-
-The gamemode API has a concept of game events. Whenever something occurs ingame it is
-processed as an "event" which can be filtered and discarded by gamemode scripts programmatically.
-This allows for a great deal of flexibility before even touching the normal API.
-
-Read more here: https://github.com/ForLoveOfCats/ModsOfSteel
+While SkyOfSteel is remarkably far along in achieving this goal it is
+not yet there. At the moment there is a fully functional building
+system, chunk based world save and loading, highly stable multiplayer,
+Quake/Source engine style air strafing, and automatic bunny
+hopping. The current state of SkyOfSteel could be said to be more of a
+proof of concept of the further gameplay possibilities in the works.
 
 
 
 ## Player Input Handling
 
-All player input is routed through the binding system which depending on the input will call
-a console command passing in a `float` ranging between 0 and 1 (up to infinity in some cases
-such as mouse movement). Key input pass in a 1 for keydown and a 0 for keyup while analog
-inputs such as mouse motion pass in a 0 for no movement on the specified axis and a number
-greater than 0 for motion on that axis (the number is the amount of motion).
-
-**Note:** This is not restricted to built in movement and player control console commands.
-Any function declared in the console REPL can be bound to any key or input.
+All player input is routed through the binding system which depending
+on the input will call the specified function while passing in a
+`float` ranging between 0 and 1 (up to infinity in some cases such as
+mouse movement). Key input pass in a 1 for keydown and a 0 for keyup
+while analog inputs such as mouse motion pass in a 0 for no movement
+on the specified axis and a number greater than 0 for motion on that
+axis (the number is the amount of motion).
 
 
 
@@ -160,6 +144,5 @@ Also feel free to follow me on [Twitter](https://twitter.com/ForLoveOfCats "ForL
 ## License
 
 SkyOfSteel is licensed under the MIT license and utilizes
-[Roslyn](https://github.com/dotnet/roslyn "Roslyn Github Page")
-and [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
-which are under the Apache-2.0 and the MIT licenses respectively.
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) which is
+also under the MIT license.
