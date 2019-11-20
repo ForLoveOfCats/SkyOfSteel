@@ -48,10 +48,10 @@ enabled = true
 cast_to = Vector3( 0, 0, 24 )
 
 [node name="ViewmodelArmJoint" type="Position3D" parent="SteelCamera"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.313, -0.025 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.313, 0 )
 
 [node name="ViewmodelTiltJoint" type="Position3D" parent="SteelCamera/ViewmodelArmJoint"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.96046e-08, -0.0250001, -0.616656 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.025, -0.642 )
 
 [node name="ViewmodelItem" type="MeshInstance" parent="SteelCamera/ViewmodelArmJoint/ViewmodelTiltJoint"]
 transform = Transform( -0.0280001, 0, 9.12356e-09, 0, 0.0280001, 0, -9.12358e-09, 0, -0.028, 0.000165969, 0.0246425, 0.00505668 )

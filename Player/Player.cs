@@ -35,10 +35,10 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float MaxAirLegRotation = 80;
 	public float MaxHealth = 100;
 	public float LookDivisor = 6;
-	public float ViewmodelMomentumMax = 15;
-	public float ViewmodelMomentumHorzInputMultiplyer = 0.6f;
+	public float ViewmodelMomentumMax = 12; //Probably never reaches this max
+	public float ViewmodelMomentumHorzInputMultiplyer = 0.9f;
 	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
-	public float ViewmodelMomentumFriction = 0.8f;
+	public float ViewmodelMomentumFriction = 30f;
 
 	public static float AdsMultiplyerMovementEffect = 1.66f;
 	public static float MinAdsMultiplyer = 0.7f;
@@ -636,6 +636,12 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
+	public float CalcViewmodelMomentumChange(float Sens)
+	{
+		return ((float)Math.Log10(Sens+1)) * 3f * AdsMultiplyer;
+	}
+
+
 	[SteelInputWithArg(typeof(Player), nameof(LookUp))]
 	public static void LookUp(float Sens)
 	{
@@ -648,7 +654,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y - Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
 			);
 		}
 	}
@@ -666,7 +672,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y + Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
 			);
 		}
 	}
@@ -684,7 +690,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x + Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -703,7 +709,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x - Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -1189,20 +1195,27 @@ public class Player : KinematicBody, IPushable, IInventory
 
 		Cam.Fov = Game.Fov*AdsMultiplyer;
 
-		if(ViewmodelMomentum.x > 0)
-			ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x - ViewmodelMomentumFriction, 0, ViewmodelMomentumMax), ViewmodelMomentum.y);
-		else if(ViewmodelMomentum.x < 0)
-			ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x + ViewmodelMomentumFriction, -ViewmodelMomentumMax, 0), ViewmodelMomentum.y);
-		if(ViewmodelMomentum.y > 0)
-			ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y - ViewmodelMomentumFriction, 0, ViewmodelMomentumMax));
-		else if(ViewmodelMomentum.y < 0)
-			ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y + ViewmodelMomentumFriction, -ViewmodelMomentumMax, 0));
+		ViewmodelMomentum = new Vector2(
+			Clamp(ViewmodelMomentum.x - ViewmodelMomentumFriction*Delta*ViewmodelMomentum.x, -ViewmodelMomentumMax, ViewmodelMomentumMax),
+			Clamp(ViewmodelMomentum.y - ViewmodelMomentumFriction*Delta*ViewmodelMomentum.y, -ViewmodelMomentumMax, ViewmodelMomentumMax)
+		);
 		ViewmodelMomentum = ClampVec2(ViewmodelMomentum, -ViewmodelMomentumMax, ViewmodelMomentumMax);
 
-		ViewmodelItem.RotationDegrees = new Vector3(-ViewmodelMomentum.y*AdsMultiplyer, 180 + -ViewmodelMomentum.x*AdsMultiplyer, 0);
-		ViewmodelArmJoint.RotationDegrees = new Vector3(ViewmodelMomentum.y*AdsMultiplyer, ViewmodelMomentum.x*AdsMultiplyer, 0);
-		ViewmodelArmJoint.Translation = new Vector3(NormalViewmodelArmX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
-		                                        ViewmodelArmJoint.Translation.y, ViewmodelArmJoint.Translation.z);
+		ViewmodelItem.RotationDegrees = new Vector3(
+			ViewmodelMomentum.y*AdsMultiplyer*1.2f,
+			180 - ViewmodelMomentum.x*AdsMultiplyer*1.2f,
+			0
+		);
+		ViewmodelArmJoint.RotationDegrees = new Vector3(
+			ViewmodelMomentum.y*AdsMultiplyer,
+			ViewmodelMomentum.x*AdsMultiplyer,
+			0
+		);
+		ViewmodelArmJoint.Translation = new Vector3(
+			NormalViewmodelArmX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
+			ViewmodelArmJoint.Translation.y,
+			ViewmodelArmJoint.Translation.z
+		);
 
 		ApplyLookVertical(0);
 		var ToRemove = new List<Hitscan.AdditiveRecoil>();
