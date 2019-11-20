@@ -135,9 +135,8 @@ design please do contribute!
 ## Contact
 For questions, comments, or to just discuss please join our
 [Discord](https://www.discord.gg/Ag5Yckw "Discord Server Invite Link"),
-check out our [Youtube](https://www.youtube.com/channel/UCK3ptxlx1ahtbI8PZa8_Tig "SkyOfSteel Youtube Channel")
-and support my work on [Patreon](https://www.patreon.com/ForLoveOfCats "ForLoveOfCats Patreon Page").
-Also feel free to follow me on [Twitter](https://twitter.com/ForLoveOfCats "ForLoveOfCats Twitter Page")
+check out our [Youtube](https://www.youtube.com/channel/UCK3ptxlx1ahtbI8PZa8_Tig "SkyOfSteel Youtube Channel"),
+and also feel free to follow me on [Twitter](https://twitter.com/ForLoveOfCats "ForLoveOfCats Twitter Page").
 
 
 
