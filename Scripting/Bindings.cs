@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using Sc = Microsoft.CodeAnalysis.Scripting;
+
 
 
 public class Bindings : Node
