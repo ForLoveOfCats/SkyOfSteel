@@ -44,30 +44,7 @@ public class Startup : Node
 			Console.LogLabel.Text += "\n";
 		}
 
-
-		//autoexec.csx is executed last
-		File Autoexec = new File();
-		if(Autoexec.FileExists("user://Autoexec.csx"))
-		{
-			Autoexec.Open("user://Autoexec.csx", File.ModeFlags.Read);
-			Console.Print("Autoexec loaded");
-			try
-			{
-				Scripting.ConsoleState = Scripting.ConsoleState.ContinueWithAsync(Autoexec.GetAsText()).Result;
-				Console.Print("Successfully executed autoexec");
-			}
-			catch(Exception Error)
-			{
-				Console.Print(Error.Message);
-				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
-			}
-		}
-		else
-		{
-			Console.Print("Autoexec not found, creating a default one");
-			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Autoexec.csx", "// This is your autoexec\n// It is executed directly after command line arugments are\n\n");
-		}
-		Autoexec.Close();
+		Console.Print("The console is disabled in 0.1.6");
 	}
 
 
