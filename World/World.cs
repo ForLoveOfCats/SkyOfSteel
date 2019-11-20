@@ -120,8 +120,6 @@ public class World : Node
 		TilesRoot = null;
 		EntitiesRoot = null;
 
-		Scripting.UnloadGamemode();
-
 		Chunks.Clear();
 		RemoteLoadedChunks.Clear();
 		ItemList.Clear();

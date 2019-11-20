@@ -7,15 +7,12 @@ public class Startup : Node
 	//Ensures folders exist, sets up defaults, processes command line arguments and runs Autoexec.csx
 	public override void _Ready()
 	{
-		//First we make sure that the Saves and Gamemodes folders exist
+		//First we make sure that the Saves folder exists
 		{
 			Directory Dir = new Directory();
 
 			if(!Dir.DirExists("user://Saves"))
 				Dir.MakeDir("user://Saves");
-
-			if(!Dir.DirExists("user//Gamemodes"))
-				Dir.MakeDir("user://Gamemodes");
 		}
 
 
@@ -47,30 +44,7 @@ public class Startup : Node
 			Console.LogLabel.Text += "\n";
 		}
 
-
-		//autoexec.csx is executed last
-		File Autoexec = new File();
-		if(Autoexec.FileExists("user://Autoexec.csx"))
-		{
-			Autoexec.Open("user://Autoexec.csx", File.ModeFlags.Read);
-			Console.Print("Autoexec loaded");
-			try
-			{
-				Scripting.ConsoleState = Scripting.ConsoleState.ContinueWithAsync(Autoexec.GetAsText()).Result;
-				Console.Print("Successfully executed autoexec");
-			}
-			catch(Exception Error)
-			{
-				Console.Print(Error.Message);
-				Console.Print("AUTOEXEC FAILED: Not all parts of the autoexec executed successfully. It is highly recommended that you fix your autoexec and restart the game.");
-			}
-		}
-		else
-		{
-			Console.Print("Autoexec not found, creating a default one");
-			System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Autoexec.csx", "// This is your autoexec\n// It is executed directly after command line arugments are\n\n");
-		}
-		Autoexec.Close();
+		Console.Print("The console is disabled in 0.1.6");
 	}
 
 
@@ -79,62 +53,62 @@ public class Startup : Node
 		API.FpsMax(200);
 		API.ChunkRenderDistance(10);
 
-		Bindings.Bind("W", "Game.PossessedPlayer.ForwardMove");
-		Bindings.Bind("LeftStickUp", "Game.PossessedPlayer.ForwardMove");
-		Bindings.Bind("S", "Game.PossessedPlayer.BackwardMove");
-		Bindings.Bind("LeftStickDown", "Game.PossessedPlayer.BackwardMove");
-		Bindings.Bind("D", "Game.PossessedPlayer.RightMove");
-		Bindings.Bind("LeftStickRight", "Game.PossessedPlayer.RightMove");
-		Bindings.Bind("A", "Game.PossessedPlayer.LeftMove");
-		Bindings.Bind("LeftStickLeft", "Game.PossessedPlayer.LeftMove");
-		Bindings.Bind("Alt", "Game.PossessedPlayer.FlySprint");
-		Bindings.Bind("LeftStickClick", "Game.PossessedPlayer.FlySprint");
-		Bindings.Bind("Space", "Game.PossessedPlayer.Jump");
-		Bindings.Bind("XboxA", "Game.PossessedPlayer.Jump");
-		Bindings.Bind("Shift", "Game.PossessedPlayer.Crouch");
-		Bindings.Bind("XboxB", "Game.PossessedPlayer.Crouch");
+		Bindings.Bind("W", "ForwardMove");
+		Bindings.Bind("LeftStickUp", "ForwardMove");
+		Bindings.Bind("S", "BackwardMove");
+		Bindings.Bind("LeftStickDown", "BackwardMove");
+		Bindings.Bind("D", "RightMove");
+		Bindings.Bind("LeftStickRight", "RightMove");
+		Bindings.Bind("A", "LeftMove");
+		Bindings.Bind("LeftStickLeft", "LeftMove");
+		Bindings.Bind("Alt", "FlySprint");
+		Bindings.Bind("LeftStickClick", "FlySprint");
+		Bindings.Bind("Space", "Jump");
+		Bindings.Bind("XboxA", "Jump");
+		Bindings.Bind("Shift", "Crouch");
+		Bindings.Bind("XboxB", "Crouch");
 
-		Bindings.Bind("WheelUp", "Game.PossessedPlayer.InventoryUp");
-		Bindings.Bind("XboxLB", "Game.PossessedPlayer.InventoryUp");
-		Bindings.Bind("WheelDown", "Game.PossessedPlayer.InventoryDown");
-		Bindings.Bind("XboxRB", "Game.PossessedPlayer.InventoryDown");
+		Bindings.Bind("WheelUp", "InventoryUp");
+		Bindings.Bind("XboxLB", "InventoryUp");
+		Bindings.Bind("WheelDown", "InventoryDown");
+		Bindings.Bind("XboxRB", "InventoryDown");
 
-		Bindings.Bind("1", "Game.PossessedPlayer.InventorySlot0");
-		Bindings.Bind("2", "Game.PossessedPlayer.InventorySlot1");
-		Bindings.Bind("3", "Game.PossessedPlayer.InventorySlot2");
-		Bindings.Bind("4", "Game.PossessedPlayer.InventorySlot3");
-		Bindings.Bind("5", "Game.PossessedPlayer.InventorySlot4");
-		Bindings.Bind("6", "Game.PossessedPlayer.InventorySlot5");
-		Bindings.Bind("7", "Game.PossessedPlayer.InventorySlot6");
-		Bindings.Bind("8", "Game.PossessedPlayer.InventorySlot7");
-		Bindings.Bind("9", "Game.PossessedPlayer.InventorySlot8");
-		Bindings.Bind("0", "Game.PossessedPlayer.InventorySlot9");
+		Bindings.Bind("1", "InventorySlot0");
+		Bindings.Bind("2", "InventorySlot1");
+		Bindings.Bind("3", "InventorySlot2");
+		Bindings.Bind("4", "InventorySlot3");
+		Bindings.Bind("5", "InventorySlot4");
+		Bindings.Bind("6", "InventorySlot5");
+		Bindings.Bind("7", "InventorySlot6");
+		Bindings.Bind("8", "InventorySlot7");
+		Bindings.Bind("9", "InventorySlot8");
+		Bindings.Bind("0", "InventorySlot9");
 
-		Bindings.Bind("MouseUp", "Game.PossessedPlayer.LookUp");
-		Bindings.Bind("RightStickUp", "Game.PossessedPlayer.LookUp");
-		Bindings.Bind("MouseDown", "Game.PossessedPlayer.LookDown");
-		Bindings.Bind("RightStickDown", "Game.PossessedPlayer.LookDown");
-		Bindings.Bind("MouseRight", "Game.PossessedPlayer.LookRight");
-		Bindings.Bind("RightStickRight", "Game.PossessedPlayer.LookRight");
-		Bindings.Bind("MouseLeft", "Game.PossessedPlayer.LookLeft");
-		Bindings.Bind("RightStickLeft", "Game.PossessedPlayer.LookLeft");
+		Bindings.Bind("MouseUp", "LookUp");
+		Bindings.Bind("RightStickUp", "LookUp");
+		Bindings.Bind("MouseDown", "LookDown");
+		Bindings.Bind("RightStickDown", "LookDown");
+		Bindings.Bind("MouseRight", "LookRight");
+		Bindings.Bind("RightStickRight", "LookRight");
+		Bindings.Bind("MouseLeft", "LookLeft");
+		Bindings.Bind("RightStickLeft", "LookLeft");
 
-		Bindings.Bind("R", "Game.PossessedPlayer.BuildRotate");
-		Bindings.Bind("XboxX", "Game.PossessedPlayer.BuildRotate");
-		Bindings.Bind("Q", "Game.PossessedPlayer.ThrowCurrentItem");
-		Bindings.Bind("RightStickClick", "Game.PossessedPlayer.ThrowCurrentItem");
+		Bindings.Bind("R", "BuildRotate");
+		Bindings.Bind("XboxX", "BuildRotate");
+		Bindings.Bind("Q", "ThrowCurrentItem");
+		Bindings.Bind("RightStickClick", "ThrowCurrentItem");
 
-		Bindings.Bind("G", "Menu.BuildInventory");
-		Bindings.Bind("XboxStart", "Menu.BuildInventory");
+		Bindings.Bind("G", "BuildInventory");
+		Bindings.Bind("XboxStart", "BuildInventory");
 
-		Bindings.Bind("K", "Game.PossessedPlayer.Respawn");
-		Bindings.Bind("XboxSelect", "Game.PossessedPlayer.Respawn");
-		Bindings.Bind("T", "Game.PossessedPlayer.ToggleFly");
-		Bindings.Bind("XboxY", "Game.PossessedPlayer.ToggleFly");
+		Bindings.Bind("K", "InputRespawn");
+		Bindings.Bind("XboxSelect", "InputRespawn");
+		Bindings.Bind("T", "ToggleFly");
+		Bindings.Bind("XboxY", "ToggleFly");
 
-		Bindings.Bind("MouseOne", "Game.PossessedPlayer.PrimaryFire");
-		Bindings.Bind("XboxRT", "Game.PossessedPlayer.PrimaryFire");
-		Bindings.Bind("MouseTwo", "Game.PossessedPlayer.SecondaryFire");
-		Bindings.Bind("XboxLT", "Game.PossessedPlayer.SecondaryFire");
+		Bindings.Bind("MouseOne", "PrimaryFire");
+		Bindings.Bind("XboxRT", "PrimaryFire");
+		Bindings.Bind("MouseTwo", "SecondaryFire");
+		Bindings.Bind("XboxLT", "SecondaryFire");
 	}
 }

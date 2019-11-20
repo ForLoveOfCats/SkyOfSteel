@@ -18,6 +18,8 @@ public class Console : Node
 	public static Console Self;
 	private Console()
 	{
+		if(Engine.EditorHint) {return;}
+
 		Self = this;
 	}
 
@@ -72,6 +74,10 @@ public class Console : Node
 	}
 
 
+	public static void RunConsoleLine(string Line)
+	{}
+
+
 	public static void Print(object ToPrint)
 	{
 		ConsoleLabel.Text += $"{ToPrint}\n";
@@ -106,7 +112,7 @@ public class Console : Node
 		}
 		HistoryLocation = History.Count;
 
-		Scripting.RunConsoleLine(Command);
+		RunConsoleLine(Command);
 	}
 
 

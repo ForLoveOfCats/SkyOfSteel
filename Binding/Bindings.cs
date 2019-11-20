@@ -1,7 +1,9 @@
 using Godot;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
-using Sc = Microsoft.CodeAnalysis.Scripting;
+
 
 
 public class Bindings : Node
@@ -21,24 +23,40 @@ public class Bindings : Node
 	public static bool Bind(string KeyName, string FunctionName)
 	{
 		BindingObject NewBind = new BindingObject(KeyName);
-		//We need to check that the function exitst and either takes no args or one float arg and get the Action
-		try //First assume it takes a float argument
+
+		bool Found = false;
+		IEnumerable<MethodInfo> Methods = Assembly.GetExecutingAssembly().GetTypes()
+			.SelectMany(t => t.GetMethods())
+			.Where(m => m.GetCustomAttributes(typeof(SteelInputWithoutArg), false).Length > 0);
+		foreach(MethodInfo Method in Methods)
 		{
-			Sc.ScriptState State = Scripting.ConsoleState.ContinueWithAsync($"return new Action<float>(delegate(float x) {{ {FunctionName}(x); }} );").Result;
-			NewBind.FuncWithArg = State.ReturnValue as Action<float>;
+			if(Method.Name == FunctionName)
+			{
+				Found = true;
+				SteelInputWithoutArg Data = Attribute.GetCustomAttribute(Method, typeof(SteelInputWithoutArg)) as SteelInputWithoutArg;
+				NewBind.FuncWithoutArg = Data.Function;
+				break;
+			}
 		}
-		catch //Must either not exist or has different argument requirements
+
+		Methods = Assembly.GetExecutingAssembly().GetTypes()
+			.SelectMany(t => t.GetMethods())
+			.Where(m => m.GetCustomAttributes(typeof(SteelInputWithArg), false).Length > 0);
+		foreach(MethodInfo Method in Methods)
 		{
-			try //Next we assume that it exists but without an argument
+			if(Method.Name == FunctionName)
 			{
-				Sc.ScriptState State = Scripting.ConsoleState.ContinueWithAsync($"return new Action(delegate() {{ {FunctionName}(); }} );").Result;
-				NewBind.FuncWithoutArg = State.ReturnValue as Action;
+				Found = true;
+				SteelInputWithArg Data = Attribute.GetCustomAttribute(Method, typeof(SteelInputWithArg)) as SteelInputWithArg;
+				NewBind.FuncWithArg = Data.Function;
+				break;
 			}
-			catch //At this point we know it either does not exist or has incompatible argument requirements
-			{
-				Console.ThrowPrint($"The supplied function '{FunctionName}' does not exist, does not take a single float argument, or does not take zero arguments");
-				return false;
-			}
+		}
+
+		if(!Found)
+		{
+			Console.ThrowPrint($"The specified function '{FunctionName}' does not exist as a bindable function");
+			return false;
 		}
 
 		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down

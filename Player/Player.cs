@@ -249,10 +249,11 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
-	public void ToggleFly()
+	[SteelInputWithoutArg(typeof(Player), nameof(ToggleFly))]
+	public static void ToggleFly()
 	{
-		if(Game.Mode.ShouldToggleFly())
-			SetFly(!FlyMode);
+		Player Plr = Game.PossessedPlayer;
+		Plr.SetFly(!Plr.FlyMode);
 	}
 
 
@@ -265,13 +266,16 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public void MovementReset()
 	{
-		if(Game.Mode.ShouldMovementReset())
-		{
-			Translation = new Vector3(0, 5.1f + 0.15f, 0);
-			Momentum = new Vector3();
-		}
+		Translation = new Vector3(0, 5.1f + 0.15f, 0);
+		Momentum = new Vector3();
 	}
 
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InputRespawn))]
+	public static void InputRespawn()
+	{
+		Game.PossessedPlayer.Respawn();
+	}
 
 	public void Respawn()
 	{
@@ -345,42 +349,46 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
-	public void InventoryUp()
+	[SteelInputWithoutArg(typeof(Player), nameof(InventoryUp))]
+	public static void InventoryUp()
 	{
-		if(!(CurrentCooldown < CurrentMaxCooldown && PreventSwitch))
+		Player Plr = Game.PossessedPlayer;
+		if(!(Plr.CurrentCooldown < Plr.CurrentMaxCooldown && Plr.PreventSwitch))
 		{
-			BuildRotation = 0;
+			Plr.BuildRotation = 0;
 
-			InventorySlot--;
-			if(InventorySlot < 0)
+			Plr.InventorySlot--;
+			if(Plr.InventorySlot < 0)
 			{
-				InventorySlot = 9;
+				Plr.InventorySlot = 9;
 			}
 
-			HUDInstance.HotbarUpdate();
+			Plr.HUDInstance.HotbarUpdate();
 			Hitscan.Reset();
-			SetCooldown(0, SlotSwitchCooldown, false);
-			Ads = false;
+			Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+			Plr.Ads = false;
 		}
 	}
 
 
-	public void InventoryDown()
+	[SteelInputWithoutArg(typeof(Player), nameof(InventoryDown))]
+	public static void InventoryDown()
 	{
-		if(!(CurrentCooldown < CurrentMaxCooldown && PreventSwitch))
+		Player Plr = Game.PossessedPlayer;
+		if(!(Plr.CurrentCooldown < Plr.CurrentMaxCooldown && Plr.PreventSwitch))
 		{
-			BuildRotation = 0;
+			Plr.BuildRotation = 0;
 
-			InventorySlot++;
-			if(InventorySlot > 9)
+			Plr.InventorySlot++;
+			if(Plr.InventorySlot > 9)
 			{
-				InventorySlot = 0;
+				Plr.InventorySlot = 0;
 			}
 
-			HUDInstance.HotbarUpdate();
+			Plr.HUDInstance.HotbarUpdate();
 			Hitscan.Reset();
-			SetCooldown(0, SlotSwitchCooldown, false);
-			Ads = false;
+			Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+			Plr.Ads = false;
 		}
 	}
 
@@ -399,214 +407,231 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
-	public void InventorySlot0() { InventorySlotSelect(0); }
-	public void InventorySlot1() { InventorySlotSelect(1); }
-	public void InventorySlot2() { InventorySlotSelect(2); }
-	public void InventorySlot3() { InventorySlotSelect(3); }
-	public void InventorySlot4() { InventorySlotSelect(4); }
-	public void InventorySlot5() { InventorySlotSelect(5); }
-	public void InventorySlot6() { InventorySlotSelect(6); }
-	public void InventorySlot7() { InventorySlotSelect(7); }
-	public void InventorySlot8() { InventorySlotSelect(8); }
-	public void InventorySlot9() { InventorySlotSelect(9); }
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot0))]
+	public static void InventorySlot0() { Game.PossessedPlayer.InventorySlotSelect(0); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot1))]
+	public static void InventorySlot1() { Game.PossessedPlayer.InventorySlotSelect(1); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot2))]
+	public static void InventorySlot2() { Game.PossessedPlayer.InventorySlotSelect(2); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot3))]
+	public static void InventorySlot3() { Game.PossessedPlayer.InventorySlotSelect(3); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot4))]
+	public static void InventorySlot4() { Game.PossessedPlayer.InventorySlotSelect(4); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot5))]
+	public static void InventorySlot5() { Game.PossessedPlayer.InventorySlotSelect(5); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot6))]
+	public static void InventorySlot6() { Game.PossessedPlayer.InventorySlotSelect(6); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot7))]
+	public static void InventorySlot7() { Game.PossessedPlayer.InventorySlotSelect(7); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot8))]
+	public static void InventorySlot8() { Game.PossessedPlayer.InventorySlotSelect(8); }
+
+	[SteelInputWithoutArg(typeof(Player), nameof(InventorySlot9))]
+	public static void InventorySlot9() { Game.PossessedPlayer.InventorySlotSelect(9); }
 
 
-	public void BuildRotate(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(BuildRotate))]
+	public static void BuildRotate(float Sens)
 	{
-		if(Sens > 0 && Inventory[InventorySlot] != null)
+		Player Plr = Game.PossessedPlayer;
+		if(Sens > 0 && Plr.Inventory[Plr.InventorySlot] != null)
 		{
-			BuildRotation++;
-			if(BuildRotation > 3)
-				BuildRotation = 0;
+			Plr.BuildRotation++;
+			if(Plr.BuildRotation > 3)
+				Plr.BuildRotation = 0;
 		}
 	}
 
 
-	public void ForwardMove(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(ForwardMove))]
+	public static void ForwardMove(float Sens)
 	{
-		if(Game.Mode.ShouldMoveForward(Sens))
+		Player Plr = Game.PossessedPlayer;
+		Plr.ForwardSens = Sens;
+		if(Sens > 0)
 		{
-			ForwardSens = Sens;
-			if(Sens > 0)
-			{
-				ForwardAxis = 1;
-			}
-			else if(ForwardAxis > 0)
-			{
-				ForwardAxis = 0;
-				if(BackwardSens > 0)
-				{
-					ForwardAxis = -1;
-				}
-			}
+			Plr.ForwardAxis = 1;
 		}
-	}
-
-
-	public void BackwardMove(float Sens)
-	{
-		if(Game.Mode.ShouldMoveBackward(Sens))
+		else if(Plr.ForwardAxis > 0)
 		{
-			BackwardSens = Sens;
-			if(Sens > 0)
+			Plr.ForwardAxis = 0;
+			if(Plr.BackwardSens > 0)
 			{
-				ForwardAxis = -1;
-			}
-			else if(ForwardAxis < 0)
-			{
-				ForwardAxis = 0;
-				if(ForwardSens > 0)
-				{
-					ForwardAxis = 1;
-				}
-			}
-		}
-	}
-
-
-	public void RightMove(float Sens)
-	{
-		if(Game.Mode.ShouldMoveRight(Sens))
-		{
-			RightSens = Sens;
-			if(Sens > 0)
-			{
-				RightAxis = 1;
-			}
-			else if(RightAxis > 0)
-			{
-				RightAxis = 0;
-				if(LeftSens > 0)
-				{
-					RightAxis = -1;
-				}
+				Plr.ForwardAxis = -1;
 			}
 		}
 	}
 
 
-	public void LeftMove(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(BackwardMove))]
+	public static void BackwardMove(float Sens)
 	{
-		if(Game.Mode.ShouldMoveLeft(Sens))
+		Player Plr = Game.PossessedPlayer;
+		Plr.BackwardSens = Sens;
+		if(Sens > 0)
 		{
-			LeftSens = Sens;
-			if(Sens > 0)
+			Plr.ForwardAxis = -1;
+		}
+		else if(Plr.ForwardAxis < 0)
+		{
+			Plr.ForwardAxis = 0;
+			if(Plr.ForwardSens > 0)
 			{
-				RightAxis = -1;
-			}
-			else if(RightAxis < 0)
-			{
-				RightAxis = 0;
-				if(RightSens >0)
-				{
-					RightAxis = 1;
-				}
+				Plr.ForwardAxis = 1;
 			}
 		}
 	}
 
 
-	public void FlySprint(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(RightMove))]
+	public static void RightMove(float Sens)
 	{
-		FlySprintSens = Sens;
-		if(Sens > 0 && FlyMode)
+		Player Plr = Game.PossessedPlayer;
+		Plr.RightSens = Sens;
+		if(Sens > 0)
 		{
-			IsFlySprinting = true;
+			Plr.RightAxis = 1;
+		}
+		else if(Plr.RightAxis > 0)
+		{
+			Plr.RightAxis = 0;
+			if(Plr.LeftSens > 0)
+			{
+				Plr.RightAxis = -1;
+			}
+		}
+	}
 
-			if(JumpAxis == 1)
-				Momentum.y = MovementSpeed*FlySprintMultiplyer;
-			else if(IsCrouching)
-				Momentum.y = -MovementSpeed*FlySprintMultiplyer;
+
+	[SteelInputWithArg(typeof(Player), nameof(LeftMove))]
+	public static void LeftMove(float Sens)
+	{
+		Player Plr = Game.PossessedPlayer;
+		Plr.LeftSens = Sens;
+		if(Sens > 0)
+		{
+			Plr.RightAxis = -1;
+		}
+		else if(Plr.RightAxis < 0)
+		{
+			Plr.RightAxis = 0;
+			if(Plr.RightSens >0)
+			{
+				Plr.RightAxis = 1;
+			}
+		}
+	}
+
+
+	[SteelInputWithArg(typeof(Player), nameof(FlySprint))]
+	public static void FlySprint(float Sens)
+	{
+		Player Plr = Game.PossessedPlayer;
+		Plr.FlySprintSens = Sens;
+		if(Sens > 0 && Plr.FlyMode)
+		{
+			Plr.IsFlySprinting = true;
+
+			if(Plr.JumpAxis == 1)
+				Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+			else if(Plr.IsCrouching)
+				Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplyer;
 		}
 		else
 		{
-			IsFlySprinting = false;
-			Momentum.y = Clamp(Momentum.y, -MovementSpeed, MovementSpeed);
+			Plr.IsFlySprinting = false;
+			Plr.Momentum.y = Clamp(Plr.Momentum.y, -Plr.MovementSpeed, Plr.MovementSpeed);
 		}
 	}
 
 
-	public void Jump(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(Jump))]
+	public static void Jump(float Sens)
 	{
-		JumpSens = Sens;
+		Player Plr = Game.PossessedPlayer;
+		Plr.JumpSens = Sens;
 		if(Sens > 0)
 		{
-			if(FlyMode)
+			if(Plr.FlyMode)
 			{
-				if(IsFlySprinting)
+				if(Plr.IsFlySprinting)
 				{
-					Momentum.y = MovementSpeed*FlySprintMultiplyer;
+					Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplyer;
 				}
 				else
 				{
-					Momentum.y = MovementSpeed;
+					Plr.Momentum.y = Plr.MovementSpeed;
 				}
-				IsJumping = false;
+				Plr.IsJumping = false;
 			}
-			else if(IsOnFloor())
+			else if(Plr.IsOnFloor())
 			{
-				if(Game.Mode.ShouldJump())
+				Plr.Momentum.y = Plr.JumpStartForce;
+
+				if(Plr.IsCrouching && !Plr.AlreadySlideJumpBoosted)
 				{
-					Momentum.y = JumpStartForce;
+					Vector3 FlatMomentum = Plr.Momentum.Flattened();
+					FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + Plr.SlideJumpBoost);
+					Plr.Momentum.x = FlatMomentum.x;
+					Plr.Momentum.z = FlatMomentum.z;
 
-					if(IsCrouching && !AlreadySlideJumpBoosted)
-					{
-						Vector3 FlatMomentum = Momentum.Flattened();
-						FlatMomentum = FlatMomentum.Normalized() * (FlatMomentum.Length() + SlideJumpBoost);
-						Momentum.x = FlatMomentum.x;
-						Momentum.z = FlatMomentum.z;
-
-						AlreadySlideJumpBoosted = true;
-					}
-
-					IsJumping = true;
+					Plr.AlreadySlideJumpBoosted = true;
 				}
+
+				Plr.IsJumping = true;
 			}
 
-			JumpAxis = 1;
+			Plr.JumpAxis = 1;
 		}
 		else
 		{
-			JumpAxis = 0;
-			IsJumping = false;
+			Plr.JumpAxis = 0;
+			Plr.IsJumping = false;
 		}
 	}
 
 
-	public void Crouch(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(Crouch))]
+	public static void Crouch(float Sens)
 	{
+		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			CrouchAxis = 1;
-			IsCrouching = true;
-			AlreadySlideJumpBoosted = false;
+			Plr.CrouchAxis = 1;
+			Plr.IsCrouching = true;
+			Plr.AlreadySlideJumpBoosted = false;
 
-			if(!FlyMode)
-				IsFlySprinting = false;
+			if(!Plr.FlyMode)
+				Plr.IsFlySprinting = false;
 
-			if(Game.Mode.ShouldCrouch())
+			if(Plr.FlyMode)
 			{
-				if(FlyMode)
-				{
-					JumpAxis = 0;
-					JumpSens = 0;
+				Plr.JumpAxis = 0;
+				Plr.JumpSens = 0;
 
-					if(IsFlySprinting)
-						Momentum.y = -MovementSpeed*FlySprintMultiplyer;
-					else
-						Momentum.y = -MovementSpeed;
-				}
+				if(Plr.IsFlySprinting)
+					Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+				else
+					Plr.Momentum.y = -Plr.MovementSpeed;
 			}
 
-			LargeCollisionCapsule.Disabled = true;
-			SmallCollisionCapsule.Disabled = false;
+			Plr.LargeCollisionCapsule.Disabled = true;
+			Plr.SmallCollisionCapsule.Disabled = false;
 		}
 		else
 		{
-			CrouchAxis = 0;
+			Plr.CrouchAxis = 0;
 
-			if(FlySprintSens > 0)
-				FlySprint(FlySprintSens);
+			if(Plr.FlySprintSens > 0)
+				FlySprint(Plr.FlySprintSens);
 		}
 	}
 
@@ -625,137 +650,157 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
-	public void LookUp(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(LookUp))]
+	public static void LookUp(float Sens)
 	{
+		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerPitch(Change))
-			{
-				ApplyLookVertical(Change);
+			Plr.ApplyLookVertical(Change);
 
-				ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y - Sens*ViewmodelMomentumVertInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax));
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Plr.ViewmodelMomentum.x,
+				Clamp(Plr.ViewmodelMomentum.y - Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+			);
 		}
 	}
 
 
-	public void LookDown(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(LookDown))]
+	public static void LookDown(float Sens)
 	{
+		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerPitch(-Change))
-			{
-				ApplyLookVertical(-Change);
+			Plr.ApplyLookVertical(-Change);
 
-				ViewmodelMomentum = new Vector2(ViewmodelMomentum.x, Clamp(ViewmodelMomentum.y + Sens*ViewmodelMomentumVertInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax));
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Plr.ViewmodelMomentum.x,
+				Clamp(Plr.ViewmodelMomentum.y + Sens*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+			);
 		}
 	}
 
 
-	public void LookRight(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(LookRight))]
+	public static void LookRight(float Sens)
 	{
+		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerRotate(-Change))
-			{
-				LookHorizontal -= Change;
-				RotationDegrees = new Vector3(0, LookHorizontal, 0);
+			Plr.LookHorizontal -= Change;
+			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
-				ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x + Sens*ViewmodelMomentumHorzInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax), ViewmodelMomentum.y);
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Clamp(Plr.ViewmodelMomentum.x + Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Plr.ViewmodelMomentum.y
+			);
 		}
 	}
 
 
-	public void LookLeft(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(LookLeft))]
+	public static void LookLeft(float Sens)
 	{
+		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
 
-			if(Game.Mode.ShouldPlayerRotate(+Change))
-			{
-				LookHorizontal += Change;
-				RotationDegrees = new Vector3(0, LookHorizontal, 0);
+			Plr.LookHorizontal += Change;
+			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
-				ViewmodelMomentum = new Vector2(Clamp(ViewmodelMomentum.x - Sens*ViewmodelMomentumHorzInputMultiplyer, -ViewmodelMomentumMax, ViewmodelMomentumMax), ViewmodelMomentum.y);
-			}
+			Plr.ViewmodelMomentum = new Vector2(
+				Clamp(Plr.ViewmodelMomentum.x - Sens*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Plr.ViewmodelMomentum.y
+			);
 		}
 	}
 
 
-	public void PrimaryFire(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(PrimaryFire))]
+	public static void PrimaryFire(float Sens)
 	{
-		if(Sens > 0 && !IsPrimaryFiring && CurrentCooldown >= CurrentMaxCooldown)
+		Player Plr = Game.PossessedPlayer;
+		if(Sens > 0 && !Plr.IsPrimaryFiring && Plr.CurrentCooldown >= Plr.CurrentMaxCooldown)
 		{
-			IsPrimaryFiring = true;
+			Plr.IsPrimaryFiring = true;
 
-			if(Inventory[InventorySlot] != null)
+			if(Plr.Inventory[Plr.InventorySlot] != null)
 			{
-				if(Items.IdInfos[Inventory[InventorySlot].Id].PositionDelegate != null)
+				if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].PositionDelegate != null)
 				{
-					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+					RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 					if(BuildRayCast.IsColliding())
 					{
 						Tile Base = BuildRayCast.GetCollider() as Tile;
-						if(Base != null && GhostInstance.CanBuild)
+						if(Base != null && Plr.GhostInstance.CanBuild)
 						{
-							Vector3? PlacePosition = Items.TryCalculateBuildPosition(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint());
-							if(PlacePosition != null
-							   && Game.Mode.ShouldPlaceTile(GhostInstance.CurrentMeshType,
-							                                PlacePosition.Value,
-							                                Items.CalculateBuildRotation(GhostInstance.CurrentMeshType,
-							                                                             Base, RotationDegrees.y, BuildRotation,
-							                                                             BuildRayCast.GetCollisionPoint())))
+							Vector3? PlacePosition = Items.TryCalculateBuildPosition(
+								Plr.GhostInstance.CurrentMeshType,
+								Base, Plr.RotationDegrees.y,
+								Plr.BuildRotation,
+								BuildRayCast.GetCollisionPoint()
+							);
+
+							if(PlacePosition != null)
 							{
-								World.PlaceOn(GhostInstance.CurrentMeshType, Base, RotationDegrees.y, BuildRotation, BuildRayCast.GetCollisionPoint(), 1); //ID 1 for now so all client own all non-default structures
-								SetCooldown(0, BuildingCooldown, true);
+								World.PlaceOn(
+									Plr.GhostInstance.CurrentMeshType,
+									Base,
+									Plr.RotationDegrees.y,
+									Plr.BuildRotation,
+									BuildRayCast.GetCollisionPoint(),
+									1 //ID 1 for now so all client own all non-default structures
+								);
+								Plr.SetCooldown(0, Plr.BuildingCooldown, true);
 							}
 						}
 					}
 				}
 
-				if(Items.IdInfos[Inventory[InventorySlot].Id].UseDelegate != null)
+				if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].UseDelegate != null)
 				{
-					Items.UseItem(Inventory[InventorySlot], this);
+					Items.UseItem(Plr.Inventory[Plr.InventorySlot], Plr);
 				}
 			}
 		}
 
-		if(Sens <= 0 && IsPrimaryFiring)
+		if(Sens <= 0 && Plr.IsPrimaryFiring)
 		{
-			IsPrimaryFiring = false;
+			Plr.IsPrimaryFiring = false;
 		}
 	}
 
 
-	public void SecondaryFire(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(SecondaryFire))]
+	public static void SecondaryFire(float Sens)
 	{
-		if(Sens > 0 && !IsSecondaryFiring)
+		Player Plr = Game.PossessedPlayer;
+		if(Sens > 0 && !Plr.IsSecondaryFiring)
 		{
-			IsSecondaryFiring = true;
+			Plr.IsSecondaryFiring = true;
 
-			Items.Instance CurrentItem = Inventory[InventorySlot];
+			Items.Instance CurrentItem = Plr.Inventory[Plr.InventorySlot];
 
 			if(CurrentItem == null || !Items.IdInfos[CurrentItem.Id].CanAds)
 			{
-				if(CurrentCooldown >= CurrentMaxCooldown)
+				if(Plr.CurrentCooldown >= Plr.CurrentMaxCooldown)
 				{
-					RayCast BuildRayCast = GetNode("SteelCamera/RayCast") as RayCast;
+					RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 					if(BuildRayCast.IsColliding())
 					{
 						Tile Hit = BuildRayCast.GetCollider() as Tile;
-						if(Hit != null && Game.Mode.ShouldRemoveTile(Hit.Type, Hit.Translation, Hit.RotationDegrees, Hit.OwnerId))
+						if(Hit != null)
 						{
 							Hit.NetRemove();
-							SetCooldown(0, BuildingCooldown, true);
+							Plr.SetCooldown(0, Plr.BuildingCooldown, true);
 						}
 					}
 				}
@@ -763,41 +808,43 @@ public class Player : KinematicBody, IPushable, IInventory
 
 			else if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
 			{
-				Ads = true;
-				IsFlySprinting = false;
+				Plr.Ads = true;
+				Plr.IsFlySprinting = false;
 			}
 		}
 
-		if(Sens <= 0 && IsSecondaryFiring)
+		if(Sens <= 0 && Plr.IsSecondaryFiring)
 		{
-			IsSecondaryFiring = false;
+			Plr.IsSecondaryFiring = false;
 
-			Items.Instance CurrentItem = Inventory[InventorySlot];
+			Items.Instance CurrentItem = Plr.Inventory[Plr.InventorySlot];
 			if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
 			{
-				Ads = false;
-				if(FlySprintSens > 0)
-					FlySprint(FlySprintSens);
+				Plr.Ads = false;
+				if(Plr.FlySprintSens > 0)
+					FlySprint(Plr.FlySprintSens);
 			}
 		}
 	}
 
 
-	public void ThrowCurrentItem(float Sens)
+	[SteelInputWithArg(typeof(Player), nameof(ThrowCurrentItem))]
+	public static void ThrowCurrentItem(float Sens)
 	{
+		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			Vector3 Vel = Momentum + new Vector3(0,0,ItemThrowPower)
-				.Rotated(new Vector3(1,0,0), Deg2Rad(-ActualLookVertical))
-				.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
+			Vector3 Vel = Plr.Momentum + new Vector3(0, 0, Plr.ItemThrowPower)
+				.Rotated(new Vector3(1,0,0), Deg2Rad(-Plr.ActualLookVertical))
+				.Rotated(new Vector3(0,1,0), Deg2Rad(Plr.LookHorizontal));
 
 			if(Net.Work.IsNetworkServer())
-				ThrowItemFromSlot(InventorySlot, Vel);
+				Plr.ThrowItemFromSlot(Plr.InventorySlot, Vel);
 			else
 			{
-				RpcId(Net.ServerId, nameof(ThrowItemFromSlot), InventorySlot, Vel);
-				SfxManager.FpThrow();
-				SetCooldown(0, SlotSwitchCooldown, false);
+				Plr.RpcId(Net.ServerId, nameof(ThrowItemFromSlot), Plr.InventorySlot, Vel);
+				Plr.SfxManager.FpThrow();
+				Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
 			}
 		}
 	}
@@ -806,7 +853,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	[Remote]
 	public void ThrowItemFromSlot(int Slot, Vector3 Vel)
 	{
-		if(Inventory[Slot] != null && Game.Mode.ShouldThrowItem())
+		if(Inventory[Slot] != null)
 		{
 			World.Self.DropItem(Inventory[Slot].Id, Translation+Cam.Translation, Vel);
 
@@ -878,11 +925,8 @@ public class Player : KinematicBody, IPushable, IInventory
 
 				foreach(DroppedItem Item in ToPickUpList)
 				{
-					if(Game.Mode.ShouldPickupItem(Item.Type))
-					{
-						World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.Name);
-						World.ItemList.Remove(Item);
-					}
+					World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.Name);
+					World.ItemList.Remove(Item);
 				}
 			}
 		}
@@ -1024,17 +1068,12 @@ public class Player : KinematicBody, IPushable, IInventory
 			else
 				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
 
-			if(GetSlideCount() > 0)
-				Game.Mode.OnPlayerCollide(GetSlideCollision(0));
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
 		if(NewPos != OldPos)
 		{
-			if(Game.Mode.ShouldPlayerMove(NewPos))
-			{
-				Translation = NewPos;
-			}
+			Translation = NewPos;
 		}
 
 		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
@@ -1096,15 +1135,8 @@ public class Player : KinematicBody, IPushable, IInventory
 	{
 		Health = Hp;
 
-		if(Game.Mode.ShouldSyncRemotePlayerPosition(Id, Position))
-		{
-			Translation = Position;
-		}
-
-		if(Game.Mode.ShouldSyncRemotePlayerRotation(Id, Rotation))
-		{
-			RotationDegrees = Rotation;
-		}
+		Translation = Position;
+		RotationDegrees = Rotation;
 
 		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
 		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);

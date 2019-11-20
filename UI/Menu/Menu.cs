@@ -182,6 +182,7 @@ public class Menu : Node
 	}
 
 
+	[SteelInputWithoutArg(typeof(Menu), nameof(BuildInventory))]
 	public static void BuildInventory()
 	{
 		Reset();

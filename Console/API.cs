@@ -6,13 +6,6 @@ using System.Collections.Generic;
 
 public static class API
 {
-	public class EmptyCustomCommands //Use this instead of null for better error message in console
-	{}
-
-
-	public static dynamic Gm = new EmptyCustomCommands();
-
-
 	public static bool Host()
 	{
 		if(Game.Nickname == Game.DefaultNickname)
@@ -228,50 +221,6 @@ public static class API
 			Console.ThrowPrint("Cannot reload savegame when not hosting");
 			return false;
 		}
-	}
-
-
-	public static bool Gamemode(string Name)
-	{
-		if(Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
-		{
-			return Scripting.LoadGamemode(Name);
-		}
-
-		Console.ThrowPrint("Cannot set gamemode when not hosting");
-		return false;
-	}
-
-
-	public static bool ReloadGm()
-	{
-		if(Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
-		{
-			if(Scripting.GamemodeName != "")
-			{
-				return Scripting.LoadGamemode(Scripting.GamemodeName);
-			}
-
-			Console.ThrowPrint("No gamemode loaded to reload");
-			return false;
-		}
-
-		Console.ThrowPrint("Must be hosting to reload gamemode");
-		return false;
-	}
-
-
-	public static bool UnloadGm()
-	{
-		if(Scripting.GamemodeName != "")
-		{
-			Console.Print($"Successfully unloaded gamemode '{Scripting.GamemodeName}'");
-			Scripting.UnloadGamemode();
-			return true;
-		}
-
-		Console.ThrowPrint("No gamemode loaded to unload");
-		return false;
 	}
 
 
