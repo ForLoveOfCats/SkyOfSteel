@@ -260,13 +260,7 @@ public class Net : Node
 
 		NetworkedMultiplayerENet EN = Self.GetTree().NetworkPeer as NetworkedMultiplayerENet;
 		if(EN != null)
-		{
 			EN.CloseConnection();
-
-			//These form a probable workaround to github.com/godotengine/godot/issues/31184
-			GC.Collect();
-			System.Threading.Thread.Sleep(1000);
-		}
 
 		Self.GetTree().NetworkPeer = null;
 		PeerList.Clear();
