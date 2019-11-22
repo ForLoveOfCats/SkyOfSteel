@@ -840,8 +840,12 @@ public class Player : KinematicBody, IPushable, IInventory
 			else
 			{
 				Plr.RpcId(Net.ServerId, nameof(ThrowItemFromSlot), Plr.InventorySlot, Vel);
-				Plr.SfxManager.FpThrow();
-				Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+
+				if(Plr.Inventory[Plr.InventorySlot] != null)
+				{
+					Plr.SfxManager.FpThrow();
+					Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+				}
 			}
 		}
 	}
