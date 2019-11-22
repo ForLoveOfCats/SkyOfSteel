@@ -11,12 +11,8 @@ public class InventoryIcon : TextureButton
 
 	public override void _Pressed()
 	{
-		GD.Print($"Slot {Slot} pressed");
-
 		if(ParentMenu.SourceButton == null && Source.Inventory[Slot] != null)
-		{
 			ParentMenu.SourceButton = this;
-		}
 
 		else if(ParentMenu.SourceButton != null && ParentMenu.SourceButton != this  && Source.Inventory[Slot] == null)
 		{
