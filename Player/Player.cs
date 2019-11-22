@@ -107,6 +107,8 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public int BuildRotation = 0;
 
+	public float NetUpdateDelta { get; private set; } = 0;
+
 	public Camera Cam;
 	public MeshInstance ViewmodelItem;
 	public Position3D ViewmodelTiltJoint;
@@ -192,8 +194,6 @@ public class Player : KinematicBody, IPushable, IInventory
 			Body.GetNode<HitboxClass>("BodyHitbox").OwningPlayer = this;
 			Body.GetNode<HitboxClass>("HeadJoint/HeadHitbox").OwningPlayer = this;
 			Body.GetNode<HitboxClass>("LegsJoint/LegsHitbox").OwningPlayer = this;
-
-			SetProcess(false);
 
 			return;
 		}
@@ -1114,7 +1114,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			else
 				ItemId = Items.ID.ERROR;
 
-			Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, ActualLookVertical, IsJumping, Health, ItemId,
+			Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, ActualLookVertical, IsJumping, IsCrouching, Health, ItemId,
 			                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
 		}
 
@@ -1127,15 +1127,37 @@ public class Player : KinematicBody, IPushable, IInventory
 
 
 	[Remote]
-	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, float Hp, Items.ID ItemId, float ForwardMomentum)
+	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
 	{
 		Health = Hp;
 
 		Translation = Position;
 		RotationDegrees = Rotation;
 
-		HeadJoint.RotationDegrees = new Vector3(-HeadRotation, 0, 0);
-		LegsJoint.RotationDegrees = new Vector3(Clamp((ForwardMomentum/MovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation), 0, 0);
+		HeadJoint.Transform = HeadJoint.Transform.InterpolateWith(
+			new Transform(
+				new Quat(
+					new Vector3(Deg2Rad(-HeadRotation),0,0)
+				),
+				HeadJoint.Transform.origin
+			),
+			NetUpdateDelta*20
+		);
+
+		float LegsJointTarget = 0;
+		if(!Crouching)
+			LegsJointTarget = Clamp((ForwardMomentum/MovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation);
+		else
+			LegsJointTarget = MaxAirLegRotation*Sign(ForwardMomentum);
+		LegsJoint.Transform = LegsJoint.Transform.InterpolateWith(
+			new Transform(
+				new Quat(
+					new Vector3(Deg2Rad(LegsJointTarget),0,0)
+				),
+				LegsJoint.Transform.origin
+			),
+			NetUpdateDelta*20
+		);
 
 		if(Round(ForwardMomentum) == 0 && !Jumping)
 		{
@@ -1156,6 +1178,8 @@ public class Player : KinematicBody, IPushable, IInventory
 			(ThirdPersonItem.MaterialOverride as ShaderMaterial).SetShaderParam("texture_albedo", Items.Textures[ItemId]);
 			ThirdPersonItem.Show();
 		}
+
+		NetUpdateDelta = 0;
 	}
 
 
@@ -1187,6 +1211,12 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public override void _Process(float Delta)
 	{
+		if(!Possessed)
+		{
+			NetUpdateDelta += Delta;
+			return;
+		}
+
 		Assert(MinAdsMultiplyer > 0 && MinAdsMultiplyer <= 1);
 		if(Ads)
 			AdsMultiplyer = Clamp(AdsMultiplyer - (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
