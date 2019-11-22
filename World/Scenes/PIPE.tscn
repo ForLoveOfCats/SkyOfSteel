@@ -21,8 +21,8 @@ extents = Vector3( 1.05, 1.05, 1.75 )
 extents = Vector3( 1, 1, 0.2 )
 
 [node name="PIPE" type="StaticBody"]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 7
+collision_mask = 7
 script = ExtResource( 1 )
 
 [node name="CenterMesh" type="MeshInstance" parent="."]

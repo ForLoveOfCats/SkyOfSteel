@@ -227,14 +227,11 @@ public class Player : KinematicBody, IPushable, IInventory
 	[Remote]
 	public void SetFreeze(bool NewFrozen)
 	{
-		if(Name == GetTree().GetNetworkUniqueId().ToString())
-		{
+		if(Possessed)
 			Frozen = NewFrozen;
-		}
 		else
 		{
-			int Id = 0;
-			Int32.TryParse(Name, out Id);
+			Frozen = NewFrozen;
 			RpcId(Id, nameof(SetFreeze), NewFrozen);
 		}
 	}
@@ -292,6 +289,21 @@ public class Player : KinematicBody, IPushable, IInventory
 	}
 
 
+	[Remote]
+	public void NotifyPickedUpItem()
+	{
+		if(!Possessed)
+		{
+			Assert(Net.Work.IsNetworkServer());
+			Net.SteelRpc(this, nameof(NotifyPickedUpItem));
+			return;
+		}
+
+		SfxManager.FpPickup();
+		SetCooldown(0, SlotSwitchCooldown, false);
+	}
+
+
 	public void ItemGive(Items.Instance ToGive)
 	{
 		if(!Net.Work.IsNetworkServer())
@@ -337,13 +349,6 @@ public class Player : KinematicBody, IPushable, IInventory
 		CurrentCooldown = Clamp(NewCooldown, 0, NewMaxCooldown);
 		CurrentMaxCooldown = NewMaxCooldown;
 		PreventSwitch = NewPreventSwitch;
-	}
-
-
-	[Remote]
-	public void PickupItem(Items.ID Type)
-	{
-		ItemGive(new Items.Instance(Type));
 	}
 
 
@@ -896,12 +901,10 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(!Possessed || Frozen)
+		if(Frozen)
 			return;
 
-		if(Health <= 0)
-			Respawn();
-
+		if(Net.Work.IsNetworkServer())
 		{
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
 			foreach(DroppedItem Item in World.ItemList)
@@ -909,23 +912,30 @@ public class Player : KinematicBody, IPushable, IInventory
 				if(Translation.DistanceTo(Item.Translation) <= ItemPickupDistance && Item.Life >= DroppedItem.MinPickupLife)
 				{
 					PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-					Godot.Collections.Dictionary Results = State.IntersectRay(Translation, Item.Translation, new Godot.Collections.Array{this}, 2);
+					Godot.Collections.Dictionary Results = State.IntersectRay(Translation, Item.Translation, new Godot.Collections.Array{this}, 4);
 					if(Results.Count <= 0)
 						ToPickUpList.Add(Item);
 				}
 			}
 			if(ToPickUpList.Count > 0)
 			{
-				SfxManager.FpPickup();
-				SetCooldown(0, SlotSwitchCooldown, false);
-
 				foreach(DroppedItem Item in ToPickUpList)
 				{
-					World.Self.RequestDroppedItem(Net.Work.GetNetworkUniqueId(), Item.Name);
-					World.ItemList.Remove(Item);
+					Player Plr = Net.Players[Id];
+					Plr.ItemGive(new Items.Instance(Item.Type));
+					Plr.NotifyPickedUpItem();
+
+					Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
+					World.Self.RemoveDroppedItem(Item.Name);
 				}
 			}
 		}
+
+		if(!Possessed)
+			return;
+
+		if(Health <= 0)
+			Respawn();
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 

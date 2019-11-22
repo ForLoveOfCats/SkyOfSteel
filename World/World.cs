@@ -630,34 +630,6 @@ public class World : Node
 	}
 
 
-	//Should be able to be called without RPC yet only run on server
-	//Has to be non-static to be RPC-ed
-	[Remote]
-	public void RequestDroppedItem(int Id, string Guid)
-	{
-		if(Net.Work.NetworkPeer != null)
-		{
-			if(Net.Work.IsNetworkServer())
-			{
-				//On server
-				DroppedItem Item = EntitiesRoot.GetNodeOrNull(Guid) as DroppedItem;
-				if(Item != null) //Only lookup node once instead of using HasNode
-				{
-					Net.Players[Id].ItemGive(new Items.Instance(Item.Type));
-
-					Net.SteelRpc(this, nameof(RemoveDroppedItem), Item.Name);
-					RemoveDroppedItem(Item.Name);
-				}
-			}
-			else
-			{
-				//Not on server, call on server
-				Self.RpcId(Net.ServerId, nameof(RequestDroppedItem), Id, Guid);
-			}
-		}
-	}
-
-
 	public override void _Process(float Delta)
 	{
 		Grid.DoWork();
