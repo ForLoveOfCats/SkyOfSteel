@@ -1114,7 +1114,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			else
 				ItemId = Items.ID.ERROR;
 
-			Net.SteelRpcUnreliable(this, nameof(Update), Translation, RotationDegrees, ActualLookVertical, IsJumping, IsCrouching, Health, ItemId,
+			Net.SteelRpcUnreliable(this, nameof(Update), this.Transform, ActualLookVertical, IsJumping, IsCrouching, Health, ItemId,
 			                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
 		}
 
@@ -1127,12 +1127,14 @@ public class Player : KinematicBody, IPushable, IInventory
 
 
 	[Remote]
-	public void Update(Vector3 Position, Vector3 Rotation, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
+	public void Update(Transform TargetTransform, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
 	{
 		Health = Hp;
 
-		Translation = Position;
-		RotationDegrees = Rotation;
+		this.Transform = this.Transform.InterpolateWith(
+			TargetTransform,
+			NetUpdateDelta*20
+		);
 
 		HeadJoint.Transform = HeadJoint.Transform.InterpolateWith(
 			new Transform(
@@ -1179,7 +1181,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			ThirdPersonItem.Show();
 		}
 
-		NetUpdateDelta = 0;
+		NetUpdateDelta = Single.Epsilon;
 	}
 
 
