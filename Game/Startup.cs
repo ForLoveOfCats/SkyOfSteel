@@ -98,8 +98,8 @@ public class Startup : Node
 		Bindings.Bind("Q", "ThrowCurrentItem");
 		Bindings.Bind("RightStickClick", "ThrowCurrentItem");
 
-		// Bindings.Bind("G", "BuildInventory");
-		// Bindings.Bind("XboxStart", "BuildInventory");
+		Bindings.Bind("G", "BuildInventory");
+		Bindings.Bind("XboxStart", "BuildInventory");
 
 		Bindings.Bind("K", "InputRespawn");
 		Bindings.Bind("XboxSelect", "InputRespawn");
