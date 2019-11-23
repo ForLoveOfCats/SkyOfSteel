@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=1]
+[ext_resource path="res://UI/Fonts/Overpass.tres" type="DynamicFont" id=1]
+
 
 [node name="SpacerLabel" type="Label"]
 margin_right = 40.0

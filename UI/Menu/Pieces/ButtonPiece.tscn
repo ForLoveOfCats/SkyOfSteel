@@ -1,8 +1,9 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://UI/Fonts/OverpassSemibold.tres" type="DynamicFont" id=1]
+[ext_resource path="res://UI/Fonts/Overpass.tres" type="DynamicFont" id=1]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.cs" type="Script" id=2]
 [ext_resource path="res://UI/Menu/Pieces/MouseOverSfx.tscn" type="PackedScene" id=3]
+
 
 [node name="Button" type="Button"]
 margin_right = 12.0

@@ -6,7 +6,7 @@
 [ext_resource path="res://UI/Theme/ButtonPressed.tres" type="StyleBox" id=4]
 [ext_resource path="res://UI/Theme/ScrollBarBody.tres" type="StyleBox" id=5]
 [ext_resource path="res://UI/Theme/LineEdit.tres" type="StyleBox" id=6]
-[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=7]
+[ext_resource path="res://UI/Fonts/Overpass.otf" type="DynamicFontData" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 

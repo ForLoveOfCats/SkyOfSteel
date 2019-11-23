@@ -1,6 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://UI/Fonts/OverpassSemibold.otf" type="DynamicFontData" id=1]
+[ext_resource path="res://UI/Fonts/Overpass.otf" type="DynamicFontData" id=1]
+
 
 [sub_resource type="DynamicFont" id=1]
 size = 15
