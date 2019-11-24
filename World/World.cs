@@ -25,6 +25,7 @@ public class World : Node
 	public static Node TilesRoot = null;
 	public static Node EntitiesRoot = null;
 	public static ProceduralSky WorldSky = null;
+	public static Godot.Environment WorldEnv = null;
 
 	private static PackedScene DroppedItemScene;
 	private static PackedScene DebugPlotPointScene;
@@ -76,7 +77,8 @@ public class World : Node
 
 	public override void _Ready()
 	{
-		WorldSky = GetTree().Root.GetNode<WorldEnvironment>("RuntimeRoot/WorldEnvironment").Environment.BackgroundSky as ProceduralSky;
+		WorldEnv = GetTree().Root.GetNode<WorldEnvironment>("RuntimeRoot/WorldEnvironment").Environment;
+		WorldSky = WorldEnv.BackgroundSky as ProceduralSky;
 	}
 
 
@@ -647,11 +649,17 @@ public class World : Node
 		{
 			Time += Delta;
 			if(Time >= 60)
-				Time = Time-60;
+				Time -= 60;
 
 			Grid.DoWork();
 
 			WorldSky.SunLatitude = Time * (360f / (DayNightMinutes*60f));
+
+			float LightTime = Time;
+			if(LightTime > 15f)
+				LightTime = Mathf.Clamp(30-LightTime, 0, 15);
+			WorldEnv.AmbientLightEnergy = Mathf.Clamp(((LightTime) / (DayNightMinutes*30f) + 0.02f)*7f, 0, 1);
+
 			//TODO: For the sky use values based on these
 			//Top: 22324e
 			//Bottom e8af6d
