@@ -11,7 +11,7 @@ public class World : Node
 
 	public static Dictionary<Items.ID, PackedScene> Scenes = new Dictionary<Items.ID, PackedScene>();
 
-	public static float Time { get; private set; } = 0;
+	public static float Time { get; private set; } = 15f*DayNightMinutes;
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
@@ -115,7 +115,7 @@ public class World : Node
 		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
 
-		Time = 0;
+		Time = 15f*DayNightMinutes;
 		IsOpen = true;
 	}
 
