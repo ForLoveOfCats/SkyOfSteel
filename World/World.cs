@@ -5,10 +5,13 @@ using System.Collections.Generic;
 
 public class World : Node
 {
+	public const float DayNightMinutes = 30;
 	public const int PlatformSize = 12;
 	public const int ChunkSize = 9*PlatformSize;
 
 	public static Dictionary<Items.ID, PackedScene> Scenes = new Dictionary<Items.ID, PackedScene>();
+
+	public static float Time { get; private set; } = 0;
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
@@ -21,6 +24,7 @@ public class World : Node
 
 	public static Node TilesRoot = null;
 	public static Node EntitiesRoot = null;
+	public static ProceduralSky WorldSky = null;
 
 	private static PackedScene DroppedItemScene;
 	private static PackedScene DebugPlotPointScene;
@@ -70,6 +74,12 @@ public class World : Node
 	}
 
 
+	public override void _Ready()
+	{
+		WorldSky = GetTree().Root.GetNode<WorldEnvironment>("RuntimeRoot/WorldEnvironment").Environment.BackgroundSky as ProceduralSky;
+	}
+
+
 	public static void DebugPlot(Vector3 Position)
 	{
 		MeshInstance Point = DebugPlotPointScene.Instance() as MeshInstance;
@@ -103,6 +113,7 @@ public class World : Node
 		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
 
+		Time = 0;
 		IsOpen = true;
 	}
 
@@ -632,6 +643,19 @@ public class World : Node
 
 	public override void _Process(float Delta)
 	{
-		Grid.DoWork();
+		if(IsOpen)
+		{
+			Time += Delta;
+			if(Time >= 60)
+				Time = Time-60;
+
+			Grid.DoWork();
+
+			WorldSky.SunLatitude = Time * (360f / (DayNightMinutes*60f));
+			//TODO: For the sky use values based on these
+			//Top: 22324e
+			//Bottom e8af6d
+			//Way bottom: 141d2c
+		}
 	}
 }

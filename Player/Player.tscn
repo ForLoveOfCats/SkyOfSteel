@@ -1,8 +1,7 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body/BodyScene.tscn" type="PackedScene" id=2]
-[ext_resource path="res://default_env.tres" type="Environment" id=3]
 [ext_resource path="res://Items/Meshes/ERROR.obj" type="ArrayMesh" id=5]
 [ext_resource path="res://Player/PlayerSfxManager.cs" type="Script" id=7]
 [ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=8]
@@ -38,7 +37,6 @@ transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 0, 1
 
 [node name="SteelCamera" type="Camera" parent="."]
 transform = Transform( -1, 0, 3.25841e-07, 0, 1, 0, -3.25841e-07, 0, -1, 0, 4.12, 0 )
-environment = ExtResource( 3 )
 fov = 100.0
 far = 8000.0
 

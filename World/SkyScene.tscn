@@ -1,6 +1,5 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://default_env.tres" type="Environment" id=1]
 [ext_resource path="res://World/Materials/GreenGhost.tres" type="Material" id=2]
 [ext_resource path="res://World/Materials/ShaderCompilerHider.cs" type="Script" id=3]
 [ext_resource path="res://World/Materials/RedGhost.tres" type="Material" id=4]
@@ -11,7 +10,6 @@
 
 [node name="GlobalCamera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.999999, 0, 0, 0, 0.999999, 0, 3.46939, 10.9909 )
-environment = ExtResource( 1 )
 fov = 100.0
 far = 1000.0
 

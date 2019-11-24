@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://UI/ConsoleWindow.tscn" type="PackedScene" id=1]
 [ext_resource path="res://UI/Menu/MenuRoot.tscn" type="PackedScene" id=2]
+[ext_resource path="res://default_env.tres" type="Environment" id=3]
 
 [node name="RuntimeRoot" type="Node"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 3 )
 
 [node name="MenuRoot" parent="." instance=ExtResource( 2 )]
 
