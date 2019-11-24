@@ -46,4 +46,15 @@ public static class SteelMath
 	{
 		return Vec.Normalized() * Mathf.Clamp(Vec.Length(), Min, Max);
 	}
+
+
+	public static Color LerpColor(Color A, Color B, float T)
+	{
+		Color Out = new Color();
+		Out.r = Lerp(A.r, B.r, T);
+		Out.g = Lerp(A.g, B.g, T);
+		Out.b = Lerp(A.b, B.b, T);
+		Out.a = Lerp(A.a, B.a, T);
+		return Out;
+	}
 }
