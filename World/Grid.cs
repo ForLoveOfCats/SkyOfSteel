@@ -23,7 +23,7 @@ public class GridClass
 	private Dictionary<IInGrid, List<Vector3>> QueuedRemovalAreas = new Dictionary<IInGrid, List<Vector3>>();
 
 
-	private Vector3 CalculateArea(Vector3 Position)
+	public static Vector3 CalculateArea(Vector3 Position)
 	{
 		return new Vector3(FloorToInt(Position.x/PlatformSize)*PlatformSize,
 						   FloorToInt(Position.y/PlatformSize)*PlatformSize,
@@ -159,6 +159,12 @@ public class GridClass
 		{
 			foreach(IInGrid Item in GetItems(Area))
 			{
+				if(Item is Tile Branch && Branch.PathId != -1)
+				{
+					World.Pathfinder.RemovePoint(Branch.PathId);
+					World.TryAddTileToPathfinder(Branch);
+				}
+
 				Item.GridUpdate();
 			}
 		}

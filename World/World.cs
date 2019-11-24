@@ -1,6 +1,9 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using static Godot.Mathf;
+using static SteelMath;
 
 
 public class World : Node
@@ -18,6 +21,7 @@ public class World : Node
 	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
 	public static List<DroppedItem> ItemList = new List<DroppedItem>();
 	public static GridClass Grid = new GridClass();
+	public static AStar Pathfinder = new AStar();
 
 	public static bool IsOpen = false;
 	public static string SaveName = null;
@@ -133,6 +137,7 @@ public class World : Node
 		TilesRoot = null;
 		EntitiesRoot = null;
 
+		Pathfinder.Clear();
 		Chunks.Clear();
 		RemoteLoadedChunks.Clear();
 		ItemList.Clear();
@@ -372,9 +377,10 @@ public class World : Node
 		Grid.AddItem(Branch);
 		Grid.QueueUpdateNearby(Branch.Translation);
 
-		//Nested if to prevent very long line
 		if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
 		{
+			TryAddTileToPathfinder(Branch);
+
 			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) > Game.ChunkRenderDistance*(PlatformSize*9))
 			{
 				//If network is inited, am the server, and platform is to far away then...
@@ -400,6 +406,236 @@ public class World : Node
 		}
 
 		return Branch;
+	}
+
+
+	public static void TryAddTileToPathfinder(Tile Branch) //This is a bit messy TODO: Improve this POS
+	{
+		switch(Branch.Type) //Filter out any tiles which should not be added to the pathfinder
+		{
+			case(Items.ID.PLATFORM):
+			case(Items.ID.SLOPE):
+				break;
+
+			default:
+				return;
+		}
+
+		Branch.PathId = Pathfinder.GetAvailablePointId();
+		Pathfinder.AddPoint(Branch.PathId, Branch.Translation + new Vector3(0,1,0));
+
+		bool ForwardAllowed = true;
+		bool BackwardAllowed = true;
+		bool RightAllowed = true;
+		bool LeftAllowed = true;
+
+		foreach(IInGrid Entry in Grid.GetItems(Branch.Translation)) //Set initial allowed state from walls blocking/not blocking
+		{
+			if(Entry is Tile FellowBranch)
+			{
+				if(FellowBranch.Type == Items.ID.WALL)
+				{
+					if(FellowBranch.Translation.z > Branch.Translation.z)
+						ForwardAllowed = false;
+					else if(FellowBranch.Translation.z < Branch.Translation.z)
+						BackwardAllowed = false;
+					else if(FellowBranch.Translation.x < Branch.Translation.x)
+						RightAllowed = false;
+					else if(FellowBranch.Translation.x > Branch.Translation.x)
+						LeftAllowed = false;
+				}
+
+				else if(Branch.Type == Items.ID.PLATFORM && FellowBranch.Type == Items.ID.SLOPE)
+				{
+					switch(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4))
+					{
+						case(0): {
+							BackwardAllowed = false;
+							break;
+						}
+
+						case(180): {
+							ForwardAllowed = false;
+							break;
+						}
+
+						case(270): {
+							LeftAllowed = false;
+							break;
+						}
+
+						case(90): {
+							RightAllowed = false;
+							break;
+						}
+
+						default:
+							break;
+					}
+				}
+			}
+		}
+
+		List<IInGrid> Forward = null;
+		List<IInGrid> Backward = null;
+		List<IInGrid> Right = null;
+		List<IInGrid> Left = null;
+		if(Branch.Type == Items.ID.PLATFORM)
+		{
+			Forward = Grid.GetItems(Branch.Translation + new Vector3(0, 0, PlatformSize));
+			Backward = Grid.GetItems(Branch.Translation + new Vector3(0, 0, -PlatformSize));
+			Right = Grid.GetItems(Branch.Translation + new Vector3(-PlatformSize, 0, 0));
+			Left = Grid.GetItems(Branch.Translation + new Vector3(PlatformSize, 0, 0));
+		}
+		else if(Branch.Type == Items.ID.SLOPE)
+		{
+			switch(SnapToGrid(LoopRotation(Branch.RotationDegrees.y), 360, 4))
+			{
+				case(0): { //Forward
+					Forward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, PlatformSize, PlatformSize));
+					Backward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, 0, -PlatformSize))
+						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, -PlatformSize, -PlatformSize))
+						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
+						.ToList();
+
+					RightAllowed = false;
+					LeftAllowed = false;
+					break;
+				}
+
+				case(180): { //Backward
+					Forward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, 0, PlatformSize))
+						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, -PlatformSize, PlatformSize))
+						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
+						.ToList();
+					Backward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, PlatformSize, -PlatformSize));
+
+					RightAllowed = false;
+					LeftAllowed = false;
+					break;
+				}
+
+				case(270): { //Right
+					Right = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(-PlatformSize, PlatformSize, 0));
+					Left = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(PlatformSize, 0, 0))
+						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(PlatformSize, -PlatformSize, 0))
+						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
+						.ToList();
+
+					ForwardAllowed = false;
+					BackwardAllowed = false;
+					break;
+				}
+
+				case(90): { //Left
+					Right = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(-PlatformSize, 0, 0))
+						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(-PlatformSize, -PlatformSize, 0))
+						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
+						.ToList();
+					Left = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(PlatformSize, PlatformSize, 0));
+
+					ForwardAllowed = false;
+					BackwardAllowed = false;
+					break;
+				}
+
+				default:
+					break;
+			}
+		}
+		else
+			throw new Exception($"No code exists to build Forward/Backward/Left/Right lists for a tile of type {Branch.Type}");
+
+
+		if(Branch.Type == Items.ID.PLATFORM)
+		{
+			if(ForwardAllowed)
+			{
+				foreach(IInGrid Entry in Forward)
+				{
+					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
+					{
+						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 0)
+						{
+							ForwardAllowed = false;
+							break;
+						}
+					}
+				}
+			}
+			if(BackwardAllowed)
+			{
+				foreach(IInGrid Entry in Backward)
+				{
+					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
+					{
+						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 180)
+						{
+							BackwardAllowed = false;
+							break;
+						}
+					}
+				}
+			}
+			if(RightAllowed)
+			{
+				foreach(IInGrid Entry in Right)
+				{
+					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
+					{
+						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 270)
+						{
+							RightAllowed = false;
+							break;
+						}
+					}
+				}
+			}
+			if(LeftAllowed)
+			{
+				foreach(IInGrid Entry in Left)
+				{
+					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
+					{
+						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 90)
+						{
+							LeftAllowed = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		if(ForwardAllowed)
+			TryConnectTileToGridSpace(Branch, Forward);
+		if(BackwardAllowed)
+			TryConnectTileToGridSpace(Branch, Backward);
+		if(RightAllowed)
+			TryConnectTileToGridSpace(Branch, Right);
+		if(LeftAllowed)
+			TryConnectTileToGridSpace(Branch, Left);
+	}
+
+
+	public static void TryConnectTileToGridSpace(Tile Branch, List<IInGrid> Space)
+	{
+		foreach(IInGrid Entry in Space)
+		{
+			if(Entry is Tile Other)
+			{
+				switch(Other.Type) //TODO: Handle other walkable tiles
+				{
+					case(Items.ID.PLATFORM):
+					case(Items.ID.SLOPE):
+						Pathfinder.ConnectPoints(Branch.PathId, Other.PathId);
+						break;
+
+					default:
+						break;
+				}
+			}
+		}
 	}
 
 
