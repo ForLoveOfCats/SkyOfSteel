@@ -34,6 +34,8 @@ public class World : Node
 	private static PackedScene DroppedItemScene;
 	private static PackedScene DebugPlotPointScene;
 
+	private static PackedScene CatModScene = null;
+
 	public static World Self;
 
 	World()
@@ -44,6 +46,8 @@ public class World : Node
 
 		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
 		DebugPlotPointScene = GD.Load<PackedScene>("res://World/DebugPlotPoint.tscn");
+
+		CatModScene = GD.Load<PackedScene>("res://Mobs/CatMob.tscn");
 
 		Directory TilesDir = new Directory();
 		TilesDir.Open("res://World/Scenes/");
@@ -97,6 +101,13 @@ public class World : Node
 	public static void DefaultPlatforms()
 	{
 		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
+
+		for(int i = 0; i < 45; i++)
+		{
+			Mob Cat = CatModScene.Instance() as Mob;
+			EntitiesRoot.AddChild(Cat);
+			Cat.Translation = new Vector3(0,2,0);
+		}
 	}
 
 
@@ -172,6 +183,10 @@ public class World : Node
 			Item.Remove();
 		}
 
+		foreach(Node Entity in EntitiesRoot.GetChildren())
+			Entity.QueueFree();
+
+		Pathfinder.Clear();
 		Chunks.Clear();
 		Grid.Clear();
 
@@ -422,7 +437,7 @@ public class World : Node
 		}
 
 		Branch.PathId = Pathfinder.GetAvailablePointId();
-		Pathfinder.AddPoint(Branch.PathId, Branch.Translation + new Vector3(0,1,0));
+		Pathfinder.AddPoint(Branch.PathId, Branch.Translation + new Vector3(0,2,0));
 
 		bool ForwardAllowed = true;
 		bool BackwardAllowed = true;
@@ -628,7 +643,7 @@ public class World : Node
 				{
 					case(Items.ID.PLATFORM):
 					case(Items.ID.SLOPE):
-						Pathfinder.ConnectPoints(Branch.PathId, Other.PathId);
+						Pathfinder.ConnectPoints(Branch.PathId, Other.PathId, true);
 						break;
 
 					default:
