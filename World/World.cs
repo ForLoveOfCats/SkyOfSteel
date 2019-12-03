@@ -914,16 +914,16 @@ public class World : Node
 
 			WorldEnv.AmbientLightEnergy = Clamp(Power, 0.1f, 1);
 
-			Color DaySkyTop = new Color(136f/255f, 188f/255f, 255f/255f, 1);
+			Color DaySkyTop = new Color(179f/255f, 213f/255f, 255f/255f, 1);
 			Color MorningSkyTop = new Color(34f/255f, 50f/255f, 78f/255f, 1);
 			Color NightSkyTop = new Color(27.2f/255f, 40f/255f, 62.4f/255f, 1);
 
-			Color DayHorizon = new Color(98f/255f, 163f/255f, 255f/255f, 1);
+			Color DayHorizon = new Color(70f/255f, 146f/255f, 255f/255f, 1);
 			Color MorningHorizon = new Color(222f/255f, 129f/255f, 73f/255f, 1);
 			Color NightHorizon = NightSkyTop;
 
 
-			Color DayGround = new Color(161f/255f, 208f/255f, 255f/255f, 1);
+			Color DayGround = new Color(134f/255f, 195f/255f, 255f/255f, 1);
 			Color MorningGround = new Color(20f/255f, 29f/255f, 44f/255f, 1);
 
 			if(Time <= DayNightMinutes*60/2)
