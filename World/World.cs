@@ -130,7 +130,7 @@ public class World : Node
 		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
 
-		Time = 15f*DayNightMinutes;
+		Time = DayNightMinutes*60/4;
 		IsOpen = true;
 	}
 
@@ -901,7 +901,7 @@ public class World : Node
 			Time += Delta;
 			if(Time >= 60f*DayNightMinutes)
 				Time -= 60*DayNightMinutes;
-			Time = Mathf.Clamp(Time, 0, 60f*DayNightMinutes);
+			Time = Clamp(Time, 0, 60f*DayNightMinutes);
 
 			Grid.DoWork();
 
@@ -909,10 +909,10 @@ public class World : Node
 
 			float LightTime = Time;
 			if(LightTime > 15f*DayNightMinutes)
-				LightTime = Mathf.Clamp((30f*DayNightMinutes)-LightTime, 0, 15f*DayNightMinutes);
-			float Power = Mathf.Clamp(((LightTime) / (DayNightMinutes*30f) + 0.04f)*5f, 0, 1);
+				LightTime = Clamp((30f*DayNightMinutes)-LightTime, 0, 15f*DayNightMinutes);
+			float Power = Clamp(((LightTime) / (DayNightMinutes*30f))*5f, 0, 1);
 
-			WorldEnv.AmbientLightEnergy = Power;
+			WorldEnv.AmbientLightEnergy = Clamp(Power, 0.1f, 1);
 
 			Color DaySkyTop = new Color(136f/255f, 188f/255f, 255f/255f, 1);
 			Color MorningSkyTop = new Color(34f/255f, 50f/255f, 78f/255f, 1);
@@ -926,7 +926,7 @@ public class World : Node
 			Color DayGround = new Color(161f/255f, 208f/255f, 255f/255f, 1);
 			Color MorningGround = new Color(20f/255f, 29f/255f, 44f/255f, 1);
 
-			if(Time <= 30f*DayNightMinutes)
+			if(Time <= DayNightMinutes*60/2)
 			{
 				WorldSky.SkyTopColor = SteelMath.LerpColor(MorningSkyTop, DaySkyTop, Power);
 				WorldSky.SkyHorizonColor = SteelMath.LerpColor(MorningHorizon, DayHorizon, Power);
@@ -934,14 +934,15 @@ public class World : Node
 			else
 			{
 				float Diff;
-				if(Time < 45f*DayNightMinutes)
-					Diff = (Time - (45f*DayNightMinutes)) + 15f*DayNightMinutes;
+				if(Time < DayNightMinutes*60/4*3)
+					Diff = (DayNightMinutes*60/4*3 - Time) / (DayNightMinutes*60/4);
 				else
-					Diff = (60f*DayNightMinutes) - Time;
-				Diff = Mathf.Clamp(Diff*5f, 0, 15f*DayNightMinutes) / 15*DayNightMinutes;
+					Diff = (Time - DayNightMinutes*60/4*3) / (DayNightMinutes*60/4);
+				Diff = Mathf.Clamp(Diff, 0, 1);
+				Diff = Pow(Diff, 4);
 
-				WorldSky.SkyTopColor = SteelMath.LerpColor(MorningSkyTop, NightSkyTop, Diff);
-				WorldSky.SkyHorizonColor = SteelMath.LerpColor(MorningHorizon, NightHorizon, Diff);
+				WorldSky.SkyTopColor = SteelMath.LerpColor(NightSkyTop, MorningSkyTop, Diff);
+				WorldSky.SkyHorizonColor = SteelMath.LerpColor(NightHorizon, MorningHorizon, Diff);
 			}
 			WorldSky.GroundHorizonColor = WorldSky.SkyHorizonColor;
 
