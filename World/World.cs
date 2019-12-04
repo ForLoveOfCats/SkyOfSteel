@@ -186,6 +186,9 @@ public class World : Node
 		foreach(Node Entity in EntitiesRoot.GetChildren())
 			Entity.QueueFree();
 
+		foreach(Node MobInstance in MobsRoot.GetChildren())
+			MobInstance.QueueFree();
+
 		Pathfinder.Clear();
 		Chunks.Clear();
 		Grid.Clear();
