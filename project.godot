@@ -31,6 +31,7 @@ Menu="*res://UI/Menu/Menu.cs"
 Startup="*res://Game/Startup.cs"
 Hitscan="*res://Items/Logic/Hitscan/Hitscan.cs"
 RocketJumper="*res://Items/Logic/RocketJumper/RocketJumper.cs"
+Mobs="*res://Mobs/Mobs.cs"
 
 [display]
 

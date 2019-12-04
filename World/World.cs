@@ -28,13 +28,12 @@ public class World : Node
 
 	public static Node TilesRoot = null;
 	public static Node EntitiesRoot = null;
+	public static Node MobsRoot = null;
 	public static ProceduralSky WorldSky = null;
 	public static Godot.Environment WorldEnv = null;
 
 	private static PackedScene DroppedItemScene;
 	private static PackedScene DebugPlotPointScene;
-
-	private static PackedScene CatModScene = null;
 
 	public static World Self;
 
@@ -46,8 +45,6 @@ public class World : Node
 
 		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
 		DebugPlotPointScene = GD.Load<PackedScene>("res://World/DebugPlotPoint.tscn");
-
-		CatModScene = GD.Load<PackedScene>("res://Mobs/CatMob.tscn");
 
 		Directory TilesDir = new Directory();
 		TilesDir.Open("res://World/Scenes/");
@@ -102,12 +99,8 @@ public class World : Node
 	{
 		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
 
-		for(int i = 0; i < 45; i++)
-		{
-			Mob Cat = CatModScene.Instance() as Mob;
-			EntitiesRoot.AddChild(Cat);
-			Cat.Translation = new Vector3(0,2,0);
-		}
+		for(int i = 0; i < 50; i++)
+			Mobs.SpawnMob(Mobs.ID.Cat);
 	}
 
 
@@ -130,6 +123,10 @@ public class World : Node
 		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
 
+		MobsRoot = new Node();
+		MobsRoot.Name = "MobsRoot";
+		SkyScene.AddChild(MobsRoot);
+
 		Time = DayNightMinutes*60/4;
 		IsOpen = true;
 	}
@@ -142,11 +139,14 @@ public class World : Node
 			Game.RuntimeRoot.GetNode("SkyScene").Free();
 			//Free instead of QueueFree to prevent crash when starting new world in same frame
 		}
-		Net.Players.Clear();
-		Game.PossessedPlayer = null;
 
+		//This is NOT a leak! Their parent was just freed ^
 		TilesRoot = null;
 		EntitiesRoot = null;
+		MobsRoot = null;
+
+		Net.Players.Clear();
+		Game.PossessedPlayer = null;
 
 		Pathfinder.Clear();
 		Chunks.Clear();
