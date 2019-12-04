@@ -16,8 +16,8 @@ void vertex() {
 void fragment() {
 	// Calculating how exposed the surface is to the sun (the hardcoded vec3 is the normalized direction to the sun)
 	float dot_to_sun = dot(NORMAL, vec3(0.00299977, 0.99992351, 0.01199908));
-	float diffuse = (dot_to_sun + 1.0) / 4.3;
-	float ambient = 0.655;
+	float diffuse = (dot_to_sun + 1.6) / 3f;
+	float ambient = 0.114;
 
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
