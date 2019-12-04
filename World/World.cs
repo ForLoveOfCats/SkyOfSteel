@@ -669,6 +669,7 @@ public class World : Node
 				Chunks.Remove(ChunkTuple);
 			}
 
+			World.Pathfinder.RemovePoint(Branch.PathId);
 			Grid.QueueUpdateNearby(Branch.Translation);
 			Grid.QueueRemoveItem(Branch);
 			Branch.OnRemove();
