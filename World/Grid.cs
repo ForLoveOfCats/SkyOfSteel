@@ -159,9 +159,9 @@ public class GridClass
 		{
 			foreach(IInGrid Item in GetItems(Area))
 			{
-				if(Item is Tile Branch && Branch.PathId != -1)
+				if(Item is Tile Branch && Branch.Point != null)
 				{
-					World.Pathfinder.RemovePoint(Branch.PathId);
+					World.Pathfinder.RemovePoint(Branch.Point);
 					World.TryAddTileToPathfinder(Branch);
 				}
 

@@ -21,7 +21,7 @@ public class World : Node
 	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
 	public static List<DroppedItem> ItemList = new List<DroppedItem>();
 	public static GridClass Grid = new GridClass();
-	public static AStar Pathfinder = new AStar();
+	public static Pathfinding Pathfinder = new Pathfinding();
 
 	public static bool IsOpen = false;
 	public static string SaveName = null;
@@ -99,7 +99,7 @@ public class World : Node
 	{
 		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
 
-		for(int i = 0; i < 50; i++)
+		// for(int i = 0; i < 50; i++)
 			Mobs.SpawnMob(Mobs.ID.Cat);
 	}
 
@@ -439,8 +439,7 @@ public class World : Node
 				return;
 		}
 
-		Branch.PathId = Pathfinder.GetAvailablePointId();
-		Pathfinder.AddPoint(Branch.PathId, Branch.Translation + new Vector3(0,2,0));
+		Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0,2,0));
 
 		bool ForwardAllowed = true;
 		bool BackwardAllowed = true;
@@ -646,7 +645,7 @@ public class World : Node
 				{
 					case(Items.ID.PLATFORM):
 					case(Items.ID.SLOPE):
-						Pathfinder.ConnectPoints(Branch.PathId, Other.PathId, true);
+						Pathfinder.ConnectPoints(Branch.Point, Other.Point);
 						break;
 
 					default:
@@ -672,7 +671,9 @@ public class World : Node
 				Chunks.Remove(ChunkTuple);
 			}
 
-			World.Pathfinder.RemovePoint(Branch.PathId);
+			if(Branch.Point != null)
+				World.Pathfinder.RemovePoint(Branch.Point);
+
 			Grid.QueueUpdateNearby(Branch.Translation);
 			Grid.QueueRemoveItem(Branch);
 			Branch.OnRemove();

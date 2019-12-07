@@ -6,7 +6,7 @@ public class Tile : StaticBody, IInGrid
 {
 	public Items.ID Type = Items.ID.ERROR;
 	public int OwnerId = 0;
-	public int PathId = -1;
+	public Pathfinding.PointData Point = null;
 
 
 	public virtual void GridUpdate()
