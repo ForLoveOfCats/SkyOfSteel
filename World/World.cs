@@ -461,8 +461,8 @@ public class World : Node
 
 							PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
 
-							var Excluding = new Godot.Collections.Array{Branch, TileInstance};
-							var Results = State.IntersectRay(BranchPos, OtherPos, Excluding, 4);
+							var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
+							var Results = State.IntersectRay(OtherPos, BranchPos, Excluding, 4);
 							if(Results.Count > 0) //Hit something in between
 								return null;
 							else
