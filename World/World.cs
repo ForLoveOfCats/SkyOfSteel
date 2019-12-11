@@ -456,13 +456,13 @@ public class World : Node
 					{
 						if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.PLATFORM)
 						{
-							var BranchPos = Branch.Point.Pos;
-							var OtherPos  = TileInstance.Point.Pos;
-
 							PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
 
+							var RayBranchPos = Branch.Point.Pos;
+							var RayOtherPos  = TileInstance.Point.Pos;
 							var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
-							var Results = State.IntersectRay(OtherPos, BranchPos, Excluding, 4);
+
+							var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
 							if(Results.Count > 0) //Hit something in between
 								return null;
 							else
@@ -473,52 +473,121 @@ public class World : Node
 					return null;
 				}
 
-				var AheadPos  = Branch.Translation + new Vector3(0, 1, PlatformSize);
-				var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
-				var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
-				var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
+				{ //Connect to platforms in the eight spaces around us
+					var AheadPos  = Branch.Translation + new Vector3(0, 1, PlatformSize);
+					var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
+					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
+					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
 
-				Pathfinding.PointData Ahead  = TryGetPlatformPoint(AheadPos);
-				Pathfinding.PointData Behind = TryGetPlatformPoint(BehindPos);
-				Pathfinding.PointData Right  = TryGetPlatformPoint(RightPos);
-				Pathfinding.PointData Left   = TryGetPlatformPoint(LeftPos);
+					Pathfinding.PointData Ahead  = TryGetPlatformPoint(AheadPos);
+					Pathfinding.PointData Behind = TryGetPlatformPoint(BehindPos);
+					Pathfinding.PointData Right  = TryGetPlatformPoint(RightPos);
+					Pathfinding.PointData Left   = TryGetPlatformPoint(LeftPos);
 
-				if(Ahead != null)
-					Pathfinder.ConnectPoints(Branch.Point, Ahead);
-				if(Behind != null)
-					Pathfinder.ConnectPoints(Branch.Point, Behind);
-				if(Right != null)
-					Pathfinder.ConnectPoints(Branch.Point, Right);
-				if(Left != null)
-					Pathfinder.ConnectPoints(Branch.Point, Left);
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind);
+					if(Right != null)
+						Pathfinder.ConnectPoints(Branch.Point, Right);
+					if(Left != null)
+						Pathfinder.ConnectPoints(Branch.Point, Left);
 
-				var AheadRightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, PlatformSize);
-				var AheadLeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, PlatformSize);
-				var BehindRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, -PlatformSize);
-				var BehindLeftPos  = Branch.Translation + new Vector3(PlatformSize, 1, -PlatformSize);
+					var AheadRightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, PlatformSize);
+					var AheadLeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, PlatformSize);
+					var BehindRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, -PlatformSize);
+					var BehindLeftPos  = Branch.Translation + new Vector3(PlatformSize, 1, -PlatformSize);
 
-				Pathfinding.PointData AheadRight  = null;
-				Pathfinding.PointData AheadLeft   = null;
-				Pathfinding.PointData BehindRight = null;
-				Pathfinding.PointData BehindLeft  = null;
+					Pathfinding.PointData AheadRight  = null;
+					Pathfinding.PointData AheadLeft   = null;
+					Pathfinding.PointData BehindRight = null;
+					Pathfinding.PointData BehindLeft  = null;
 
-				if(Ahead != null && Right != null)
-					AheadRight = TryGetPlatformPoint(AheadRightPos);
-				if(Ahead != null && Left != null)
-					AheadLeft = TryGetPlatformPoint(AheadLeftPos);
-				if(Behind != null && Right != null)
-					BehindRight = TryGetPlatformPoint(BehindRightPos);
-				if(Behind != null && Left != null)
-					BehindLeft = TryGetPlatformPoint(BehindLeftPos);
+					if(Ahead != null && Right != null)
+						AheadRight = TryGetPlatformPoint(AheadRightPos);
+					if(Ahead != null && Left != null)
+						AheadLeft = TryGetPlatformPoint(AheadLeftPos);
+					if(Behind != null && Right != null)
+						BehindRight = TryGetPlatformPoint(BehindRightPos);
+					if(Behind != null && Left != null)
+						BehindLeft = TryGetPlatformPoint(BehindLeftPos);
 
-				if(AheadRight != null)
-					Pathfinder.ConnectPoints(Branch.Point, AheadRight);
-				if(AheadLeft != null)
-					Pathfinder.ConnectPoints(Branch.Point, AheadLeft);
-				if(BehindRight != null)
-					Pathfinder.ConnectPoints(Branch.Point, BehindRight);
-				if(BehindLeft != null)
-					Pathfinder.ConnectPoints(Branch.Point, BehindLeft);
+					if(AheadRight != null)
+						Pathfinder.ConnectPoints(Branch.Point, AheadRight);
+					if(AheadLeft != null)
+						Pathfinder.ConnectPoints(Branch.Point, AheadLeft);
+					if(BehindRight != null)
+						Pathfinder.ConnectPoints(Branch.Point, BehindRight);
+					if(BehindLeft != null)
+						Pathfinder.ConnectPoints(Branch.Point, BehindLeft);
+				}
+
+				Pathfinding.PointData TryGetSlopePoint(Vector3 Position, Vector3 RaycastOffset = new Vector3())
+				{
+					var Area = GridClass.CalculateArea(Position);
+					foreach(IInGrid Entry in Grid.GetItems(Area))
+					{
+						if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.SLOPE)
+						{
+							PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
+
+							var RayBranchPos = Branch.Point.Pos + RaycastOffset;
+							var RayOtherPos  = TileInstance.Point.Pos + RaycastOffset;
+							var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
+
+							var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
+							if(Results.Count > 0) //Hit something in between
+								return null;
+							else
+								return TileInstance.Point;
+						}
+					}
+
+					return null;
+				}
+
+				{ //Connect to slopes in the four cardinal directions (same Y)
+					var AheadPos  = (Branch.Translation + new Vector3(0, 1, PlatformSize));
+					var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
+					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
+					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
+
+					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos);
+					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos);
+					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos);
+					Pathfinding.PointData Left   = TryGetSlopePoint(LeftPos);
+
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind);
+					if(Right != null)
+						Pathfinder.ConnectPoints(Branch.Point, Right);
+					if(Left != null)
+						Pathfinder.ConnectPoints(Branch.Point, Left);
+				}
+
+				{ //Connect to slopes in the four cardinal directions (lower Y)
+					var AheadPos  = Branch.Translation + new Vector3(0, -PlatformSize+1, PlatformSize);
+					var BehindPos = Branch.Translation + new Vector3(0, -PlatformSize+1, -PlatformSize);
+					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, -PlatformSize+1, 0);
+					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, -PlatformSize+1, 0);
+
+					var RaycastOffset = new Vector3(0, PlatformSize/2, 0);
+					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos, RaycastOffset);
+					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos, RaycastOffset);
+					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos, RaycastOffset);
+					Pathfinding.PointData Left   = TryGetSlopePoint(LeftPos, RaycastOffset);
+
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind);
+					if(Right != null)
+						Pathfinder.ConnectPoints(Branch.Point, Right);
+					if(Left != null)
+						Pathfinder.ConnectPoints(Branch.Point, Left);
+				}
 
 				break;
 			}
