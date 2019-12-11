@@ -31,7 +31,7 @@ public class GridClass
 	}
 
 
-	private List<Vector3> CalculateAreas(Vector3 Position)
+	public static List<Vector3> CalculateAreas(Vector3 Position)
 	{
 		List<Vector3> Out = new List<Vector3>();
 		Out.Add(CalculateArea(Position));

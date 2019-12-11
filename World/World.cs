@@ -427,231 +427,114 @@ public class World : Node
 	}
 
 
-	public static void TryAddTileToPathfinder(Tile Branch) //This is a bit messy TODO: Improve this POS
+	class PlatformData
 	{
-		switch(Branch.Type) //Filter out any tiles which should not be added to the pathfinder
+		public int X;
+		public int Z;
+		public Pathfinding.PointData Point;
+
+		public PlatformData(int XArg, int ZArg, Pathfinding.PointData PointArg)
 		{
-			case(Items.ID.PLATFORM):
-			case(Items.ID.SLOPE):
+			X = XArg;
+			Z = ZArg;
+			Point = PointArg;
+		}
+	}
+
+
+	public static void TryAddTileToPathfinder(Tile Branch)
+	{
+		switch(Branch.Type)
+		{
+			case(Items.ID.PLATFORM): {
+				Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0,2,0));
+
+				Pathfinding.PointData TryGetPlatformPoint(Vector3 Position)
+				{
+					var Area = GridClass.CalculateArea(Position);
+					foreach(IInGrid Entry in Grid.GetItems(Area))
+					{
+						if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.PLATFORM)
+						{
+							var BranchPos = Branch.Point.Pos;
+							var OtherPos  = TileInstance.Point.Pos;
+
+							PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
+
+							var Excluding = new Godot.Collections.Array{Branch, TileInstance};
+							var Results = State.IntersectRay(BranchPos, OtherPos, Excluding, 4);
+							if(Results.Count > 0) //Hit something in between
+								return null;
+							else
+								return TileInstance.Point;
+						}
+					}
+
+					return null;
+				}
+
+				var AheadPos  = Branch.Translation + new Vector3(0, 1, PlatformSize);
+				var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
+				var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
+				var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
+
+				Pathfinding.PointData Ahead  = TryGetPlatformPoint(AheadPos);
+				Pathfinding.PointData Behind = TryGetPlatformPoint(BehindPos);
+				Pathfinding.PointData Right  = TryGetPlatformPoint(RightPos);
+				Pathfinding.PointData Left   = TryGetPlatformPoint(LeftPos);
+
+				if(Ahead != null)
+					Pathfinder.ConnectPoints(Branch.Point, Ahead);
+				if(Behind != null)
+					Pathfinder.ConnectPoints(Branch.Point, Behind);
+				if(Right != null)
+					Pathfinder.ConnectPoints(Branch.Point, Right);
+				if(Left != null)
+					Pathfinder.ConnectPoints(Branch.Point, Left);
+
+				var AheadRightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, PlatformSize);
+				var AheadLeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, PlatformSize);
+				var BehindRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, -PlatformSize);
+				var BehindLeftPos  = Branch.Translation + new Vector3(PlatformSize, 1, -PlatformSize);
+
+				Pathfinding.PointData AheadRight  = null;
+				Pathfinding.PointData AheadLeft   = null;
+				Pathfinding.PointData BehindRight = null;
+				Pathfinding.PointData BehindLeft  = null;
+
+				if(Ahead != null && Right != null)
+					AheadRight = TryGetPlatformPoint(AheadRightPos);
+				if(Ahead != null && Left != null)
+					AheadLeft = TryGetPlatformPoint(AheadLeftPos);
+				if(Behind != null && Right != null)
+					BehindRight = TryGetPlatformPoint(BehindRightPos);
+				if(Behind != null && Left != null)
+					BehindLeft = TryGetPlatformPoint(BehindLeftPos);
+
+				if(AheadRight != null)
+					Pathfinder.ConnectPoints(Branch.Point, AheadRight);
+				if(AheadLeft != null)
+					Pathfinder.ConnectPoints(Branch.Point, AheadLeft);
+				if(BehindRight != null)
+					Pathfinder.ConnectPoints(Branch.Point, BehindRight);
+				if(BehindLeft != null)
+					Pathfinder.ConnectPoints(Branch.Point, BehindLeft);
+
 				break;
+			}
+
+			case(Items.ID.SLOPE): {
+				Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0,2,0));
+				break;
+			}
 
 			default:
 				return;
 		}
 
-		Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0,2,0));
-
-		bool ForwardAllowed = true;
-		bool BackwardAllowed = true;
-		bool RightAllowed = true;
-		bool LeftAllowed = true;
-
-		foreach(IInGrid Entry in Grid.GetItems(Branch.Translation)) //Set initial allowed state from walls blocking/not blocking
+		foreach(var Friend in Branch.Point.Friends)
 		{
-			if(Entry is Tile FellowBranch)
-			{
-				if(FellowBranch.Type == Items.ID.WALL)
-				{
-					if(FellowBranch.Translation.z > Branch.Translation.z)
-						ForwardAllowed = false;
-					else if(FellowBranch.Translation.z < Branch.Translation.z)
-						BackwardAllowed = false;
-					else if(FellowBranch.Translation.x < Branch.Translation.x)
-						RightAllowed = false;
-					else if(FellowBranch.Translation.x > Branch.Translation.x)
-						LeftAllowed = false;
-				}
-
-				else if(Branch.Type == Items.ID.PLATFORM && FellowBranch.Type == Items.ID.SLOPE)
-				{
-					switch(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4))
-					{
-						case(0): {
-							BackwardAllowed = false;
-							break;
-						}
-
-						case(180): {
-							ForwardAllowed = false;
-							break;
-						}
-
-						case(270): {
-							LeftAllowed = false;
-							break;
-						}
-
-						case(90): {
-							RightAllowed = false;
-							break;
-						}
-
-						default:
-							break;
-					}
-				}
-			}
-		}
-
-		List<IInGrid> Forward = null;
-		List<IInGrid> Backward = null;
-		List<IInGrid> Right = null;
-		List<IInGrid> Left = null;
-		if(Branch.Type == Items.ID.PLATFORM)
-		{
-			Forward = Grid.GetItems(Branch.Translation + new Vector3(0, 0, PlatformSize));
-			Backward = Grid.GetItems(Branch.Translation + new Vector3(0, 0, -PlatformSize));
-			Right = Grid.GetItems(Branch.Translation + new Vector3(-PlatformSize, 0, 0));
-			Left = Grid.GetItems(Branch.Translation + new Vector3(PlatformSize, 0, 0));
-		}
-		else if(Branch.Type == Items.ID.SLOPE)
-		{
-			switch(SnapToGrid(LoopRotation(Branch.RotationDegrees.y), 360, 4))
-			{
-				case(0): { //Forward
-					Forward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, PlatformSize, PlatformSize));
-					Backward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, 0, -PlatformSize))
-						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, -PlatformSize, -PlatformSize))
-						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
-						.ToList();
-
-					RightAllowed = false;
-					LeftAllowed = false;
-					break;
-				}
-
-				case(180): { //Backward
-					Forward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, 0, PlatformSize))
-						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, -PlatformSize, PlatformSize))
-						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
-						.ToList();
-					Backward = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(0, PlatformSize, -PlatformSize));
-
-					RightAllowed = false;
-					LeftAllowed = false;
-					break;
-				}
-
-				case(270): { //Right
-					Right = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(-PlatformSize, PlatformSize, 0));
-					Left = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(PlatformSize, 0, 0))
-						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(PlatformSize, -PlatformSize, 0))
-						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
-						.ToList();
-
-					ForwardAllowed = false;
-					BackwardAllowed = false;
-					break;
-				}
-
-				case(90): { //Left
-					Right = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(-PlatformSize, 0, 0))
-						.Union(Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(-PlatformSize, -PlatformSize, 0))
-						       .Where(g => g is Tile t && t.Type == Items.ID.SLOPE))
-						.ToList();
-					Left = Grid.GetItems(GridClass.CalculateArea(Branch.Translation) + new Vector3(PlatformSize, PlatformSize, 0));
-
-					ForwardAllowed = false;
-					BackwardAllowed = false;
-					break;
-				}
-
-				default:
-					break;
-			}
-		}
-		else
-			throw new Exception($"No code exists to build Forward/Backward/Left/Right lists for a tile of type {Branch.Type}");
-
-
-		if(Branch.Type == Items.ID.PLATFORM)
-		{
-			if(ForwardAllowed)
-			{
-				foreach(IInGrid Entry in Forward)
-				{
-					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
-					{
-						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 0)
-						{
-							ForwardAllowed = false;
-							break;
-						}
-					}
-				}
-			}
-			if(BackwardAllowed)
-			{
-				foreach(IInGrid Entry in Backward)
-				{
-					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
-					{
-						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 180)
-						{
-							BackwardAllowed = false;
-							break;
-						}
-					}
-				}
-			}
-			if(RightAllowed)
-			{
-				foreach(IInGrid Entry in Right)
-				{
-					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
-					{
-						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 270)
-						{
-							RightAllowed = false;
-							break;
-						}
-					}
-				}
-			}
-			if(LeftAllowed)
-			{
-				foreach(IInGrid Entry in Left)
-				{
-					if(Entry is Tile FellowBranch && FellowBranch.Type == Items.ID.SLOPE)
-					{
-						if(SnapToGrid(LoopRotation(FellowBranch.RotationDegrees.y), 360, 4) != 90)
-						{
-							LeftAllowed = false;
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		if(ForwardAllowed)
-			TryConnectTileToGridSpace(Branch, Forward);
-		if(BackwardAllowed)
-			TryConnectTileToGridSpace(Branch, Backward);
-		if(RightAllowed)
-			TryConnectTileToGridSpace(Branch, Right);
-		if(LeftAllowed)
-			TryConnectTileToGridSpace(Branch, Left);
-	}
-
-
-	public static void TryConnectTileToGridSpace(Tile Branch, List<IInGrid> Space)
-	{
-		foreach(IInGrid Entry in Space)
-		{
-			if(Entry is Tile Other)
-			{
-				switch(Other.Type) //TODO: Handle other walkable tiles
-				{
-					case(Items.ID.PLATFORM):
-					case(Items.ID.SLOPE):
-						Pathfinder.ConnectPoints(Branch.Point, Other.Point);
-						break;
-
-					default:
-						break;
-				}
-			}
+			Hitscan.Self.DrawTrail(Branch.Point.Pos, Friend.Pos);
 		}
 	}
 

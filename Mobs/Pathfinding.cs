@@ -61,7 +61,11 @@ public class Pathfinding
 
 	public void RemovePoint(PointData Point)
 	{
+		var Friends = new List<PointData>();
 		foreach(PointData Friend in Point.Friends)
+			Friends.Add(Friend);
+
+		foreach(PointData Friend in Friends)
 			Friend.Friends.Remove(Point);
 
 		Points.Remove(Point);
