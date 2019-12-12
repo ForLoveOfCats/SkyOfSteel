@@ -40,6 +40,7 @@ public class Pathfinding
 	{
 		//List because it needs to have dynamic length
 		private List<PointData> Representation = new List<PointData>();
+		private HashSet<PointData> LookupSet = new HashSet<PointData>();
 
 		public int Count {
 			get {
@@ -54,12 +55,14 @@ public class Pathfinding
 
 		public bool Contains(PointData Point)
 		{
-			return Representation.Contains(Point);
+			return LookupSet.Contains(Point);
 		}
 
 
 		public void Add(PointData Point)
 		{
+			LookupSet.Add(Point);
+
 			Representation.Add(Point);
 
 			int Index = Representation.LastIndex();
@@ -81,6 +84,8 @@ public class Pathfinding
 
 		public void RemoveMin()
 		{
+			LookupSet.Remove(Representation[0]);
+
 			Representation[0] = Representation.Last();
 			Representation.RemoveAt(Representation.LastIndex());
 
@@ -210,7 +215,7 @@ public class Pathfinding
 	public List<PointData> PlotPath(PointData From, PointData To)
 	{
 		var OpenList = new PointDataHeap();
-		var ClosedList = new List<PointData>();
+		var ClosedList = new HashSet<PointData>();
 
 		From.Update(0, 0, null);
 		OpenList.Add(From);
