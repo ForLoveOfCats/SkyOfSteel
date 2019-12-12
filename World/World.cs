@@ -445,34 +445,58 @@ public class World : Node
 
 	public static void TryAddTileToPathfinder(Tile Branch)
 	{
+		Pathfinding.PointData TryGetPlatformPoint(Vector3 Position, Vector3 RaycastOffset = new Vector3())
+		{
+			var Area = GridClass.CalculateArea(Position);
+			foreach(IInGrid Entry in Grid.GetItems(Area))
+			{
+				if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.PLATFORM)
+				{
+					PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
+
+					var RayBranchPos = Branch.Point.Pos + RaycastOffset;
+					var RayOtherPos  = TileInstance.Point.Pos + RaycastOffset;
+					var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
+
+					var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
+					if(Results.Count > 0) //Hit something in between
+						return null;
+					else
+						return TileInstance.Point;
+				}
+			}
+
+			return null;
+		}
+
+		Pathfinding.PointData TryGetSlopePoint(Vector3 Position, Vector3 RaycastOffset = new Vector3())
+		{
+			var Area = GridClass.CalculateArea(Position);
+			foreach(IInGrid Entry in Grid.GetItems(Area))
+			{
+				if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.SLOPE)
+				{
+					PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
+
+					var RayBranchPos = Branch.Point.Pos + RaycastOffset;
+					var RayOtherPos  = TileInstance.Point.Pos + RaycastOffset;
+					var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
+
+					var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
+					if(Results.Count > 0) //Hit something in between
+						return null;
+					else
+						return TileInstance.Point;
+				}
+			}
+
+			return null;
+		}
+
 		switch(Branch.Type)
 		{
 			case(Items.ID.PLATFORM): {
 				Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0,2,0));
-
-				Pathfinding.PointData TryGetPlatformPoint(Vector3 Position)
-				{
-					var Area = GridClass.CalculateArea(Position);
-					foreach(IInGrid Entry in Grid.GetItems(Area))
-					{
-						if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.PLATFORM)
-						{
-							PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
-
-							var RayBranchPos = Branch.Point.Pos;
-							var RayOtherPos  = TileInstance.Point.Pos;
-							var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
-
-							var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
-							if(Results.Count > 0) //Hit something in between
-								return null;
-							else
-								return TileInstance.Point;
-						}
-					}
-
-					return null;
-				}
 
 				{ //Connect to platforms in the eight spaces around us
 					var AheadPos  = Branch.Translation + new Vector3(0, 1, PlatformSize);
@@ -523,30 +547,6 @@ public class World : Node
 						Pathfinder.ConnectPoints(Branch.Point, BehindLeft);
 				}
 
-				Pathfinding.PointData TryGetSlopePoint(Vector3 Position, Vector3 RaycastOffset = new Vector3())
-				{
-					var Area = GridClass.CalculateArea(Position);
-					foreach(IInGrid Entry in Grid.GetItems(Area))
-					{
-						if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.SLOPE)
-						{
-							PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
-
-							var RayBranchPos = Branch.Point.Pos + RaycastOffset;
-							var RayOtherPos  = TileInstance.Point.Pos + RaycastOffset;
-							var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
-
-							var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
-							if(Results.Count > 0) //Hit something in between
-								return null;
-							else
-								return TileInstance.Point;
-						}
-					}
-
-					return null;
-				}
-
 				{ //Connect to slopes in the four cardinal directions (same Y)
 					var AheadPos  = (Branch.Translation + new Vector3(0, 1, PlatformSize));
 					var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
@@ -574,7 +574,7 @@ public class World : Node
 					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, -PlatformSize+1, 0);
 					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, -PlatformSize+1, 0);
 
-					var RaycastOffset = new Vector3(0, PlatformSize/2, 0);
+					var RaycastOffset = new Vector3(0, PlatformSize/4, 0);
 					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos, RaycastOffset);
 					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos, RaycastOffset);
 					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos, RaycastOffset);
@@ -595,6 +595,46 @@ public class World : Node
 
 			case(Items.ID.SLOPE): {
 				Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0,2,0));
+
+				var Axis = new Vector3(0,1,0);
+				var Rad = Branch.Rotation.y;
+
+				{ //Connect to other slopes in four cardinal directions
+					var AheadPos  = Branch.Translation + new Vector3(0, PlatformSize, PlatformSize).Rotated(Axis, Rad);
+					var BehindPos = Branch.Translation + new Vector3(0, -PlatformSize, -PlatformSize).Rotated(Axis, Rad);
+					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 0, 0).Rotated(Axis, Rad);
+					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 0, 0).Rotated(Axis, Rad);
+
+					var RaycastOffset = new Vector3(0, PlatformSize/4, 0);
+					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos, RaycastOffset);
+					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos, RaycastOffset);
+					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos);
+					Pathfinding.PointData Left   = TryGetSlopePoint(LeftPos);
+
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind);
+					if(Right != null)
+						Pathfinder.ConnectPoints(Branch.Point, Right);
+					if(Left != null)
+						Pathfinder.ConnectPoints(Branch.Point, Left);
+				}
+
+				{ //Connect to platforms forward and backwards
+					var AheadPos  = Branch.Translation + new Vector3(0, PlatformSize, PlatformSize).Rotated(Axis, Rad);
+					var BehindPos = Branch.Translation + new Vector3(0, 0, -PlatformSize).Rotated(Axis, Rad);
+
+					var RaycastOffset = new Vector3(0, PlatformSize/2, 0);
+					Pathfinding.PointData Ahead  = TryGetPlatformPoint(AheadPos, RaycastOffset);
+					Pathfinding.PointData Behind = TryGetPlatformPoint(BehindPos);
+
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind);
+				}
+
 				break;
 			}
 
