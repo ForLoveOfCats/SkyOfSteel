@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://World/DebugPlotPoint.cs" type="Script" id=1]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 0.2, 0.2, 0.2 )
@@ -12,3 +14,4 @@ albedo_color = Color( 1, 0.470588, 0, 1 )
 [node name="DebugPlotPoint" type="MeshInstance"]
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
+script = ExtResource( 1 )

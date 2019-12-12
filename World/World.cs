@@ -87,9 +87,10 @@ public class World : Node
 	}
 
 
-	public static void DebugPlot(Vector3 Position)
+	public static void DebugPlot(Vector3 Position, float MaxLife = 0)
 	{
-		MeshInstance Point = DebugPlotPointScene.Instance() as MeshInstance;
+		var Point = DebugPlotPointScene.Instance() as DebugPlotPoint;
+		Point.MaxLife = MaxLife;
 		EntitiesRoot.AddChild(Point);
 		Point.Translation = Position;
 	}
