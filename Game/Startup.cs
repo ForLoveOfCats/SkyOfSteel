@@ -110,5 +110,7 @@ public class Startup : Node
 		Bindings.Bind("XboxRT", "PrimaryFire");
 		Bindings.Bind("MouseTwo", "SecondaryFire");
 		Bindings.Bind("XboxLT", "SecondaryFire");
+
+		Bindings.Bind("P", "DrawAllConnections");
 	}
 }

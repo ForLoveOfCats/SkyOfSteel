@@ -600,11 +600,15 @@ public class World : Node
 			default:
 				return;
 		}
+	}
 
-		foreach(var Friend in Branch.Point.Friends)
-		{
-			Hitscan.Self.DrawTrail(Branch.Point.Pos, Friend.Pos);
-		}
+
+	[SteelInputWithoutArg(typeof(World), nameof(DrawAllConnections))]
+	public static void DrawAllConnections()
+	{
+		foreach(var Point in Pathfinder.Points)
+			foreach(var Friend in Point.Friends)
+				Hitscan.Self.DrawTrail(Point.Pos, Friend.Pos);
 	}
 
 
