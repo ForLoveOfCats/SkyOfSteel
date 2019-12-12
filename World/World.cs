@@ -548,7 +548,7 @@ public class World : Node
 				}
 
 				{ //Connect to slopes in the four cardinal directions (same Y)
-					var AheadPos  = (Branch.Translation + new Vector3(0, 1, PlatformSize));
+					var AheadPos  = Branch.Translation + new Vector3(0, 1, PlatformSize);
 					var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
 					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
 					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
