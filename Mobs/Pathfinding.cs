@@ -1,4 +1,5 @@
 using Godot;
+using static Godot.Mathf;
 using System.Collections.Generic;
 
 
@@ -30,6 +31,118 @@ public class Pathfinding
 			GCost = GCostArg;
 			HCost = HCostArg;
 			FCost = GCost + HCost;
+		}
+	}
+
+
+
+	public class PointDataHeap
+	{
+		//List because it needs to have dynamic length
+		private List<PointData> Representation = new List<PointData>();
+
+		public int Count {
+			get {
+				return Representation.Count;
+			}
+		}
+
+
+		public PointDataHeap()
+		{}
+
+
+		public bool Contains(PointData Point)
+		{
+			return Representation.Contains(Point);
+		}
+
+
+		public void Add(PointData Point)
+		{
+			Representation.Add(Point);
+
+			int Index = Representation.LastIndex();
+			int ParentIndex = ParentOf(Index);
+			while(ParentIndex >= 0 && Representation[ParentIndex].FCost > Point.FCost)
+			{
+				SwapAt(Index, ParentIndex);
+				Index = ParentIndex;
+				ParentIndex = ParentOf(Index);
+			}
+		}
+
+
+		public PointData GetMin()
+		{
+			return Representation[0];
+		}
+
+
+		public void RemoveMin()
+		{
+			Representation[0] = Representation.Last();
+			Representation.RemoveAt(Representation.LastIndex());
+
+			int Index = 0;
+			int FirstChildIndex  = FirstChildOf(Index);
+			int SecondChildIndex = SecondChildOf(Index);
+			int MinIndex = Index;
+			while(true)
+			{
+				if(SecondChildIndex >= Representation.Count)
+				{
+					if(FirstChildIndex >= Representation.Count)
+						return;
+					MinIndex = FirstChildIndex;
+				}
+				else
+				{
+					if(Representation[FirstChildIndex].FCost < Representation[SecondChildIndex].FCost)
+						MinIndex = FirstChildIndex;
+					else
+						MinIndex = SecondChildIndex;
+				}
+
+				if(Representation[Index].FCost > Representation[MinIndex].FCost)
+				{
+					SwapAt(Index, MinIndex);
+					Index = MinIndex;
+
+					FirstChildIndex  = FirstChildOf(Index);
+					SecondChildIndex = SecondChildOf(Index);
+				}
+				else
+					return;
+			}
+		}
+
+
+		private void SwapAt(int A, int B)
+		{
+			var ActualA = Representation[A];
+			var ActualB = Representation[B];
+
+			Representation[A] = ActualB;
+			Representation[B] = ActualA;
+		}
+
+
+		private int ParentOf(int Index)
+		{
+			return FloorToInt((Index-1) / 2);
+		}
+
+
+		private int FirstChildOf(int Index)
+		{
+			return FloorToInt((Index*2) + 1);
+		}
+
+
+		private int SecondChildOf(int Index)
+		{
+			return FloorToInt((Index*2) + 2);
 		}
 	}
 
@@ -96,7 +209,7 @@ public class Pathfinding
 
 	public List<PointData> PlotPath(PointData From, PointData To)
 	{
-		var OpenList = new List<PointData>();
+		var OpenList = new PointDataHeap();
 		var ClosedList = new List<PointData>();
 
 		From.Update(0, 0, null);
@@ -107,12 +220,7 @@ public class Pathfinding
 			if(OpenList.Count <= 0)
 				return new List<PointData>(); //No path
 
-			PointData Lowest = OpenList[0];
-			foreach(PointData Entry in OpenList)
-			{
-				if(Entry.FCost < Lowest.FCost)
-					Lowest = Entry;
-			}
+			PointData Lowest = OpenList.GetMin();
 
 			if(Lowest == To) //We found our path
 			{
@@ -134,7 +242,7 @@ public class Pathfinding
 			}
 
 			ClosedList.Add(Lowest);
-			OpenList.Remove(Lowest);
+			OpenList.RemoveMin();
 
 			foreach(PointData Friend in Lowest.Friends)
 			{

@@ -8,4 +8,10 @@ public static class ListLastClass
 	{
 		return Self[Self.Count - 1];
 	}
+
+
+	public static int LastIndex<T>(this List<T> Self)
+	{
+		return Self.Count - 1;
+	}
 }
