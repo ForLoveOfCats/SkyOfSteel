@@ -445,7 +445,7 @@ public class World : Node
 
 	public static void TryAddTileToPathfinder(Tile Branch)
 	{
-		Pathfinding.PointData TryGetPlatformPoint(Vector3 Position, Vector3 RaycastOffset = new Vector3())
+		Tile TryGetPlatform(Vector3 Position, Vector3 RaycastOffset = new Vector3())
 		{
 			var Area = GridClass.CalculateArea(Position);
 			foreach(IInGrid Entry in Grid.GetItems(Area))
@@ -462,14 +462,14 @@ public class World : Node
 					if(Results.Count > 0) //Hit something in between
 						return null;
 					else
-						return TileInstance.Point;
+						return TileInstance;
 				}
 			}
 
 			return null;
 		}
 
-		Pathfinding.PointData TryGetSlopePoint(Vector3 Position, Vector3 RaycastOffset = new Vector3())
+		Tile TryGetSlope(Vector3 Position, Vector3 RaycastOffset = new Vector3())
 		{
 			var Area = GridClass.CalculateArea(Position);
 			foreach(IInGrid Entry in Grid.GetItems(Area))
@@ -486,7 +486,7 @@ public class World : Node
 					if(Results.Count > 0) //Hit something in between
 						return null;
 					else
-						return TileInstance.Point;
+						return TileInstance;
 				}
 			}
 
@@ -504,47 +504,47 @@ public class World : Node
 					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
 					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
 
-					Pathfinding.PointData Ahead  = TryGetPlatformPoint(AheadPos);
-					Pathfinding.PointData Behind = TryGetPlatformPoint(BehindPos);
-					Pathfinding.PointData Right  = TryGetPlatformPoint(RightPos);
-					Pathfinding.PointData Left   = TryGetPlatformPoint(LeftPos);
+					Tile Ahead  = TryGetPlatform(AheadPos);
+					Tile Behind = TryGetPlatform(BehindPos);
+					Tile Right  = TryGetPlatform(RightPos);
+					Tile Left   = TryGetPlatform(LeftPos);
 
 					if(Ahead != null)
-						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
 					if(Behind != null)
-						Pathfinder.ConnectPoints(Branch.Point, Behind);
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
 					if(Right != null)
-						Pathfinder.ConnectPoints(Branch.Point, Right);
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
 					if(Left != null)
-						Pathfinder.ConnectPoints(Branch.Point, Left);
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 
 					var AheadRightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, PlatformSize);
 					var AheadLeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, PlatformSize);
 					var BehindRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, -PlatformSize);
 					var BehindLeftPos  = Branch.Translation + new Vector3(PlatformSize, 1, -PlatformSize);
 
-					Pathfinding.PointData AheadRight  = null;
-					Pathfinding.PointData AheadLeft   = null;
-					Pathfinding.PointData BehindRight = null;
-					Pathfinding.PointData BehindLeft  = null;
+					Tile AheadRight  = null;
+					Tile AheadLeft   = null;
+					Tile BehindRight = null;
+					Tile BehindLeft  = null;
 
 					if(Ahead != null && Right != null)
-						AheadRight = TryGetPlatformPoint(AheadRightPos);
+						AheadRight = TryGetPlatform(AheadRightPos);
 					if(Ahead != null && Left != null)
-						AheadLeft = TryGetPlatformPoint(AheadLeftPos);
+						AheadLeft = TryGetPlatform(AheadLeftPos);
 					if(Behind != null && Right != null)
-						BehindRight = TryGetPlatformPoint(BehindRightPos);
+						BehindRight = TryGetPlatform(BehindRightPos);
 					if(Behind != null && Left != null)
-						BehindLeft = TryGetPlatformPoint(BehindLeftPos);
+						BehindLeft = TryGetPlatform(BehindLeftPos);
 
 					if(AheadRight != null)
-						Pathfinder.ConnectPoints(Branch.Point, AheadRight);
+						Pathfinder.ConnectPoints(Branch.Point, AheadRight.Point);
 					if(AheadLeft != null)
-						Pathfinder.ConnectPoints(Branch.Point, AheadLeft);
+						Pathfinder.ConnectPoints(Branch.Point, AheadLeft.Point);
 					if(BehindRight != null)
-						Pathfinder.ConnectPoints(Branch.Point, BehindRight);
+						Pathfinder.ConnectPoints(Branch.Point, BehindRight.Point);
 					if(BehindLeft != null)
-						Pathfinder.ConnectPoints(Branch.Point, BehindLeft);
+						Pathfinder.ConnectPoints(Branch.Point, BehindLeft.Point);
 				}
 
 				{ //Connect to slopes in the four cardinal directions (same Y)
@@ -553,19 +553,19 @@ public class World : Node
 					var RightPos  = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
 					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 1, 0);
 
-					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos);
-					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos);
-					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos);
-					Pathfinding.PointData Left   = TryGetSlopePoint(LeftPos);
+					Tile Ahead  = TryGetSlope(AheadPos);
+					Tile Behind = TryGetSlope(BehindPos);
+					Tile Right  = TryGetSlope(RightPos);
+					Tile Left   = TryGetSlope(LeftPos);
 
 					if(Ahead != null)
-						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
 					if(Behind != null)
-						Pathfinder.ConnectPoints(Branch.Point, Behind);
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
 					if(Right != null)
-						Pathfinder.ConnectPoints(Branch.Point, Right);
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
 					if(Left != null)
-						Pathfinder.ConnectPoints(Branch.Point, Left);
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 				}
 
 				{ //Connect to slopes in the four cardinal directions (lower Y)
@@ -575,19 +575,19 @@ public class World : Node
 					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, -PlatformSize+1, 0);
 
 					var RaycastOffset = new Vector3(0, PlatformSize/4, 0);
-					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos, RaycastOffset);
-					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos, RaycastOffset);
-					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos, RaycastOffset);
-					Pathfinding.PointData Left   = TryGetSlopePoint(LeftPos, RaycastOffset);
+					Tile Ahead  = TryGetSlope(AheadPos, RaycastOffset);
+					Tile Behind = TryGetSlope(BehindPos, RaycastOffset);
+					Tile Right  = TryGetSlope(RightPos, RaycastOffset);
+					Tile Left   = TryGetSlope(LeftPos, RaycastOffset);
 
 					if(Ahead != null)
-						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
 					if(Behind != null)
-						Pathfinder.ConnectPoints(Branch.Point, Behind);
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
 					if(Right != null)
-						Pathfinder.ConnectPoints(Branch.Point, Right);
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
 					if(Left != null)
-						Pathfinder.ConnectPoints(Branch.Point, Left);
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 				}
 
 				break;
@@ -606,19 +606,19 @@ public class World : Node
 					var LeftPos   = Branch.Translation + new Vector3(PlatformSize, 0, 0).Rotated(Axis, Rad);
 
 					var RaycastOffset = new Vector3(0, PlatformSize/4, 0);
-					Pathfinding.PointData Ahead  = TryGetSlopePoint(AheadPos, RaycastOffset);
-					Pathfinding.PointData Behind = TryGetSlopePoint(BehindPos, RaycastOffset);
-					Pathfinding.PointData Right  = TryGetSlopePoint(RightPos);
-					Pathfinding.PointData Left   = TryGetSlopePoint(LeftPos);
+					Tile Ahead  = TryGetSlope(AheadPos, RaycastOffset);
+					Tile Behind = TryGetSlope(BehindPos, RaycastOffset);
+					Tile Right  = TryGetSlope(RightPos);
+					Tile Left   = TryGetSlope(LeftPos);
 
 					if(Ahead != null)
-						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
 					if(Behind != null)
-						Pathfinder.ConnectPoints(Branch.Point, Behind);
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
 					if(Right != null)
-						Pathfinder.ConnectPoints(Branch.Point, Right);
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
 					if(Left != null)
-						Pathfinder.ConnectPoints(Branch.Point, Left);
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 				}
 
 				{ //Connect to platforms forward and backwards
@@ -626,13 +626,13 @@ public class World : Node
 					var BehindPos = Branch.Translation + new Vector3(0, 0, -PlatformSize).Rotated(Axis, Rad);
 
 					var RaycastOffset = new Vector3(0, PlatformSize/2, 0);
-					Pathfinding.PointData Ahead  = TryGetPlatformPoint(AheadPos, RaycastOffset);
-					Pathfinding.PointData Behind = TryGetPlatformPoint(BehindPos);
+					Tile Ahead  = TryGetPlatform(AheadPos, RaycastOffset);
+					Tile Behind = TryGetPlatform(BehindPos);
 
 					if(Ahead != null)
-						Pathfinder.ConnectPoints(Branch.Point, Ahead);
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
 					if(Behind != null)
-						Pathfinder.ConnectPoints(Branch.Point, Behind);
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
 				}
 
 				break;
