@@ -8,8 +8,38 @@ using System.Collections.Generic;
 
 public class Bindings : Node
 {
+	public struct WithArgInfo
+	{
+		public string Name;
+		public SteelInputWithArg Tag;
+
+		public WithArgInfo(string NameArg, SteelInputWithArg TagArg)
+		{
+			Name = NameArg;
+			Tag = TagArg;
+		}
+	}
+
+
+	public struct WithoutArgInfo
+	{
+		public string Name;
+		public SteelInputWithoutArg Tag;
+
+		public WithoutArgInfo(string NameArg, SteelInputWithoutArg TagArg)
+		{
+			Name = NameArg;
+			Tag = TagArg;
+		}
+	}
+
+
 	public enum TYPE {UNSET, SCANCODE, MOUSEBUTTON, MOUSEWHEEL, MOUSEAXIS, CONTROLLERBUTTON, CONTROLLERAXIS}
 	public enum DIRECTION {UP, DOWN, RIGHT, LEFT};
+
+	private static List<WithArgInfo> WithArgMethods = null;
+	private static List<WithoutArgInfo> WithoutArgMethods = null;
+
 	private static List<BindingObject> BindingsWithArg = new List<BindingObject>();
 	private static List<BindingObject> BindingsWithoutArg = new List<BindingObject>();
 
@@ -25,30 +55,57 @@ public class Bindings : Node
 		BindingObject NewBind = new BindingObject(KeyName);
 
 		bool Found = false;
-		IEnumerable<MethodInfo> Methods = Assembly.GetExecutingAssembly().GetTypes()
-			.SelectMany(t => t.GetMethods())
-			.Where(m => m.GetCustomAttributes(typeof(SteelInputWithoutArg), false).Length > 0);
-		foreach(MethodInfo Method in Methods)
+
+		if(WithoutArgMethods == null)
+		{
+			var Methods = Assembly.GetExecutingAssembly().GetTypes()
+				.SelectMany(t => t.GetMethods())
+				.Where(m => m.GetCustomAttributes(typeof(SteelInputWithoutArg), false).Length > 0);
+
+			WithoutArgMethods = new List<WithoutArgInfo>();
+			foreach(MethodInfo Method in Methods)
+			{
+				WithoutArgMethods.Add(
+					new WithoutArgInfo(
+						Method.Name,
+						Attribute.GetCustomAttribute(Method, typeof(SteelInputWithoutArg)) as SteelInputWithoutArg
+					)
+				);
+			}
+		}
+		foreach(WithoutArgInfo Method in WithoutArgMethods)
 		{
 			if(Method.Name == FunctionName)
 			{
 				Found = true;
-				SteelInputWithoutArg Data = Attribute.GetCustomAttribute(Method, typeof(SteelInputWithoutArg)) as SteelInputWithoutArg;
-				NewBind.FuncWithoutArg = Data.Function;
+				NewBind.FuncWithoutArg = Method.Tag.Function;
 				break;
 			}
 		}
 
-		Methods = Assembly.GetExecutingAssembly().GetTypes()
-			.SelectMany(t => t.GetMethods())
-			.Where(m => m.GetCustomAttributes(typeof(SteelInputWithArg), false).Length > 0);
-		foreach(MethodInfo Method in Methods)
+		if(WithArgMethods == null)
+		{
+			var Methods = Assembly.GetExecutingAssembly().GetTypes()
+				.SelectMany(t => t.GetMethods())
+				.Where(m => m.GetCustomAttributes(typeof(SteelInputWithArg), false).Length > 0);
+
+			WithArgMethods = new List<WithArgInfo>();
+			foreach(MethodInfo Method in Methods)
+			{
+				WithArgMethods.Add(
+					new WithArgInfo(
+						Method.Name,
+						Attribute.GetCustomAttribute(Method, typeof(SteelInputWithArg)) as SteelInputWithArg
+					)
+				);
+			}
+		}
+		foreach(WithArgInfo Method in WithArgMethods)
 		{
 			if(Method.Name == FunctionName)
 			{
 				Found = true;
-				SteelInputWithArg Data = Attribute.GetCustomAttribute(Method, typeof(SteelInputWithArg)) as SteelInputWithArg;
-				NewBind.FuncWithArg = Data.Function;
+				NewBind.FuncWithArg = Method.Tag.Function;
 				break;
 			}
 		}
