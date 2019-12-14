@@ -622,10 +622,10 @@ public class World : Node
 				}
 
 				{ //Connect to platforms forward and backwards
-					var AheadPos  = Branch.Translation + new Vector3(0, PlatformSize, PlatformSize).Rotated(Axis, Rad);
+					var AheadPos  = Branch.Translation + new Vector3(0, PlatformSize/2, PlatformSize).Rotated(Axis, Rad);
 					var BehindPos = Branch.Translation + new Vector3(0, 0, -PlatformSize).Rotated(Axis, Rad);
 
-					var RaycastOffset = new Vector3(0, PlatformSize/2, 0);
+					var RaycastOffset = new Vector3(0, PlatformSize/4, 0);
 					Tile Ahead  = TryGetPlatform(AheadPos, RaycastOffset);
 					Tile Behind = TryGetPlatform(BehindPos);
 
