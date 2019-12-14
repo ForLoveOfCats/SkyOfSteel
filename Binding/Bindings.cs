@@ -56,33 +56,6 @@ public class Bindings : Node
 
 		bool Found = false;
 
-		if(WithoutArgMethods == null)
-		{
-			var Methods = Assembly.GetExecutingAssembly().GetTypes()
-				.SelectMany(t => t.GetMethods())
-				.Where(m => m.GetCustomAttributes(typeof(SteelInputWithoutArg), false).Length > 0);
-
-			WithoutArgMethods = new List<WithoutArgInfo>();
-			foreach(MethodInfo Method in Methods)
-			{
-				WithoutArgMethods.Add(
-					new WithoutArgInfo(
-						Method.Name,
-						Attribute.GetCustomAttribute(Method, typeof(SteelInputWithoutArg)) as SteelInputWithoutArg
-					)
-				);
-			}
-		}
-		foreach(WithoutArgInfo Method in WithoutArgMethods)
-		{
-			if(Method.Name == FunctionName)
-			{
-				Found = true;
-				NewBind.FuncWithoutArg = Method.Tag.Function;
-				break;
-			}
-		}
-
 		if(WithArgMethods == null)
 		{
 			var Methods = Assembly.GetExecutingAssembly().GetTypes()
@@ -106,6 +79,33 @@ public class Bindings : Node
 			{
 				Found = true;
 				NewBind.FuncWithArg = Method.Tag.Function;
+				break;
+			}
+		}
+
+		if(WithoutArgMethods == null)
+		{
+			var Methods = Assembly.GetExecutingAssembly().GetTypes()
+				.SelectMany(t => t.GetMethods())
+				.Where(m => m.GetCustomAttributes(typeof(SteelInputWithoutArg), false).Length > 0);
+
+			WithoutArgMethods = new List<WithoutArgInfo>();
+			foreach(MethodInfo Method in Methods)
+			{
+				WithoutArgMethods.Add(
+					new WithoutArgInfo(
+						Method.Name,
+						Attribute.GetCustomAttribute(Method, typeof(SteelInputWithoutArg)) as SteelInputWithoutArg
+					)
+				);
+			}
+		}
+		foreach(WithoutArgInfo Method in WithoutArgMethods)
+		{
+			if(Method.Name == FunctionName)
+			{
+				Found = true;
+				NewBind.FuncWithoutArg = Method.Tag.Function;
 				break;
 			}
 		}
