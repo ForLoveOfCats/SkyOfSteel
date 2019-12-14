@@ -26,7 +26,7 @@ public class GridClass
 	public static Vector3 CalculateArea(Vector3 Position)
 	{
 		return new Vector3(RoundToInt(Position.x/PlatformSize)*PlatformSize,
-						   RoundToInt(Position.y/PlatformSize)*PlatformSize,
+						   FloorToInt(Position.y/PlatformSize)*PlatformSize,
 						   RoundToInt(Position.z/PlatformSize)*PlatformSize);
 	}
 
