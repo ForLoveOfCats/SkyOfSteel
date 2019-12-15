@@ -50,7 +50,7 @@ public class Hitscan : Spatial
 
 	public static bool DebugDraw = false;
 
-	public static float TrailStartAdjustment = 1;
+	public static float TrailStartAdjustment = -1;
 	public static int NextRecoilDirection; //1 for right, -1 for left
 	public static List<QueuedDamage> QueuedDamageList = new List<QueuedDamage>();
 
@@ -96,8 +96,8 @@ public class Hitscan : Spatial
 				if(DebugDraw)
 					World.DebugPlot(HitPoint);
 
-				Self.DrawTrail(Origin, HitPoint);
-				Net.SteelRpc(Self, nameof(DrawTrail), Origin, HitPoint);
+				Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
+				Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
 
 				if(Results["collider"] is HitboxClass Hitbox)
 				{
@@ -134,8 +134,8 @@ public class Hitscan : Spatial
 			}
 			else
 			{
-				Self.DrawTrail(Origin, Endpoint);
-				Net.SteelRpc(Self, nameof(DrawTrail), Origin, Endpoint);
+				Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
+				Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
 			}
 		}
 	}
@@ -209,7 +209,6 @@ public class Hitscan : Spatial
 	[Remote]
 	public void DrawTrail(Vector3 Start, Vector3 End) //Must be non-static to be RPC-ed
 	{
-		Start.y -= TrailStartAdjustment;
 		HitscanTrail Trail = HitscanTrailScene.Instance() as HitscanTrail;
 		World.EntitiesRoot.AddChild(Trail);
 		Trail.Translation = (Start + End) / 2;

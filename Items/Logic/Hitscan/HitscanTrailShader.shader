@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode depth_draw_alpha_prepass, unshaded;
+render_mode depth_draw_alpha_prepass, unshaded, cull_disabled;
 
 uniform float alpha;
 
