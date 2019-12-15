@@ -478,6 +478,46 @@ public class World : Node
 			return null;
 		}
 
+		bool IsSlopePointingAt(Tile Slope, Vector3 At)
+		{
+			float Rot = SnapToGrid(LoopRotation(Slope.RotationDegrees.y), 360, 4);
+			Rot = LoopRotation(Rot); //Make 360 become 0
+
+			Vector3 Addend = new Vector3(0, 0, PlatformSize/3).Rotated(new Vector3(0,1,0), Deg2Rad(Rot));
+			Vector3 SlopePos = Slope.Translation + Addend;
+
+			if(Rot == 0)
+				return At.z >= SlopePos.z;
+			if(Rot == 90)
+				return At.x >= SlopePos.x;
+			if(Rot == 180)
+				return At.z <= SlopePos.z;
+			if(Rot == 270)
+				return At.x <= SlopePos.x;
+
+			throw new Exception("This `if` chain should have 100% coverage");
+		}
+
+		bool IsSlopePointingAway(Tile Slope, Vector3 At)
+		{
+			float Rot = SnapToGrid(LoopRotation(Slope.RotationDegrees.y), 360, 4);
+			Rot = LoopRotation(Rot); //Make 360 become 0
+
+			Vector3 Addend = new Vector3(0, 0, -PlatformSize/3).Rotated(new Vector3(0,1,0), Deg2Rad(Rot));
+			Vector3 SlopePos = Slope.Translation + Addend;
+
+			if(Rot == 0)
+				return At.z <= SlopePos.z;
+			if(Rot == 90)
+				return At.x <= SlopePos.x;
+			if(Rot == 180)
+				return At.z >= SlopePos.z;
+			if(Rot == 270)
+				return At.x >= SlopePos.x;
+
+			throw new Exception("This `if` chain should have 100% coverage");
+		}
+
 		switch(Branch.Type)
 		{
 			case(Items.ID.PLATFORM): {
@@ -543,13 +583,14 @@ public class World : Node
 					Tile Right  = TryGetSlope(RightPos);
 					Tile Left   = TryGetSlope(LeftPos);
 
-					if(Ahead != null)
+					Vector3 Pos = Branch.Translation;
+					if(Ahead != null && IsSlopePointingAway(Ahead, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-					if(Behind != null)
+					if(Behind != null && IsSlopePointingAway(Behind, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-					if(Right != null)
+					if(Right != null && IsSlopePointingAway(Right, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
-					if(Left != null)
+					if(Left != null && IsSlopePointingAway(Left, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 				}
 
@@ -565,13 +606,14 @@ public class World : Node
 					Tile Right  = TryGetSlope(RightPos, RaycastOffset);
 					Tile Left   = TryGetSlope(LeftPos, RaycastOffset);
 
-					if(Ahead != null)
+					Vector3 Pos = Branch.Translation;
+					if(Ahead != null && IsSlopePointingAt(Ahead, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-					if(Behind != null)
+					if(Behind != null && IsSlopePointingAt(Behind, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-					if(Right != null)
+					if(Right != null && IsSlopePointingAt(Right, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
-					if(Left != null)
+					if(Left != null && IsSlopePointingAt(Left, Pos))
 						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 				}
 
