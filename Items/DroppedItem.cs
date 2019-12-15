@@ -4,9 +4,9 @@ using System;
 
 public class DroppedItem : KinematicBody, IInGrid, IPushable
 {
-	private const float Gravity = 20f;
-	private const float MaxFallSpeed = -40f;
-	private const float Friction = 15f;
+	private const float Gravity = 50f;
+	private const float MaxFallSpeed = 100f;
+	private const float Friction = 48f;
 	private const float RPS = 0.5f; //Revolutions Per Second
 	public static float MinPickupLife = 0.6f; //In seconds
 
@@ -75,7 +75,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 			{
 				//Doing friction
 				Vector3 Horz = new Vector3(Momentum.x, 0, Momentum.z);
-				Horz = Horz.Normalized() * Mathf.Clamp(Horz.Length() - (Friction*Delta), 0, Mathf.Abs(MaxFallSpeed));
+				Horz = Horz.Normalized() * Mathf.Clamp(Horz.Length() - (Friction*Delta), 0, MaxFallSpeed);
 				Momentum.x = Horz.x;
 				Momentum.z = Horz.z;
 
@@ -86,9 +86,9 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 			if(PhysicsEnabled)
 			{
 				Momentum.y -= Gravity*Delta;
-				if(Momentum.y < MaxFallSpeed)
+				if(Momentum.y < -MaxFallSpeed)
 				{
-					Momentum.y = MaxFallSpeed;
+					Momentum.y = -MaxFallSpeed;
 				}
 			}
 			else

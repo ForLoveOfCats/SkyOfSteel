@@ -27,7 +27,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float JumpContinueForce = 0.41f;
 	public float MaxJumpLength = 0.22f;
 	public float Gravity = 55f;
-	public float ItemThrowPower = 20f;
+	public float ItemThrowPower = 40f;
 	public float ItemPickupDistance = 8f;
 	public float SlotSwitchCooldown = 15;
 	public float BuildingCooldown = 15;
@@ -831,7 +831,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			Vector3 Vel = Plr.Momentum + new Vector3(0, 0, Plr.ItemThrowPower)
+			Vector3 Vel = Plr.Momentum/1.5f + new Vector3(0, 0, Plr.ItemThrowPower)
 				.Rotated(new Vector3(1,0,0), Deg2Rad(-Plr.ActualLookVertical))
 				.Rotated(new Vector3(0,1,0), Deg2Rad(Plr.LookHorizontal));
 
