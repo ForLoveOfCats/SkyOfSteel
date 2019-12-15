@@ -111,6 +111,6 @@ public class Startup : Node
 		Bindings.Bind("MouseTwo", "SecondaryFire");
 		Bindings.Bind("XboxLT", "SecondaryFire");
 
-		Bindings.Bind("P", "DrawAllConnections");
+		Bindings.Bind("P", "DrawPathfinderConnections");
 	}
 }

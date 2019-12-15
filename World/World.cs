@@ -644,12 +644,19 @@ public class World : Node
 	}
 
 
-	[SteelInputWithoutArg(typeof(World), nameof(DrawAllConnections))]
-	public static void DrawAllConnections()
+	[SteelInputWithoutArg(typeof(World), nameof(DrawPathfinderConnections))]
+	public static void DrawPathfinderConnections()
 	{
 		foreach(var Point in Pathfinder.Points)
+		{
 			foreach(var Friend in Point.Friends)
+			{
+				if(Friend.Pos.DistanceTo(Game.PossessedPlayer.Translation) > PlatformSize*3)
+					continue;
+
 				Hitscan.Self.DrawTrail(Point.Pos, Friend.Pos);
+			}
+		}
 	}
 
 
