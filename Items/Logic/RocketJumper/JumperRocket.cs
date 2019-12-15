@@ -91,7 +91,7 @@ public class JumperRocket : Spatial, IProjectileCollision
 					Push.x = Flat.x;
 					Push.z = Flat.z;
 				}
-				Push.y /= RocketJumper.RocketVerticalDivisor;
+				Push.y *= RocketJumper.RocketVerticalMultiplyer;
 				Body.ApplyPush(Push);
 			}
 		}
