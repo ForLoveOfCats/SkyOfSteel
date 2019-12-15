@@ -4,6 +4,12 @@ using static Godot.Mathf;
 
 public static class SteelMath
 {
+	public static float LogBase(float x, float Base)
+	{
+		return Log(x) / Log(Base);
+	}
+
+
 	public static float SnapToGrid(float ToSnap, int GridSize, int DivisionCount)
 	{
 		return Mathf.Round(ToSnap/(GridSize/DivisionCount))*(GridSize/DivisionCount);

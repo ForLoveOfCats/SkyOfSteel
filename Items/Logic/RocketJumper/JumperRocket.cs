@@ -1,5 +1,6 @@
 using Godot;
 using static Godot.Mathf;
+using static SteelMath;
 using System.Collections.Generic;
 
 
@@ -80,8 +81,10 @@ public class JumperRocket : Spatial, IProjectileCollision
 				if(Results.Count > 0)
 					continue;
 
-				float Distance = Clamp(Origin.DistanceTo(Body.Translation) - RocketJumper.MinRocketDistance, 1, RocketJumper.MaxRocketDistance);
-				float Power = RocketJumper.MaxRocketDistance / Distance / RocketJumper.MaxRocketDistance;
+				float Distance = Clamp(Origin.DistanceTo(Body.Translation), 1, RocketJumper.MaxRocketDistance);
+				float Power =
+					LogBase(-Distance + RocketJumper.MaxRocketDistance + 1, 2)
+					/ LogBase(RocketJumper.MaxRocketDistance + 1, 2);
 
 				Vector3 Push = ((Body.Translation - Origin) / RocketJumper.MaxRocketDistance).Normalized()
 					* RocketJumper.MaxRocketPush * Power;
