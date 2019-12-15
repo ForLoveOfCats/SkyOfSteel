@@ -428,21 +428,6 @@ public class World : Node
 	}
 
 
-	class PlatformData
-	{
-		public int X;
-		public int Z;
-		public Pathfinding.PointData Point;
-
-		public PlatformData(int XArg, int ZArg, Pathfinding.PointData PointArg)
-		{
-			X = XArg;
-			Z = ZArg;
-			Point = PointArg;
-		}
-	}
-
-
 	public static void TryAddTileToPathfinder(Tile Branch)
 	{
 		Tile TryGetPlatform(Vector3 Position, Vector3 RaycastOffset = new Vector3())
