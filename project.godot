@@ -74,6 +74,7 @@ MenuToggle={
 3d_physics/layer_1="Movement"
 3d_physics/layer_2="ProjectileHitscan"
 3d_physics/layer_3="JustTiles"
+3d_physics/layer_4="DroppedItems"
 
 [mono]
 
