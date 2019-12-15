@@ -450,19 +450,19 @@ public class World : Node
 			var Area = GridClass.CalculateArea(Position);
 			foreach(IInGrid Entry in Grid.GetItems(Area))
 			{
-				if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.PLATFORM)
+				if(Entry is Tile OtherTile && OtherTile.Type == Items.ID.PLATFORM)
 				{
 					PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
 
 					var RayBranchPos = Branch.Point.Pos + RaycastOffset;
-					var RayOtherPos  = TileInstance.Point.Pos + RaycastOffset;
-					var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
+					var RayOtherPos  = OtherTile.Point.Pos + RaycastOffset;
+					var Excluding = new Godot.Collections.Array{};
 
-					var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
+					var Results = State.IntersectRay(RayBranchPos, RayOtherPos, Excluding, 4);
 					if(Results.Count > 0) //Hit something in between
 						return null;
 					else
-						return TileInstance;
+						return OtherTile;
 				}
 			}
 
@@ -474,19 +474,19 @@ public class World : Node
 			var Area = GridClass.CalculateArea(Position);
 			foreach(IInGrid Entry in Grid.GetItems(Area))
 			{
-				if(Entry is Tile TileInstance && TileInstance.Type == Items.ID.SLOPE)
+				if(Entry is Tile OtherTile && OtherTile.Type == Items.ID.SLOPE)
 				{
 					PhysicsDirectSpaceState State = Branch.GetWorld().DirectSpaceState;
 
 					var RayBranchPos = Branch.Point.Pos + RaycastOffset;
-					var RayOtherPos  = TileInstance.Point.Pos + RaycastOffset;
-					var Excluding = new Godot.Collections.Array{Branch}; //Exclude the target tile
+					var RayOtherPos  = OtherTile.Point.Pos + RaycastOffset;
+					var Excluding = new Godot.Collections.Array{};
 
-					var Results = State.IntersectRay(RayOtherPos, RayBranchPos, Excluding, 4);
+					var Results = State.IntersectRay(RayBranchPos, RayOtherPos, Excluding, 4);
 					if(Results.Count > 0) //Hit something in between
 						return null;
 					else
-						return TileInstance;
+						return OtherTile;
 				}
 			}
 
