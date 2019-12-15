@@ -53,64 +53,64 @@ public class Startup : Node
 		API.FpsMax(200);
 		API.ChunkRenderDistance(10);
 
-		Bindings.Bind("W", "ForwardMove");
-		Bindings.Bind("LeftStickUp", "ForwardMove");
-		Bindings.Bind("S", "BackwardMove");
-		Bindings.Bind("LeftStickDown", "BackwardMove");
-		Bindings.Bind("D", "RightMove");
-		Bindings.Bind("LeftStickRight", "RightMove");
-		Bindings.Bind("A", "LeftMove");
-		Bindings.Bind("LeftStickLeft", "LeftMove");
-		Bindings.Bind("Alt", "FlySprint");
-		Bindings.Bind("LeftStickClick", "FlySprint");
-		Bindings.Bind("Space", "Jump");
-		Bindings.Bind("XboxA", "Jump");
-		Bindings.Bind("Shift", "Crouch");
-		Bindings.Bind("XboxB", "Crouch");
+		Bindings.Bind("W",               nameof(Player.ForwardMove));
+		Bindings.Bind("LeftStickUp",     nameof(Player.ForwardMove));
+		Bindings.Bind("S",               nameof(Player.BackwardMove));
+		Bindings.Bind("LeftStickDown",   nameof(Player.BackwardMove));
+		Bindings.Bind("D",               nameof(Player.RightMove));
+		Bindings.Bind("LeftStickRight",  nameof(Player.RightMove));
+		Bindings.Bind("A",               nameof(Player.LeftMove));
+		Bindings.Bind("LeftStickLeft",   nameof(Player.LeftMove));
+		Bindings.Bind("Alt",             nameof(Player.FlySprint));
+		Bindings.Bind("LeftStickClick",  nameof(Player.FlySprint));
+		Bindings.Bind("Space",           nameof(Player.Jump));
+		Bindings.Bind("XboxA",           nameof(Player.Jump));
+		Bindings.Bind("Shift",           nameof(Player.Crouch));
+		Bindings.Bind("XboxB",           nameof(Player.Crouch));
 
-		Bindings.Bind("WheelUp", "InventoryUp");
-		Bindings.Bind("XboxLB", "InventoryUp");
-		Bindings.Bind("WheelDown", "InventoryDown");
-		Bindings.Bind("XboxRB", "InventoryDown");
+		Bindings.Bind("WheelUp",         nameof(Player.InventoryUp));
+		Bindings.Bind("XboxLB",          nameof(Player.InventoryUp));
+		Bindings.Bind("WheelDown",       nameof(Player.InventoryDown));
+		Bindings.Bind("XboxRB",          nameof(Player.InventoryDown));
 
-		Bindings.Bind("1", "InventorySlot0");
-		Bindings.Bind("2", "InventorySlot1");
-		Bindings.Bind("3", "InventorySlot2");
-		Bindings.Bind("4", "InventorySlot3");
-		Bindings.Bind("5", "InventorySlot4");
-		Bindings.Bind("6", "InventorySlot5");
-		Bindings.Bind("7", "InventorySlot6");
-		Bindings.Bind("8", "InventorySlot7");
-		Bindings.Bind("9", "InventorySlot8");
-		Bindings.Bind("0", "InventorySlot9");
+		Bindings.Bind("1",               nameof(Player.InventorySlot0));
+		Bindings.Bind("2",               nameof(Player.InventorySlot1));
+		Bindings.Bind("3",               nameof(Player.InventorySlot2));
+		Bindings.Bind("4",               nameof(Player.InventorySlot3));
+		Bindings.Bind("5",               nameof(Player.InventorySlot4));
+		Bindings.Bind("6",               nameof(Player.InventorySlot5));
+		Bindings.Bind("7",               nameof(Player.InventorySlot6));
+		Bindings.Bind("8",               nameof(Player.InventorySlot7));
+		Bindings.Bind("9",               nameof(Player.InventorySlot8));
+		Bindings.Bind("0",               nameof(Player.InventorySlot9));
 
-		Bindings.Bind("MouseUp", "LookUp");
-		Bindings.Bind("RightStickUp", "LookUp");
-		Bindings.Bind("MouseDown", "LookDown");
-		Bindings.Bind("RightStickDown", "LookDown");
-		Bindings.Bind("MouseRight", "LookRight");
-		Bindings.Bind("RightStickRight", "LookRight");
-		Bindings.Bind("MouseLeft", "LookLeft");
-		Bindings.Bind("RightStickLeft", "LookLeft");
+		Bindings.Bind("MouseUp",         nameof(Player.LookUp));
+		Bindings.Bind("RightStickUp",    nameof(Player.LookUp));
+		Bindings.Bind("MouseDown",       nameof(Player.LookDown));
+		Bindings.Bind("RightStickDown",  nameof(Player.LookDown));
+		Bindings.Bind("MouseRight",      nameof(Player.LookRight));
+		Bindings.Bind("RightStickRight", nameof(Player.LookRight));
+		Bindings.Bind("MouseLeft",       nameof(Player.LookLeft));
+		Bindings.Bind("RightStickLeft",  nameof(Player.LookLeft));
 
-		Bindings.Bind("R", "BuildRotate");
-		Bindings.Bind("XboxX", "BuildRotate");
-		Bindings.Bind("Q", "ThrowCurrentItem");
-		Bindings.Bind("RightStickClick", "ThrowCurrentItem");
+		Bindings.Bind("R",               nameof(Player.BuildRotate));
+		Bindings.Bind("XboxX",           nameof(Player.BuildRotate));
+		Bindings.Bind("Q",               nameof(Player.ThrowCurrentItem));
+		Bindings.Bind("RightStickClick", nameof(Player.ThrowCurrentItem));
 
-		Bindings.Bind("G", "BuildInventory");
-		Bindings.Bind("XboxStart", "BuildInventory");
+		Bindings.Bind("G",               nameof(Menu.BuildInventory));
+		Bindings.Bind("XboxStart",       nameof(Menu.BuildInventory));
 
-		Bindings.Bind("K", "InputRespawn");
-		Bindings.Bind("XboxSelect", "InputRespawn");
-		Bindings.Bind("T", "ToggleFly");
-		Bindings.Bind("XboxY", "ToggleFly");
+		Bindings.Bind("K",               nameof(Player.InputRespawn));
+		Bindings.Bind("XboxSelect",      nameof(Player.InputRespawn));
+		Bindings.Bind("T",               nameof(Player.ToggleFly));
+		Bindings.Bind("XboxY",           nameof(Player.ToggleFly));
 
-		Bindings.Bind("MouseOne", "PrimaryFire");
-		Bindings.Bind("XboxRT", "PrimaryFire");
-		Bindings.Bind("MouseTwo", "SecondaryFire");
-		Bindings.Bind("XboxLT", "SecondaryFire");
+		Bindings.Bind("MouseOne",        nameof(Player.PrimaryFire));
+		Bindings.Bind("XboxRT",          nameof(Player.PrimaryFire));
+		Bindings.Bind("MouseTwo",        nameof(Player.SecondaryFire));
+		Bindings.Bind("XboxLT",          nameof(Player.SecondaryFire));
 
-		Bindings.Bind("P", "DrawPathfinderConnections");
+		Bindings.Bind("P",               nameof(World.DrawPathfinderConnections));
 	}
 }
