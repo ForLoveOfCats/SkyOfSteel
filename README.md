@@ -58,7 +58,7 @@ Contributions are welcome!
 ### Performing the Build
 
 * Clone the git repo (or download as zip and extract)
-* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in Newtonsoft.Json)
+* Cd into the project root and run `nuget restore SkyOfSteel.sln` (This will pull in `Newtonsoft.Json` and `Optional`)
 * Open the Godot editor to the project and let it reimport all the assets then hit "Play" near the upper right corner (play icon)
   * The editor will proceed to build and launch the project
 
