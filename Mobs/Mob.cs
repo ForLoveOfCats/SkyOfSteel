@@ -33,7 +33,7 @@ public abstract class Mob : KinematicBody
 			var Results = State.IntersectRay(Translation, Translation + new Vector3(0,-3,0), Excluding, 4);
 			if(Results.Count > 0)
 			{
-				if(Results["collider"] is Tile Branch)
+				if(Results["collider"] is Tile Branch && Branch.Point != null)
 					Floor = Branch.Some();
 			}
 		}
