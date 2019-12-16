@@ -143,5 +143,6 @@ and also feel free to follow me on [Twitter](https://twitter.com/ForLoveOfCats "
 ## License
 
 SkyOfSteel is licensed under the MIT license and utilizes
-[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) which is
-also under the MIT license.
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) and
+[Optional](https://github.com/nlkl/Optional) which are both under the
+MIT license as well.
