@@ -107,9 +107,6 @@ public abstract class Mob : KinematicBody, IPushable
 			Horz = Horz.Normalized() * Clamp(Horz.Length() - Friction*Delta, 0, TopSpeed);
 			Momentum.x = Horz.x;
 			Momentum.z = Horz.z;
-
-			if(Momentum.y < 0)
-				Momentum.y = 0;
 		}
 		else //Not on floor
 		{
@@ -120,5 +117,7 @@ public abstract class Mob : KinematicBody, IPushable
 		}
 
 		Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), floorMaxAngle:Deg2Rad(70));
+		if(IsOnFloor() && Momentum.y < 0)
+			Momentum.y = -1;
 	}
 }
