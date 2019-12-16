@@ -6,7 +6,7 @@ using static Pathfinding;
 
 public class CatMob : Mob
 {
-	public const float DecelerationTime = 0.1f;
+	public const float DecelerationTime = 0.2f;
 
 	protected override float TopSpeed {
 		get {
