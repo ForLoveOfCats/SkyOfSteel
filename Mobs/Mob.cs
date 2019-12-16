@@ -15,6 +15,8 @@ public abstract class Mob : KinematicBody, IPushable
 	protected abstract float Acceleration { get; }
 	protected abstract float Friction { get; }
 
+	protected abstract Vector3 Bottom { get; }
+
 	public Vector3 Momentum = new Vector3();
 	public Option<PointData> TargetPoint;
 	public Option<PointData> StartPoint;
@@ -36,7 +38,8 @@ public abstract class Mob : KinematicBody, IPushable
 		{
 			PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 			var Excluding = new Godot.Collections.Array{this};
-			var Results = State.IntersectRay(Translation, Translation + new Vector3(0,-3,0), Excluding, 4);
+			Vector3 End = Translation + Bottom + new Vector3(0, -1, 0);
+			var Results = State.IntersectRay(Translation, End, Excluding, 4);
 			if(Results.Count > 0)
 			{
 				if(Results["collider"] is Tile Branch && Branch.Point != null)
@@ -116,7 +119,8 @@ public abstract class Mob : KinematicBody, IPushable
 				Momentum.y = -MaxFallSpeed;
 		}
 
-		Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), floorMaxAngle:Deg2Rad(70));
+		Vector3 SnapPoint = Bottom + new Vector3(0, -1, 0);
+		Momentum = MoveAndSlideWithSnap(Momentum, SnapPoint, floorNormal:new Vector3(0,1,0), floorMaxAngle:Deg2Rad(70));
 		if(IsOnFloor() && Momentum.y < 0)
 			Momentum.y = -1;
 	}

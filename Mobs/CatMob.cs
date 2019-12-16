@@ -24,6 +24,12 @@ public class CatMob : Mob
 		}
 	}
 
+	protected override Vector3 Bottom {
+		get {
+			return new Vector3(0, -1f, 0);
+		}
+	}
+
 	private void UpdateFollowPlayer(PointData Closest)
 	{
 		var Target = World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation);
