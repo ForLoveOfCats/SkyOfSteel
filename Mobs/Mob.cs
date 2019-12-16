@@ -119,7 +119,12 @@ public abstract class Mob : KinematicBody, IPushable
 				Momentum.y = -MaxFallSpeed;
 		}
 
-		Vector3 SnapPoint = Bottom + new Vector3(0, -2, 0);
-		Momentum = MoveAndSlideWithSnap(Momentum, SnapPoint, floorNormal:new Vector3(0,1,0), floorMaxAngle:Deg2Rad(70));
+		if(Momentum.y <= 0)
+		{
+			Vector3 SnapPoint = Bottom + new Vector3(0, -2, 0);
+			Momentum = MoveAndSlideWithSnap(Momentum, SnapPoint, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
+		}
+		else
+			Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
 	}
 }
