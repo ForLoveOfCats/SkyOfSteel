@@ -83,16 +83,20 @@ public abstract class Mob : KinematicBody, IPushable
 			TargetPoint.Match(
 				some: Target =>
 				{
-					// World.DebugPlot(Target.Pos, 0.1f);
-					//Apply push toward TargetPoint but don't go to fast
-					Momentum += ClampVec3(
-						Target.Pos.Flattened() - Translation.Flattened(),
-						Acceleration*Delta + Friction*Delta,
-						Acceleration*Delta + Friction*Delta
-					);
-					Vector3 Temp = ClampVec3(Momentum.Flattened(), 0, TopSpeed);
-					Momentum.x = Temp.x;
-					Momentum.z = Temp.z;
+					if(Target.Pos.Flattened().DistanceTo(Translation.Flattened()) <= 2)
+						TargetPoint = PointData.None();
+					else
+					{
+						//Apply push toward TargetPoint but don't go to fast
+						Momentum += ClampVec3(
+							Target.Pos.Flattened() - Translation.Flattened(),
+							Acceleration*Delta + Friction*Delta,
+							Acceleration*Delta + Friction*Delta
+						);
+						Vector3 Temp = ClampVec3(Momentum.Flattened(), 0, TopSpeed);
+						Momentum.x = Temp.x;
+						Momentum.z = Temp.z;
+					}
 				},
 
 				none: () => {}

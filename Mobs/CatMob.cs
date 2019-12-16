@@ -17,7 +17,7 @@ public class CatMob : Mob
 		}
 	}
 
-	private void UpdateTargetPointFollowPlayer(PointData Closest)
+	private void UpdateFollowPlayer(PointData Closest)
 	{
 		var Target = World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation);
 		var Path = World.Pathfinder.PlotPath(Closest, Target);
@@ -33,24 +33,17 @@ public class CatMob : Mob
 		MaybeFloor.Match(
 			some: Floor =>
 			{
-				PointData Closest = Floor.Point;
 				TargetPoint.Match(
 					some: Target =>
 					{
-						if(Closest == World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation))
+						if(Floor.Point == World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation))
 							TargetPoint = PointData.None();
-
-						else if(Closest == Target)
-						{
-							if(Target.Pos.Flattened().DistanceTo(Translation.Flattened()) <= 2)
-								UpdateTargetPointFollowPlayer(Closest);
-						}
 					},
 
 					none: () =>
 					{
-						if(Closest != World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation))
-							UpdateTargetPointFollowPlayer(Closest);
+						if(Floor.Point != World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation))
+							UpdateFollowPlayer(Floor.Point);
 					}
 				);
 			},
