@@ -7,7 +7,7 @@
 [sub_resource type="SpatialMaterial" id=2]
 albedo_color = Color( 1, 0.905882, 0.290196, 1 )
 
-[sub_resource type="BoxShape" id=3]
+[sub_resource type="SphereShape" id=3]
 
 [node name="CatMob" type="KinematicBody"]
 collision_layer = 2

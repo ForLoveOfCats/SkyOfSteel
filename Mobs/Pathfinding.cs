@@ -1,6 +1,7 @@
 using Godot;
 using static Godot.Mathf;
 using System.Collections.Generic;
+using Optional;
 
 
 
@@ -31,6 +32,18 @@ public class Pathfinding
 			GCost = GCostArg;
 			HCost = HCostArg;
 			FCost = GCost + HCost;
+		}
+
+
+		public static Option<PointData> None()
+		{
+			return Option.None<PointData>();
+		}
+
+
+		public Option<PointData> Some()
+		{
+			return Option.Some(this);
 		}
 	}
 

@@ -1,4 +1,5 @@
 using Godot;
+using Optional;
 
 
 
@@ -37,5 +38,17 @@ public class Tile : StaticBody, IInGrid
 
 		Net.SteelRpc(World.Self, nameof(World.RemoveTile), Name);
 		World.Self.RemoveTile(Name);
+	}
+
+
+	public static Option<Tile> None()
+	{
+		return Option.None<Tile>();
+	}
+
+
+	public Option<Tile> Some()
+	{
+		return Option.Some(this);
 	}
 }
