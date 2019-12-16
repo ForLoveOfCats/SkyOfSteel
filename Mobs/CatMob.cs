@@ -6,14 +6,21 @@ using static Pathfinding;
 
 public class CatMob : Mob
 {
+	public const float DecelerationTime = 0.1f;
+
 	protected override float TopSpeed {
 		get {
-			return 30;
+			return 45;
 		}
 	}
 	protected override float Acceleration {
 		get {
-			return 95;
+			return 100;
+		}
+	}
+	protected override float Friction {
+		get {
+			return TopSpeed/DecelerationTime;
 		}
 	}
 

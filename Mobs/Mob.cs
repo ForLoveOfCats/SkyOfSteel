@@ -10,10 +10,10 @@ public abstract class Mob : KinematicBody, IPushable
 {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
-	private const float Friction = 120f;
 
 	protected abstract float TopSpeed { get; }
 	protected abstract float Acceleration { get; }
+	protected abstract float Friction { get; }
 
 	public Vector3 Momentum = new Vector3();
 	public Option<PointData> TargetPoint;
