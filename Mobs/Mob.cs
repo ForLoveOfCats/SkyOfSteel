@@ -6,7 +6,7 @@ using static Pathfinding;
 
 
 
-public abstract class Mob : KinematicBody
+public abstract class Mob : KinematicBody, IPushable
 {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
@@ -22,6 +22,12 @@ public abstract class Mob : KinematicBody
 
 	public virtual void CalcWants(Option<Tile> MaybeFloor)
 	{}
+
+
+	public void ApplyPush(Vector3 Push)
+	{
+		Momentum += Push;
+	}
 
 
 	public override void _Process(float Delta)
