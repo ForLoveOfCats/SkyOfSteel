@@ -100,7 +100,7 @@ public class World : Node
 	{
 		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
 
-		// for(int i = 0; i < 50; i++)
+		for(int i = 0; i < 20; i++)
 			Mobs.SpawnMob(Mobs.ID.Cat);
 	}
 

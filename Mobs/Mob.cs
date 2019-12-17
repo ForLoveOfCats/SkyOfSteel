@@ -1,12 +1,13 @@
 using Godot;
 using Optional;
+using System;
 using static Godot.Mathf;
 using static SteelMath;
 using static Pathfinding;
 
 
 
-public abstract class Mob : KinematicBody, IPushable
+public abstract class Mob : KinematicBody, IInGrid, IPushable
 {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
@@ -18,12 +19,26 @@ public abstract class Mob : KinematicBody, IPushable
 	protected abstract Vector3 Bottom { get; }
 
 	public Vector3 Momentum = new Vector3();
-	public Option<PointData> TargetPoint;
-	public Option<PointData> StartPoint;
+	public Option<PointData> TargetPoint = PointData.None();
+	public Option<Tile> Floor = Tile.None();
+	public Vector3 CurrentArea = new Vector3();
 
 
 	public virtual void CalcWants(Option<Tile> MaybeFloor)
 	{}
+
+
+	public override void _Ready()
+	{
+		World.Grid.AddItem(this);
+		UpdateFloor();
+	}
+
+
+	public void GridUpdate()
+	{
+		UpdateFloor();
+	}
 
 
 	public void ApplyPush(Vector3 Push)
@@ -32,52 +47,30 @@ public abstract class Mob : KinematicBody, IPushable
 	}
 
 
+	public void UpdateFloor()
+	{
+		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
+		var Excluding = new Godot.Collections.Array{this};
+		Vector3 End = Translation + Bottom + new Vector3(0, -1, 0);
+		var Results = State.IntersectRay(Translation, End, Excluding, 4);
+		if(Results.Count > 0)
+		{
+			if(Results["collider"] is Tile Branch && Branch.Point != null)
+				Floor = Branch.Some();
+		}
+	}
+
+
 	public override void _Process(float Delta)
 	{
-		Option<Tile> Floor = Tile.None();
+		if(CurrentArea != GridClass.CalculateArea(Translation))
 		{
-			PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-			var Excluding = new Godot.Collections.Array{this};
-			Vector3 End = Translation + Bottom + new Vector3(0, -1, 0);
-			var Results = State.IntersectRay(Translation, End, Excluding, 4);
-			if(Results.Count > 0)
-			{
-				if(Results["collider"] is Tile Branch && Branch.Point != null)
-					Floor = Branch.Some();
-			}
+			CurrentArea = GridClass.CalculateArea(Translation);
+			World.Grid.QueueRemoveItem(this);
+			World.Grid.AddItem(this);
+
+			UpdateFloor();
 		}
-
-		StartPoint.Match(
-			some: Start =>
-			{
-				var Closest = World.Pathfinder.GetClosestPoint(Translation);
-
-				TargetPoint.Match(
-					some: Target =>
-					{
-						if(Closest != Start && Closest != Target)
-						{
-							TargetPoint = PointData.None();
-							StartPoint = Closest.Some();
-						}
-					},
-
-					none: () =>
-					{
-						if(Closest != Start)
-						{
-							TargetPoint = PointData.None();
-							StartPoint = Closest.Some();
-						}
-					}
-				);
-			},
-
-			none: () =>
-			{
-				StartPoint = World.Pathfinder.GetClosestPoint(Translation).Some();
-			}
-		);
 
 		CalcWants(Floor);
 

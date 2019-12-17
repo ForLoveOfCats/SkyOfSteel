@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using Optional;
 using static Pathfinding;
 
@@ -31,10 +32,13 @@ public class CatMob : Mob
 		}
 	}
 
-	private void UpdateFollowPlayer(PointData Closest)
+	private static Random RandomInstance = new Random();
+	private PointData Goal = null;
+
+
+	private void UpdateTargetPoint(PointData Closest)
 	{
-		var Target = World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation);
-		var Path = World.Pathfinder.PlotPath(Closest, Target);
+		var Path = World.Pathfinder.PlotPath(Closest, Goal);
 		if(Path.Count >= 1)
 			TargetPoint = Path.Last().Some();
 		else
@@ -44,20 +48,28 @@ public class CatMob : Mob
 
 	public override void CalcWants(Option<Tile> MaybeFloor)
 	{
+		if(Goal == null)
+		{
+			int Count = World.Pathfinder.Points.Count;
+			Goal = World.Pathfinder.Points[RandomInstance.Next(Count)];
+		}
+
 		MaybeFloor.Match(
 			some: Floor =>
 			{
 				TargetPoint.Match(
 					some: Target =>
 					{
-						if(Floor.Point == World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation))
-							TargetPoint = PointData.None();
+						if(Floor.Point == Goal)
+						{
+							int Count = World.Pathfinder.Points.Count;
+							Goal = World.Pathfinder.Points[RandomInstance.Next(Count)];
+						}
 					},
 
 					none: () =>
 					{
-						if(Floor.Point != World.Pathfinder.GetClosestPoint(Game.PossessedPlayer.Translation))
-							UpdateFollowPlayer(Floor.Point);
+						UpdateTargetPoint(Floor.Point);
 					}
 				);
 			},

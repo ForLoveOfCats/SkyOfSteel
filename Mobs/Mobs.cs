@@ -50,6 +50,7 @@ public class Mobs : Node
 	private void NetSpawnMob(ID Id, string Name)
 	{
 		Mob Instance = Scenes[Id].Instance() as Mob;
+		Instance.Translation = new Vector3(0, 2, 0);
 		Instance.Name = Name;
 		World.MobsRoot.AddChild(Instance);
 	}
