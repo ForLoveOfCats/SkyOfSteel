@@ -19,7 +19,7 @@ Software](https://www.gnu.org/philosophy/free-sw.html) (but
 technically not Copyleft). SkyOfSteel is monetarily free as well as
 user and developer respecting. Any previous version is accessible in
 source form and all new work is public even before being released. All
-code can be audited, whether it be SkyOfSteel's own code one of its
+code can be audited, whether it be SkyOfSteel's own code or one of its
 many dependencies. The game can always be built and run independently
 of any specific storefront. If there is some deficiency which has been
 decided to be low priority, an external contributor can still fix
