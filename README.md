@@ -12,6 +12,7 @@ Contributions are welcome!
 - [SkyOfSteel](#skyofsteel)
         - [Welcome to the GitHub repository of the game SkyOfSteel!](#welcome-to-the-github-repository-of-the-game-skyofsteel)
 - [Table of Contents](#table-of-contents)
+    - [Why Open Source?](#why-open-source)
     - [Download](#download)
     - [Newsletter](#newsletter)
     - [Videos](#videos)
@@ -25,6 +26,11 @@ Contributions are welcome!
     - [Contributing](#contributing)
     - [Contact](#contact)
     - [License](#license)
+
+
+## Why Open Source?
+[This](./FOSS.md) seperate document explains why SkyOfSteel is open
+source and what that means for its development.
 
 
 
@@ -112,24 +118,20 @@ of a specific feature.
 
 ## Contributing
 
-This is an ambitious project with much work left to do and you can help!
-
-Feel free to contribute in the following ways:
+While SkyOfSteel is not open source because it needs contributions,
+there are still ways for you to help!
 
 * Test and report bugs
-  * Much work has already been done and there are doubtless many bugs which remain undiscovered
-* Fix reported bugs by getting down and dirty with the source code :)
-  * Much work is left to be done and if you feel up to it you can help!
-* Contribute art and sound skills
-  * The term [Programmer Art](https://en.wikipedia.org/wiki/Programmer_art "Wikipedia page on Programmer Art")
-describes the temporary art and sound assets created hastily by those untalented in those fields in
-order to continue the development of a game. If you are talented in with modeling, texturing, or sound
-design please do contribute!
+  * Play the game! If you see a bug, report it!
 * Suggest new features
-  * Are you an ideas man? You can still help!
-* Spread information about SkyOfSteel
-  * All projects need good PR :)
-
+  * Got a great idea? Awesome! Open an issue detailing what you think
+    should be added/changed!
+* Spread the word about SkyOfSteel
+  * All projects need good PR ;)
+* Finally if you want you are welcome contribute to the codebase
+  * Open an issue detailing what you want to do and lets have a
+    discussion. This will prevent work being done on something and
+    then not being able to be merged.
 
 
 ## Contact
