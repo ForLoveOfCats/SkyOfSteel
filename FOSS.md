@@ -1,6 +1,6 @@
 # Why Open Source?
 SkyOfSteel has been open source under the MIT license for a majority
-of its existance now. It did not need to be open source, and it still
+of its existence now. It did not need to be open source, and it still
 does not need to be open source. So why did I bother open sourcing a
 video game? While I attempt to make SkyOfSteel friendly to individuals
 who wish to contribute, it does not need contributions. SkyOfSteel is
