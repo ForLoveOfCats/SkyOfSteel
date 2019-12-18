@@ -89,9 +89,9 @@ public abstract class Mob : KinematicBody, IInGrid, IPushable
 							Acceleration*Delta + Friction*Delta,
 							Acceleration*Delta + Friction*Delta
 						);
-						Vector3 Temp = ClampVec3(Momentum.Flattened(), 0, TopSpeed);
-						Momentum.x = Temp.x;
-						Momentum.z = Temp.z;
+						Vector3 Clamped = ClampVec3(Momentum.Flattened(), 0, TopSpeed);
+						Momentum.x = Clamped.x;
+						Momentum.z = Clamped.z;
 					}
 				},
 
@@ -112,12 +112,6 @@ public abstract class Mob : KinematicBody, IInGrid, IPushable
 				Momentum.y = -MaxFallSpeed;
 		}
 
-		if(Momentum.y <= 0)
-		{
-			Vector3 SnapPoint = Bottom + new Vector3(0, -2, 0);
-			Momentum = MoveAndSlideWithSnap(Momentum, SnapPoint, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
-		}
-		else
-			Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
+		Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
 	}
 }

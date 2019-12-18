@@ -12,7 +12,7 @@ public class CatMob : Mob
 
 	protected override float TopSpeed {
 		get {
-			return 45;
+			return 40;
 		}
 	}
 	protected override float Acceleration {
@@ -33,14 +33,13 @@ public class CatMob : Mob
 	}
 
 	private static Random RandomInstance = new Random();
-	private PointData Goal = null;
 
 
 	private void UpdateTargetPoint(PointData Closest)
 	{
-		var Path = World.Pathfinder.PlotPath(Closest, Goal);
-		if(Path.Count >= 1)
-			TargetPoint = Path.Last().Some();
+		int Count = Closest.Friends.Count;
+		if(Count > 0)
+			TargetPoint = Closest.Friends[RandomInstance.Next(Count)].Some();
 		else
 			TargetPoint = PointData.None();
 	}
@@ -48,24 +47,11 @@ public class CatMob : Mob
 
 	public override void CalcWants(Option<Tile> MaybeFloor)
 	{
-		if(Goal == null)
-		{
-			int Count = World.Pathfinder.Points.Count;
-			Goal = World.Pathfinder.Points[RandomInstance.Next(Count)];
-		}
-
 		MaybeFloor.Match(
 			some: Floor =>
 			{
 				TargetPoint.Match(
-					some: Target =>
-					{
-						if(Floor.Point == Goal)
-						{
-							int Count = World.Pathfinder.Points.Count;
-							Goal = World.Pathfinder.Points[RandomInstance.Next(Count)];
-						}
-					},
+					some: Target => {},
 
 					none: () =>
 					{
