@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class Mobs : Node
 {
-	public enum ID {Cat}
+	public enum ID {Slime}
 
 
 	private static Dictionary<ID, PackedScene> Scenes = null;
@@ -20,7 +20,7 @@ public class Mobs : Node
 		Self = this;
 
 		Scenes = new Dictionary<ID, PackedScene> {
-			{ID.Cat, GD.Load<PackedScene>("res://Mobs/CatMob.tscn")},
+			{ID.Slime, GD.Load<PackedScene>("res://Mobs/Slime/SlimeMob.tscn")},
 		};
 	}
 
