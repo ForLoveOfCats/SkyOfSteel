@@ -1065,6 +1065,8 @@ public class Player : KinematicBody, IPushable, IInventory
 		}
 		else
 		{
+			Vector3 Original = Momentum;
+
 			if(IsOnFloor() && Momentum.y <= 0)
 			{
 				Vector3 BottomPoint;
@@ -1078,6 +1080,8 @@ public class Player : KinematicBody, IPushable, IInventory
 			else
 				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
 
+			if(!IsOnWall() && !IsOnCeiling())
+				Momentum = Original;
 		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
