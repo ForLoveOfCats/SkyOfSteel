@@ -14,7 +14,7 @@ public class World : Node
 
 	public static Dictionary<Items.ID, PackedScene> Scenes = new Dictionary<Items.ID, PackedScene>();
 
-	public static float Time { get; private set; } = 15f*DayNightMinutes;
+	public static float TimeOfDay { get; private set; } = 15f*DayNightMinutes;
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
@@ -128,7 +128,7 @@ public class World : Node
 		MobsRoot.Name = "MobsRoot";
 		SkyScene.AddChild(MobsRoot);
 
-		Time = DayNightMinutes*60/4;
+		TimeOfDay = DayNightMinutes*60/4;
 		IsOpen = true;
 	}
 
@@ -212,9 +212,12 @@ public class World : Node
 	{
 		Directory SaveDir = new Directory();
 		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
-		{
 			System.IO.Directory.Delete($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}", true);
-		}
+		SaveDir.MakeDirRecursive($"user://Saves/{SaveNameArg}/Chunks");
+
+		SavedMeta Meta = new SavedMeta(TimeOfDay);
+		string SerializedMeta = Newtonsoft.Json.JsonConvert.SerializeObject(Meta);
+		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Meta.json", SerializedMeta);
 
 		int SaveCount = 0;
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
@@ -228,13 +231,22 @@ public class World : Node
 	public static bool Load(string SaveNameArg)
 	{
 		if(string.IsNullOrEmpty(SaveNameArg) || string.IsNullOrWhiteSpace(SaveNameArg))
-		{
-			throw new Exception("Invalid save name passed to World.Save");
-		}
+			throw new Exception("Invalid save name passed to World.Load");
+		if(!IsOpen)
+			throw new Exception("The world must be open to load a savefile");
 
 		Directory SaveDir = new Directory();
 		if(SaveDir.DirExists($"user://Saves/{SaveNameArg}"))
 		{
+			string MetaPath = $"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Meta.json";
+			if(SaveDir.FileExists(MetaPath))
+			{
+				string SerializedMeta = System.IO.File.ReadAllText(MetaPath);
+				SavedMeta Meta = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedMeta>(SerializedMeta);
+
+				TimeOfDay = Clamp(Meta.TimeOfDay, 0, 60f*DayNightMinutes);
+			}
+
 			Clear();
 			Net.SteelRpc(Self, nameof(RequestClear));
 			DefaultPlatforms();
@@ -271,6 +283,7 @@ public class World : Node
 					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveNameArg}'");
 				}
 			}
+
 			SaveName = SaveNameArg;
 			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveNameArg}'");
 			return true;
@@ -829,12 +842,6 @@ public class World : Node
 	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveNameArg)
 	{
 		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
-
-		Directory SaveDir = new Directory();
-		if(!SaveDir.DirExists($"user://Saves/{SaveNameArg}/Chunks"))
-		{
-			SaveDir.MakeDirRecursive($"user://Saves/{SaveNameArg}/Chunks");
-		}
 		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Chunks/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
@@ -960,18 +967,18 @@ public class World : Node
 		{
 			if(Net.Work.IsNetworkServer())
 			{
-				Time += Delta;
-				if(Time >= 60f*DayNightMinutes)
-					Time -= 60*DayNightMinutes;
-				Time = Clamp(Time, 0, 60f*DayNightMinutes);
-				Net.SteelRpcUnreliable(this, nameof(NetUpdateTime), Time);
+				TimeOfDay += Delta;
+				if(TimeOfDay >= 60f*DayNightMinutes)
+					TimeOfDay -= 60*DayNightMinutes;
+				TimeOfDay = Clamp(TimeOfDay, 0, 60f*DayNightMinutes);
+				Net.SteelRpcUnreliable(this, nameof(NetUpdateTime), TimeOfDay);
 			}
 
 			Grid.DoWork();
 
-			WorldSky.SunLatitude = Time * (360f / (DayNightMinutes*60f));
+			WorldSky.SunLatitude = TimeOfDay * (360f / (DayNightMinutes*60f));
 
-			float LightTime = Time;
+			float LightTime = TimeOfDay;
 			if(LightTime > 15f*DayNightMinutes)
 				LightTime = Clamp((30f*DayNightMinutes)-LightTime, 0, 15f*DayNightMinutes);
 			float Power = Clamp(((LightTime) / (DayNightMinutes*30f))*5f, 0, 1);
@@ -990,7 +997,7 @@ public class World : Node
 			Color DayGround = new Color(134f/255f, 195f/255f, 255f/255f, 1);
 			Color MorningGround = new Color(20f/255f, 29f/255f, 44f/255f, 1);
 
-			if(Time <= DayNightMinutes*60/2)
+			if(TimeOfDay <= DayNightMinutes*60/2)
 			{
 				WorldSky.SkyTopColor = SteelMath.LerpColor(MorningSkyTop, DaySkyTop, Power);
 				WorldSky.SkyHorizonColor = SteelMath.LerpColor(MorningHorizon, DayHorizon, Power);
@@ -998,10 +1005,10 @@ public class World : Node
 			else
 			{
 				float Diff;
-				if(Time < DayNightMinutes*60/4*3)
-					Diff = (DayNightMinutes*60/4*3 - Time) / (DayNightMinutes*60/4);
+				if(TimeOfDay < DayNightMinutes*60/4*3)
+					Diff = (DayNightMinutes*60/4*3 - TimeOfDay) / (DayNightMinutes*60/4);
 				else
-					Diff = (Time - DayNightMinutes*60/4*3) / (DayNightMinutes*60/4);
+					Diff = (TimeOfDay - DayNightMinutes*60/4*3) / (DayNightMinutes*60/4);
 				Diff = Mathf.Clamp(Diff, 0, 1);
 				Diff = Pow(Diff, 4);
 
@@ -1018,6 +1025,6 @@ public class World : Node
 	[Remote]
 	private void NetUpdateTime(float NewTime)
 	{
-		Time = NewTime;
+		TimeOfDay = NewTime;
 	}
 }
