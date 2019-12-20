@@ -958,10 +958,14 @@ public class World : Node
 	{
 		if(IsOpen)
 		{
-			Time += Delta;
-			if(Time >= 60f*DayNightMinutes)
-				Time -= 60*DayNightMinutes;
-			Time = Clamp(Time, 0, 60f*DayNightMinutes);
+			if(Net.Work.IsNetworkServer())
+			{
+				Time += Delta;
+				if(Time >= 60f*DayNightMinutes)
+					Time -= 60*DayNightMinutes;
+				Time = Clamp(Time, 0, 60f*DayNightMinutes);
+				Net.SteelRpcUnreliable(this, nameof(NetUpdateTime), Time);
+			}
 
 			Grid.DoWork();
 
@@ -1008,5 +1012,12 @@ public class World : Node
 
 			WorldSky.GroundBottomColor = SteelMath.LerpColor(MorningGround, DayGround, Power);
 		}
+	}
+
+
+	[Remote]
+	private void NetUpdateTime(float NewTime)
+	{
+		Time = NewTime;
 	}
 }
