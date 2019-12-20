@@ -25,7 +25,15 @@ public class PauseMenu : VBoxContainer
 			PlayingOn.Text = $"Connected to server at: {Net.Ip}";
 		}
 
-		if(!Net.Work.IsNetworkServer())
+		if(Net.Work.IsNetworkServer())
+		{
+			Button DisconnectButton = GetNode<Button>("DisconnectButton");
+			DisconnectButton.Text = "Save and Disconnect";
+
+			Button QuitButton = GetNode<Button>("QuitButton");
+			QuitButton.Text = "Save and Quit";
+		}
+		else
 		{
 			Button SaveButton = GetNode<Button>("SaveButton");
 			SaveButton.Disabled = true;
@@ -69,12 +77,18 @@ public class PauseMenu : VBoxContainer
 
 	public void DisconnectPressed()
 	{
+		if(Net.Work.IsNetworkServer() && World.SaveName != null)
+			World.Save(World.SaveName);
+
 		Net.Disconnect();
 	}
 
 
 	public void QuitPressed()
 	{
+		if(Net.Work.IsNetworkServer() && World.SaveName != null)
+			World.Save(World.SaveName);
+
 		Game.Quit();
 	}
 

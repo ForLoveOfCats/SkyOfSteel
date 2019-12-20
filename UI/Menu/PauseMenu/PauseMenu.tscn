@@ -18,82 +18,82 @@ __meta__ = {
 }
 
 [node name="Title" parent="." instance=ExtResource( 3 )]
-margin_top = 138.0
+margin_top = 105.0
 margin_right = 1024.0
-margin_bottom = 178.0
+margin_bottom = 157.0
 text = "SkyOfSteel"
 
 [node name="Version" parent="." instance=ExtResource( 2 )]
-margin_top = 182.0
+margin_top = 161.0
 margin_right = 1024.0
-margin_bottom = 201.0
+margin_bottom = 185.0
 text = "Version Placeholder Text"
 
 [node name="PlayingOn" parent="." instance=ExtResource( 2 )]
-margin_top = 205.0
+margin_top = 189.0
 margin_right = 1024.0
-margin_bottom = 224.0
+margin_bottom = 213.0
 text = "Playing On Placeholder Text"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 228.0
+margin_top = 217.0
 margin_right = 1024.0
-margin_bottom = 247.0
+margin_bottom = 241.0
 
 [node name="ReturnButton" parent="." instance=ExtResource( 5 )]
-margin_top = 251.0
+margin_top = 245.0
 margin_right = 1024.0
-margin_bottom = 276.0
+margin_bottom = 275.0
 text = "Return to Game"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 4 )]
-margin_top = 280.0
+margin_top = 279.0
 margin_right = 1024.0
-margin_bottom = 299.0
+margin_bottom = 303.0
 
 [node name="TeamSwitchBox" type="HBoxContainer" parent="."]
-margin_top = 303.0
+margin_top = 307.0
 margin_right = 1024.0
-margin_bottom = 328.0
+margin_bottom = 337.0
 
 [node name="LineEdit" type="LineEdit" parent="TeamSwitchBox"]
 margin_right = 829.0
-margin_bottom = 25.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 align = 1
 
 [node name="ChangeButton" parent="TeamSwitchBox" instance=ExtResource( 5 )]
 margin_left = 833.0
 margin_right = 1024.0
-margin_bottom = 25.0
+margin_bottom = 30.0
 text = "Apply Team Selection"
 
 [node name="SpacerLabel3" parent="." instance=ExtResource( 4 )]
-margin_top = 332.0
+margin_top = 341.0
 margin_right = 1024.0
-margin_bottom = 351.0
+margin_bottom = 365.0
 
 [node name="SaveButton" parent="." instance=ExtResource( 5 )]
-margin_top = 355.0
+margin_top = 369.0
 margin_right = 1024.0
-margin_bottom = 380.0
+margin_bottom = 399.0
 text = "Save"
 
 [node name="SpacerLabel4" parent="." instance=ExtResource( 4 )]
-margin_top = 384.0
+margin_top = 403.0
 margin_right = 1024.0
-margin_bottom = 403.0
+margin_bottom = 427.0
 
 [node name="DisconnectButton" parent="." instance=ExtResource( 5 )]
-margin_top = 407.0
+margin_top = 431.0
 margin_right = 1024.0
-margin_bottom = 432.0
+margin_bottom = 461.0
 text = "Disconnect"
 
 [node name="QuitButton" parent="." instance=ExtResource( 5 )]
-margin_top = 436.0
+margin_top = 465.0
 margin_right = 1024.0
-margin_bottom = 461.0
+margin_bottom = 495.0
 text = "Quit"
 [connection signal="pressed" from="ReturnButton" to="." method="ReturnPressed"]
 [connection signal="text_entered" from="TeamSwitchBox/LineEdit" to="." method="TeamChanged"]
