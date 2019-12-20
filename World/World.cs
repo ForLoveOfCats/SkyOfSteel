@@ -216,7 +216,7 @@ public class World : Node
 		SaveDir.MakeDirRecursive($"user://Saves/{SaveNameArg}/Chunks");
 
 		SavedMeta Meta = new SavedMeta(TimeOfDay);
-		string SerializedMeta = Newtonsoft.Json.JsonConvert.SerializeObject(Meta);
+		string SerializedMeta = Newtonsoft.Json.JsonConvert.SerializeObject(Meta, Newtonsoft.Json.Formatting.Indented);
 		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Meta.json", SerializedMeta);
 
 		int SaveCount = 0;
