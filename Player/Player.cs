@@ -38,7 +38,6 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float ViewmodelMomentumMax = 12; //Probably never reaches this max
 	public float ViewmodelMomentumHorzInputMultiplyer = 0.9f;
 	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
-	public float ViewmodelMomentumFriction = 30f;
 
 	public static float AdsMultiplyerMovementEffect = 1.66f;
 	public static float MinAdsMultiplyer = 0.7f;
@@ -1245,11 +1244,9 @@ public class Player : KinematicBody, IPushable, IInventory
 
 		Cam.Fov = Game.Fov*AdsMultiplyer;
 
-		ViewmodelMomentum = new Vector2(
-			Clamp(ViewmodelMomentum.x - ViewmodelMomentumFriction*Delta*ViewmodelMomentum.x, -ViewmodelMomentumMax, ViewmodelMomentumMax),
-			Clamp(ViewmodelMomentum.y - ViewmodelMomentumFriction*Delta*ViewmodelMomentum.y, -ViewmodelMomentumMax, ViewmodelMomentumMax)
-		);
-		ViewmodelMomentum = ClampVec2(ViewmodelMomentum, -ViewmodelMomentumMax, ViewmodelMomentumMax);
+		float Length = ViewmodelMomentum.Length();
+		Vector2 Normalized = ViewmodelMomentum.Normalized();
+		ViewmodelMomentum = Normalized * Clamp(Length - (Length*Delta*28f), 0, ViewmodelMomentumMax);
 
 		ViewmodelItem.RotationDegrees = new Vector3(
 			ViewmodelMomentum.y*AdsMultiplyer*1.2f,
