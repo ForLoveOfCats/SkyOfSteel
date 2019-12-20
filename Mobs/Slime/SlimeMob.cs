@@ -5,7 +5,7 @@ using static Pathfinding;
 
 
 
-public class SlimeMob : Mob
+public class SlimeMob : MobClass
 {
 	public const float AccelerationTime = 0.3f;
 	public const float DecelerationTime = 0.2f;

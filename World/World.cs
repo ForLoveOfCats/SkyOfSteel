@@ -325,6 +325,22 @@ public class World : Node
 	}
 
 
+	public static void AddMobToChunk(MobClass Mob)
+	{
+		var ChunkTuple = GetChunkTuple(Mob.Translation);
+		Mob.CurrentChunkTuple = ChunkTuple;
+
+		if(ChunkExists(Mob.Translation))
+			Chunks[ChunkTuple].Mobs.Add(Mob);
+		else
+		{
+			ChunkClass Chunk = new ChunkClass();
+			Chunk.Mobs.Add(Mob);
+			Chunks.Add(ChunkTuple, Chunk);
+		}
+	}
+
+
 	public static void AddItemToChunk(DroppedItem Item)
 	{
 		if(ChunkExists(Item.Translation))
@@ -737,6 +753,9 @@ public class World : Node
 	[Remote]
 	public void InitialNetWorldLoad(int Id, Vector3 PlayerPosition, int RenderDistance)
 	{
+		if(!Net.Work.IsNetworkServer())
+			throw new Exception($"Attempted to run {nameof(InitialNetWorldLoad)} on client");
+
 		RequestChunks(Id, PlayerPosition, RenderDistance);
 		Net.Players[Id].SetFreeze(false);
 		Net.Players[Id].GiveDefaultItems();
@@ -793,6 +812,11 @@ public class World : Node
 		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
 		{
 			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.Name});
+		}
+
+		foreach(MobClass Mob in Chunks[ChunkLocation].Mobs)
+		{
+			Mobs.Self.RpcId(Id, nameof(Mobs.NetSpawnMob), Mob.Type, Mob.Name);
 		}
 
 		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)

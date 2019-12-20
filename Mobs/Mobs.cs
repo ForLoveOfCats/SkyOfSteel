@@ -43,15 +43,18 @@ public class Mobs : Node
 		//Do some serverside housekeeping
 		string Name = System.Guid.NewGuid().ToString();
 		NetSpawnMob(Id, Name);
-		Net.SteelRpc(Self, nameof(RequestServerSpawnMob), Id, Name);
+		Net.SteelRpc(Self, nameof(NetSpawnMob), Id, Name);
 	}
 
 
-	private void NetSpawnMob(ID Id, string Name)
+	[Remote]
+	public void NetSpawnMob(ID Id, string Name)
 	{
-		Mob Instance = Scenes[Id].Instance() as Mob;
-		Instance.Translation = new Vector3(0, 2, 0);
-		Instance.Name = Name;
-		World.MobsRoot.AddChild(Instance);
+		MobClass Mob = Scenes[Id].Instance() as MobClass;
+		Mob.Type = Id;
+		Mob.Translation = new Vector3(0, 2, 0);
+		Mob.Name = Name;
+		World.AddMobToChunk(Mob);
+		World.MobsRoot.AddChild(Mob);
 	}
 }

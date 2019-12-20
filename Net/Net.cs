@@ -285,7 +285,7 @@ public class Net : Node
 	}
 
 
-	public static void UnloadAndRequestChunks()
+	public static void UnloadAndRequestChunks() //TODO: Why is this in Net?
 	{
 		if(!World.IsOpen)
 		{
@@ -304,6 +304,11 @@ public class Net : Node
 					foreach(Tile CurrentTile in Chunk.Value.Tiles)
 					{
 						CurrentTile.Show();
+					}
+
+					foreach(MobClass Mob in Chunk.Value.Mobs)
+					{
+						Mob.Show();
 					}
 
 					foreach(DroppedItem Item in Chunk.Value.Items)
@@ -329,6 +334,23 @@ public class Net : Node
 				foreach(Tile CurrentTile in TilesBeingRemoved)
 				{
 						CurrentTile.Remove(Force:true);
+				}
+
+				List<MobClass> MobsBeingRemoved = new List<MobClass>();
+				foreach(MobClass Mob in Chunk.Value.Mobs)
+				{
+					if(Self.GetTree().IsNetworkServer())
+					{
+						Mob.Hide();
+					}
+					else
+					{
+						MobsBeingRemoved.Add(Mob);
+					}
+				}
+				foreach(MobClass Mob in MobsBeingRemoved)
+				{
+					Mob.QueueFree();
 				}
 
 				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();

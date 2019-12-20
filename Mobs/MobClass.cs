@@ -7,10 +7,11 @@ using static Pathfinding;
 
 
 
-public abstract class Mob : KinematicBody, IInGrid, IPushable
+public abstract class MobClass : KinematicBody, IInGrid, IPushable
 {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
+	private const float MaxTimeSinceUpdate = 1f/30f;
 
 	protected abstract float TopSpeed { get; }
 	protected abstract float Acceleration { get; }
@@ -18,10 +19,15 @@ public abstract class Mob : KinematicBody, IInGrid, IPushable
 
 	protected abstract Vector3 Bottom { get; }
 
+	public Mobs.ID Type;
+
 	public Vector3 Momentum = new Vector3();
 	public Option<PointData> TargetPoint = PointData.None();
 	public Option<Tile> Floor = Tile.None();
 	public Vector3 CurrentArea = new Vector3();
+	public System.Tuple<int, int> CurrentChunkTuple;
+
+	float TimeSinceUpdate = 0;
 
 
 	public virtual void CalcWants(Option<Tile> MaybeFloor)
@@ -30,6 +36,12 @@ public abstract class Mob : KinematicBody, IInGrid, IPushable
 
 	public override void _Ready()
 	{
+		if(!Net.Work.IsNetworkServer())
+		{
+			SetProcess(false);
+			return;
+		}
+
 		World.Grid.AddItem(this);
 		UpdateFloor();
 	}
@@ -61,8 +73,16 @@ public abstract class Mob : KinematicBody, IInGrid, IPushable
 	}
 
 
-	public override void _Process(float Delta)
+	public override void _Process(float Delta) //NOTE: Only runs on server
 	{
+		TimeSinceUpdate += Delta;
+
+		if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
+		{
+			World.Chunks[CurrentChunkTuple].Mobs.Remove(this);
+			World.AddMobToChunk(this);
+		}
+
 		if(CurrentArea != GridClass.CalculateArea(Translation))
 		{
 			CurrentArea = GridClass.CalculateArea(Translation);
@@ -113,5 +133,29 @@ public abstract class Mob : KinematicBody, IInGrid, IPushable
 		}
 
 		Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
+		if(TimeSinceUpdate >= MaxTimeSinceUpdate)
+		{
+			TimeSinceUpdate = 0;
+
+			foreach(int Id in Net.PeerList)
+			{
+				if(Id == Net.Work.GetNetworkUniqueId())
+					continue;
+
+				var ChunkTuple = World.GetChunkTuple(Translation);
+				if(World.RemoteLoadedChunks[Id].Contains(ChunkTuple))
+				{
+					//This player has our chunk loaded, update
+					RpcId(Id, nameof(Update), Translation);
+				}
+			}
+		}
+	}
+
+
+	[Remote]
+	public void Update(Vector3 Position)
+	{
+		Translation = Position;
 	}
 }
