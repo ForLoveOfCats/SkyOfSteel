@@ -28,7 +28,7 @@ public class SlimeMob : MobClass
 
 	protected override Vector3 Bottom {
 		get {
-			return new Vector3(0, -1f, 0);
+			return new Vector3(0, -2f, 0);
 		}
 	}
 
