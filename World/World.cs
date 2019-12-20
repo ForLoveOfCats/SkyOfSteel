@@ -68,9 +68,9 @@ public class World : Node
 		foreach(Items.ID Type in System.Enum.GetValues(typeof(Items.ID)))
 		{
 			File ToLoad = new File();
-			if(ToLoad.FileExists("res://World/Scenes/" + Type.ToString() + ".tscn"))
+			if(ToLoad.FileExists($"res://World/Scenes/{Type}.tscn"))
 			{
-				Scenes.Add(Type, GD.Load("res://World/Scenes/" + Type.ToString() + ".tscn") as PackedScene);
+				Scenes.Add(Type, GD.Load($"res://World/Scenes/{Type}.tscn") as PackedScene);
 			}
 			else
 			{
