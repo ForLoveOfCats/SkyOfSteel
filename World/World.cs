@@ -116,6 +116,8 @@ public class World : Node
 		SkyScene.Name = "SkyScene";
 		Game.RuntimeRoot.AddChild(SkyScene);
 
+		SkyScene.AddChild(new Starfield());
+
 		TilesRoot = new Node();
 		TilesRoot.Name = "TilesRoot";
 		SkyScene.AddChild(TilesRoot);
