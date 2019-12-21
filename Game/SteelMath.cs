@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using static Godot.Mathf;
 
 
@@ -62,5 +63,11 @@ public static class SteelMath
 		Out.b = Lerp(A.b, B.b, T);
 		Out.a = Lerp(A.a, B.a, T);
 		return Out;
+	}
+
+
+	public static float RandomSign(this Random Self)
+	{
+		return Sign((float)Self.Next(-1, 1));
 	}
 }

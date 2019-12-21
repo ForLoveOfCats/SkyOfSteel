@@ -8,6 +8,6 @@ params_billboard_mode = 1
 params_billboard_keep_scale = true
 
 [node name="MeshInstance" type="MeshInstance"]
-transform = Transform( 90, 0, 0, 0, 90, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( 100, 0, 0, 0, 100, 0, 0, 0, 1, 0, 0, 0 )
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )

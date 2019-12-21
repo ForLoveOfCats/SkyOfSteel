@@ -985,7 +985,7 @@ public class World : Node
 				LightTime = Clamp((30f*DayNightMinutes)-LightTime, 0, 15f*DayNightMinutes);
 			float Power = Clamp(((LightTime) / (DayNightMinutes*30f))*5f, 0, 1);
 
-			WorldEnv.AmbientLightEnergy = Clamp(Power, 0.1f, 1);
+			WorldEnv.AmbientLightEnergy = Clamp(Power, 0.05f, 1);
 
 			Color DaySkyTop = new Color(179f/255f, 213f/255f, 255f/255f, 1);
 			Color MorningSkyTop = new Color(34f/255f, 50f/255f, 78f/255f, 1);

@@ -24,9 +24,13 @@ public class Starfield : Spatial
 			MeshInstance Star = StarScene.Instance() as MeshInstance;
 			AddChild(Star);
 
-			Vector3 Pos = new Vector3(0, 0, 50000);
-			Pos = Pos.Rotated(new Vector3(1,0,0), Deg2Rad(Rand.Next(-90, 0)));
-			Pos = Pos.Rotated(new Vector3(0,1,0), Deg2Rad(Rand.Next(0, 360)));
+			Vector3 Pos = new Vector3(
+				(float)Rand.NextDouble()/2f * Rand.RandomSign(),
+				(float)Rand.NextDouble()/2f,
+				(float)Rand.NextDouble()/2f * Rand.RandomSign()
+			);
+			Pos = Pos.Normalized() * 50000;
+
 			Star.Translation = Pos;
 		}
 	}
