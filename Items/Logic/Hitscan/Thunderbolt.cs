@@ -20,9 +20,9 @@ public static class Thunderbolt
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
 
 		if(UsingPlayer.IsCrouching)
-			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer*Hitscan.CrouchAffectPercentage, true);
+			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplier*Hitscan.CrouchAffectPercentage, true);
 		else
-			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer, true);
+			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplier, true);
 
 		UsingPlayer.SfxManager.FpThunderboltFire();
 	}

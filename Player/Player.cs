@@ -11,10 +11,10 @@ public class Player : KinematicBody, IPushable, IInventory
 	public bool Possessed = false;
 	public int Id = 0;
 
-	public float Hight = 10;
-	public float RequiredUncrouchHight = 11;
+	public float Height = 10;
+	public float RequiredUncrouchHeight = 11;
 	public float MovementSpeed = 36;
-	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
+	public float FlySprintMultiplier = 5; //Speed while sprint flying is base speed times this value
 	public float CrouchMovementDivisor = 2.8f;
 	public float MaxVerticalSpeed = 100f;
 	public float AirAcceleration = 25; //How many units per second to accelerate
@@ -22,7 +22,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float Friction { get { return MovementSpeed / DecelerateTime; } }
 	public float SlideFrictionDivisor = 13;
 	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
-	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplyer) / FlyDecelerateTime; } }
+	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplier) / FlyDecelerateTime; } }
 	public float JumpStartForce = 22f;
 	public float JumpContinueForce = 0.41f;
 	public float MaxJumpLength = 0.22f;
@@ -36,15 +36,15 @@ public class Player : KinematicBody, IPushable, IInventory
 	public float MaxHealth = 100;
 	public float LookDivisor = 6;
 	public float ViewmodelMomentumMax = 12; //Probably never reaches this max
-	public float ViewmodelMomentumHorzInputMultiplyer = 0.9f;
-	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
+	public float ViewmodelMomentumHorzInputMultiplier = 0.9f;
+	public float ViewmodelMomentumVertInputMultiplier = 0.9f;
 
-	public static float AdsMultiplyerMovementEffect = 1.66f;
-	public static float MinAdsMultiplyer = 0.7f;
+	public static float AdsMultiplierMovementEffect = 1.66f;
+	public static float MinAdsMultiplier = 0.7f;
 	public static float AdsTime = 0.15f; //Seconds to achieve full ads
 
 	public bool Ads = false;
-	public float AdsMultiplyer = 1;
+	public float AdsMultiplier = 1;
 
 	private const float SfxMinLandMomentumY = 3;
 
@@ -57,7 +57,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	private int __team = 1;
 	public int Team
 	{
-		get { return __team; }
+		get => __team;
 		set
 		{
 			__team = value;
@@ -543,9 +543,9 @@ public class Player : KinematicBody, IPushable, IInventory
 			Plr.IsFlySprinting = true;
 
 			if(Plr.JumpAxis == 1)
-				Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+				Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplier;
 			else if(Plr.IsCrouching)
-				Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+				Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplier;
 		}
 		else
 		{
@@ -566,7 +566,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			{
 				if(Plr.IsFlySprinting)
 				{
-					Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+					Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplier;
 				}
 				else
 				{
@@ -608,7 +608,7 @@ public class Player : KinematicBody, IPushable, IInventory
 				Plr.JumpSens = 0;
 
 				if(Plr.IsFlySprinting)
-					Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplyer;
+					Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplier;
 				else
 					Plr.Momentum.y = -Plr.MovementSpeed;
 			}
@@ -642,7 +642,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public float CalcViewmodelMomentumChange(float Sens)
 	{
-		return ((float)Math.Log10(Sens+1)) * 3f * AdsMultiplyer;
+		return ((float)Math.Log10(Sens+1)) * 3f * AdsMultiplier;
 	}
 
 
@@ -652,13 +652,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.ApplyLookVertical(Change);
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
 			);
 		}
 	}
@@ -670,13 +670,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.ApplyLookVertical(-Change);
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
 			);
 		}
 	}
@@ -688,13 +688,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.LookHorizontal -= Change;
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -707,13 +707,13 @@ public class Player : KinematicBody, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.LookHorizontal += Change;
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -735,8 +735,7 @@ public class Player : KinematicBody, IPushable, IInventory
 					RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 					if(BuildRayCast.IsColliding())
 					{
-						Tile Base = BuildRayCast.GetCollider() as Tile;
-						if(Base != null && Plr.GhostInstance.CanBuild)
+						if(BuildRayCast.GetCollider() is Tile Base && Plr.GhostInstance.CanBuild)
 						{
 							Vector3? PlacePosition = Items.TryCalculateBuildPosition(
 								Plr.GhostInstance.CurrentMeshType,
@@ -792,8 +791,7 @@ public class Player : KinematicBody, IPushable, IInventory
 					RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
 					if(BuildRayCast.IsColliding())
 					{
-						Tile Hit = BuildRayCast.GetCollider() as Tile;
-						if(Hit != null)
+						if(BuildRayCast.GetCollider() is Tile Hit)
 						{
 							Hit.NetRemove();
 							Plr.SetCooldown(0, Plr.BuildingCooldown, true);
@@ -884,16 +882,12 @@ public class Player : KinematicBody, IPushable, IInventory
 
 	public float GetAdsMovementMultiplyer()
 	{
-		return Clamp(((AdsMultiplyer-1) * AdsMultiplyerMovementEffect)+1, 0, 1);
+		return Clamp(((AdsMultiplier-1) * AdsMultiplierMovementEffect)+1, 0, 1);
 	}
 
 
 	public Vector3 AirAccelerate(Vector3 Vel, Vector3 WishDir, float Delta)
 	{
-		float Acceleration = AirAcceleration;
-		if(IsCrouching)
-			Acceleration /= CrouchMovementDivisor;
-
 		WishDir = ClampVec3(WishDir, 0, 1) * (AirAcceleration*GetAdsMovementMultiplyer());
 		float CurrentSpeed = Vel.Dot(WishDir);
 		float AddSpeed = AirAcceleration*GetAdsMovementMultiplyer() - CurrentSpeed;
@@ -988,7 +982,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			float SpeedLimit = MovementSpeed*GetAdsMovementMultiplyer();
 			if(FlyMode && IsFlySprinting)
-				SpeedLimit *= FlySprintMultiplyer;
+				SpeedLimit *= FlySprintMultiplier;
 			else if(IsCrouching)
 				SpeedLimit = (MovementSpeed*GetAdsMovementMultiplyer())/CrouchMovementDivisor;
 
@@ -1021,8 +1015,8 @@ public class Player : KinematicBody, IPushable, IInventory
 				Vector3 WishDir = ClampVec3(new Vector3(X, 0, Z), 0, 1) * SpeedLimit;
 				WishDir = WishDir.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal));
 
-				float Multiplyer = Clamp(SpeedLimit - Momentum.Flattened().Length(), 0, SpeedLimit) / SpeedLimit;
-				WishDir *= Multiplyer;
+				float Multiplier = Clamp(SpeedLimit - Momentum.Flattened().Length(), 0, SpeedLimit) / SpeedLimit;
+				WishDir *= Multiplier;
 
 				Momentum.x += WishDir.x;
 				Momentum.z += WishDir.z;
@@ -1096,8 +1090,8 @@ public class Player : KinematicBody, IPushable, IInventory
 		{
 			PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 
-			Godot.Collections.Dictionary DownResults = State.IntersectRay(Translation, Translation - new Vector3(0, Hight, 0), new Godot.Collections.Array{this}, 1);
-			Godot.Collections.Dictionary UpResults = State.IntersectRay(Translation, Translation + new Vector3(0, Hight, 0), new Godot.Collections.Array{this}, 1);
+			Godot.Collections.Dictionary DownResults = State.IntersectRay(Translation, Translation - new Vector3(0, Height, 0), new Godot.Collections.Array{this}, 1);
+			Godot.Collections.Dictionary UpResults = State.IntersectRay(Translation, Translation + new Vector3(0, Height, 0), new Godot.Collections.Array{this}, 1);
 
 			bool UnCrouch = true;
 			if(DownResults.Count > 0 && UpResults.Count > 0)
@@ -1105,7 +1099,7 @@ public class Player : KinematicBody, IPushable, IInventory
 				float DownY = ((Vector3)DownResults["position"]).y;
 				float UpY = ((Vector3)UpResults["position"]).y;
 
-				if(UpY - DownY <= RequiredUncrouchHight)
+				if(UpY - DownY <= RequiredUncrouchHeight)
 					UnCrouch = false;
 			}
 
@@ -1118,8 +1112,8 @@ public class Player : KinematicBody, IPushable, IInventory
 				if(DownResults.Count > 0)
 				{
 					float DownY = ((Vector3)DownResults["position"]).y;
-					if(Translation.y - DownY <= Hight/2)
-						Translation = new Vector3(Translation.x, DownY + (Hight/2), Translation.z);
+					if(Translation.y - DownY <= Height/2)
+						Translation = new Vector3(Translation.x, DownY + (Height/2), Translation.z);
 				}
 			}
 		}
@@ -1178,7 +1172,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			NetUpdateDelta*20
 		);
 
-		if(Round(ForwardMomentum) == 0 && !Jumping)
+		if(RoundToInt(ForwardMomentum) == 0 && !Jumping)
 		{
 			RightLegFlames.Emitting = false;
 			LeftLegFlames.Emitting = false;
@@ -1212,9 +1206,7 @@ public class Player : KinematicBody, IPushable, IInventory
 	[Remote]
 	public void NetUpdateInventorySlot(int Slot, Items.ID Id, int Count)
 	{
-		Inventory[Slot] = new Items.Instance(Id);
-		Inventory[Slot].Count = Count;
-
+		Inventory[Slot] = new Items.Instance(Id) {Count = Count};
 		HUDInstance.HotbarUpdate();
 	}
 
@@ -1223,7 +1215,6 @@ public class Player : KinematicBody, IPushable, IInventory
 	public void NetEmptyInventorySlot(int Slot)
 	{
 		Inventory[Slot] = null;
-
 		HUDInstance.HotbarUpdate();
 	}
 
@@ -1236,30 +1227,30 @@ public class Player : KinematicBody, IPushable, IInventory
 			return;
 		}
 
-		Assert(MinAdsMultiplyer > 0 && MinAdsMultiplyer <= 1);
-		if(Ads)
-			AdsMultiplyer = Clamp(AdsMultiplyer - (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
-		else
-			AdsMultiplyer = Clamp(AdsMultiplyer + (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
+		Assert(MinAdsMultiplier > 0 && MinAdsMultiplier <= 1);
+		AdsMultiplier =
+			Ads
+				? Clamp(AdsMultiplier - (Delta * (1 - MinAdsMultiplier) / AdsTime), MinAdsMultiplier, 1)
+				: Clamp(AdsMultiplier + (Delta * (1 - MinAdsMultiplier) / AdsTime), MinAdsMultiplier, 1);
 
-		Cam.Fov = Game.Fov*AdsMultiplyer;
+		Cam.Fov = Game.Fov*AdsMultiplier;
 
 		float Length = ViewmodelMomentum.Length();
 		Vector2 Normalized = ViewmodelMomentum.Normalized();
 		ViewmodelMomentum = Normalized * Clamp(Length - (Length*Delta*28f), 0, ViewmodelMomentumMax);
 
 		ViewmodelItem.RotationDegrees = new Vector3(
-			ViewmodelMomentum.y*AdsMultiplyer*1.2f,
-			180 - ViewmodelMomentum.x*AdsMultiplyer*1.2f,
+			ViewmodelMomentum.y*AdsMultiplier*1.2f,
+			180 - ViewmodelMomentum.x*AdsMultiplier*1.2f,
 			0
 		);
 		ViewmodelArmJoint.RotationDegrees = new Vector3(
-			ViewmodelMomentum.y*AdsMultiplyer,
-			ViewmodelMomentum.x*AdsMultiplyer,
+			ViewmodelMomentum.y*AdsMultiplier,
+			ViewmodelMomentum.x*AdsMultiplier,
 			0
 		);
 		ViewmodelArmJoint.Translation = new Vector3(
-			NormalViewmodelArmX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
+			NormalViewmodelArmX * ((AdsMultiplier-MinAdsMultiplier) * (1/(1-MinAdsMultiplier))),
 			ViewmodelArmJoint.Translation.y,
 			ViewmodelArmJoint.Translation.z
 		);

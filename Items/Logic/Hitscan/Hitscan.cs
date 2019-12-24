@@ -167,8 +167,8 @@ public class Hitscan : Spatial
 	public static void ApplyAdditiveRecoil(float Height, float Length)
 	{
 		//Lessen recoil when ADS
-		Height *= Game.PossessedPlayer.AdsMultiplyer;
-		Length *= Game.PossessedPlayer.AdsMultiplyer;
+		Height *= Game.PossessedPlayer.AdsMultiplier;
+		Length *= Game.PossessedPlayer.AdsMultiplier;
 
 		//Lessen recoil when crouching
 		if(Game.PossessedPlayer.IsCrouching)
@@ -188,8 +188,8 @@ public class Hitscan : Spatial
 		Player Plr = Game.PossessedPlayer;
 
 		//Lessen recoil when ADS
-		VerticalRecoil *= Plr.AdsMultiplyer;
-		HorizontalRecoil *= Plr.AdsMultiplyer;
+		VerticalRecoil *= Plr.AdsMultiplier;
+		HorizontalRecoil *= Plr.AdsMultiplier;
 
 		//Lessen recoil when crouching
 		if(Plr.IsCrouching)

@@ -5,4 +5,5 @@
 mono_crash.*.json
 packages
 Export
-DoxygenOutput
+.idea
+*.DotSettings*
