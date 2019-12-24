@@ -208,21 +208,16 @@ public class Net : Node
 	{
 		if(Self.GetTree().NetworkPeer != null)
 		{
-			if(Self.GetTree().IsNetworkServer())
-			{
-				Console.ThrowPrint("Cannot host when already hosting");
-			}
-			else
-			{
-				Console.ThrowPrint("Cannot host when connected to a server");
-			}
+			Console.ThrowPrint(Self.GetTree().IsNetworkServer()
+				? "Cannot host when already hosting"
+				: "Cannot host when connected to a server");
 			return;
 		}
 
 		PeerList.Clear();
 		World.Start();
 
-		NetworkedMultiplayerENet Peer = new NetworkedMultiplayerENet();
+		var Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);
 		Self.GetTree().NetworkPeer = Peer;
 		Self.GetTree().SetMeta("network_peer", Peer);
@@ -238,7 +233,7 @@ public class Net : Node
 
 
 	[Signal]
-	delegate void ConnectToFailed(string Ip);
+	public delegate void ConnectToFailed(string Ip);
 
 
 	public static void ConnectTo(string InIp)

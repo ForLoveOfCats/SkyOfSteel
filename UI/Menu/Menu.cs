@@ -10,18 +10,18 @@ public class Menu : Node
 	private static ScrollContainer Center;
 	private static Node Contents = null;
 
-	private static PackedScene Intro;
-	private static PackedScene Update;
-	private static PackedScene Nick;
-	private static PackedScene Main;
-	private static PackedScene Help;
-	private static PackedScene Credits;
-	private static PackedScene Licenses;
-	private static PackedScene Host;
-	private static PackedScene ConnectMenu;
-	private static PackedScene WaitConnecting;
-	private static PackedScene PauseMenu;
-	private static PackedScene InventoryMenu;
+	private static readonly PackedScene Intro;
+	private static readonly PackedScene Update;
+	private static readonly PackedScene Nick;
+	private static readonly PackedScene Main;
+	private static readonly PackedScene Help;
+	private static readonly PackedScene Credits;
+	private static readonly PackedScene Licenses;
+	private static readonly PackedScene Host;
+	private static readonly PackedScene ConnectMenu;
+	private static readonly PackedScene WaitConnecting;
+	private static readonly PackedScene PauseMenu;
+	private static readonly PackedScene InventoryMenu;
 
 	static Menu()
 	{
@@ -166,7 +166,7 @@ public class Menu : Node
 		Reset();
 
 		Contents = WaitConnecting.Instance();
-		Net.Self.Connect("ConnectToFailed", Contents, "ConnectFailed");
+		Net.Self.Connect(nameof(Net.ConnectToFailed), Contents, "ConnectFailed");
 		Center.AddChild(Contents);
 	}
 

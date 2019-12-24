@@ -5,7 +5,7 @@ using System;
 public class Game : Node
 {
 	public const string Version = "0.2-dev"; //Yes it's a string shush
-	public static string RemoteVersion = null; //What is the latest version available online
+	public static string RemoteVersion; //What is the latest version available online
 	public const string DefaultNickname = "BrianD";
 
 	public static Node RuntimeRoot;
@@ -28,16 +28,14 @@ public class Game : Node
 
 		Self = this;
 
-		using(System.Net.WebClient WebClient = new System.Net.WebClient())
+		using System.Net.WebClient WebClient = new System.Net.WebClient();
+		try //Make sure game is still playable if url becomes invalid
 		{
-			try //Make sure game is still playable if url becomes invalid
-			{
-				RemoteVersion = WebClient.DownloadString("http://skyofsteel.org/LatestVersion.txt");
-				RemoteVersion = RemoteVersion.Trim();
-			}
-			catch
-			{}
+			RemoteVersion = WebClient.DownloadString("http://skyofsteel.org/LatestVersion.txt");
+			RemoteVersion = RemoteVersion.Trim();
 		}
+		catch
+		{ /*Ignored*/ }
 	}
 
 
@@ -49,7 +47,7 @@ public class Game : Node
 		Menu.Setup();
 		Menu.BuildIntro();
 
-		GetViewport().Msaa = Viewport.MSAA.Msaa4x; //Always on antialiasing, TODO add settings for this
+		GetViewport().Msaa = Viewport.MSAA.Msaa4x; //Always on anti-aliasing, TODO add settings for this
 	}
 
 
@@ -115,7 +113,7 @@ public class Game : Node
 
 	public static void SpawnPlayer(int Id, bool Possess)
 	{
-		Player NewPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
+		var NewPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
 		NewPlayer.Possessed = Possess;
 		NewPlayer.Id = Id;
 		NewPlayer.Name = Id.ToString();
@@ -132,7 +130,7 @@ public class Game : Node
 	}
 
 
-	static public void CopyFolder(string SourceFolder, string DestFolder) //TODO: Clean up
+	public static void CopyFolder(string SourceFolder, string DestFolder) //TODO: Clean up
 	{
 		if(System.IO.Directory.Exists(DestFolder))
 			System.IO.Directory.CreateDirectory(DestFolder);
