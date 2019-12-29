@@ -32,9 +32,9 @@ public class RocketJumper : Node
 
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
-		JumperRocket Rocket = JumperRocketScene.Instance() as JumperRocket;
+		var Rocket = (JumperRocket) JumperRocketScene.Instance();
 		Rocket.IsLocal = true;
-		Rocket.Player = UsingPlayer;
+		Rocket.FiringPlayer = UsingPlayer;
 		Rocket.Translation = UsingPlayer.ProjectileEmitter.GlobalTransform.origin;
 		Rocket.RotationDegrees = new Vector3(-UsingPlayer.IntendedLookVertical, UsingPlayer.LookHorizontal, 0);
 		Rocket.Momentum = new Vector3(0, 0, RocketTravelSpeed)
@@ -53,7 +53,7 @@ public class RocketJumper : Node
 	[Remote]
 	public void RemoteFire(Vector3 Position, Vector3 Rotation, Vector3 Momentum, string Name)
 	{
-		JumperRocket Rocket = JumperRocketScene.Instance() as JumperRocket;
+		var Rocket = (JumperRocket) JumperRocketScene.Instance();
 		Rocket.IsLocal = false;
 		Rocket.Translation = Position;
 		Rocket.RotationDegrees = Rotation;

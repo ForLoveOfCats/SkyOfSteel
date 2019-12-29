@@ -170,7 +170,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 			AddChild(HUDInstance);
 
-			GhostInstance = ((PackedScene)(GD.Load("res://World/Ghost.tscn"))).Instance() as Ghost;
+			GhostInstance = (Ghost) GD.Load<PackedScene>("res://World/Ghost.tscn").Instance();
 			GhostInstance.Hide();
 			GetParent().CallDeferred("add_child", GhostInstance);
 
@@ -732,7 +732,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			{
 				if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].PositionDelegate != null)
 				{
-					RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
+					var BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
 					if(BuildRayCast.IsColliding())
 					{
 						if(BuildRayCast.GetCollider() is Tile Base && Plr.GhostInstance.CanBuild)
@@ -788,7 +788,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			{
 				if(Plr.CurrentCooldown >= Plr.CurrentMaxCooldown)
 				{
-					RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
+					RayCast BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
 					if(BuildRayCast.IsColliding())
 					{
 						if(BuildRayCast.GetCollider() is Tile Hit)
@@ -1188,7 +1188,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		else
 		{
 			ThirdPersonItem.Mesh = Items.Meshes[ItemId];
-			(ThirdPersonItem.MaterialOverride as ShaderMaterial).SetShaderParam("texture_albedo", Items.Textures[ItemId]);
+			((ShaderMaterial)ThirdPersonItem.MaterialOverride).SetShaderParam("texture_albedo", Items.Textures[ItemId]);
 			ThirdPersonItem.Show();
 		}
 

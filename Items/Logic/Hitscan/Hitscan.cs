@@ -209,7 +209,7 @@ public class Hitscan : Spatial
 	[Remote]
 	public void DrawTrail(Vector3 Start, Vector3 End) //Must be non-static to be RPC-ed
 	{
-		HitscanTrail Trail = HitscanTrailScene.Instance() as HitscanTrail;
+		var Trail = (HitscanTrail) HitscanTrailScene.Instance();
 		World.EntitiesRoot.AddChild(Trail);
 		Trail.Translation = (Start + End) / 2;
 

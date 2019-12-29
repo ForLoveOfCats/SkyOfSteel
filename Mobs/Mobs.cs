@@ -40,20 +40,20 @@ public class Mobs : Node
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Attempted to run {nameof(RequestServerSpawnMob)} on client");
 
-		//Do some serverside housekeeping
-		string Name = System.Guid.NewGuid().ToString();
-		NetSpawnMob(Id, Name);
-		Net.SteelRpc(Self, nameof(NetSpawnMob), Id, Name);
+		//Do some server side housekeeping
+		string GuidName = System.Guid.NewGuid().ToString();
+		NetSpawnMob(Id, GuidName);
+		Net.SteelRpc(Self, nameof(NetSpawnMob), Id, GuidName);
 	}
 
 
 	[Remote]
-	public void NetSpawnMob(ID Id, string Name)
+	public void NetSpawnMob(ID Id, string GuidName)
 	{
-		MobClass Mob = Scenes[Id].Instance() as MobClass;
+		var Mob = (MobClass) Scenes[Id].Instance();
 		Mob.Type = Id;
 		Mob.Translation = new Vector3(0, 2, 0);
-		Mob.Name = Name;
+		Mob.Name = GuidName;
 		World.AddMobToChunk(Mob);
 		World.MobsRoot.AddChild(Mob);
 	}

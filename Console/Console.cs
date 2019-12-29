@@ -26,10 +26,10 @@ public class Console : Node
 
 	public override void _Ready()
 	{
-		Window = GetTree().Root.GetNode("RuntimeRoot/ConsoleWindow") as ConsoleWindow;
-		InputLine = Window.GetNode("VBox/LineEdit") as LineEdit;
+		Window = GetTree().Root.GetNode<ConsoleWindow>("RuntimeRoot/ConsoleWindow");
+		InputLine = Window.GetNode<LineEdit>("VBox/LineEdit");
 		ConsoleLabel = Window.GetNode("VBox/HBox/Console") as RichTextLabel;
-		LogLabel = Window.GetNode("VBox/HBox/Log") as RichTextLabel;
+		LogLabel = Window.GetNode<RichTextLabel>("VBox/HBox/Log");
 		Console.Print("");
 		LogLabel.Text += "\n";
 	}

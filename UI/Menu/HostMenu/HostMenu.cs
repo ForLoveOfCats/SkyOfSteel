@@ -79,7 +79,7 @@ public class HostMenu : VBoxContainer
 
 			foreach(string Name in Names)
 			{
-				SlotButton Instanced = SlotButtonScene.Instance() as SlotButton;
+				var Instanced = (SlotButton) SlotButtonScene.Instance();
 				Instanced.HostMenuInstance = this;
 				Instanced.Text = Name;
 				SlotsVBox.AddChild(Instanced);
@@ -88,7 +88,7 @@ public class HostMenu : VBoxContainer
 
 		if(Names.Count <= 0)
 		{
-			Label Message = LabelPieceScene.Instance() as Label;
+			var Message = (Label) LabelPieceScene.Instance();
 			Message.Text = "No saves to load";
 			SlotsVBox.AddChild(Message);
 		}

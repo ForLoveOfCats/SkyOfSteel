@@ -113,16 +113,14 @@ public class Game : Node
 
 	public static void SpawnPlayer(int Id, bool Possess)
 	{
-		var NewPlayer = ((PackedScene)GD.Load("res://Player/Player.tscn")).Instance() as Player;
+		var NewPlayer = (Player) GD.Load<PackedScene>("res://Player/Player.tscn").Instance();
 		NewPlayer.Possessed = Possess;
 		NewPlayer.Id = Id;
 		NewPlayer.Name = Id.ToString();
 		Net.Players.Add(Id, NewPlayer);
 
 		if(Possess)
-		{
 			PossessedPlayer = NewPlayer;
-		}
 
 		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 

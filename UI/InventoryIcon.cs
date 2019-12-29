@@ -55,7 +55,7 @@ public class InventoryIcon : TextureButton
 
 	public void UpdateSize()
 	{
-		float VBoxHight = (GetParent() as VBoxContainer).RectSize.y;
-		RectMinSize = new Vector2(VBoxHight/11, VBoxHight/11);
+		float VBoxHeight = ((VBoxContainer)GetParent()).RectSize.y;
+		RectMinSize = new Vector2(VBoxHeight/11, VBoxHeight/11);
 	}
 }

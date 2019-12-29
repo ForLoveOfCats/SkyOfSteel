@@ -21,7 +21,7 @@ public class Starfield : Spatial
 		Random Rand = new Random();
 		for(int i = 0; i < 1000; i++)
 		{
-			MeshInstance Star = StarScene.Instance() as MeshInstance;
+			var Star = (MeshInstance) StarScene.Instance();
 			AddChild(Star);
 
 			Vector3 Pos = new Vector3(

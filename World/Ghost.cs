@@ -57,7 +57,7 @@ public class Ghost : Area
 
 	public override void _Ready()
 	{
-		GhostMesh = ((PackedScene)(GD.Load("res://World/GhostMesh.tscn"))).Instance() as MeshInstance;
+		GhostMesh = (MeshInstance) GD.Load<PackedScene>("res://World/GhostMesh.tscn").Instance();
 		GetParent().AddChild(GhostMesh);
 
 		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
@@ -83,11 +83,10 @@ public class Ghost : Area
 		OldVisible.Add(false);
 		if(Plr.Inventory[Plr.InventorySlot] != null)
 		{
-			RayCast BuildRayCast = Plr.GetNode("SteelCamera/RayCast") as RayCast;
+			var BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
 			if(BuildRayCast.IsColliding())
 			{
-				Tile Base = BuildRayCast.GetCollider() as Tile;
-				if(Base != null)
+				if(BuildRayCast.GetCollider() is Tile Base)
 				{
 					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)

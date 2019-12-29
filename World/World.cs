@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using static Godot.Mathf;
 using static SteelMath;
@@ -56,7 +55,7 @@ public class World : Node
 			{
 				break;
 			}
-			PackedScene Scene = GD.Load("res://World/Scenes/"+FileName) as PackedScene;
+			var Scene = GD.Load<PackedScene>("res://World/Scenes/"+FileName);
 			if((Scene.Instance() as Tile) == null)
 			{
 				throw new System.Exception($"Tile scene '{FileName}' does not inherit Structure");
@@ -89,7 +88,7 @@ public class World : Node
 
 	public static void DebugPlot(Vector3 Position, float MaxLife = 0)
 	{
-		var Point = DebugPlotPointScene.Instance() as DebugPlotPoint;
+		var Point = (DebugPlotPoint) DebugPlotPointScene.Instance();
 		Point.MaxLife = MaxLife;
 		EntitiesRoot.AddChild(Point);
 		Point.Translation = Position;
@@ -415,7 +414,7 @@ public class World : Node
 			}
 		}
 
-		Tile Branch = Scenes[BranchType].Instance() as Tile;
+		var Branch = (Tile) Scenes[BranchType].Instance();
 		Branch.Type = BranchType;
 		Branch.OwnerId = OwnerId;
 		Branch.Translation = Position;
@@ -720,11 +719,11 @@ public class World : Node
 
 	//Name is the string GUID name of the structure to be removed
 	[Remote]
-	public void RemoveTile(string Name)
+	public void RemoveTile(string TileName)
 	{
-		if(TilesRoot.HasNode(Name))
+		if(TilesRoot.HasNode(TileName))
 		{
-			Tile Branch = TilesRoot.GetNode(Name) as Tile;
+			var Branch = TilesRoot.GetNode<Tile>(TileName);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
 			Chunks[ChunkTuple].Tiles.Remove(Branch);
 			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
@@ -749,7 +748,7 @@ public class World : Node
 	{
 		if(EntitiesRoot.HasNode(Guid))
 		{
-			DroppedItem Item = EntitiesRoot.GetNode(Guid) as DroppedItem;
+			var Item = EntitiesRoot.GetNode<DroppedItem>(Guid);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Item.Translation);
 			Chunks[ChunkTuple].Items.Remove(Item);
 			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
@@ -948,7 +947,7 @@ public class World : Node
 
 			if(GetChunkPos(Position).DistanceTo(LevelPlayerPos) <= Game.ChunkRenderDistance*(PlatformSize*9))
 			{
-				DroppedItem ToDrop = DroppedItemScene.Instance() as DroppedItem;
+				var ToDrop = (DroppedItem) DroppedItemScene.Instance();
 				ToDrop.Translation = Position;
 				ToDrop.Momentum = BaseMomentum;
 				ToDrop.Type = Type;

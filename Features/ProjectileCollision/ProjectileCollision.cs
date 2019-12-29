@@ -10,19 +10,20 @@ public interface IProjectileCollision
 
 public class ProjectileCollision : Spatial
 {
-	[Export] string StartPointPath;
-	[Export] string EndPointPath;
+#pragma warning disable 0649
+	[Export] private string StartPointPath;
+	[Export] private string EndPointPath;
+#pragma warning restore 0649
 
-	Spatial Parent = null;
-	Spatial StartPoint = null;
-	Spatial EndPoint = null;
+	IProjectileCollision Parent;
+	Spatial StartPoint;
+	Spatial EndPoint;
 
 
 	public override void _Ready()
 	{
-		Parent = GetParent<Spatial>();
+		Parent = GetParent<IProjectileCollision>();
 		Assert(Parent != null);
-		Assert(Parent is IProjectileCollision);
 
 		StartPoint = GetNode<Spatial>(StartPointPath);
 		Assert(StartPoint != null);
@@ -35,10 +36,12 @@ public class ProjectileCollision : Spatial
 	public override void _PhysicsProcess(float Delta)
 	{
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-		Godot.Collections.Dictionary Results = State.IntersectRay(StartPoint.GlobalTransform.origin,
-		                                                          EndPoint.GlobalTransform.origin,
-		                                                          new Godot.Collections.Array() { Game.PossessedPlayer }, 2);
+		Godot.Collections.Dictionary Results = State.IntersectRay(
+			StartPoint.GlobalTransform.origin,
+			EndPoint.GlobalTransform.origin,
+			new Godot.Collections.Array() { Game.PossessedPlayer }, 2
+		);
 		if(Results.Count > 0)
-			(Parent as IProjectileCollision).ProjectileCollided((Vector3)Results["position"]);
+			Parent.ProjectileCollided((Vector3)Results["position"]);
 	}
 }

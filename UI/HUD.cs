@@ -62,17 +62,15 @@ public class HUD : Node
 	{
 		for(int Slot = 0; Slot <= 9; Slot++)
 		{
-			NinePatchRect SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild(Slot) as NinePatchRect;
+			var SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild<NinePatchRect>(Slot);
 			if(Game.PossessedPlayer.Inventory[Slot] != null)
 			{
 				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Id];
 
 				foreach(Node Child in SlotPatch.GetChildren())
-				{
 					Child.QueueFree();
-				}
 
-				Label CountLabel = ItemCountLabelScene.Instance() as Label;
+				var CountLabel = (Label) ItemCountLabelScene.Instance();
 				CountLabel.Text = Game.PossessedPlayer.Inventory[Slot].Count.ToString();
 				SlotPatch.AddChild(CountLabel);
 			}
@@ -88,7 +86,7 @@ public class HUD : Node
 
 			SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
 
-			NinePatchRect ActiveIndicatorPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Slot) as NinePatchRect;
+			var ActiveIndicatorPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild<NinePatchRect>(Slot);
 			ActiveIndicatorPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
 			ActiveIndicatorPatch.Texture = Alpha;
 		}
@@ -146,7 +144,7 @@ public class HUD : Node
 
 	public void AddNickLabel(int Id, string Nick)
 	{
-		Label Instance = NickLabelScene.Instance() as Label;
+		var Instance = (Label) NickLabelScene.Instance();
 		Instance.Text = Nick;
 		NickLabelLayer.AddChild(Instance);
 		NickLabels[Id] = Instance;
@@ -165,7 +163,7 @@ public class HUD : Node
 
 	public void AddDamageIndicator(Vector3 ShotFirePosition, float Damage)
 	{
-		DamageIndicator Indicator = DamageIndicatorScene.Instance() as DamageIndicator;
+		var Indicator = (DamageIndicator) DamageIndicatorScene.Instance();
 		Indicator.Setup(ShotFirePosition, Damage*DamageIndicatorLifeMultiplyer);
 		DamageIndicatorRoot.AddChild(Indicator);
 	}

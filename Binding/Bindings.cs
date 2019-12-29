@@ -116,9 +116,9 @@ public class Bindings : Node
 			return false;
 		}
 
-		Nullable<ButtonList> ButtonValue = null; //Making it null by default prevents a compile warning further down
-		Nullable<DIRECTION> AxisDirection = null; //Making it null by default prevents a compile warning further down
-		Nullable<JoystickList> ControllerButtonValue = null; // Making a new variable for Controller buttons because
+		var ButtonValue = ButtonList.Left;
+		var AxisDirection = DIRECTION.UP;
+		var ControllerButtonValue = JoystickList.Axis0;
 		uint Scancode = 0;
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
@@ -352,16 +352,16 @@ public class Bindings : Node
 		switch(NewBind.Type)
 		{
 			case(TYPE.SCANCODE): {
-				InputEventKey Event = new InputEventKey();
-				Event.Scancode = Scancode;
+				InputEventKey Event = new InputEventKey {Scancode = Scancode};
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}
 
 			case(TYPE.MOUSEBUTTON):
 			case(TYPE.MOUSEWHEEL): {
-				InputEventMouseButton Event = new InputEventMouseButton();
-				Event.ButtonIndex = (int)ButtonValue;
+				InputEventMouseButton Event = new InputEventMouseButton {
+					ButtonIndex = (int)ButtonValue
+				};
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}
@@ -374,8 +374,10 @@ public class Bindings : Node
 			}
 
 			case(TYPE.CONTROLLERAXIS): {
-				InputEventJoypadMotion Event = new InputEventJoypadMotion();
-				Event.Axis = (int)ControllerButtonValue; // Set which Joystick axis we're using
+				InputEventJoypadMotion Event = new InputEventJoypadMotion {
+					Axis = (int)ControllerButtonValue
+				};
+				// Set which Joystick axis we're using
 				switch (AxisDirection) { // Set which direction on the axis we need to trigger the event
 					case(DIRECTION.UP): {
 						Event.AxisValue = -1; // -1, on the Vertical axis is up
@@ -404,8 +406,9 @@ public class Bindings : Node
 			}
 
 			case(TYPE.CONTROLLERBUTTON): {
-				InputEventJoypadButton Event = new InputEventJoypadButton();
-				Event.ButtonIndex = (int)ControllerButtonValue;
+				InputEventJoypadButton Event = new InputEventJoypadButton {
+					ButtonIndex = (int) ControllerButtonValue
+				};
 				InputMap.ActionAddEvent(KeyName, Event);
 				break;
 			}
@@ -501,29 +504,28 @@ public class Bindings : Node
 			{
 				int VerticalAxis = 0;
 				int HorizontalAxis = 0;
-				InputEventJoypadMotion StickEvent = null;
 
 				foreach(InputEvent Option in InputMap.GetActionList(Binding.Name)) {
 					if (Option is InputEventJoypadMotion JoyEvent) {
-						StickEvent = JoyEvent;
+						InputEventJoypadMotion StickEvent = JoyEvent;
+						if(StickEvent.Axis == 0 || StickEvent.Axis == 1)
+						{
+							// We are using Left stick
+							VerticalAxis = 1;
+							HorizontalAxis = 0;
+						}
+						else if(StickEvent.Axis == 2 || StickEvent.Axis == 3)
+						{
+							// We are using Right stick
+							VerticalAxis = 3;
+							HorizontalAxis = 2;
+						}
+						else
+						{
+							Console.ThrowPrint("This joystick doesn't seem to exist");
+							return;
+						}
 					}
-				}
-
-				if (StickEvent.Axis == 0 || StickEvent.Axis == 1)
-				{
-					// We are using Left stick
-					VerticalAxis = 1;
-					HorizontalAxis = 0;
-				}
-				else if (StickEvent.Axis == 2 || StickEvent.Axis == 3)
-				{
-					// We are using Right stick
-					VerticalAxis = 3;
-					HorizontalAxis = 2;
-				}
-				else
-				{
-					Console.ThrowPrint("This joystick doesn't exist! ?????????");
 				}
 
 				if (Math.Abs(Input.GetJoyAxis(0,HorizontalAxis)) >= Game.Deadzone || Math.Abs(Input.GetJoyAxis(0,VerticalAxis)) >= Game.Deadzone)

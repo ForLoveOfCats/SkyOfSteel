@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class JumperRocket : Spatial, IProjectileCollision
 {
 	public bool IsLocal;
-	public Node Player; //The player which fired the rocket, to prevent collinding fire-er
+	public Player FiringPlayer; //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
 	public Vector3 Momentum;
 	public float Life = 0;
@@ -36,7 +36,7 @@ public class JumperRocket : Spatial, IProjectileCollision
 	{
 		if(IsLocal)
 		{
-			if(Body == Player)
+			if(Body == FiringPlayer)
 				return;
 		}
 
@@ -49,7 +49,7 @@ public class JumperRocket : Spatial, IProjectileCollision
 	{
 		if(IsLocal)
 		{
-			if(Body == Player)
+			if(Body == FiringPlayer)
 				return;
 		}
 
@@ -68,8 +68,8 @@ public class JumperRocket : Spatial, IProjectileCollision
 
 		if(IsLocal)
 		{
-			if((Player as Spatial).Translation.DistanceTo(Origin) <= RocketJumper.MaxRocketDistance)
-				AffectedBodies.Add(Player);
+			if(FiringPlayer.Translation.DistanceTo(Origin) <= RocketJumper.MaxRocketDistance)
+				AffectedBodies.Add(FiringPlayer);
 		}
 
 		foreach(Node _Body in AffectedBodies)
@@ -100,12 +100,12 @@ public class JumperRocket : Spatial, IProjectileCollision
 		}
 		AffectedBodies.Clear();
 
-		AudioStreamPlayer3D ExplodeSfxInstance = ExplodeSfx.Instance() as AudioStreamPlayer3D;
+		var ExplodeSfxInstance = (AudioStreamPlayer3D) ExplodeSfx.Instance();
 		ExplodeSfxInstance.Play();
 		ExplodeSfxInstance.Translation = Translation;
 		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
 
-		CPUParticles ParticleSystem = ExplodeParticles.Instance() as CPUParticles;
+		var ParticleSystem = (CPUParticles) ExplodeParticles.Instance();
 		ParticleSystem.Translation = Translation;
 		ParticleSystem.Emitting = true;
 		World.EntitiesRoot.AddChild(ParticleSystem);

@@ -21,7 +21,7 @@ public class InventoryMenu : VBoxContainer
 
 		for(int x = 0; x <= 9; x++)
 		{
-			InventoryIcon Icon = InventoryIconScene.Instance() as InventoryIcon;
+			var Icon = (InventoryIcon) InventoryIconScene.Instance();
 			Icon.ParentMenu = this;
 			Icon.Slot = x;
 			Icon.Source = Game.PossessedPlayer;
