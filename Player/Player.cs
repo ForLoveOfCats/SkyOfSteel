@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using static System.Diagnostics.Debug;
 
 
-public class Player : KinematicBody, IPushable, IInventory
+public class Player : Character, IPushable, IInventory
 {
 	public bool Possessed = false;
 	public int Id = 0;
@@ -574,7 +574,7 @@ public class Player : KinematicBody, IPushable, IInventory
 				}
 				Plr.IsJumping = false;
 			}
-			else if(Plr.IsOnFloor())
+			else if(Plr.OnFloor)
 			{
 				Plr.Momentum.y = Plr.JumpStartForce;
 				Plr.IsJumping = true;
@@ -936,7 +936,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
-		if(JumpAxis > 0 && IsOnFloor() && !IsCrouching && !Ads)
+		if(JumpAxis > 0 && OnFloor && !IsCrouching && !Ads)
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
@@ -970,15 +970,15 @@ public class Player : KinematicBody, IPushable, IInventory
 			}
 		}
 
-		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
+		if(OnFloor && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
 			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/4 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
-		WasOnFloor = IsOnFloor();
+		WasOnFloor = OnFloor;
 
-		if(!IsJumping && (IsOnFloor() || FlyMode))
+		if(!IsJumping && (OnFloor || FlyMode))
 		{
 			float SpeedLimit = MovementSpeed*GetAdsMovementMultiplyer();
 			if(FlyMode && IsFlySprinting)
@@ -1057,25 +1057,8 @@ public class Player : KinematicBody, IPushable, IInventory
 				.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)));
 		}
 		else
-		{
-			Vector3 Original = Momentum;
+			Momentum = Move(Momentum, Delta, 2, 60f);
 
-			if(IsOnFloor() && Momentum.y <= 0)
-			{
-				Vector3 BottomPoint;
-				if(IsCrouching)
-					BottomPoint = SmallBottomPoint.Translation;
-				else
-					BottomPoint = LargeBottomPoint.Translation;
-
-				Momentum = MoveAndSlideWithSnap(Momentum, BottomPoint, new Vector3(0,1,0), true, 100, Deg2Rad(60));
-			}
-			else
-				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
-
-			if(!IsOnWall() && !IsOnCeiling())
-				Momentum = Original;
-		}
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
 		if(NewPos != OldPos)
@@ -1083,7 +1066,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			Translation = NewPos;
 		}
 
-		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
+		if(!FlyMode && OnFloor && Momentum.y <= 0f)
 			Momentum.y = -1f;
 
 		if(IsCrouching && CrouchAxis == 0)
