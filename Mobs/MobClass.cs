@@ -132,7 +132,7 @@ public abstract class MobClass : Character, IInGrid, IPushable
 				Momentum.y = -MaxFallSpeed;
 		}
 
-		Momentum = Move(Momentum, Delta, 2, 60);
+		Momentum = Move(Momentum, Delta, 2, 60, TopSpeed);
 		if(TimeSinceUpdate >= MaxTimeSinceUpdate)
 		{
 			TimeSinceUpdate = 0;

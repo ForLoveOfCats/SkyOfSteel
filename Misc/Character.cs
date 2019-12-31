@@ -9,15 +9,15 @@ public class Character : KinematicBody
 	public bool OnFloor { get; private set; } = false;
 
 
-	public Vector3 Move(Vector3 Momentum, float Delta, int MaxSlideCount, float MaxAngle)
+	public Vector3 Move(Vector3 Momentum, float Delta, int MaxSlideCount, float MaxAngle, float Snap)
 	{
 		Vector3 Movement = Momentum * Delta;
 
 		if(Momentum.y <= 0)
 		{
 			Vector3 OriginalTranslation = Translation;
-			var Snap = new Vector3(0, -Movement.Flattened().Length() - 0.2f, 0);
-			KinematicCollision SnapCollision = MoveAndCollide(Snap);
+			var SnapVec = new Vector3(0, (-Snap - 0.1f) * Delta, 0);
+			KinematicCollision SnapCollision = MoveAndCollide(SnapVec);
 			if(SnapCollision != null && Acos(SnapCollision.Normal.Dot(new Vector3(0, 1, 0))) <= Deg2Rad(MaxAngle))
 			{
 				float TargetHLength = Movement.Flattened().Length();

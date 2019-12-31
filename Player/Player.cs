@@ -1057,7 +1057,7 @@ public class Player : Character, IPushable, IInventory
 				.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)));
 		}
 		else
-			Momentum = Move(Momentum, Delta, 2, 60f);
+			Momentum = Move(Momentum, Delta, 2, 60f, MovementSpeed);
 
 		Vector3 NewPos = Translation;
 		Translation = OldPos;
