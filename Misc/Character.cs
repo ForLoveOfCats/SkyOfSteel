@@ -27,6 +27,12 @@ public class Character : KinematicBody
 					Movement *= TargetHLength / Movement.Flattened().Length();
 
 				OnFloor = true;
+
+				if(Momentum.Flattened().Length() <= 0.5f)
+				{
+					Translation = OriginalTranslation;
+					return Momentum;
+				}
 			}
 			else
 			{
