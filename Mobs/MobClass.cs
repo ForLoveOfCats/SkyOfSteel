@@ -7,7 +7,7 @@ using static Pathfinding;
 
 
 
-public abstract class MobClass : KinematicBody, IInGrid, IPushable
+public abstract class MobClass : Character, IInGrid, IPushable
 {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
@@ -94,7 +94,7 @@ public abstract class MobClass : KinematicBody, IInGrid, IPushable
 
 		CalcWants(Floor);
 
-		if(IsOnFloor())
+		if(OnFloor)
 		{
 			TargetPoint.Match(
 				some: Target =>
@@ -132,7 +132,7 @@ public abstract class MobClass : KinematicBody, IInGrid, IPushable
 				Momentum.y = -MaxFallSpeed;
 		}
 
-		Momentum = MoveAndSlide(Momentum, floorNormal:new Vector3(0,1,0), stopOnSlope:true, floorMaxAngle:Deg2Rad(70));
+		Momentum = Move(Momentum, Delta, 2, 60);
 		if(TimeSinceUpdate >= MaxTimeSinceUpdate)
 		{
 			TimeSinceUpdate = 0;
