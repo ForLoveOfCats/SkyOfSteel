@@ -31,6 +31,7 @@ public class Character : KinematicBody
 				if(Momentum.Flattened().Length() <= 0.5f)
 				{
 					Translation = OriginalTranslation;
+					Momentum.y = 0; //On floor so zero out vertical momentum
 					return Momentum;
 				}
 			}
@@ -64,6 +65,8 @@ public class Character : KinematicBody
 				Momentum = Momentum.Slide(Collision.Normal);
 		}
 
+		if(OnFloor)
+			Momentum.y = 0; //On floor so zero out vertical momentum
 		return Momentum;
 	}
 

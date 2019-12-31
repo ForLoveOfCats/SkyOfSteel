@@ -125,12 +125,7 @@ public abstract class MobClass : Character, IInGrid, IPushable
 			Momentum.z = Horz.z;
 		}
 		else //Not on floor
-		{
-			//Gravity
-			Momentum.y -= Gravity*Delta;
-			if(Momentum.y < -MaxFallSpeed)
-				Momentum.y = -MaxFallSpeed;
-		}
+			Momentum.y = Clamp(Momentum.y - Gravity*Delta, -MaxFallSpeed, MaxFallSpeed); //Apply gravity
 
 		Momentum = Move(Momentum, Delta, 2, 60, TopSpeed);
 		if(TimeSinceUpdate >= MaxTimeSinceUpdate)

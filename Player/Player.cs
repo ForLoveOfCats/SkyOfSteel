@@ -954,8 +954,8 @@ public class Player : Character, IPushable, IInventory
 			}
 		}
 
-		if(!IsJumping && !FlyMode)
-			Momentum.y = Mathf.Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
+		if(!OnFloor && !IsJumping && !FlyMode)
+			Momentum.y = Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
 
 		if(FlyMode && JumpAxis <= 0 && !IsCrouching)
 		{
@@ -1042,7 +1042,6 @@ public class Player : Character, IPushable, IInventory
 
 		LastMomentumY = Momentum.y;
 
-		Vector3 OldPos = Translation;
 		if(FlyMode)
 		{
 			Vector3 FlatVel = Momentum;
@@ -1058,16 +1057,6 @@ public class Player : Character, IPushable, IInventory
 		}
 		else
 			Momentum = Move(Momentum, Delta, 2, 60f, MovementSpeed);
-
-		Vector3 NewPos = Translation;
-		Translation = OldPos;
-		if(NewPos != OldPos)
-		{
-			Translation = NewPos;
-		}
-
-		if(!FlyMode && OnFloor && Momentum.y <= 0f)
-			Momentum.y = -1f;
 
 		if(IsCrouching && CrouchAxis == 0)
 		{
