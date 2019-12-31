@@ -55,10 +55,7 @@ public class Character : KinematicBody
 			if(Acos(Collision.Normal.Dot(new Vector3(0, 1, 0))) <= Deg2Rad(MaxAngle))
 				OnFloor = true;
 			else
-			{
 				Momentum = Momentum.Slide(Collision.Normal);
-				OnFloor = false;
-			}
 		}
 
 		return Momentum;
