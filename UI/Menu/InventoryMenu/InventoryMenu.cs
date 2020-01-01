@@ -10,8 +10,6 @@ public class InventoryMenu : VBoxContainer
 	public VBoxContainer PlayerVBox = null;
 	public InventoryIcon[] PlayerIcons = new InventoryIcon[10];
 
-	public InventoryIcon SourceButton = null;
-
 	public override void _Ready()
 	{
 		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;

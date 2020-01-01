@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using static System.Diagnostics.Debug;
 
 
-public class Player : Character, IPushable, IInventory
+public class Player : Character, IPushable, IHasInventory
 {
 	public bool Possessed = false;
 	public int Id = 0;
@@ -101,7 +101,7 @@ public class Player : Character, IPushable, IInventory
 
 	public List<Hitscan.AdditiveRecoil> ActiveAdditiveRecoil = new List<Hitscan.AdditiveRecoil>();
 
-	public Items.Instance[] Inventory { get; set; } = new Items.Instance[10];
+	public InventoryComponent Inventory { get; set; }
 	public int InventorySlot = 0;
 
 	public int BuildRotation = 0;
@@ -135,7 +135,8 @@ public class Player : Character, IPushable, IInventory
 	{
 		if(Engine.EditorHint) {return;}
 
-		HUDInstance = ((PackedScene)GD.Load("res://UI/HUD.tscn")).Instance() as HUD;
+		Inventory = new InventoryComponent();
+		HUDInstance = (HUD) GD.Load<PackedScene>("res://UI/HUD.tscn").Instance();
 	}
 
 
@@ -301,41 +302,12 @@ public class Player : Character, IPushable, IInventory
 
 	public void ItemGive(Items.Instance ToGive)
 	{
-		if(!Net.Work.IsNetworkServer())
-			throw new Exception("Attempted to give item on client");
+		int Slot = Inventory.Give(ToGive);
 
-		for(int Slot = 0; Slot <= 9; Slot++)
-		{
-			if(!(Inventory[Slot] is null)) //If inventory item is not null
-			{
-				if(Inventory[Slot].Id == ToGive.Id)
-				{
-					Inventory[Slot].Count += ToGive.Count;
-
-					if(Possessed)
-						HUDInstance.HotbarUpdate();
-					else
-						RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, Inventory[Slot].Count);
-
-					return;
-				}
-			}
-		}
-
-		for(int Slot = 0; Slot <= 9; Slot++)
-		{
-			if(Inventory[Slot] is null)
-			{
-				Inventory[Slot] = ToGive;
-
-				if(Possessed)
-					HUDInstance.HotbarUpdate();
-				else
-					RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, ToGive.Count);
-
-				return;
-			}
-		}
+		if(Possessed)
+			HUDInstance.HotbarUpdate();
+		else
+			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, ToGive.Count);
 	}
 
 
@@ -860,7 +832,7 @@ public class Player : Character, IPushable, IInventory
 			}
 			else
 			{
-				Inventory[Slot] = null;
+				Inventory.EmptySlot((Slot));
 
 				if(Id != Net.Work.GetNetworkUniqueId())
 					RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
@@ -1174,7 +1146,7 @@ public class Player : Character, IPushable, IInventory
 	[Remote]
 	public void NetUpdateInventorySlot(int Slot, Items.ID Id, int Count)
 	{
-		Inventory[Slot] = new Items.Instance(Id) {Count = Count};
+		Inventory.UpdateSlot(Slot, Id, Count);
 		HUDInstance.HotbarUpdate();
 	}
 
@@ -1182,7 +1154,7 @@ public class Player : Character, IPushable, IInventory
 	[Remote]
 	public void NetEmptyInventorySlot(int Slot)
 	{
-		Inventory[Slot] = null;
+		Inventory.EmptySlot(Slot);
 		HUDInstance.HotbarUpdate();
 	}
 

@@ -2,9 +2,9 @@ using Godot;
 
 
 
-public interface IInventory
+public interface IHasInventory
 {
-	Items.Instance[] Inventory { get; set; }
+	InventoryComponent Inventory { get; set; }
 
 
 	[Remote]
