@@ -6,6 +6,8 @@ using static Godot.Mathf;
 
 public class Starfield : Spatial
 {
+	private MeshInstance SingleStar;
+
 	private static PackedScene StarScene;
 
 	static Starfield()
@@ -21,8 +23,8 @@ public class Starfield : Spatial
 		Random Rand = new Random();
 		for(int i = 0; i < 1000; i++)
 		{
-			var Star = (MeshInstance) StarScene.Instance();
-			AddChild(Star);
+			SingleStar = (MeshInstance) StarScene.Instance();
+			AddChild(SingleStar);
 
 			Vector3 Pos = new Vector3(
 				(float)Rand.NextDouble()/2f * Rand.RandomSign(),
@@ -31,7 +33,7 @@ public class Starfield : Spatial
 			);
 			Pos = Pos.Normalized() * 50000;
 
-			Star.Translation = Pos;
+			SingleStar.Translation = Pos;
 		}
 	}
 
@@ -41,5 +43,29 @@ public class Starfield : Spatial
 		Camera Cam = GetViewport().GetCamera();
 		if(Cam != null)
 			Translation = Cam.GlobalTransform.origin;
+
+		SpatialMaterial Mat = ((SpatialMaterial) SingleStar.GetSurfaceMaterial(0));
+		Color Old = Mat.AlbedoColor;
+
+		if(World.TimeOfDay > 0 && World.TimeOfDay < 30f*World.DayNightMinutes) //Daytime
+			Mat.AlbedoColor = new Color(Old.r, Old.g, Old.b, 0);
+		else
+		{
+			float Power = 0;
+			if(World.TimeOfDay < 45f * World.DayNightMinutes)
+			{
+				//After sunset
+				Power = (World.TimeOfDay - (30f * World.DayNightMinutes)) / (18f * World.DayNightMinutes);
+				Power = Clamp(Power, 0, 1);
+			}
+			else
+			{
+				//Before sunrise
+				Power = Abs(World.TimeOfDay - (60f * World.DayNightMinutes)) / (18f * World.DayNightMinutes);
+				Power = Clamp(Power, 0, 1);
+			}
+
+			Mat.AlbedoColor = new Color(Old.r, Old.g, Old.b, Clamp(Power, 0, 1));
+		}
 	}
 }

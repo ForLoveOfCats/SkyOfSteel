@@ -1000,25 +1000,25 @@ public class World : Node
 
 			if(TimeOfDay <= DayNightMinutes*60/2)
 			{
-				WorldSky.SkyTopColor = SteelMath.LerpColor(MorningSkyTop, DaySkyTop, Power);
-				WorldSky.SkyHorizonColor = SteelMath.LerpColor(MorningHorizon, DayHorizon, Power);
+				WorldSky.SkyTopColor = LerpColor(MorningSkyTop, DaySkyTop, Power);
+				WorldSky.SkyHorizonColor = LerpColor(MorningHorizon, DayHorizon, Power);
 			}
 			else
 			{
 				float Diff;
-				if(TimeOfDay < DayNightMinutes*60/4*3)
-					Diff = (DayNightMinutes*60/4*3 - TimeOfDay) / (DayNightMinutes*60/4);
+				if(TimeOfDay < DayNightMinutes * 45f)
+					Diff = (DayNightMinutes * 45f - TimeOfDay) / (DayNightMinutes * 15f);
 				else
-					Diff = (TimeOfDay - DayNightMinutes*60/4*3) / (DayNightMinutes*60/4);
-				Diff = Mathf.Clamp(Diff, 0, 1);
-				Diff = Pow(Diff, 4);
+					Diff = (TimeOfDay - DayNightMinutes * 45f) / (DayNightMinutes * 15f);
+				Diff = Clamp(Diff, 0, 1);
+				Diff = Pow(Diff, 10);
 
-				WorldSky.SkyTopColor = SteelMath.LerpColor(NightSkyTop, MorningSkyTop, Diff);
-				WorldSky.SkyHorizonColor = SteelMath.LerpColor(NightHorizon, MorningHorizon, Diff);
+				WorldSky.SkyTopColor = LerpColor(NightSkyTop, MorningSkyTop, Diff);
+				WorldSky.SkyHorizonColor = LerpColor(NightHorizon, MorningHorizon, Diff);
 			}
 			WorldSky.GroundHorizonColor = WorldSky.SkyHorizonColor;
 
-			WorldSky.GroundBottomColor = SteelMath.LerpColor(MorningGround, DayGround, Power);
+			WorldSky.GroundBottomColor = LerpColor(MorningGround, DayGround, Power);
 		}
 	}
 

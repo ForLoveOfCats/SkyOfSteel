@@ -3,6 +3,7 @@
 [sub_resource type="QuadMesh" id=1]
 
 [sub_resource type="SpatialMaterial" id=2]
+flags_transparent = true
 flags_unshaded = true
 params_billboard_mode = 1
 params_billboard_keep_scale = true
