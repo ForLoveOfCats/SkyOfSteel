@@ -117,9 +117,7 @@ public class Player : Character, IPushable, IInventory
 	public Spatial ProjectileEmitter;
 
 	public CollisionShape LargeCollisionCapsule;
-	public Position3D LargeBottomPoint;
 	public CollisionShape SmallCollisionCapsule;
-	public Position3D SmallBottomPoint;
 
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
@@ -158,9 +156,7 @@ public class Player : Character, IPushable, IInventory
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
 		LargeCollisionCapsule = GetNode<CollisionShape>("LargeCollisionShape");
-		LargeBottomPoint = GetNode<Position3D>("LargeBottomPoint");
 		SmallCollisionCapsule = GetNode<CollisionShape>("SmallCollisionShape");
-		SmallBottomPoint = GetNode<Position3D>("SmallBottomPoint");
 
 		if(Possessed)
 		{
