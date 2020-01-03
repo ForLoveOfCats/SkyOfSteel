@@ -206,16 +206,16 @@ public class Player : Character, IPushable, IHasInventory
 
 	public void GiveDefaultItems()
 	{
-		ItemGive(new Items.Instance(Items.ID.PLATFORM));
-		ItemGive(new Items.Instance(Items.ID.WALL));
-		ItemGive(new Items.Instance(Items.ID.SLOPE));
-		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL));
-		ItemGive(new Items.Instance(Items.ID.PIPE));
-		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT));
-		ItemGive(new Items.Instance(Items.ID.LOCKER));
-		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER));
-		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT));
-		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK));
+		ItemGive(new Items.Instance(Items.ID.PLATFORM) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.WALL) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.SLOPE) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.LOCKER) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 50});
 		// ItemGive(new Items.Instance(Items.ID.SWIFTSPARK));
 	}
 
@@ -1147,7 +1147,9 @@ public class Player : Character, IPushable, IHasInventory
 	public void NetUpdateInventorySlot(int Slot, Items.ID Id, int Count)
 	{
 		Inventory.UpdateSlot(Slot, Id, Count);
-		HUDInstance.HotbarUpdate();
+
+		if(Possessed)
+			HUDInstance.HotbarUpdate();
 	}
 
 
@@ -1155,7 +1157,9 @@ public class Player : Character, IPushable, IHasInventory
 	public void NetEmptyInventorySlot(int Slot)
 	{
 		Inventory.EmptySlot(Slot);
-		HUDInstance.HotbarUpdate();
+
+		if(Possessed)
+			HUDInstance.HotbarUpdate();
 	}
 
 
