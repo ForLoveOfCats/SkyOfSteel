@@ -307,7 +307,7 @@ public class Player : Character, IPushable, IHasInventory
 		if(Possessed)
 			HUDInstance.HotbarUpdate();
 		else
-			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, ToGive.Count);
+			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, Inventory[Slot].Count);
 	}
 
 
