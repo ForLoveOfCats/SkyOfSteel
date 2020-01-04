@@ -200,7 +200,7 @@ public class InventoryIcon : TextureRect
 		else if(Case == UsageCase.PREVIEW)
 		{
 			float Height = GetViewport().GetVisibleRect().Size.y;
-			RectMinSize = new Vector2(Height / 15, Height / 15);
+			RectSize = new Vector2(Height / 18f, Height / 18f);
 		}
 	}
 }
