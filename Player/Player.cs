@@ -1144,12 +1144,14 @@ public class Player : Character, IPushable, IHasInventory
 
 
 	[Remote]
-	public void NetUpdateInventorySlot(int Slot, Items.ID Id, int Count)
+	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
 	{
-		Inventory.UpdateSlot(Slot, Id, Count);
+		Inventory.UpdateSlot(Slot, ItemId, Count);
 
 		if(Possessed)
 			HUDInstance.HotbarUpdate();
+		else if(Net.Work.IsNetworkServer())
+			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ItemId, Count);
 	}
 
 
@@ -1160,6 +1162,8 @@ public class Player : Character, IPushable, IHasInventory
 
 		if(Possessed)
 			HUDInstance.HotbarUpdate();
+		else if(Net.Work.IsNetworkServer())
+			RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
 	}
 
 
