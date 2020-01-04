@@ -12,6 +12,8 @@ public class InventoryIcon : TextureRect
 	public int Slot = 0;
 	public UsageCase Case;
 
+	public Items.ID CurrentId;
+
 	public Label CountLabel;
 
 	private static PackedScene InventoryIconScene;
@@ -136,12 +138,14 @@ public class InventoryIcon : TextureRect
 	{
 		if(Source.Inventory[Slot] == null)
 		{
+			CurrentId = Items.ID.NONE;
 			Texture = ParentMenu.Alpha;
 			CountLabel.Text = "";
 		}
 		else
 		{
-			Texture = Items.Thumbnails[Source.Inventory[Slot].Id];
+			CurrentId = Source.Inventory[Slot].Id;
+			Texture = Items.Thumbnails[CurrentId];
 			CountLabel.Text = Source.Inventory[Slot].Count.ToString();
 		}
 	}
@@ -149,6 +153,9 @@ public class InventoryIcon : TextureRect
 
 	public override void _Process(float Delta)
 	{
+		if(Source.Inventory[Slot] != null && Source.Inventory[Slot].Id != CurrentId)
+			UpdateIcon();
+
 		if(Case == UsageCase.MENU && GetParent() is BoxContainer Box)
 		{
 			float Height = Box.RectSize.y;

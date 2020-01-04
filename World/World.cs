@@ -66,6 +66,8 @@ public class World : Node
 
 		foreach(Items.ID Type in System.Enum.GetValues(typeof(Items.ID)))
 		{
+			if(Type == Items.ID.NONE) continue;
+
 			File ToLoad = new File();
 			if(ToLoad.FileExists($"res://World/Scenes/{Type}.tscn"))
 			{

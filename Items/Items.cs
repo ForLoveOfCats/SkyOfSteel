@@ -62,7 +62,22 @@ public class Items : Node
 	}
 
 
-	public enum ID {ERROR, PLATFORM, WALL, SLOPE, TRIANGLE_WALL, PIPE, PIPE_JOINT, LOCKER, ROCKET_JUMPER, THUNDERBOLT, SCATTERSHOCK, SWIFTSPARK}
+	public enum ID
+	{
+		NONE = int.MinValue,
+		ERROR = 0,
+		PLATFORM,
+		WALL,
+		SLOPE,
+		TRIANGLE_WALL,
+		PIPE,
+		PIPE_JOINT,
+		LOCKER,
+		ROCKET_JUMPER,
+		THUNDERBOLT,
+		SCATTERSHOCK,
+		SWIFTSPARK
+	}
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -78,22 +93,14 @@ public class Items : Node
 
 		TileShader = GD.Load<Shader>("res://World/Materials/TileShader.shader");
 
+		//Assume that every item has a mesh, thumbnail, and texture. Will throw exception on game startup if not
 		foreach(Items.ID Type in System.Enum.GetValues(typeof(ID)))
 		{
+			if(Type == Items.ID.NONE) continue;
+
 			Meshes.Add(Type, GD.Load<Mesh>($"res://Items/Meshes/{Type}.obj"));
-			//Assume that every item has a mesh, will throw exception on game startup if not
-		}
-
-		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
-		{
 			Thumbnails.Add(Type, GD.Load<Texture>($"res://Items/Thumbnails/{Type}.png"));
-			//Assume that every item has a thumbnail, will throw exception on game startup if not
-		}
-
-		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
-		{
 			Textures.Add(Type, GD.Load<Texture>($"res://Items/Textures/{Type}.png"));
-			//Assume that every item has a texture, will throw exception on game startup if not
 		}
 	}
 
