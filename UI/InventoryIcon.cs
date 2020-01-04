@@ -14,6 +14,7 @@ public class InventoryIcon : TextureRect
 	public Items.ID CurrentId;
 
 	public Label CountLabel;
+	public int CurrentCount = -1;
 
 	private static PackedScene InventoryIconScene;
 
@@ -28,6 +29,7 @@ public class InventoryIcon : TextureRect
 	public override void _Ready()
 	{
 		CountLabel = GetNode<Label>("Label");
+		CountLabel.Text = "";
 		UpdateIcon();
 	}
 
@@ -37,17 +39,19 @@ public class InventoryIcon : TextureRect
 		if(Source.Inventory[Slot] == null)
 			return null;
 
-		var Preview = (InventoryIcon) InventoryIconScene.Instance();
-		Preview.Source = Source;
-		Preview.Slot = Slot;
-		SetDragPreview(Preview);
-
 		InventoryMenu.DragMode Mode = InventoryMenu.DragMode.ALL;
 		if(Input.IsKeyPressed((int) KeyList.Shift))
 			Mode = InventoryMenu.DragMode.HALF;
 		else if(Input.IsKeyPressed((int) Godot.KeyList.Control))
 			Mode = InventoryMenu.DragMode.SINGLE;
 		ParentMenu.Source = new InventoryMenu.SourceData(Source, Mode);
+
+		var Preview = (InventoryIcon) InventoryIconScene.Instance();
+		Preview.ParentMenu = ParentMenu;
+		Preview.Source = Source;
+		Preview.Slot = Slot;
+		Preview.Case = UsageCase.PREVIEW;
+		SetDragPreview(Preview);
 
 		return Slot;
 	}
@@ -56,6 +60,26 @@ public class InventoryIcon : TextureRect
 	public override bool CanDropData(Vector2 Pos, object Data)
 	{
 		return Data is int;
+	}
+
+
+	public int CalcRetrieveCount(int Value)
+	{
+		switch(ParentMenu.Source.Mode)
+		{
+			case InventoryMenu.DragMode.ALL:
+				//Keep original count as original
+				break;
+			case InventoryMenu.DragMode.HALF:
+				if(Value != 1)
+					Value /= 2; //Relying on rounding down via truncation
+				break;
+			case InventoryMenu.DragMode.SINGLE:
+				Value = 1;
+				break;
+		}
+
+		return Value;
 	}
 
 
@@ -72,23 +96,7 @@ public class InventoryIcon : TextureRect
 
 			Items.Instance Original = Source.Inventory[Slot];
 
-			int RetrieveCount = 0;
-			switch(ParentMenu.Source.Mode)
-			{
-				case InventoryMenu.DragMode.ALL:
-					RetrieveCount = Moving.Count;
-					break;
-				case InventoryMenu.DragMode.HALF:
-					if(Moving.Count == 1)
-						RetrieveCount = 1;
-					else
-						RetrieveCount = Moving.Count / 2; //Relying on rounding down via truncation
-					break;
-				case InventoryMenu.DragMode.SINGLE:
-					RetrieveCount = 1;
-					break;
-			}
-
+			int RetrieveCount = CalcRetrieveCount(Moving.Count);
 			bool EmptyMoving = RetrieveCount == Moving.Count; //If we are moving all, empty the the source slot
 
 			if(Original == null) //Replace (no item at target)
@@ -154,21 +162,35 @@ public class InventoryIcon : TextureRect
 		{
 			CurrentId = Items.ID.NONE;
 			Texture = ParentMenu.Alpha;
-			CountLabel.Text = "";
 		}
 		else
 		{
 			CurrentId = Source.Inventory[Slot].Id;
 			Texture = Items.Thumbnails[CurrentId];
-			CountLabel.Text = Source.Inventory[Slot].Count.ToString();
 		}
 	}
 
 
 	public override void _Process(float Delta)
 	{
-		if(Source.Inventory[Slot] != null && Source.Inventory[Slot].Id != CurrentId)
+		if(Source.Inventory[Slot] is Items.Instance NotNull)
+		{
+			if(NotNull.Id != CurrentId)
+				UpdateIcon();
+
+			if(Case == UsageCase.MENU)
+				CurrentCount = NotNull.Count;
+			else if(Case == UsageCase.PREVIEW)
+				CurrentCount = CalcRetrieveCount(NotNull.Count);
+
+			CountLabel.Text = CurrentCount.ToString();
+		}
+		else if(CurrentId != Items.ID.NONE)
+		{
 			UpdateIcon();
+			CurrentCount = -1;
+			CountLabel.Text = "";
+		}
 
 		if(Case == UsageCase.MENU && GetParent() is BoxContainer Box)
 		{
