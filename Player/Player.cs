@@ -206,16 +206,16 @@ public class Player : Character, IPushable, IHasInventory
 
 	public void GiveDefaultItems()
 	{
-		ItemGive(new Items.Instance(Items.ID.PLATFORM) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.WALL) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.SLOPE) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.LOCKER) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.PLATFORM) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.WALL) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.SLOPE) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.LOCKER) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 20});
+		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 20});
 		// ItemGive(new Items.Instance(Items.ID.SWIFTSPARK));
 	}
 
