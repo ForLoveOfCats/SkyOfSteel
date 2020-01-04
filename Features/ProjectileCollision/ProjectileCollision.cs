@@ -1,5 +1,5 @@
 using Godot;
-using static System.Diagnostics.Debug;
+
 
 
 public interface IProjectileCollision
@@ -23,13 +23,13 @@ public class ProjectileCollision : Spatial
 	public override void _Ready()
 	{
 		Parent = GetParent<IProjectileCollision>();
-		Assert(Parent != null);
+		Assert.ActualAssert(Parent != null);
 
 		StartPoint = GetNode<Spatial>(StartPointPath);
-		Assert(StartPoint != null);
+		Assert.ActualAssert(StartPoint != null);
 
 		EndPoint = GetNode<Spatial>(EndPointPath);
-		Assert(EndPoint != null);
+		Assert.ActualAssert(EndPoint != null);
 	}
 
 

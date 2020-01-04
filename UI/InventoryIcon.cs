@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Godot;
 
 
@@ -69,7 +68,7 @@ public class InventoryIcon : TextureRect
 
 			//We know that the item being moved cannot be null
 			Items.Instance Moving = ParentMenu.Source.Source.Inventory[FromSlot];
-			Debug.Assert(Moving != null);
+			Assert.ActualAssert(Moving != null);
 			Items.Instance Original = Source.Inventory[Slot];
 
 			int RetrieveCount = 0;

@@ -3,7 +3,7 @@ using static Godot.Mathf;
 using static SteelMath;
 using System;
 using System.Collections.Generic;
-using static System.Diagnostics.Debug;
+
 
 
 public class Player : Character, IPushable, IHasInventory
@@ -290,7 +290,7 @@ public class Player : Character, IPushable, IHasInventory
 	{
 		if(!Possessed)
 		{
-			Assert(Net.Work.IsNetworkServer());
+			Assert.ActualAssert(Net.Work.IsNetworkServer());
 			Net.SteelRpc(this, nameof(NotifyPickedUpItem));
 			return;
 		}
@@ -1175,7 +1175,7 @@ public class Player : Character, IPushable, IHasInventory
 			return;
 		}
 
-		Assert(MinAdsMultiplier > 0 && MinAdsMultiplier <= 1);
+		Assert.ActualAssert(MinAdsMultiplier > 0 && MinAdsMultiplier <= 1);
 		AdsMultiplier =
 			Ads
 				? Clamp(AdsMultiplier - (Delta * (1 - MinAdsMultiplier) / AdsTime), MinAdsMultiplier, 1)

@@ -1,7 +1,7 @@
 using Godot;
 using static Godot.Mathf;
 using System.Collections.Generic;
-using static System.Diagnostics.Debug;
+
 
 
 public class Hitscan : Spatial
@@ -183,7 +183,7 @@ public class Hitscan : Spatial
 
 	public static void ApplyEffectiveRecoil(float VerticalRecoil, float HorizontalRecoil)
 	{
-		Assert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
+		Assert.ActualAssert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 
 		Player Plr = Game.PossessedPlayer;
 

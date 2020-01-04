@@ -3,7 +3,7 @@ using static Godot.Mathf;
 using static SteelMath;
 using System;
 using System.Collections.Generic;
-using static System.Diagnostics.Debug;
+
 
 
 public class Items : Node
@@ -281,7 +281,9 @@ public class Items : Node
 		//This won't help mods but will help us greatly
 		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
 		{
-			Assert(IdInfos.ContainsKey(Type));
+			if(Type == ID.NONE) continue;
+
+			Assert.ActualAssert(IdInfos.ContainsKey(Type));
 		}
 	}
 }

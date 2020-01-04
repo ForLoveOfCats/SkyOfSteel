@@ -1,5 +1,4 @@
 using Godot;
-using static System.Diagnostics.Debug;
 
 
 
@@ -10,7 +9,7 @@ public class OpenEnd : StaticBody
 
 	public override void _Ready()
 	{
-		Assert(GetParent() is PipeCoreLogic);
+		Assert.ActualAssert(GetParent() is PipeCoreLogic);
 
 		Parent = GetParent() as PipeCoreLogic;
 	}
