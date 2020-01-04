@@ -66,9 +66,10 @@ public class InventoryIcon : TextureRect
 			if(Source == ParentMenu.Source.Source && Slot == FromSlot)
 				return; //Same source and slot, we dropped on ourself
 
-			//We know that the item being moved cannot be null
 			Items.Instance Moving = ParentMenu.Source.Source.Inventory[FromSlot];
 			Assert.ActualAssert(Moving != null);
+			if(Moving == null) return; //Makes Roslyn happy
+
 			Items.Instance Original = Source.Inventory[Slot];
 
 			int RetrieveCount = 0;
@@ -88,17 +89,25 @@ public class InventoryIcon : TextureRect
 					break;
 			}
 
-			if(Original == null) //Replace
+			bool EmptyMoving = RetrieveCount == Moving.Count; //If we are moving all, empty the the source slot
+
+			if(Original == null) //Replace (no item at target)
 			{
 				if(Net.Work.IsNetworkServer())
 				{
 					Source.NetUpdateInventorySlot(Slot, Moving.Id, RetrieveCount);
-					ParentMenu.Source.Source.NetEmptyInventorySlot(FromSlot);
+					if(EmptyMoving)
+						ParentMenu.Source.Source.NetEmptyInventorySlot(FromSlot);
+					else
+						ParentMenu.Source.Source.NetUpdateInventorySlot(FromSlot, Moving.Id, Moving.Count - RetrieveCount);
 				}
 				else
 				{
-					Source.RpcId(Net.ServerId, nameof(Source.NetUpdateInventorySlot), Slot, Moving.Id, RetrieveCount);
-					ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(ParentMenu.Source.Source.NetEmptyInventorySlot), FromSlot);
+					Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), Slot, Moving.Id, RetrieveCount);
+					if(EmptyMoving)
+						ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetEmptyInventorySlot), FromSlot);
+					else
+						ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), FromSlot, Moving.Id, Moving.Count - RetrieveCount);
 				}
 			}
 			else
@@ -108,12 +117,18 @@ public class InventoryIcon : TextureRect
 					if(Net.Work.IsNetworkServer())
 					{
 						Source.NetUpdateInventorySlot(Slot, Original.Id, Original.Count + RetrieveCount);
-						ParentMenu.Source.Source.NetEmptyInventorySlot(FromSlot);
+						if(EmptyMoving)
+							ParentMenu.Source.Source.NetEmptyInventorySlot(FromSlot);
+						else
+							ParentMenu.Source.Source.NetUpdateInventorySlot(FromSlot, Moving.Id, Moving.Count - RetrieveCount);
 					}
 					else
 					{
-						Source.RpcId(Net.ServerId, nameof(Source.NetUpdateInventorySlot), Slot, Original.Id, Original.Count + RetrieveCount);
-						ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(ParentMenu.Source.Source.NetEmptyInventorySlot), FromSlot);
+						Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), Slot, Original.Id, Original.Count + RetrieveCount);
+						if(EmptyMoving)
+							ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetEmptyInventorySlot), FromSlot);
+						else
+							ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), FromSlot, Moving.Id, Moving.Count - RetrieveCount);
 					}
 				}
 				else if(RetrieveCount == Moving.Count) //Swap, only if we are moving all from the source slot
@@ -125,8 +140,8 @@ public class InventoryIcon : TextureRect
 					}
 					else
 					{
-						Source.RpcId(Net.ServerId, nameof(Source.NetUpdateInventorySlot), Slot, Moving.Id, Moving.Count);
-						ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(ParentMenu.Source.Source.NetUpdateInventorySlot), FromSlot, Original.Id, Original.Count);
+						Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), Slot, Moving.Id, Moving.Count);
+						ParentMenu.Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), FromSlot, Original.Id, Original.Count);
 					}
 				}
 			}
