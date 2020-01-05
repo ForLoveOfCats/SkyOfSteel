@@ -14,7 +14,6 @@ public class InventoryIcon : TextureRect
 	public Items.ID CurrentId;
 
 	public Label CountLabel;
-	public int CurrentCount = -1;
 
 	private static PackedScene InventoryIconScene;
 
@@ -178,17 +177,17 @@ public class InventoryIcon : TextureRect
 			if(NotNull.Id != CurrentId)
 				UpdateIcon();
 
+			int Count = 0;
 			if(Case == UsageCase.MENU)
-				CurrentCount = NotNull.Count;
+				Count = NotNull.Count;
 			else if(Case == UsageCase.PREVIEW)
-				CurrentCount = CalcRetrieveCount(NotNull.Count);
+				Count = CalcRetrieveCount(NotNull.Count);
 
-			CountLabel.Text = CurrentCount.ToString();
+			CountLabel.Text = Count.ToString();
 		}
 		else if(CurrentId != Items.ID.NONE)
 		{
 			UpdateIcon();
-			CurrentCount = -1;
 			CountLabel.Text = "";
 		}
 
