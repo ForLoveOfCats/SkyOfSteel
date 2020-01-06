@@ -1,4 +1,5 @@
 using Godot;
+using static Godot.Mathf;
 
 
 
@@ -62,7 +63,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 
 		if(PhysicsEnabled)
 		{
-			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:50);
+			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:Deg2Rad(60));
 			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation))) //We just crossed into a different chunk
 			{
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);
