@@ -23,9 +23,17 @@ public class Menu : Node
 	private static readonly PackedScene PauseMenu;
 	private static readonly PackedScene InventoryMenu;
 
+	public static Menu Self;
+
+	public Menu()
+	{
+		Self = this;
+	}
+
+
 	static Menu()
 	{
-		if(Engine.EditorHint) {return;}
+		if(Engine.EditorHint) return;
 
 		//All menu scene files are loaded on game startup
 		Intro = GD.Load<PackedScene>("res://UI/Menu/Intro/Intro.tscn");
@@ -41,6 +49,7 @@ public class Menu : Node
 		PauseMenu = GD.Load<PackedScene>("res://UI/Menu/PauseMenu/PauseMenu.tscn");
 		InventoryMenu = GD.Load<PackedScene>("res://UI/Menu/InventoryMenu/InventoryMenu.tscn");
 	}
+
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
 	{
@@ -63,6 +72,13 @@ public class Menu : Node
 		IngameMenuOpen = false;
 		Game.BindsEnabled = false;
 		Input.SetMouseMode(Input.MouseMode.Visible);
+
+		//Fake a release event of the left mouse button to cancel any drag operations
+		var LeftMouseRelease = new InputEventMouseButton() {
+			ButtonIndex = (int) ButtonList.Left,
+			Pressed = false
+		};
+		Self.GetTree().InputEvent(LeftMouseRelease);
 	}
 
 
