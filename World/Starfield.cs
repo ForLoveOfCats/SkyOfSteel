@@ -20,18 +20,19 @@ public class Starfield : Spatial
 
 	public override void _Ready()
 	{
-		Random Rand = new Random();
 		for(int i = 0; i < 1000; i++)
 		{
 			SingleStar = (MeshInstance) StarScene.Instance();
 			AddChild(SingleStar);
 
 			Vector3 Pos = new Vector3(
-				(float)Rand.NextDouble()/2f * Rand.RandomSign(),
-				(float)Rand.NextDouble()/2f,
-				(float)Rand.NextDouble()/2f * Rand.RandomSign()
+				(float)Game.Rand.NextDouble()/2f * Game.Rand.RandomSign(),
+				(float)Game.Rand.NextDouble()/2f,
+				(float)Game.Rand.NextDouble()/2f * Game.Rand.RandomSign()
 			);
-			Pos = Pos.Normalized() * 50000;
+
+			float Distance = 43_000f + (float)(Game.Rand.NextDouble() * 15_000d) * Game.Rand.RandomSign();
+			Pos = Pos.Normalized() * Distance;
 
 			SingleStar.Translation = Pos;
 		}
