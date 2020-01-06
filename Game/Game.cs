@@ -21,6 +21,8 @@ public class Game : Node
 
 	public static string Nickname = DefaultNickname;
 
+	public static Random Rand = new Random();
+
 	public static Game Self;
 	private Game()
 	{

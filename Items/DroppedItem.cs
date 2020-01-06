@@ -44,7 +44,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 		GridUpdate();
 
 		if(Net.Work.IsNetworkServer())
-			Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, Name);
+			Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, RotationDegrees.y, Momentum, Name);
 	}
 
 
@@ -68,7 +68,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 				World.Chunks[CurrentChunkTuple].Items.Remove(this);
 				CurrentChunkTuple = World.GetChunkTuple(Translation);
 				World.AddItemToChunk(this);
-				Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, Momentum, Name);
+				Net.SteelRpc(World.Self, nameof(World.DropOrUpdateItem), Type, Translation, RotationDegrees.y, Momentum, Name);
 			}
 
 			if(IsOnFloor())

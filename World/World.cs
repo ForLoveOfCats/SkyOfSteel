@@ -837,7 +837,7 @@ public class World : Node
 
 		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)
 		{
-			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.Momentum, Item.Name);
+			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.RotationDegrees.y, Item.Momentum, Item.Name);
 		}
 	}
 
@@ -918,11 +918,13 @@ public class World : Node
 	{
 		if(Self.GetTree().NetworkPeer != null)
 		{
+			float Rotation = Game.Rand.Next(0, 360); //Int cast to float, limited resolution is fine
+
 			if(Self.GetTree().IsNetworkServer())
 			{
 				string Name = System.Guid.NewGuid().ToString();
-				DropOrUpdateItem(Type, Position, BaseMomentum, Name);
-				Net.SteelRpc(Self, nameof(DropOrUpdateItem), Type, Position, BaseMomentum, Name);
+				DropOrUpdateItem(Type, Position, Rotation, BaseMomentum, Name);
+				Net.SteelRpc(Self, nameof(DropOrUpdateItem), Type, Position, Rotation, BaseMomentum, Name);
 			}
 			else
 			{
@@ -934,12 +936,13 @@ public class World : Node
 
 	//Has to be non-static to be RPC-ed
 	[Remote]
-	public void DropOrUpdateItem(Items.ID Type, Vector3 Position, Vector3 BaseMomentum, string Name) //Performs the actual drop
+	public void DropOrUpdateItem(Items.ID Type, Vector3 Position, float Rotation, Vector3 BaseMomentum, string Name) //Performs the actual drop
 	{
 		if(EntitiesRoot.HasNode(Name))
 		{
 			DroppedItem Instance = EntitiesRoot.GetNode<DroppedItem>(Name);
 			Instance.Translation = Position;
+			Instance.RotationDegrees = new Vector3(0, Rotation, 0);
 			Instance.Momentum = BaseMomentum;
 			Instance.PhysicsEnabled = true;
 		}
@@ -951,6 +954,7 @@ public class World : Node
 			{
 				var ToDrop = (DroppedItem) DroppedItemScene.Instance();
 				ToDrop.Translation = Position;
+				ToDrop.RotationDegrees = new Vector3(0, Rotation, 0);
 				ToDrop.Momentum = BaseMomentum;
 				ToDrop.Type = Type;
 				ToDrop.Name = Name;
