@@ -184,7 +184,7 @@ public class HUD : Node
 		CooldownBar.MaxValue = Game.PossessedPlayer.CurrentMaxCooldown;
 		CooldownBar.Value = Game.PossessedPlayer.CurrentCooldown;
 
-		HealthBar.MaxValue = Game.PossessedPlayer.MaxHealth;
+		HealthBar.MaxValue = Player.MaxHealth;
 		HealthBar.Value = Game.PossessedPlayer.Health;
 
 		foreach(KeyValuePair<int, Label> Current in NickLabels)

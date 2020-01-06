@@ -8,45 +8,45 @@ using System.Collections.Generic;
 
 public class Player : Character, IPushable, IHasInventory
 {
+	public const float Height = 10;
+	public const float RequiredUncrouchHeight = 11;
+	public const float MovementSpeed = 36;
+	public const float FlySprintMultiplier = 5; //Speed while sprint flying is base speed times this value
+	public const float CrouchMovementDivisor = 2.8f;
+	public const float MaxVerticalSpeed = 100f;
+	public const float AirAcceleration = 25; //How many units per second to accelerate
+	public const float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
+	public const float Friction = MovementSpeed / DecelerateTime;
+	public const float SlideFrictionDivisor = 13;
+	public const float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
+	public const float FlyFriction = MovementSpeed * FlySprintMultiplier / FlyDecelerateTime;
+	public const float JumpStartForce = 22f;
+	public const float JumpContinueForce = 0.41f;
+	public const float MaxJumpLength = 0.22f;
+	public const float Gravity = 55f;
+	public const float ItemThrowPower = 40f;
+	public const float ItemPickupDistance = 8f;
+	public const float SlotSwitchCooldown = 15;
+	public const float BuildingCooldown = 15;
+	public const float MaxGroundLegRotation = 50;
+	public const float MaxAirLegRotation = 80;
+	public const float MaxHealth = 100;
+	public const float LookDivisor = 6;
+	public const float ViewmodelMomentumMax = 12; //Probably never reaches this max
+	public const float ViewmodelMomentumHorzInputMultiplier = 0.9f;
+	public const float ViewmodelMomentumVertInputMultiplier = 0.9f;
+
+	public const float AdsMultiplierMovementEffect = 1.66f;
+	public const float MinAdsMultiplier = 0.7f;
+	public const float AdsTime = 0.15f; //Seconds to achieve full ads
+
+	public const float SfxMinLandMomentumY = 3;
+
 	public bool Possessed = false;
 	public int Id = 0;
 
-	public float Height = 10;
-	public float RequiredUncrouchHeight = 11;
-	public float MovementSpeed = 36;
-	public float FlySprintMultiplier = 5; //Speed while sprint flying is base speed times this value
-	public float CrouchMovementDivisor = 2.8f;
-	public float MaxVerticalSpeed = 100f;
-	public float AirAcceleration = 25; //How many units per second to accelerate
-	public float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
-	public float Friction { get { return MovementSpeed / DecelerateTime; } }
-	public float SlideFrictionDivisor = 13;
-	public float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
-	public float FlyFriction { get { return (MovementSpeed*FlySprintMultiplier) / FlyDecelerateTime; } }
-	public float JumpStartForce = 22f;
-	public float JumpContinueForce = 0.41f;
-	public float MaxJumpLength = 0.22f;
-	public float Gravity = 55f;
-	public float ItemThrowPower = 40f;
-	public float ItemPickupDistance = 8f;
-	public float SlotSwitchCooldown = 15;
-	public float BuildingCooldown = 15;
-	public float MaxGroundLegRotation = 50;
-	public float MaxAirLegRotation = 80;
-	public float MaxHealth = 100;
-	public float LookDivisor = 6;
-	public float ViewmodelMomentumMax = 12; //Probably never reaches this max
-	public float ViewmodelMomentumHorzInputMultiplier = 0.9f;
-	public float ViewmodelMomentumVertInputMultiplier = 0.9f;
-
-	public static float AdsMultiplierMovementEffect = 1.66f;
-	public static float MinAdsMultiplier = 0.7f;
-	public static float AdsTime = 0.15f; //Seconds to achieve full ads
-
 	public bool Ads = false;
 	public float AdsMultiplier = 1;
-
-	private const float SfxMinLandMomentumY = 3;
 
 	private bool Frozen = true;
 	public bool FlyMode { get; private set;} = false;
@@ -335,7 +335,7 @@ public class Player : Character, IPushable, IHasInventory
 
 			Plr.HUDInstance.HotbarUpdate();
 			Hitscan.Reset();
-			Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+			Plr.SetCooldown(0, SlotSwitchCooldown, false);
 			Plr.Ads = false;
 		}
 	}
@@ -357,7 +357,7 @@ public class Player : Character, IPushable, IHasInventory
 
 			Plr.HUDInstance.HotbarUpdate();
 			Hitscan.Reset();
-			Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+			Plr.SetCooldown(0, SlotSwitchCooldown, false);
 			Plr.Ads = false;
 		}
 	}
@@ -511,14 +511,14 @@ public class Player : Character, IPushable, IHasInventory
 			Plr.IsFlySprinting = true;
 
 			if(Plr.JumpAxis == 1)
-				Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplier;
+				Plr.Momentum.y = MovementSpeed*FlySprintMultiplier;
 			else if(Plr.IsCrouching)
-				Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplier;
+				Plr.Momentum.y = -MovementSpeed*FlySprintMultiplier;
 		}
 		else
 		{
 			Plr.IsFlySprinting = false;
-			Plr.Momentum.y = Clamp(Plr.Momentum.y, -Plr.MovementSpeed, Plr.MovementSpeed);
+			Plr.Momentum.y = Clamp(Plr.Momentum.y, -MovementSpeed, MovementSpeed);
 		}
 	}
 
@@ -534,17 +534,17 @@ public class Player : Character, IPushable, IHasInventory
 			{
 				if(Plr.IsFlySprinting)
 				{
-					Plr.Momentum.y = Plr.MovementSpeed*Plr.FlySprintMultiplier;
+					Plr.Momentum.y = MovementSpeed*FlySprintMultiplier;
 				}
 				else
 				{
-					Plr.Momentum.y = Plr.MovementSpeed;
+					Plr.Momentum.y = MovementSpeed;
 				}
 				Plr.IsJumping = false;
 			}
 			else if(Plr.OnFloor)
 			{
-				Plr.Momentum.y = Plr.JumpStartForce;
+				Plr.Momentum.y = JumpStartForce;
 				Plr.IsJumping = true;
 			}
 
@@ -576,9 +576,9 @@ public class Player : Character, IPushable, IHasInventory
 				Plr.JumpSens = 0;
 
 				if(Plr.IsFlySprinting)
-					Plr.Momentum.y = -Plr.MovementSpeed*Plr.FlySprintMultiplier;
+					Plr.Momentum.y = -MovementSpeed*FlySprintMultiplier;
 				else
-					Plr.Momentum.y = -Plr.MovementSpeed;
+					Plr.Momentum.y = -MovementSpeed;
 			}
 
 			Plr.LargeCollisionCapsule.Disabled = true;
@@ -620,13 +620,13 @@ public class Player : Character, IPushable, IHasInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.ApplyLookVertical(Change);
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens)*ViewmodelMomentumVertInputMultiplier, -ViewmodelMomentumMax, ViewmodelMomentumMax)
 			);
 		}
 	}
@@ -638,13 +638,13 @@ public class Player : Character, IPushable, IHasInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.ApplyLookVertical(-Change);
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens)*ViewmodelMomentumVertInputMultiplier, -ViewmodelMomentumMax, ViewmodelMomentumMax)
 			);
 		}
 	}
@@ -656,13 +656,13 @@ public class Player : Character, IPushable, IHasInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.LookHorizontal -= Change;
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens)*ViewmodelMomentumHorzInputMultiplier, -ViewmodelMomentumMax, ViewmodelMomentumMax),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -675,13 +675,13 @@ public class Player : Character, IPushable, IHasInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
+			float Change = ((float)Sens/LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.LookHorizontal += Change;
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplier, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens)*ViewmodelMomentumHorzInputMultiplier, -ViewmodelMomentumMax, ViewmodelMomentumMax),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -722,7 +722,7 @@ public class Player : Character, IPushable, IHasInventory
 									BuildRayCast.GetCollisionPoint(),
 									1 //ID 1 for now so all client own all non-default structures
 								);
-								Plr.SetCooldown(0, Plr.BuildingCooldown, true);
+								Plr.SetCooldown(0, BuildingCooldown, true);
 							}
 						}
 					}
@@ -762,7 +762,7 @@ public class Player : Character, IPushable, IHasInventory
 						if(BuildRayCast.GetCollider() is Tile Hit)
 						{
 							Hit.NetRemove();
-							Plr.SetCooldown(0, Plr.BuildingCooldown, true);
+							Plr.SetCooldown(0, BuildingCooldown, true);
 						}
 					}
 				}
@@ -796,7 +796,7 @@ public class Player : Character, IPushable, IHasInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Magnitude = Plr.ItemThrowPower + (float)Game.Rand.NextDouble() * Game.Rand.RandomSign();
+			float Magnitude = ItemThrowPower + (float)Game.Rand.NextDouble() * Game.Rand.RandomSign();
 			float VDiff = (float)(Game.Rand.NextDouble() * 2d) * Game.Rand.RandomSign();
 			float HDiff = (float)(Game.Rand.NextDouble() * 2d) * Game.Rand.RandomSign();
 			Vector3 Vel = Plr.Momentum/1.5f + new Vector3(0, 0, Magnitude)
@@ -812,7 +812,7 @@ public class Player : Character, IPushable, IHasInventory
 				if(Plr.Inventory[Plr.InventorySlot] != null)
 				{
 					Plr.SfxManager.FpThrow();
-					Plr.SetCooldown(0, Plr.SlotSwitchCooldown, false);
+					Plr.SetCooldown(0, SlotSwitchCooldown, false);
 				}
 			}
 		}
