@@ -11,6 +11,16 @@ public static class SteelMath
 	}
 
 
+	public static float SafeSign(float Input)
+	{
+		//Equality check matches +0 and -0
+		if(Input == 0f || Input > 0)
+			return 1f;
+		else
+			return -1f;
+	}
+
+
 	public static float SnapToGrid(float ToSnap, int GridSize, int DivisionCount)
 	{
 		return Mathf.Round(ToSnap/(GridSize/DivisionCount))*(GridSize/DivisionCount);
@@ -68,6 +78,6 @@ public static class SteelMath
 
 	public static float RandomSign(this Random Self)
 	{
-		return Sign((float)Self.Next(-1, 1));
+		return SafeSign((float)Self.Next(-1, 1));
 	}
 }

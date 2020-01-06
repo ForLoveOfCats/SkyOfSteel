@@ -404,17 +404,17 @@ public class BuildingLogic
 				if(xAbs > yAbs && xAbs > zAbs)
 				{
 					//X axis
-					return Base.Translation + (new Vector3(12, 0, 0) * Sign(HitRelative.x));
+					return Base.Translation + (new Vector3(12, 0, 0) * SafeSign(HitRelative.x));
 				}
 				else if(yAbs > xAbs && yAbs > zAbs)
 				{
 					//Y axis
-					return Base.Translation + (new Vector3(0, 12, 0) * Sign(HitRelative.y));
+					return Base.Translation + (new Vector3(0, 12, 0) * SafeSign(HitRelative.y));
 				}
 				else if(zAbs > xAbs && zAbs > yAbs)
 				{
 					//Z axis
-					return Base.Translation + (new Vector3(0, 0, 12) * Sign(HitRelative.z));
+					return Base.Translation + (new Vector3(0, 0, 12) * SafeSign(HitRelative.z));
 				}
 
 				break;
@@ -508,17 +508,17 @@ public class BuildingLogic
 				if(xAbs > yAbs && xAbs > zAbs)
 				{
 					//X axis
-					return Base.Translation + (new Vector3(12, 0, 0) * Sign(HitRelative.x));
+					return Base.Translation + (new Vector3(12, 0, 0) * SafeSign(HitRelative.x));
 				}
 				else if(yAbs > xAbs && yAbs > zAbs)
 				{
 					//Y axis
-					return Base.Translation + (new Vector3(0, 12, 0) * Sign(HitRelative.y));
+					return Base.Translation + (new Vector3(0, 12, 0) * SafeSign(HitRelative.y));
 				}
 				else if(zAbs > xAbs && zAbs > yAbs)
 				{
 					//Z axis
-					return Base.Translation + (new Vector3(0, 0, 12) * Sign(HitRelative.z));
+					return Base.Translation + (new Vector3(0, 0, 12) * SafeSign(HitRelative.z));
 				}
 
 				break;

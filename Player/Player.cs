@@ -1101,7 +1101,7 @@ public class Player : Character, IPushable, IHasInventory
 		if(!Crouching)
 			LegsJointTarget = Clamp((ForwardMomentum/MovementSpeed)*MaxGroundLegRotation, -MaxAirLegRotation, MaxAirLegRotation);
 		else
-			LegsJointTarget = MaxAirLegRotation*Sign(ForwardMomentum);
+			LegsJointTarget = MaxAirLegRotation*SafeSign(ForwardMomentum);
 		LegsJoint.Transform = LegsJoint.Transform.InterpolateWith(
 			new Transform(
 				new Quat(
