@@ -41,7 +41,7 @@ public class Net : Node
 
 		GetTree().Connect("network_peer_connected", this, "_PlayerConnected");
 		GetTree().Connect("network_peer_disconnected", this, "_PlayerDisconnected");
-		GetTree().Connect("server_disconnected", this, "_ServerDisconnected");
+		GetTree().Connect("server_disconnected", this, "_ServerDisconnected", flags:(uint)ConnectFlags.Deferred);
 	}
 
 
