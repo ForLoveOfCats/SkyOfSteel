@@ -6,9 +6,10 @@ public class Menu : Node
 	public static bool IsOpen = true;
 	public static bool IngameMenuOpen = false;
 
+	private static Node MenuRoot;
 	private static Panel ShadedBackground;
 	private static ScrollContainer Center;
-	private static Node Contents = null;
+	private static Node Contents;
 
 	private static readonly PackedScene Intro;
 	private static readonly PackedScene Update;
@@ -53,8 +54,9 @@ public class Menu : Node
 
 	public static void Setup() //Called from Game.cs before this class's _Ready would
 	{
-		ShadedBackground = Game.RuntimeRoot.GetNode("MenuRoot").GetNode("ShadedBackground") as Panel;
-		Center = Game.RuntimeRoot.GetNode("MenuRoot").GetNode("HBox/Center") as ScrollContainer;
+		MenuRoot = Game.RuntimeRoot.GetNode("MenuRoot");
+		ShadedBackground = MenuRoot.GetNode<Panel>("ShadedBackground");
+		Center = MenuRoot.GetNode<ScrollContainer>("HBox/Center");
 	}
 
 
@@ -204,7 +206,7 @@ public class Menu : Node
 		Reset();
 
 		Contents = InventoryMenu.Instance();
-		Center.AddChild(Contents);
+		MenuRoot.AddChild(Contents);
 		ShadedBackground.Show();
 		IngameMenuOpen = true;
 	}

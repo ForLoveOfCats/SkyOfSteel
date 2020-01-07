@@ -62,26 +62,6 @@ public class InventoryIcon : TextureRect
 	}
 
 
-	public int CalcRetrieveCount(int Value)
-	{
-		switch(ParentMenu.Source.Mode)
-		{
-			case InventoryMenu.DragMode.ALL:
-				//Keep original count as original
-				break;
-			case InventoryMenu.DragMode.HALF:
-				if(Value != 1)
-					Value /= 2; //Relying on rounding down via truncation
-				break;
-			case InventoryMenu.DragMode.SINGLE:
-				Value = 1;
-				break;
-		}
-
-		return Value;
-	}
-
-
 	public override void DropData(Vector2 Pos, object Data)
 	{
 		if(Data is int FromSlot && ParentMenu.Source != null)
@@ -95,7 +75,7 @@ public class InventoryIcon : TextureRect
 
 			Items.Instance Original = Source.Inventory[Slot];
 
-			int RetrieveCount = CalcRetrieveCount(Moving.Count);
+			int RetrieveCount = ParentMenu.CalcRetrieveCount(Moving.Count);
 			bool EmptyMoving = RetrieveCount == Moving.Count; //If we are moving all, empty the the source slot
 
 			if(Original == null) //Replace (no item at target)
@@ -181,7 +161,7 @@ public class InventoryIcon : TextureRect
 			if(Case == UsageCase.MENU)
 				Count = NotNull.Count;
 			else if(Case == UsageCase.PREVIEW)
-				Count = CalcRetrieveCount(NotNull.Count);
+				Count = ParentMenu.CalcRetrieveCount(NotNull.Count);
 
 			CountLabel.Text = Count.ToString();
 		}

@@ -1,14 +1,16 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://UI/Menu/InventoryMenu/InventoryMenu.cs" type="Script" id=1]
 [ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=2]
 [ext_resource path="res://UI/Menu/Pieces/SmallTitlePiece.tscn" type="PackedScene" id=3]
+[ext_resource path="res://UI/Theme/Theme.tres" type="Theme" id=4]
 
 [node name="Inventory" type="VBoxContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource( 4 )
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -32,11 +34,27 @@ rect_pivot_offset = Vector2( 140, -30 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="Left" type="VBoxContainer" parent="HBoxContainer"]
+margin_right = 190.0
+margin_bottom = 488.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
+
 [node name="PlayerVBox" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 194.0
+margin_right = 829.0
+margin_bottom = 488.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Right" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 833.0
 margin_right = 1024.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+size_flags_stretch_ratio = 0.3
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 2 )]
 margin_top = 576.0

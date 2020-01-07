@@ -790,18 +790,26 @@ public class Player : Character, IPushable, IHasInventory
 	}
 
 
+	public Vector3 CalcThrowVelocity()
+	{
+		float Magnitude = ItemThrowPower + (float)Game.Rand.NextDouble() * Game.Rand.RandomSign();
+		float VDiff = (float)(Game.Rand.NextDouble() * 2d) * Game.Rand.RandomSign();
+		float HDiff = (float)(Game.Rand.NextDouble() * 2d) * Game.Rand.RandomSign();
+
+		Vector3 Vel = Momentum/1.5f + new Vector3(0, 0, Magnitude)
+			.Rotated(new Vector3(1,0,0), Deg2Rad(-ActualLookVertical + VDiff))
+			.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal + HDiff));
+
+		return Vel;
+	}
+
 	[SteelInputWithArg(typeof(Player), nameof(ThrowCurrentItem))]
 	public static void ThrowCurrentItem(float Sens)
 	{
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Magnitude = ItemThrowPower + (float)Game.Rand.NextDouble() * Game.Rand.RandomSign();
-			float VDiff = (float)(Game.Rand.NextDouble() * 2d) * Game.Rand.RandomSign();
-			float HDiff = (float)(Game.Rand.NextDouble() * 2d) * Game.Rand.RandomSign();
-			Vector3 Vel = Plr.Momentum/1.5f + new Vector3(0, 0, Magnitude)
-				.Rotated(new Vector3(1,0,0), Deg2Rad(-Plr.ActualLookVertical + VDiff))
-				.Rotated(new Vector3(0,1,0), Deg2Rad(Plr.LookHorizontal + HDiff));
+			Vector3 Vel = Plr.CalcThrowVelocity();
 
 			if(Net.Work.IsNetworkServer())
 				Plr.ThrowItemFromSlot(Plr.InventorySlot, Vel);

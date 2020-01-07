@@ -17,7 +17,6 @@ public class InventoryMenu : VBoxContainer
 	}
 
 
-
 	public enum DragMode {ALL, SINGLE, HALF};
 
 	public Texture Alpha = null;
@@ -27,6 +26,7 @@ public class InventoryMenu : VBoxContainer
 	public InventoryIcon[] PlayerIcons = new InventoryIcon[10];
 
 	public SourceData Source = null;
+
 
 	public override void _Ready()
 	{
@@ -45,6 +45,62 @@ public class InventoryMenu : VBoxContainer
 
 			PlayerVBox.AddChild(Icon);
 			PlayerIcons[x] = Icon;
+		}
+	}
+
+
+	public int CalcRetrieveCount(int Value)
+	{
+		switch(Source.Mode)
+		{
+			case DragMode.ALL:
+				//Keep original count as original
+				break;
+			case DragMode.HALF:
+				if(Value != 1)
+					Value /= 2; //Relying on rounding down via truncation
+				break;
+			case DragMode.SINGLE:
+				Value = 1;
+				break;
+		}
+
+		return Value;
+	}
+
+
+	public override bool CanDropData(Vector2 Pos, object Data)
+	{
+		return Data is int;
+	}
+
+
+	public override void DropData(Vector2 Pos, object Data)
+	{
+		if(Data is int FromSlot && Source != null)
+		{
+			Items.Instance Moving = Source.Source.Inventory[FromSlot];
+			int RetrieveCount = CalcRetrieveCount(Moving.Count);
+			Vector3 StartPos = Game.PossessedPlayer.Translation + Game.PossessedPlayer.Cam.Translation;
+
+			for(int Index = 0; Index < RetrieveCount; Index++)
+				World.Self.DropItem(Moving.Id, StartPos, Game.PossessedPlayer.CalcThrowVelocity());
+
+			bool EmptyMoving = RetrieveCount == Moving.Count; //If we have thrown all, empty the the source slot
+			if(Net.Work.IsNetworkServer())
+			{
+				if(EmptyMoving)
+					Source.Source.NetEmptyInventorySlot(FromSlot);
+				else
+					Source.Source.NetUpdateInventorySlot(FromSlot, Moving.Id, Moving.Count - RetrieveCount);
+			}
+			else
+			{
+				if(EmptyMoving)
+					Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetEmptyInventorySlot), FromSlot);
+				else
+					Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), FromSlot, Moving.Id, Moving.Count - RetrieveCount);
+			}
 		}
 	}
 }
