@@ -5,15 +5,17 @@ using System.Collections.Generic;
 
 
 
-public class Locker : PipeCoreLogic
+public class Locker : PipeCoreLogic, IHasInventory
 {
 	private bool InitiallyFilledFriends = false;
 
-	Spatial Position1;
+	private Spatial Position1;
 
-	MeshInstance OpenEndMesh;
-	CollisionShape OpenEndCollision;
-	StaticBody OpenEnd;
+	private MeshInstance OpenEndMesh;
+	private CollisionShape OpenEndCollision;
+	private StaticBody OpenEnd;
+
+	public InventoryComponent Inventory { get; set; } = new InventoryComponent(10);
 
 	public override void _Ready()
 	{
@@ -56,5 +58,25 @@ public class Locker : PipeCoreLogic
 			RecursiveAddFriendsToSystem();
 		}
 		InitiallyFilledFriends = true;
+	}
+
+
+	[Remote]
+	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
+	{
+		Inventory.UpdateSlot(Slot, ItemId, Count);
+
+		if(Net.Work.IsNetworkServer())
+			Net.SteelRpc(this, nameof(NetUpdateInventorySlot), Slot, ItemId, Count);
+	}
+
+
+	[Remote]
+	public void NetEmptyInventorySlot(int Slot)
+	{
+		Inventory.EmptySlot(Slot);
+
+		if(Net.Work.IsNetworkServer())
+			Net.SteelRpc(this, nameof(NetEmptyInventorySlot), Slot);
 	}
 }

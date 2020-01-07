@@ -5,7 +5,16 @@ using Godot;
 
 public class InventoryComponent
 {
-	private Items.Instance[] Contents = new Items.Instance[10];
+	private Items.Instance[] Contents;
+
+	public readonly int SlotCount;
+
+
+	public InventoryComponent(int SlotCountArg)
+	{
+		SlotCount = SlotCountArg;
+		Contents = new Items.Instance[SlotCount];
+	}
 
 
 	public Items.Instance this[int Index]

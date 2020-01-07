@@ -824,7 +824,18 @@ public class World : Node
 
 		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
 		{
-			Self.RpcId(Id, nameof(PlaceWithName), new object[] {Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.Name});
+			Self.RpcId(Id, nameof(PlaceWithName), Branch.Type, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.Name);
+
+			//If the tile has an inventory then send it along too, because reliable RCPs are ordered these operations are applied after
+			//the node is created on the client thus avoiding any errors. Woot for ordered RCPs!
+			if(Branch is IHasInventory HasInv)
+			{
+				for(int Index = 0; Index < HasInv.Inventory.SlotCount; Index++)
+				{
+					if(HasInv.Inventory[Index] is Items.Instance Item)
+						Branch.RpcId(Id, nameof(IHasInventory.NetUpdateInventorySlot), Index, Item.Id, Item.Count);
+				}
+			}
 		}
 
 		foreach(MobClass Mob in Chunks[ChunkLocation].Mobs)

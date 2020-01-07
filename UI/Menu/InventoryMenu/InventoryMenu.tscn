@@ -35,21 +35,28 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Left" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 190.0
+margin_right = 116.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
 
 [node name="PlayerVBox" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 194.0
-margin_right = 829.0
+margin_left = 120.0
+margin_right = 509.0
+margin_bottom = 488.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OtherVBox" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 513.0
+margin_right = 902.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Right" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 833.0
+margin_left = 906.0
 margin_right = 1024.0
 margin_bottom = 488.0
 size_flags_horizontal = 3

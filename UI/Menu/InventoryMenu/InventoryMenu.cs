@@ -19,11 +19,15 @@ public class InventoryMenu : VBoxContainer
 
 	public enum DragMode {ALL, SINGLE, HALF};
 
-	public Texture Alpha = null;
-	public PackedScene InventoryIconScene = null;
+	public Texture Alpha;
+	public PackedScene InventoryIconScene;
 
-	public VBoxContainer PlayerVBox = null;
-	public InventoryIcon[] PlayerIcons = new InventoryIcon[10];
+	public VBoxContainer PlayerVBox ;
+	public InventoryIcon[] PlayerIcons;
+
+	public IHasInventory Other; //Will be null if we are just the normal inventory screen
+	public VBoxContainer OtherVBox;
+	public InventoryIcon[] OtherIcons;
 
 	public SourceData Source = null;
 
@@ -34,18 +38,40 @@ public class InventoryMenu : VBoxContainer
 		InventoryIconScene = GD.Load<PackedScene>("res://UI/InventoryIcon.tscn");
 
 		PlayerVBox = GetNode<VBoxContainer>("HBoxContainer/PlayerVBox");
+		OtherVBox = GetNode<VBoxContainer>("HBoxContainer/OtherVBox");
 
-		for(int x = 0; x <= 9; x++)
+		Player Plr = Game.PossessedPlayer;
+		PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
+		for(int Index = 0; Index < Plr.Inventory.SlotCount; Index++)
 		{
-			var Icon = (InventoryIcon) InventoryIconScene.Instance();
-			Icon.ParentMenu = this;
-			Icon.Slot = x;
-			Icon.Source = Game.PossessedPlayer;
-			Icon.Case = InventoryIcon.UsageCase.MENU;
-
+			InventoryIcon Icon = InstantiateIcon(Index, Plr);
 			PlayerVBox.AddChild(Icon);
-			PlayerIcons[x] = Icon;
+			PlayerIcons[Index] = Icon;
 		}
+
+		if(Other != null)
+		{
+			OtherIcons = new InventoryIcon[Other.Inventory.SlotCount];
+			for(int Index = 0; Index < Other.Inventory.SlotCount; Index++)
+			{
+				InventoryIcon Icon = InstantiateIcon(Index, Other);
+				OtherVBox.AddChild(Icon);
+				OtherIcons[Index] = Icon;
+			}
+		}
+	}
+
+
+	public InventoryIcon InstantiateIcon(int SlotArg, IHasInventory SourceArg)
+	{
+		var Icon = (InventoryIcon) InventoryIconScene.Instance();
+
+		Icon.ParentMenu = this;
+		Icon.Slot = SlotArg;
+		Icon.Source = SourceArg;
+		Icon.Case = InventoryIcon.UsageCase.MENU;
+
+		return Icon;
 	}
 
 

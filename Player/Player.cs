@@ -24,6 +24,7 @@ public class Player : Character, IPushable, IHasInventory
 	public const float JumpContinueForce = 0.41f;
 	public const float MaxJumpLength = 0.22f;
 	public const float Gravity = 55f;
+	public const float InteractReach = 6f;
 	public const float ItemThrowPower = 40f;
 	public const float ItemPickupDistance = 8f;
 	public const float SlotSwitchCooldown = 15;
@@ -135,7 +136,7 @@ public class Player : Character, IPushable, IHasInventory
 	{
 		if(Engine.EditorHint) {return;}
 
-		Inventory = new InventoryComponent();
+		Inventory = new InventoryComponent(10);
 		HUDInstance = (HUD) GD.Load<PackedScene>("res://UI/HUD.tscn").Instance();
 	}
 
@@ -786,6 +787,28 @@ public class Player : Character, IPushable, IHasInventory
 				if(Plr.FlySprintSens > 0)
 					FlySprint(Plr.FlySprintSens);
 			}
+		}
+	}
+
+
+	[SteelInputWithoutArg(typeof(Player), nameof(Interact))]
+	public static void Interact()
+	{
+		Player Plr = Game.PossessedPlayer;
+
+		Vector3 Start = Plr.Translation;
+		Vector3 End = Start + new Vector3(0, 0, InteractReach)
+			.Rotated(new Vector3(1, 0, 0), Deg2Rad(Plr.ActualLookVertical))
+			.Rotated(new Vector3(0, 1, 0), Deg2Rad(Plr.LookHorizontal));
+		var Exclude = new Godot.Collections.Array{Plr};
+
+		PhysicsDirectSpaceState State = Plr.GetWorld().DirectSpaceState;
+		Godot.Collections.Dictionary Results = State.IntersectRay(Start, End, Exclude, 4);
+		if(Results.Count > 0)
+		{
+			object RawCollider = Results["collider"];
+			if(RawCollider is Locker CollidedLocker)
+				Menu.BuildInteractInventory(CollidedLocker);
 		}
 	}
 

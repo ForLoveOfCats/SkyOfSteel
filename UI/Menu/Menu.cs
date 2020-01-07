@@ -205,7 +205,20 @@ public class Menu : Node
 	{
 		Reset();
 
-		Contents = InventoryMenu.Instance();
+		Contents = (InventoryMenu) InventoryMenu.Instance();
+		MenuRoot.AddChild(Contents);
+		ShadedBackground.Show();
+		IngameMenuOpen = true;
+	}
+
+
+	public static void BuildInteractInventory(IHasInventory Other)
+	{
+		Reset();
+
+		var Inv = (InventoryMenu) InventoryMenu.Instance();
+		Inv.Other = Other;
+		Contents = Inv;
 		MenuRoot.AddChild(Contents);
 		ShadedBackground.Show();
 		IngameMenuOpen = true;
