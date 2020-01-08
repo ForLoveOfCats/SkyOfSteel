@@ -29,7 +29,18 @@ public class InventoryIcon : TextureRect
 	{
 		CountLabel = GetNode<Label>("Label");
 		CountLabel.Text = "";
+
 		UpdateIcon();
+	}
+
+
+	public override void _Draw()
+	{
+		if(Case == UsageCase.MENU)
+		{
+			var Rect = new Rect2(new Vector2(), RectSize);
+			DrawRect(Rect, new Color(1, 1, 1), false, 1);
+		}
 	}
 
 
