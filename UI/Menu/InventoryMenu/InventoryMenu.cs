@@ -37,8 +37,8 @@ public class InventoryMenu : VBoxContainer
 		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;
 		InventoryIconScene = GD.Load<PackedScene>("res://UI/InventoryIcon.tscn");
 
-		PlayerVBox = GetNode<VBoxContainer>("HBoxContainer/PlayerVBox");
-		OtherVBox = GetNode<VBoxContainer>("HBoxContainer/OtherVBox");
+		PlayerVBox = GetNode<VBoxContainer>("HBoxContainer/PlayerCenter/PlayerVBox");
+		OtherVBox = GetNode<VBoxContainer>("HBoxContainer/OtherCenter/OtherVBox");
 
 		Player Plr = Game.PossessedPlayer;
 		PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];

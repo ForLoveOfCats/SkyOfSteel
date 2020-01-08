@@ -41,17 +41,33 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.3
 
-[node name="PlayerVBox" type="VBoxContainer" parent="HBoxContainer"]
+[node name="PlayerCenter" type="CenterContainer" parent="HBoxContainer"]
 margin_left = 120.0
 margin_right = 509.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="OtherVBox" type="VBoxContainer" parent="HBoxContainer"]
+[node name="PlayerVBox" type="VBoxContainer" parent="HBoxContainer/PlayerCenter"]
+margin_left = 194.0
+margin_top = 244.0
+margin_right = 194.0
+margin_bottom = 244.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OtherCenter" type="CenterContainer" parent="HBoxContainer"]
 margin_left = 513.0
 margin_right = 902.0
 margin_bottom = 488.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="OtherVBox" type="VBoxContainer" parent="HBoxContainer/OtherCenter"]
+margin_left = 194.0
+margin_top = 244.0
+margin_right = 194.0
+margin_bottom = 244.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

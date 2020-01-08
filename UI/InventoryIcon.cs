@@ -182,9 +182,9 @@ public class InventoryIcon : TextureRect
 			CountLabel.Text = "";
 		}
 
-		if(Case == UsageCase.MENU && GetParent() is BoxContainer Box)
+		if(Case == UsageCase.MENU && GetParent().GetParent() is CenterContainer Cont)
 		{
-			float Height = Box.RectSize.y;
+			float Height = Cont.RectSize.y;
 			RectMinSize = new Vector2(Height / 12, Height / 12);
 		}
 		else if(Case == UsageCase.PREVIEW)
