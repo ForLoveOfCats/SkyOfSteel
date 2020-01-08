@@ -35,49 +35,48 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Left" type="VBoxContainer" parent="HBoxContainer"]
-margin_right = 116.0
+margin_right = 189.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.3
+size_flags_stretch_ratio = 0.6
 
 [node name="PlayerCenter" type="CenterContainer" parent="HBoxContainer"]
-margin_left = 120.0
+margin_left = 193.0
 margin_right = 509.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="PlayerVBox" type="VBoxContainer" parent="HBoxContainer/PlayerCenter"]
-margin_left = 194.0
+margin_left = 158.0
 margin_top = 244.0
-margin_right = 194.0
+margin_right = 158.0
 margin_bottom = 244.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
-[node name="OtherCenter" type="CenterContainer" parent="HBoxContainer"]
+[node name="OtherVBox" type="VBoxContainer" parent="HBoxContainer"]
 margin_left = 513.0
-margin_right = 902.0
+margin_right = 829.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="OtherVBox" type="VBoxContainer" parent="HBoxContainer/OtherCenter"]
-margin_left = 194.0
-margin_top = 244.0
-margin_right = 194.0
-margin_bottom = 244.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="OtherCenter" type="CenterContainer" parent="HBoxContainer/OtherVBox"]
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="OtherGrid" type="GridContainer" parent="HBoxContainer/OtherVBox/OtherCenter"]
+columns = 3
 
 [node name="Right" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 906.0
+margin_left = 833.0
 margin_right = 1024.0
 margin_bottom = 488.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-size_flags_stretch_ratio = 0.3
+size_flags_stretch_ratio = 0.6
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 2 )]
 margin_top = 576.0

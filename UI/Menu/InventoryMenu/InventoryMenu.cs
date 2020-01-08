@@ -26,7 +26,7 @@ public class InventoryMenu : VBoxContainer
 	public InventoryIcon[] PlayerIcons;
 
 	public IHasInventory Other; //Will be null if we are just the normal inventory screen
-	public VBoxContainer OtherVBox;
+	public GridContainer OtherGrid;
 	public InventoryIcon[] OtherIcons;
 
 	public SourceData Source = null;
@@ -38,7 +38,7 @@ public class InventoryMenu : VBoxContainer
 		InventoryIconScene = GD.Load<PackedScene>("res://UI/InventoryIcon.tscn");
 
 		PlayerVBox = GetNode<VBoxContainer>("HBoxContainer/PlayerCenter/PlayerVBox");
-		OtherVBox = GetNode<VBoxContainer>("HBoxContainer/OtherCenter/OtherVBox");
+		OtherGrid = GetNode<GridContainer>("HBoxContainer/OtherVBox/OtherCenter/OtherGrid");
 
 		Player Plr = Game.PossessedPlayer;
 		PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
@@ -55,7 +55,7 @@ public class InventoryMenu : VBoxContainer
 			for(int Index = 0; Index < Other.Inventory.SlotCount; Index++)
 			{
 				InventoryIcon Icon = InstantiateIcon(Index, Other);
-				OtherVBox.AddChild(Icon);
+				OtherGrid.AddChild(Icon);
 				OtherIcons[Index] = Icon;
 			}
 		}

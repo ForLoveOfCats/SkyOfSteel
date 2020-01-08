@@ -15,7 +15,7 @@ public class Locker : PipeCoreLogic, IHasInventory
 	private CollisionShape OpenEndCollision;
 	private StaticBody OpenEnd;
 
-	public InventoryComponent Inventory { get; set; } = new InventoryComponent(10);
+	public InventoryComponent Inventory { get; set; } = new InventoryComponent(15);
 
 	public override void _Ready()
 	{

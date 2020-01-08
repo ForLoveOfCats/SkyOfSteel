@@ -29,7 +29,7 @@ public class InventoryComponent
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception("Attempted to give item on client");
 
-		for(int Slot = 0; Slot <= 9; Slot++)
+		for(int Slot = 0; Slot < SlotCount; Slot++)
 		{
 			if(Contents[Slot] is null || Contents[Slot].Id != ToGive.Id) continue;
 
@@ -37,7 +37,7 @@ public class InventoryComponent
 			return Slot;
 		}
 
-		for(int Slot = 0; Slot <= 9; Slot++)
+		for(int Slot = 0; Slot < SlotCount; Slot++)
 		{
 			if(Contents[Slot] is null)
 			{

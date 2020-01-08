@@ -185,12 +185,12 @@ public class InventoryIcon : TextureRect
 		if(Case == UsageCase.MENU && GetParent().GetParent() is CenterContainer Cont)
 		{
 			float Height = Cont.RectSize.y;
-			RectMinSize = new Vector2(Height / 12, Height / 12);
+			RectMinSize = new Vector2(Height / 11f, Height / 11f);
 		}
 		else if(Case == UsageCase.PREVIEW)
 		{
 			float Height = GetViewport().GetVisibleRect().Size.y;
-			RectSize = new Vector2(Height / 18f, Height / 18f);
+			RectSize = new Vector2(Height / 9f, Height / 9f);
 		}
 	}
 }
