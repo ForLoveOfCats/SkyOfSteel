@@ -71,6 +71,8 @@ public class Locker : PipeCoreLogic, IHasInventory
 					World.Self.DropItem(Item.Id, Translation, new Vector3());
 			}
 		}
+
+		base.OnRemove();
 	}
 
 
