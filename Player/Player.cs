@@ -24,7 +24,7 @@ public class Player : Character, IPushable, IHasInventory
 	public const float JumpContinueForce = 0.41f;
 	public const float MaxJumpLength = 0.22f;
 	public const float Gravity = 55f;
-	public const float InteractReach = 6f;
+	public const float InteractReach = 12f;
 	public const float ItemThrowPower = 40f;
 	public const float ItemPickupDistance = 8f;
 	public const float SlotSwitchCooldown = 15;
