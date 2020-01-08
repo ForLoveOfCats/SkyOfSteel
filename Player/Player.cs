@@ -1046,16 +1046,25 @@ public class Player : Character, IPushable, IHasInventory
 
 		if(FlyMode)
 		{
-			Vector3 FlatVel = Momentum;
-			FlatVel.y = 0;
-			MoveAndSlide(FlatVel
-			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)))
-			             .Rotated(new Vector3(1,0,0), Mathf.Deg2Rad(LoopRotation(-ActualLookVertical)))
-			             .Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(LookHorizontal))),
-			             new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60));
+			Move(
+				Momentum.Flattened()
+					.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal)))
+					.Rotated(new Vector3(1,0,0), Deg2Rad(LoopRotation(-ActualLookVertical)))
+					.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(LookHorizontal))),
+				Delta,
+				2,
+				60f,
+				0f
+			);
 
-			MoveAndSlide(new Vector3(0,Momentum.y,0).Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LookHorizontal)), new Vector3(0,1,0), true, 100, Mathf.Deg2Rad(60))
-				.Rotated(new Vector3(0,1,0), Mathf.Deg2Rad(LoopRotation(-LookHorizontal)));
+			Move(
+				new Vector3(0, Momentum.y, 0)
+					.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(LookHorizontal))),
+				Delta,
+				2,
+				60f,
+				0f
+			);
 		}
 		else
 			Momentum = Move(Momentum, Delta, 2, 60f, MovementSpeed);
