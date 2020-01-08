@@ -61,6 +61,19 @@ public class Locker : PipeCoreLogic, IHasInventory
 	}
 
 
+	public override void OnRemove()
+	{
+		for(int Index = 0; Index < Inventory.SlotCount; Index++)
+		{
+			if(Inventory[Index] is Items.Instance Item)
+			{
+				for(int C = 0; C < Item.Count; C++)
+					World.Self.DropItem(Item.Id, Translation, new Vector3());
+			}
+		}
+	}
+
+
 	[Remote]
 	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
 	{
