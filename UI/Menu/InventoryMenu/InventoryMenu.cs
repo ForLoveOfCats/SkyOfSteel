@@ -7,17 +7,15 @@ public class InventoryMenu : VBoxContainer
 	public class SourceData
 	{
 		public IHasInventory Source;
-		public DragMode Mode;
+		public Items.IntentCount CountMode;
 
-		public SourceData(IHasInventory SourceArg, DragMode ModeArg)
+		public SourceData(IHasInventory SourceArg, Items.IntentCount CountModeArg)
 		{
 			Source = SourceArg;
-			Mode = ModeArg;
+			CountMode = CountModeArg;
 		}
 	}
 
-
-	public enum DragMode {ALL, SINGLE, HALF};
 
 	public Texture Alpha;
 	public PackedScene InventoryIconScene;
@@ -77,16 +75,16 @@ public class InventoryMenu : VBoxContainer
 
 	public int CalcRetrieveCount(int Value)
 	{
-		switch(Source.Mode)
+		switch(Source.CountMode)
 		{
-			case DragMode.ALL:
+			case Items.IntentCount.ALL:
 				//Keep original count as original
 				break;
-			case DragMode.HALF:
+			case Items.IntentCount.HALF:
 				if(Value != 1)
 					Value /= 2; //Relying on rounding down via truncation
 				break;
-			case DragMode.SINGLE:
+			case Items.IntentCount.SINGLE:
 				Value = 1;
 				break;
 		}

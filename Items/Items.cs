@@ -79,6 +79,8 @@ public class Items : Node
 		SWIFTSPARK
 	}
 
+	public enum IntentCount {ALL, SINGLE, HALF};
+
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
 	public static Dictionary<ID, Texture> Textures { get; private set; } = new Dictionary<ID, Texture>();

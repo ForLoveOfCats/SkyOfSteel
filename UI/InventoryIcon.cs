@@ -49,11 +49,11 @@ public class InventoryIcon : TextureRect
 		if(Source.Inventory[Slot] == null)
 			return null;
 
-		InventoryMenu.DragMode Mode = InventoryMenu.DragMode.ALL;
+		Items.IntentCount Mode = Items.IntentCount.ALL;
 		if(Input.IsKeyPressed((int) KeyList.Shift))
-			Mode = InventoryMenu.DragMode.HALF;
+			Mode = Items.IntentCount.HALF;
 		else if(Input.IsKeyPressed((int) Godot.KeyList.Control))
-			Mode = InventoryMenu.DragMode.SINGLE;
+			Mode = Items.IntentCount.SINGLE;
 		ParentMenu.Source = new InventoryMenu.SourceData(Source, Mode);
 
 		var Preview = (InventoryIcon) InventoryIconScene.Instance();
