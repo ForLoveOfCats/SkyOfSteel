@@ -48,8 +48,6 @@ public class Game : Node
 
 		Menu.Setup();
 		Menu.BuildIntro();
-
-		GetViewport().Msaa = Viewport.MSAA.Msaa4x; //Always on anti-aliasing, TODO add settings for this
 	}
 
 
