@@ -1115,7 +1115,7 @@ public class Player : Character, IPushable, IHasInventory
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
 			CurrentChunk = World.GetChunkTuple(Translation);
-			Net.UnloadAndRequestChunks();
+			World.UnloadAndRequestChunks();
 		}
 	}
 

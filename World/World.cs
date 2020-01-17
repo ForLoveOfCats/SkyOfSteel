@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using static Godot.Mathf;
 using static SteelMath;
@@ -773,6 +774,75 @@ public class World : Node
 		RequestChunks(Id, PlayerPosition, RenderDistance);
 		Net.Players[Id].SetFreeze(false);
 		Net.Players[Id].GiveDefaultItems();
+	}
+
+
+	public static void UnloadAndRequestChunks()
+	{
+		if(!IsOpen)
+		{
+			//World is not setup yet
+			//Prevents NullReferenceException
+			return;
+		}
+
+		foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in Chunks.ToArray())
+		{
+			var ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
+			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(PlatformSize*9))
+			{
+				if(Self.GetTree().IsNetworkServer())
+				{
+					foreach(Tile CurrentTile in Chunk.Value.Tiles)
+						CurrentTile.Show();
+
+					foreach(MobClass Mob in Chunk.Value.Mobs)
+						Mob.Show();
+
+					foreach(DroppedItem Item in Chunk.Value.Items)
+						Item.Show();
+				}
+			}
+			else
+			{
+				var TilesBeingRemoved = new List<Tile>();
+				foreach(Tile CurrentTile in Chunk.Value.Tiles)
+				{
+					if(Self.GetTree().IsNetworkServer())
+						CurrentTile.Hide();
+					else
+						TilesBeingRemoved.Add(CurrentTile);
+				}
+				foreach(Tile CurrentTile in TilesBeingRemoved)
+						CurrentTile.Remove(Force:true);
+
+				List<MobClass> MobsBeingRemoved = new List<MobClass>();
+				foreach(MobClass Mob in Chunk.Value.Mobs)
+				{
+					if(Self.GetTree().IsNetworkServer())
+						Mob.Hide();
+					else
+						MobsBeingRemoved.Add(Mob);
+				}
+				foreach(MobClass Mob in MobsBeingRemoved)
+					Mob.QueueFree();
+
+				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
+				foreach(DroppedItem Item in Chunk.Value.Items)
+				{
+					if(Self.GetTree().IsNetworkServer())
+						Item.Hide();
+					else
+						ItemsBeingRemoved.Add(Item);
+				}
+				foreach(DroppedItem Item in ItemsBeingRemoved)
+					Item.Remove();
+			}
+		}
+
+
+		if(!Self.GetTree().IsNetworkServer())
+			Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
 	}
 
 

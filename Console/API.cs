@@ -144,7 +144,7 @@ public static class API
 	public static bool ChunkRenderDistance(int Distance)
 	{
 		Game.ChunkRenderDistance = Distance;
-		Net.UnloadAndRequestChunks();
+		World.UnloadAndRequestChunks();
 		return true;
 	}
 
