@@ -39,9 +39,9 @@ public class Net : Node
 	{
 		Work = Multiplayer; //This means that anywhere we can Net.Work.Whatever instead of Game.Self.GetTree().Whatever
 
-		GetTree().Connect("network_peer_connected", this, "_PlayerConnected");
-		GetTree().Connect("network_peer_disconnected", this, "_PlayerDisconnected");
-		GetTree().Connect("server_disconnected", this, "_ServerDisconnected", flags:(uint)ConnectFlags.Deferred);
+		GetTree().Connect("network_peer_connected", this, nameof(PlayerConnected));
+		GetTree().Connect("network_peer_disconnected", this, nameof(PlayerDisconnected));
+		GetTree().Connect("server_disconnected", this, nameof(ServerDisconnected), flags:(uint)ConnectFlags.Deferred);
 	}
 
 
@@ -71,7 +71,7 @@ public class Net : Node
 	}
 
 
-	public void _PlayerConnected(int Id)
+	public void PlayerConnected(int Id)
 	{
 		if(Id == 1) //Running on client and connected to server
 		{
@@ -126,7 +126,7 @@ public class Net : Node
 			RpcId(GetTree().GetRpcSenderId(), nameof(SetupNewPeer), Id);
 		}
 
-		RpcId(GetTree().GetRpcSenderId(), nameof(ReadyToRequestWorld), new object[] {});
+		RpcId(GetTree().GetRpcSenderId(), nameof(ReadyToRequestWorld));
 	}
 
 
@@ -138,7 +138,7 @@ public class Net : Node
 		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
-		RpcId(ServerId, nameof(RecieveNick), GetTree().GetNetworkUniqueId(),  Game.Nickname);
+		RpcId(ServerId, nameof(ReceiveNick), GetTree().GetNetworkUniqueId(),  Game.Nickname);
 	}
 
 
@@ -157,7 +157,7 @@ public class Net : Node
 
 
 	[Remote]
-	public void RecieveNick(int Id, string NickArg)
+	public void ReceiveNick(int Id, string NickArg)
 	{
 		Nicknames[Id] = NickArg;
 
@@ -170,13 +170,13 @@ public class Net : Node
 		{
 			foreach(KeyValuePair<int, string> Entry in Nicknames)
 			{
-				SteelRpc(this, nameof(RecieveNick), Entry.Key, Entry.Value);
+				SteelRpc(this, nameof(ReceiveNick), Entry.Key, Entry.Value);
 			}
 		}
 	}
 
 
-	public void _PlayerDisconnected(int Id)
+	public void PlayerDisconnected(int Id)
 	{
 		Console.Log($"Player '{Id}' disconnected");
 
@@ -198,7 +198,7 @@ public class Net : Node
 	}
 
 
-	public void _ServerDisconnected()
+	public void ServerDisconnected()
 	{
 		Console.Log($"Lost connection to server at '{Ip}'");
 		Disconnect();
@@ -286,7 +286,7 @@ public class Net : Node
 			return;
 		}
 
-		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in World.Chunks.ToArray())
+		foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in World.Chunks.ToArray())
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			if(ChunkPos.DistanceTo(new Vector3(Game.PossessedPlayer.Translation.x,0,Game.PossessedPlayer.Translation.z)) <= Game.ChunkRenderDistance*(World.PlatformSize*9))
