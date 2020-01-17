@@ -221,7 +221,6 @@ public class Net : Node
 		var Peer = new NetworkedMultiplayerENet();
 		Peer.CreateServer(Port, Game.MaxPlayers);
 		Self.GetTree().NetworkPeer = Peer;
-		Self.GetTree().SetMeta("network_peer", Peer);
 
 		Console.Log($"Started hosting on port '{Port}'");
 
@@ -254,9 +253,8 @@ public class Net : Node
 	{
 		World.Close();
 
-		NetworkedMultiplayerENet EN = Self.GetTree().NetworkPeer as NetworkedMultiplayerENet;
-		if(EN != null)
-			EN.CloseConnection();
+		if(Self.GetTree().NetworkPeer is NetworkedMultiplayerENet En)
+			En.CloseConnection();
 
 		Self.GetTree().NetworkPeer = null;
 		PeerList.Clear();
@@ -268,9 +266,7 @@ public class Net : Node
 		WaitingForServerTimer = MaxWaitForServerDelay;
 
 		if(BuildMenu)
-		{
 			Menu.BuildMain();
-		}
 	}
 
 
