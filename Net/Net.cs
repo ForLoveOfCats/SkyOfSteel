@@ -112,6 +112,7 @@ public class Net : Node
 		WaitingForVersion.Remove(GetTree().GetRpcSenderId());
 
 		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
+		World.RemoteLoadingChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
 
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
 		SetupNewPeer(GetTree().GetRpcSenderId());

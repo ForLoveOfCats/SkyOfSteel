@@ -17,6 +17,7 @@ public class World : Node
 
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
+	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadingChunks = new Dictionary<int, List<Tuple<int,int>>>();
 	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
 	public static List<DroppedItem> ItemList = new List<DroppedItem>();
 	public static GridClass Grid = new GridClass();
@@ -788,7 +789,6 @@ public class World : Node
 
 		ChunkLoadDistances[Id] = RenderDistance;
 
-		List<Tuple<int,int>> LoadedChunks = RemoteLoadedChunks[Id];
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
@@ -796,19 +796,18 @@ public class World : Node
 			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
-				if(!LoadedChunks.Contains(ChunkTuple))
+				if(RemoteLoadedChunks[Id].Contains(ChunkTuple) || RemoteLoadingChunks[Id].Contains(ChunkTuple))
+				{} //If already loaded or loading then don't send it
+				else
 				{
-					//If not already in the list of loaded chunks for this client then add it
-					RemoteLoadedChunks[Id].Add(ChunkTuple);
-					//And send it
+					RemoteLoadingChunks[Id].Add(ChunkTuple);
 					SendChunk(Id, ChunkTuple);
 				}
-				//If already loaded then don't send it
 			}
 			else
 			{
 				//This chunk is to far away
-				if(LoadedChunks.Contains(ChunkTuple))
+				if(RemoteLoadedChunks[Id].Contains(ChunkTuple))
 				{
 					//If it is in the list of loaded chunks for this client then remove
 					RemoteLoadedChunks[Id].Remove(ChunkTuple);
@@ -847,6 +846,34 @@ public class World : Node
 		{
 			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.RotationDegrees.y, Item.Momentum, Item.Name);
 		}
+
+		//After sending all the chunk data lets tell the client that its all
+		Self.RpcId(Id, nameof(NotifyEndOfChunk), ChunkLocation.Item1, ChunkLocation.Item2);
+	}
+
+
+	[Remote]
+	public void NotifyEndOfChunk(int X, int Z) //Runs on client at the end of chunk load RPCs
+	{
+		if(Net.Work.IsNetworkServer())
+			throw new Exception($"{nameof(MarkChunkLoaded)} was executed on the server");
+
+		RpcId(Net.ServerId, nameof(MarkChunkLoaded), X, Z);
+	}
+
+
+	[Remote]
+	public void MarkChunkLoaded(int X, int Z) //Run on server by client after receiving all chunk load RPCs
+	{
+		if(!Net.Work.IsNetworkServer())
+			throw new Exception($"{nameof(MarkChunkLoaded)} was executed on a client");
+
+		int SenderId = Net.Work.GetRpcSenderId();
+		Assert.ActualAssert(SenderId != 0);
+
+		var ChunkTuple = new Tuple<int, int>(X, Z);
+		RemoteLoadingChunks[SenderId].Remove(ChunkTuple);
+		RemoteLoadedChunks[SenderId].Add(ChunkTuple);
 	}
 
 
