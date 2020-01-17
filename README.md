@@ -2,7 +2,7 @@
 
 ### Welcome to the GitHub repository of the game SkyOfSteel!
 
-SkyOfSteel is a work in progress game built on the Godot game engine with C#, currently builds with Godot Mono 3.2 Beta 6
+SkyOfSteel is a work in progress game built on the Godot game engine with C#, currently builds with Godot Mono 3.2 RC 1
 The current stable release can be downloaded at [Itch.io](https://forloveofcats.itch.io/skyofsteel "Itch.io link")
 
 Contributions are welcome!
@@ -53,7 +53,7 @@ source and what that means for its development.
 
 ### Prerequisites
 
-* A functioning installation of Godot Mono 3.2 Beta 6
+* A functioning installation of Godot Mono 3.2 RC 1
   * Decently recent versions of both MSBuild and Nuget must be installed (Windows users make sure
   to install [this](https://www.mono-project.com/download/stable/#download-win) and
   [this](https://www.microsoft.com/en-us/download/details.aspx?id=56119), Ubuntu users make

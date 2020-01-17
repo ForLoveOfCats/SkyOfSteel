@@ -15,4 +15,5 @@ dest_files=[ "res://.import/PipeJointEnd.obj-f417481478db04bf413f6bb94d6afe8a.me
 
 generate_tangents=true
 scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
 optimize_mesh=true
