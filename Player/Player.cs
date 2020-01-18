@@ -132,11 +132,11 @@ public class Player : Character, IPushable, IHasInventory
 
 	public PlayerSfxManager SfxManager;
 
-	Player()
+	private Player()
 	{
 		if(Engine.EditorHint) {return;}
 
-		Inventory = new InventoryComponent(10);
+		Inventory = new InventoryComponent(10, this);
 		HUDInstance = (HUD) GD.Load<PackedScene>("res://UI/HUD.tscn").Instance();
 	}
 
@@ -1207,6 +1207,16 @@ public class Player : Character, IPushable, IHasInventory
 			HUDInstance.HotbarUpdate();
 		else if(Net.Work.IsNetworkServer())
 			RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
+	}
+
+
+	[Remote]
+	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
+	{
+		if(!Net.Work.IsNetworkServer())
+			RpcId(Net.ServerId, nameof(TransferTo), Path, FromSlot, ToSlot, CountMode);
+		else
+			Inventory.TransferTo(Path, FromSlot, ToSlot, CountMode);
 	}
 
 

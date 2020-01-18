@@ -73,6 +73,8 @@ public class InventoryMenu : VBoxContainer
 	}
 
 
+	//TODO: Remove, was moved to Items
+	//Is still used here for dropping stacks
 	public int CalcRetrieveCount(int Value)
 	{
 		switch(Source.CountMode)

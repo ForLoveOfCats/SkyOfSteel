@@ -7,6 +7,7 @@ public interface IHasInventory
 	InventoryComponent Inventory { get; set; }
 
 
+	NodePath GetPath();
 	object RpcId(int peerId, string method, params object[] args);
 
 
@@ -16,4 +17,8 @@ public interface IHasInventory
 
 	[Remote]
 	void NetEmptyInventorySlot(int Slot);
+
+
+	[Remote]
+	void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode);
 }

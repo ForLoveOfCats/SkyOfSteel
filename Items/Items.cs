@@ -107,6 +107,26 @@ public class Items : Node
 	}
 
 
+	public static int CalcRetrieveCount(IntentCount CountMode, int Value)
+	{
+		switch(CountMode)
+		{
+			case IntentCount.ALL:
+				//Keep original count as original
+				break;
+			case IntentCount.HALF:
+				if(Value != 1)
+					Value /= 2; //Relying on rounding down via truncation
+				break;
+			case IntentCount.SINGLE:
+				Value = 1;
+				break;
+		}
+
+		return Value;
+	}
+
+
 	public static Vector3? TryCalculateBuildPosition(ID Branch, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 Hit)
 	{
 		BuildInfoDelegate Function = IdInfos[Branch].PositionDelegate;

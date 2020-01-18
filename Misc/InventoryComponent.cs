@@ -7,12 +7,15 @@ public class InventoryComponent
 {
 	private Items.Instance[] Contents;
 
+	private IHasInventory Owner;
+
 	public readonly int SlotCount;
 
 
-	public InventoryComponent(int SlotCountArg)
+	public InventoryComponent(int SlotCountArg, IHasInventory OwnerArg)
 	{
 		SlotCount = SlotCountArg;
+		Owner = OwnerArg;
 		Contents = new Items.Instance[SlotCount];
 	}
 
@@ -59,5 +62,29 @@ public class InventoryComponent
 	public void EmptySlot(int Slot)
 	{
 		Contents[Slot] = null;
+	}
+
+
+	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
+	{
+		if(Contents[FromSlot] is Items.Instance Item && Game.RuntimeRoot.GetNode(Path) is IHasInventory To)
+		{
+			if(To.Inventory[ToSlot] != null && To.Inventory[ToSlot].Id != Item.Id)
+				return; //The target slot is not empty and it is of a different type, abort
+
+			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
+			if(Count <= 0)
+				return; //No item(s) were retrieved from the source, abort
+
+			if(To.Inventory[ToSlot] == null)
+				To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
+			else
+				To.NetUpdateInventorySlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
+
+			if(Item.Count == Count)
+				Owner.NetEmptyInventorySlot(FromSlot);
+			else
+				Owner.NetUpdateInventorySlot(FromSlot, Item.Id, Item.Count - Count);
+		}
 	}
 }

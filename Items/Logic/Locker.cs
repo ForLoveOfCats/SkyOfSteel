@@ -15,7 +15,13 @@ public class Locker : PipeCoreLogic, IHasInventory
 	private CollisionShape OpenEndCollision;
 	private StaticBody OpenEnd;
 
-	public InventoryComponent Inventory { get; set; } = new InventoryComponent(15);
+	public InventoryComponent Inventory { get; set; }
+
+	private Locker()
+	{
+		Inventory = new InventoryComponent(15, this);
+	}
+
 
 	public override void _Ready()
 	{
@@ -93,5 +99,15 @@ public class Locker : PipeCoreLogic, IHasInventory
 
 		if(Net.Work.IsNetworkServer())
 			Net.SteelRpc(this, nameof(NetEmptyInventorySlot), Slot);
+	}
+
+
+	[Remote]
+	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
+	{
+		if(!Net.Work.IsNetworkServer())
+			RpcId(Net.ServerId, nameof(TransferTo), Path, FromSlot, ToSlot, CountMode);
+		else
+			Inventory.TransferTo(Path, FromSlot, ToSlot, CountMode);
 	}
 }
