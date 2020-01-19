@@ -1054,7 +1054,7 @@ public class Player : Character, IPushable, IHasInventory
 					.Rotated(new Vector3(1,0,0), Deg2Rad(LoopRotation(-ActualLookVertical)))
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(LookHorizontal))),
 				Delta,
-				2,
+				1,
 				60f,
 				0f
 			);
@@ -1063,13 +1063,13 @@ public class Player : Character, IPushable, IHasInventory
 				new Vector3(0, Momentum.y, 0)
 					.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(LookHorizontal))),
 				Delta,
-				2,
+				1,
 				60f,
 				0f
 			);
 		}
 		else
-			Momentum = Move(Momentum, Delta, 2, 60f, MovementSpeed);
+			Momentum = Move(Momentum, Delta, 1, 60f, MovementSpeed);
 
 		if(IsCrouching && CrouchAxis == 0)
 		{
