@@ -4,12 +4,12 @@ using Godot;
 
 public class InventoryMenu : VBoxContainer
 {
-	public class SourceData
+	public class FromData
 	{
 		public IHasInventory Source;
 		public Items.IntentCount CountMode;
 
-		public SourceData(IHasInventory SourceArg, Items.IntentCount CountModeArg)
+		public FromData(IHasInventory SourceArg, Items.IntentCount CountModeArg)
 		{
 			Source = SourceArg;
 			CountMode = CountModeArg;
@@ -27,7 +27,7 @@ public class InventoryMenu : VBoxContainer
 	public GridContainer OtherGrid;
 	public InventoryIcon[] OtherIcons;
 
-	public SourceData Source = null;
+	public FromData From = null;
 
 
 	public override void _Ready()
@@ -40,7 +40,7 @@ public class InventoryMenu : VBoxContainer
 
 		Player Plr = Game.PossessedPlayer;
 		PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
-		for(int Index = 0; Index < Plr.Inventory.SlotCount; Index++)
+		for(int Index = 0; Index < Plr.Inventory.SlotCount - 1; Index++) //Ignore eleventh slot, used for dropping
 		{
 			InventoryIcon Icon = InstantiateIcon(Index, Plr);
 			PlayerVBox.AddChild(Icon);
@@ -77,7 +77,7 @@ public class InventoryMenu : VBoxContainer
 	//Is still used here for dropping stacks
 	public int CalcRetrieveCount(int Value)
 	{
-		switch(Source.CountMode)
+		switch(From.CountMode)
 		{
 			case Items.IntentCount.ALL:
 				//Keep original count as original
@@ -103,30 +103,7 @@ public class InventoryMenu : VBoxContainer
 
 	public override void DropData(Vector2 Pos, object Data)
 	{
-		if(Data is int FromSlot && Source != null)
-		{
-			Items.Instance Moving = Source.Source.Inventory[FromSlot];
-			int RetrieveCount = CalcRetrieveCount(Moving.Count);
-			Vector3 StartPos = Game.PossessedPlayer.Translation + Game.PossessedPlayer.Cam.Translation;
-
-			for(int Index = 0; Index < RetrieveCount; Index++)
-				World.Self.DropItem(Moving.Id, StartPos, Game.PossessedPlayer.CalcThrowVelocity());
-
-			bool EmptyMoving = RetrieveCount == Moving.Count; //If we have thrown all, empty the the source slot
-			if(Net.Work.IsNetworkServer())
-			{
-				if(EmptyMoving)
-					Source.Source.NetEmptyInventorySlot(FromSlot);
-				else
-					Source.Source.NetUpdateInventorySlot(FromSlot, Moving.Id, Moving.Count - RetrieveCount);
-			}
-			else
-			{
-				if(EmptyMoving)
-					Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetEmptyInventorySlot), FromSlot);
-				else
-					Source.Source.RpcId(Net.ServerId, nameof(IHasInventory.NetUpdateInventorySlot), FromSlot, Moving.Id, Moving.Count - RetrieveCount);
-			}
-		}
+		if(Data is int FromSlot && From != null)
+			From.Source.TransferTo(Game.PossessedPlayer.GetPath(), FromSlot, 10, From.CountMode);
 	}
 }

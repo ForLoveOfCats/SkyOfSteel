@@ -136,7 +136,9 @@ public class Player : Character, IPushable, IHasInventory
 	{
 		if(Engine.EditorHint) {return;}
 
-		Inventory = new InventoryComponent(10, this);
+		//Init eleven slots, only use ten of them. The eleventh is used for dropping
+		Inventory = new InventoryComponent(this, 11, HiddenLast:true);
+
 		HUDInstance = (HUD) GD.Load<PackedScene>("res://UI/HUD.tscn").Instance();
 	}
 
@@ -1189,7 +1191,18 @@ public class Player : Character, IPushable, IHasInventory
 	[Remote]
 	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
 	{
-		Inventory.UpdateSlot(Slot, ItemId, Count);
+		if(Slot == 10)
+		{
+			//This is the eleventh slot, it is used only for dropping stacks
+			if(Possessed)
+			{
+				Vector3 StartPos = Translation + Cam.Translation;
+				for(int Index = 0; Index < Count; Index++)
+					World.Self.DropItem(ItemId, StartPos, CalcThrowVelocity());
+			}
+		}
+		else
+			Inventory.UpdateSlot(Slot, ItemId, Count);
 
 		if(Possessed)
 			HUDInstance.HotbarUpdate();

@@ -12,11 +12,16 @@ public class InventoryComponent
 	public readonly int SlotCount;
 
 
-	public InventoryComponent(int SlotCountArg, IHasInventory OwnerArg)
+	public InventoryComponent(IHasInventory OwnerArg, int SlotCountArg, bool HiddenLast = false)
 	{
-		SlotCount = SlotCountArg;
+		Contents = new Items.Instance[SlotCountArg];
+
 		Owner = OwnerArg;
-		Contents = new Items.Instance[SlotCount];
+
+		if(HiddenLast)
+			SlotCount = SlotCountArg - 1;
+		else
+			SlotCount = SlotCountArg;
 	}
 
 

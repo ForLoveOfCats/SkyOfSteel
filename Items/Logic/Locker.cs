@@ -19,7 +19,7 @@ public class Locker : PipeCoreLogic, IHasInventory
 
 	private Locker()
 	{
-		Inventory = new InventoryComponent(15, this);
+		Inventory = new InventoryComponent(this, 15);
 	}
 
 

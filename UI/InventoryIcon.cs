@@ -54,7 +54,7 @@ public class InventoryIcon : TextureRect
 			Mode = Items.IntentCount.HALF;
 		else if(Input.IsKeyPressed((int) Godot.KeyList.Control))
 			Mode = Items.IntentCount.SINGLE;
-		ParentMenu.Source = new InventoryMenu.SourceData(Source, Mode);
+		ParentMenu.From = new InventoryMenu.FromData(Source, Mode);
 
 		var Preview = (InventoryIcon) InventoryIconScene.Instance();
 		Preview.ParentMenu = ParentMenu;
@@ -75,12 +75,12 @@ public class InventoryIcon : TextureRect
 
 	public override void DropData(Vector2 Pos, object Data)
 	{
-		if(Data is int FromSlot && ParentMenu.Source != null)
+		if(Data is int FromSlot && ParentMenu.From != null)
 		{
-			if(Source == ParentMenu.Source.Source && Slot == FromSlot)
+			if(Source == ParentMenu.From.Source && Slot == FromSlot)
 				return; //Same source and slot, we dropped on ourself
 
-			ParentMenu.Source.Source.TransferTo(Source.GetPath(), FromSlot, Slot, ParentMenu.Source.CountMode);
+			ParentMenu.From.Source.TransferTo(Source.GetPath(), FromSlot, Slot, ParentMenu.From.CountMode);
 		}
 	}
 
