@@ -105,10 +105,7 @@ public static class API
 	public static void Fly(bool NewFly)
 	{
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				Plr.SetFly(NewFly);
-			}
+			(Plr) => Plr.SetFly(NewFly)
 		);
 	}
 
@@ -116,10 +113,7 @@ public static class API
 	public static void ToggleFly()
 	{
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				Plr.SetFly(!Plr.FlyMode);
-			}
+			(Plr) => Plr.SetFly(!Plr.FlyMode)
 		);
 	}
 
@@ -141,10 +135,7 @@ public static class API
 	public static void HudHide()
 	{
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				Plr.HUDInstance.Hide();
-			}
+			(Plr) => Plr.HUDInstance.Hide()
 		);
 	}
 
@@ -152,10 +143,7 @@ public static class API
 	public static void HudShow()
 	{
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				Plr.HUDInstance.Show();
-			}
+			(Plr) => Plr.HUDInstance.Show()
 		);
 	}
 
