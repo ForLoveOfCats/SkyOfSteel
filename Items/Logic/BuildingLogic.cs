@@ -7,7 +7,7 @@ public class BuildingLogic
 {
 	public static Vector3? PlatformBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -74,7 +74,7 @@ public class BuildingLogic
 
 	public static Vector3? WallBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -136,7 +136,7 @@ public class BuildingLogic
 
 	public static Vector3? WallBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		if(Base.Type == Items.ID.WALL || Base.Type == Items.ID.SLOPE)
+		if(Base.ItemId == Items.ID.WALL || Base.ItemId == Items.ID.SLOPE)
 			return Base.RotationDegrees;
 
 		return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)), 0);
@@ -148,7 +148,7 @@ public class BuildingLogic
 
 	public static Vector3? SlopeBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -237,11 +237,11 @@ public class BuildingLogic
 
 	public static Vector3? SlopeBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		if(Base.Type == Items.ID.PLATFORM)
+		if(Base.ItemId == Items.ID.PLATFORM)
 			if(BuildRotation == 1 || BuildRotation == 3)
 				return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) + 180, 0);
 
-		if(Base.Type == Items.ID.WALL)
+		if(Base.ItemId == Items.ID.WALL)
 		{
 			float Orientation = LoopRotation(SnapToGrid(PlayerOrientation, 360, 4));
 			if(BuildRotation == 0)
@@ -254,7 +254,7 @@ public class BuildingLogic
 				return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(Orientation), 360, 4)), 0);
 		}
 
-		if(Base.Type == Items.ID.SLOPE)
+		if(Base.ItemId == Items.ID.SLOPE)
 		{
 			if(LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)) == LoopRotation(Round(Base.RotationDegrees.y)))
 			{
@@ -280,7 +280,7 @@ public class BuildingLogic
 
 	public static Vector3? TriangleWallBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -332,7 +332,7 @@ public class BuildingLogic
 
 	public static Vector3? TriangleWallBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		if(Base.Type == Items.ID.PLATFORM || Base.Type == Items.ID.SLOPE)
+		if(Base.ItemId == Items.ID.PLATFORM || Base.ItemId == Items.ID.SLOPE)
 		{
 			if(BuildRotation == 1)
 				return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation + 180), 360, 4)), 0);
@@ -344,7 +344,7 @@ public class BuildingLogic
 				return new Vector3(180, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation + 180), 360, 4)), 0);
 		}
 
-		else if(Base.Type == Items.ID.WALL)
+		else if(Base.ItemId == Items.ID.WALL)
 		{
 			float yRot = Base.RotationDegrees.y;
 			if(HitRelative.y + Base.Translation.y >= Base.Translation.y)
@@ -367,7 +367,7 @@ public class BuildingLogic
 
 	public static Vector3? PipeBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -427,7 +427,7 @@ public class BuildingLogic
 
 	public static Vector3? PipeBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -471,7 +471,7 @@ public class BuildingLogic
 
 	public static Vector3? PipeJointBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		switch(Base.Type)
+		switch(Base.ItemId)
 		{
 			case(Items.ID.PLATFORM):
 			{
@@ -538,7 +538,7 @@ public class BuildingLogic
 
 	public static Vector3? LockerBuildPosition(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		if(Base.Type == Items.ID.PLATFORM)
+		if(Base.ItemId == Items.ID.PLATFORM)
 		{
 			return new Vector3(0, 6, 0) + Base.Translation;
 		}
@@ -549,7 +549,7 @@ public class BuildingLogic
 
 	public static Vector3? LockerBuildRotation(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative)
 	{
-		if(Base.Type == Items.ID.WALL || Base.Type == Items.ID.SLOPE)
+		if(Base.ItemId == Items.ID.WALL || Base.ItemId == Items.ID.SLOPE)
 			return Base.RotationDegrees;
 
 		return new Vector3(0, LoopRotation(SnapToGrid(LoopRotation(PlayerOrientation), 360, 4)), 0);

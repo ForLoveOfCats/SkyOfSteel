@@ -78,131 +78,145 @@ public class Hitscan : Spatial
 
 	public static void QueueFire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg)
 	{
-		Player Plr = Game.PossessedPlayer;
-
-		{
-			PhysicsDirectSpaceState State = Self.GetWorld().DirectSpaceState;
-
-			Vector3 Origin = Plr.Cam.GlobalTransform.origin;
-			Vector3 Endpoint = Origin + new Vector3(0, 0, Range)
-				.Rotated(new Vector3(1, 0, 0), Deg2Rad(-Plr.ActualLookVertical - VerticalAngle))
-				.Rotated(new Vector3(0, 1, 0), Deg2Rad(Plr.LookHorizontal + HorizontalAngle));
-
-			Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 2);
-			if(Results.Count > 0) //We hit something
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
 			{
-				Vector3 HitPoint = (Vector3)Results["position"];
+				PhysicsDirectSpaceState State = Self.GetWorld().DirectSpaceState;
 
-				if(DebugDraw)
-					World.DebugPlot(HitPoint);
+				Vector3 Origin = Plr.Cam.GlobalTransform.origin;
+				Vector3 Endpoint = Origin + new Vector3(0, 0, Range)
+					.Rotated(new Vector3(1, 0, 0), Deg2Rad(-Plr.ActualLookVertical - VerticalAngle))
+					.Rotated(new Vector3(0, 1, 0), Deg2Rad(Plr.LookHorizontal + HorizontalAngle));
 
-				Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
-				Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
-
-				if(Results["collider"] is HitboxClass Hitbox)
+				Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Endpoint, null, 2);
+				if(Results.Count > 0) //We hit something
 				{
-					Player HitPlr = Hitbox.OwningPlayer;
+					Vector3 HitPoint = (Vector3)Results["position"];
 
-					float Damage = 0;
-					switch(Hitbox.Type)
+					if(DebugDraw)
+						World.DebugPlot(HitPoint);
+
+					Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
+					Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
+
+					if(Results["collider"] is HitboxClass Hitbox)
 					{
-						case HitboxClass.TYPE.HEAD:
-							Damage = HDmg;
-							break;
-						case HitboxClass.TYPE.BODY:
-							Damage = BDmg;
-							break;
-						case HitboxClass.TYPE.LEGS:
-							Damage = LDmg;
-							break;
-					}
+						Player HitPlr = Hitbox.OwningPlayer;
 
-
-					bool UpdatedExisting = false;
-					foreach(QueuedDamage Instance in QueuedDamageList)
-					{
-						if(Instance.Id == HitPlr.Id)
+						float Damage = 0;
+						switch(Hitbox.Type)
 						{
-							Instance.Damage += Damage;
-							UpdatedExisting = true;
-							break;
+							case HitboxClass.TYPE.HEAD:
+								Damage = HDmg;
+								break;
+							case HitboxClass.TYPE.BODY:
+								Damage = BDmg;
+								break;
+							case HitboxClass.TYPE.LEGS:
+								Damage = LDmg;
+								break;
 						}
+
+
+						bool UpdatedExisting = false;
+						foreach(QueuedDamage Instance in QueuedDamageList)
+						{
+							if(Instance.Id == HitPlr.Id)
+							{
+								Instance.Damage += Damage;
+								UpdatedExisting = true;
+								break;
+							}
+						}
+						if(!UpdatedExisting)
+							QueuedDamageList.Add(new QueuedDamage(HitPlr.Id, Damage, Origin));
 					}
-					if(!UpdatedExisting)
-						QueuedDamageList.Add(new QueuedDamage(HitPlr.Id, Damage, Origin));
+				}
+				else
+				{
+					Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
+					Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
 				}
 			}
-			else
-			{
-				Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
-				Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
-			}
-		}
+		);
 	}
 
 
 	public static void ApplyQueuedFire()
 	{
-		if(QueuedDamageList.Count > 0)
-			Game.PossessedPlayer.SfxManager.FpHitsound();
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				if(QueuedDamageList.Count > 0)
+					Plr.SfxManager.FpHitsound();
 
-		foreach(QueuedDamage Instance in QueuedDamageList)
-		{
-			Player DamagedPlayer = Net.Players[Instance.Id];
+				foreach(QueuedDamage Instance in QueuedDamageList)
+				{
+					Player DamagedPlayer = Net.Players[Instance.Id];
 
-			if(DamagedPlayer.Health - Instance.Damage <= 0)
-				Game.PossessedPlayer.SfxManager.FpKillsound();
+					if(DamagedPlayer.Health - Instance.Damage <= 0)
+						Plr.SfxManager.FpKillsound();
 
-			DamagedPlayer.Health = DamagedPlayer.Health - Instance.Damage; //For high fire rate and high ping
-			if(DamagedPlayer.Health < 0)
-				DamagedPlayer.Health = 0;
+					DamagedPlayer.Health -= Instance.Damage; //For high fire rate and high ping
+					if(DamagedPlayer.Health < 0)
+						DamagedPlayer.Health = 0;
 
-			DamagedPlayer.RpcId(Instance.Id, nameof(Player.ApplyDamage), Instance.Damage, Instance.Origin);
-		}
+					DamagedPlayer.RpcId(Instance.Id, nameof(Player.ApplyDamage), Instance.Damage, Instance.Origin);
+				}
 
-		QueuedDamageList.Clear();
+				QueuedDamageList.Clear();
+			}
+		);
 	}
 
 
 	public static void ApplyAdditiveRecoil(float Height, float Length)
 	{
-		//Lessen recoil when ADS
-		Height *= Game.PossessedPlayer.AdsMultiplier;
-		Length *= Game.PossessedPlayer.AdsMultiplier;
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				//Lessen recoil when ADS
+				Height *= Plr.AdsMultiplier;
+				Length *= Plr.AdsMultiplier;
 
-		//Lessen recoil when crouching
-		if(Game.PossessedPlayer.IsCrouching)
-		{
-			Height *= CrouchAffectPercentage;
-			Length *= CrouchAffectPercentage;
-		}
+				//Lessen recoil when crouching
+				if(Plr.IsCrouching)
+				{
+					Height *= CrouchAffectPercentage;
+					Length *= CrouchAffectPercentage;
+				}
 
-		Game.PossessedPlayer.ActiveAdditiveRecoil.Add(new AdditiveRecoil(Height, Length));
+				Plr.ActiveAdditiveRecoil.Add(new AdditiveRecoil(Height, Length));
+			}
+		);
 	}
 
 
 	public static void ApplyEffectiveRecoil(float VerticalRecoil, float HorizontalRecoil)
 	{
-		Assert.ActualAssert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				Assert.ActualAssert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 
-		Player Plr = Game.PossessedPlayer;
+				//Lessen recoil when ADS
+				VerticalRecoil *= Plr.AdsMultiplier;
+				HorizontalRecoil *= Plr.AdsMultiplier;
 
-		//Lessen recoil when ADS
-		VerticalRecoil *= Plr.AdsMultiplier;
-		HorizontalRecoil *= Plr.AdsMultiplier;
+				//Lessen recoil when crouching
+				if(Plr.IsCrouching)
+				{
+					VerticalRecoil *= CrouchAffectPercentage;
+					HorizontalRecoil *= CrouchAffectPercentage;
+				}
 
-		//Lessen recoil when crouching
-		if(Plr.IsCrouching)
-		{
-			VerticalRecoil *= CrouchAffectPercentage;
-			HorizontalRecoil *= CrouchAffectPercentage;
-		}
+				Plr.ApplyLookVertical(VerticalRecoil);
+				Plr.LookHorizontal += HorizontalRecoil * -NextRecoilDirection;
+				Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
-		Plr.ApplyLookVertical(VerticalRecoil);
-		Plr.LookHorizontal += HorizontalRecoil * -NextRecoilDirection;
-		Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
-
-		NextRecoilDirection = -NextRecoilDirection;
+				NextRecoilDirection = -NextRecoilDirection;
+			}
+		);
 	}
 
 

@@ -32,7 +32,7 @@ public class SavedChunk
 				continue;
 			}
 
-			Out += new SavedTile(Branch.Type, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
+			Out += new SavedTile(Branch.ItemId, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
 		}
 
 		if(Out[Out.Length-1] == ',')

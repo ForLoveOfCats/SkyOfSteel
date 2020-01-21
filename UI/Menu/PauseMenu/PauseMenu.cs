@@ -11,7 +11,11 @@ public class PauseMenu : VBoxContainer
 	{
 		TeamButton = GetNode<Button>("TeamSwitchBox/ChangeButton");
 		TeamEdit = GetNode<LineEdit>("TeamSwitchBox/LineEdit");
-		TeamEdit.Text = $"{Game.PossessedPlayer.Team}";
+
+		Game.PossessedPlayer.Match(
+			some: (Plr) => TeamEdit.Text = $"{Plr.Team}",
+			none: () => TeamEdit.Text = ""
+		);
 
 		GetNode<Label>("Version").Text = $"Version: {Game.Version}";
 
@@ -51,14 +55,18 @@ public class PauseMenu : VBoxContainer
 
 	public void TeamChanged()
 	{
-		int ProspectiveTeam = 1;
-		if(!int.TryParse(TeamEdit.Text, out ProspectiveTeam))
-		{
-			Console.ThrowLog("Attempted to change to a non-int team");
-			return;
-		}
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				if(!int.TryParse(TeamEdit.Text, out int ProspectiveTeam))
+				{
+					Console.ThrowLog("Attempted to change to a non-int team");
+					return;
+				}
 
-		Game.PossessedPlayer.Team = ProspectiveTeam;
+				Plr.Team = ProspectiveTeam;
+			}
+		);
 	}
 
 

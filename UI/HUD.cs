@@ -52,7 +52,7 @@ public class HUD : Node
 
 		GetTree().Connect("screen_resized", this, nameof(OnScreenResized));
 		HotbarUpdate();
-		this.CallDeferred(nameof(OnScreenResized));
+		CallDeferred(nameof(OnScreenResized));
 
 		Show(); //To make sure we catch anything which might be wrong after hide then show
 	}
@@ -60,38 +60,43 @@ public class HUD : Node
 
 	public void HotbarUpdate()
 	{
-		for(int Slot = 0; Slot <= 9; Slot++)
-		{
-			var SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild<NinePatchRect>(Slot);
-			if(Game.PossessedPlayer.Inventory[Slot] != null)
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
 			{
-				SlotPatch.Texture = Items.Thumbnails[Game.PossessedPlayer.Inventory[Slot].Id];
-
-				foreach(Node Child in SlotPatch.GetChildren())
-					Child.QueueFree();
-
-				var CountLabel = (Label) ItemCountLabelScene.Instance();
-				CountLabel.Text = Game.PossessedPlayer.Inventory[Slot].Count.ToString();
-				SlotPatch.AddChild(CountLabel);
-			}
-			else
-			{
-				SlotPatch.Texture = Alpha;
-
-				foreach(Node Child in SlotPatch.GetChildren())
+				for(int Slot = 0; Slot <= 9; Slot++)
 				{
-					Child.QueueFree();
+					var SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild<NinePatchRect>(Slot);
+					if(Plr.Inventory[Slot] != null)
+					{
+						SlotPatch.Texture = Items.Thumbnails[Plr.Inventory[Slot].Id];
+
+						foreach(Node Child in SlotPatch.GetChildren())
+							Child.QueueFree();
+
+						var CountLabel = (Label) ItemCountLabelScene.Instance();
+						CountLabel.Text = Plr.Inventory[Slot].Count.ToString();
+						SlotPatch.AddChild(CountLabel);
+					}
+					else
+					{
+						SlotPatch.Texture = Alpha;
+
+						foreach(Node Child in SlotPatch.GetChildren())
+						{
+							Child.QueueFree();
+						}
+					}
+
+					SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y / 11, GetViewport().Size.y / 11);
+
+					var ActiveIndicatorPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild<NinePatchRect>(Slot);
+					ActiveIndicatorPatch.RectMinSize = new Vector2(GetViewport().Size.y / 11, GetViewport().Size.y / 11);
+					ActiveIndicatorPatch.Texture = Alpha;
 				}
+
+				((NinePatchRect) (GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Plr.InventorySlot))).Texture = Triangle;
 			}
-
-			SlotPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
-
-			var ActiveIndicatorPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild<NinePatchRect>(Slot);
-			ActiveIndicatorPatch.RectMinSize = new Vector2(GetViewport().Size.y/11, GetViewport().Size.y/11);
-			ActiveIndicatorPatch.Texture = Alpha;
-		}
-
-		((NinePatchRect)(GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Game.PossessedPlayer.InventorySlot))).Texture = Triangle;
+		);
 	}
 
 
@@ -178,33 +183,40 @@ public class HUD : Node
 
 	public override void _Process(float Delta)
 	{
-		Crosshair.Visible = !Menu.IsOpen;
-		CooldownBar.Visible = !Menu.IsOpen;
+		Game.PossessedPlayer.Match(
+			none: () => Hide(),
 
-		CooldownBar.MaxValue = Game.PossessedPlayer.CurrentMaxCooldown;
-		CooldownBar.Value = Game.PossessedPlayer.CurrentCooldown;
-
-		HealthBar.MaxValue = Player.MaxHealth;
-		HealthBar.Value = Game.PossessedPlayer.Health;
-
-		foreach(KeyValuePair<int, Label> Current in NickLabels)
-		{
-			Player OwningPlayer = Net.Players[Current.Key];
-			Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0,7.5f,0);
-			if(OwningPlayer.Team != Game.PossessedPlayer.Team || Game.PossessedPlayer.Cam.IsPositionBehind(PlayerPos))
+			some: (Plr) =>
 			{
-				Current.Value.Visible = false;
-			}
-			else
-			{
-				Current.Value.Visible = Visible;
-				Current.Value.MarginLeft = Game.PossessedPlayer.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x/2;
-				Current.Value.MarginTop = Game.PossessedPlayer.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y/2;
-			}
-		}
+				Crosshair.Visible = !Menu.IsOpen;
+				CooldownBar.Visible = !Menu.IsOpen;
 
-		ChunkInfoLabel.Text = $"Current Chunk: ({Game.PossessedPlayer.CurrentChunk.Item1}, 0, {Game.PossessedPlayer.CurrentChunk.Item2})";
-		PlayerPositionLabel.Text = $"Player Position: {Game.PossessedPlayer.Translation.Round()}";
-		FPSLabel.Text = $"{Engine.GetFramesPerSecond()} fps";
+				CooldownBar.MaxValue = Plr.CurrentMaxCooldown;
+				CooldownBar.Value = Plr.CurrentCooldown;
+
+				HealthBar.MaxValue = Player.MaxHealth;
+				HealthBar.Value = Plr.Health;
+
+				foreach(KeyValuePair<int, Label> Current in NickLabels)
+				{
+					Player OwningPlayer = Net.Players[Current.Key];
+					Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0, 7.5f, 0);
+					if(OwningPlayer.Team != Plr.Team || Plr.Cam.IsPositionBehind(PlayerPos))
+					{
+						Current.Value.Visible = false;
+					}
+					else
+					{
+						Current.Value.Visible = Visible;
+						Current.Value.MarginLeft = Plr.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x / 2;
+						Current.Value.MarginTop = Plr.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y / 2;
+					}
+				}
+
+				ChunkInfoLabel.Text = $"Current Chunk: ({Plr.CurrentChunk.Item1}, 0, {Plr.CurrentChunk.Item2})";
+				PlayerPositionLabel.Text = $"Player Position: {Plr.Translation.Round()}";
+				FPSLabel.Text = $"{Engine.GetFramesPerSecond()} fps";
+			}
+		);
 	}
 }

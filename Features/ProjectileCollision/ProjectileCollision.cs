@@ -39,7 +39,10 @@ public class ProjectileCollision : Spatial
 		Godot.Collections.Dictionary Results = State.IntersectRay(
 			StartPoint.GlobalTransform.origin,
 			EndPoint.GlobalTransform.origin,
-			new Godot.Collections.Array() { Game.PossessedPlayer }, 2
+			new Godot.Collections.Array {
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2
 		);
 		if(Results.Count > 0)
 			Parent.ProjectileCollided((Vector3)Results["position"]);

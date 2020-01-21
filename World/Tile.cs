@@ -5,7 +5,7 @@ using Optional;
 
 public class Tile : StaticBody, IInGrid
 {
-	public Items.ID Type = Items.ID.ERROR;
+	public Items.ID ItemId = Items.ID.ERROR;
 	public int OwnerId = 0;
 	public Pathfinding.PointData Point = null;
 

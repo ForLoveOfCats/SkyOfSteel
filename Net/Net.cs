@@ -163,7 +163,9 @@ public class Net : Node
 
 		if(Id != GetTree().GetNetworkUniqueId())
 		{
-			Game.PossessedPlayer.HUDInstance.AddNickLabel(Id, NickArg);
+			Game.PossessedPlayer.MatchSome(
+				(Plr) => Plr.HUDInstance.AddNickLabel(Id, NickArg)
+			);
 		}
 
 		if(GetTree().IsNetworkServer())
@@ -190,7 +192,9 @@ public class Net : Node
 		if(Nicknames.ContainsKey(Id))
 		{
 			Nicknames.Remove(Id);
-			Game.PossessedPlayer.HUDInstance.RemoveNickLabel(Id);
+			Game.PossessedPlayer.MatchSome(
+				(Plr) => Plr.HUDInstance.RemoveNickLabel(Id)
+			);
 		}
 
 		World.ChunkLoadDistances.Remove(Id);
@@ -273,7 +277,7 @@ public class Net : Node
 	[Remote]
 	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
 	{
-		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), Game.PossessedPlayer.Translation, Game.ChunkRenderDistance);
+		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), new Vector3(), Game.ChunkRenderDistance);
 	}
 
 

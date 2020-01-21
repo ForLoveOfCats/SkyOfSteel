@@ -86,8 +86,16 @@ public class PipeJoint : PipeCoreLogic
 		Friends = new HashSet<PipeCoreLogic>();
 
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-		Godot.Collections.Dictionary Results;
-		Results = State.IntersectRay(Translation, Position1.GlobalTransform.origin, new Godot.Collections.Array() { this, FirstOpenEnd, Game.PossessedPlayer }, 2|4);
+		Godot.Collections.Dictionary Results = State.IntersectRay(
+			Translation,
+			Position1.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				FirstOpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			FirstEndMesh.Show();
@@ -101,7 +109,16 @@ public class PipeJoint : PipeCoreLogic
 			FirstEndCollision.Disabled = true;
 		}
 
-		Results = State.IntersectRay(Translation, Position2.GlobalTransform.origin, new Godot.Collections.Array() { this, SecondOpenEnd, Game.PossessedPlayer }, 2|4);
+		Results = State.IntersectRay(
+			Translation,
+			Position2.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				SecondOpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			SecondEndMesh.Show();
@@ -115,7 +132,16 @@ public class PipeJoint : PipeCoreLogic
 			SecondEndCollision.Disabled = true;
 		}
 
-		Results = State.IntersectRay(Translation, Position3.GlobalTransform.origin, new Godot.Collections.Array() { this, ThirdOpenEnd, Game.PossessedPlayer }, 2|4);
+		Results = State.IntersectRay(
+			Translation,
+			Position3.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				ThirdOpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			ThirdEndMesh.Show();
@@ -129,7 +155,16 @@ public class PipeJoint : PipeCoreLogic
 			ThirdEndCollision.Disabled = true;
 		}
 
-		Results = State.IntersectRay(Translation, Position4.GlobalTransform.origin, new Godot.Collections.Array() { this, ForthOpenEnd, Game.PossessedPlayer }, 2|4);
+		Results = State.IntersectRay(
+			Translation,
+			Position4.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				ForthOpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			ForthEndMesh.Show();
@@ -143,7 +178,16 @@ public class PipeJoint : PipeCoreLogic
 			ForthEndCollision.Disabled = true;
 		}
 
-		Results = State.IntersectRay(Translation, Position5.GlobalTransform.origin, new Godot.Collections.Array() { this, FifthOpenEnd, Game.PossessedPlayer }, 2|4);
+		Results = State.IntersectRay(
+			Translation,
+			Position5.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				FifthOpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			FifthEndMesh.Show();
@@ -157,7 +201,16 @@ public class PipeJoint : PipeCoreLogic
 			FifthEndCollision.Disabled = true;
 		}
 
-		Results = State.IntersectRay(Translation, Position6.GlobalTransform.origin, new Godot.Collections.Array() { this, SixthOpenEnd, Game.PossessedPlayer }, 2|4);
+		Results = State.IntersectRay(
+			Translation,
+			Position6.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				SixthOpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			SixthEndMesh.Show();

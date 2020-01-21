@@ -102,42 +102,61 @@ public static class API
 	}
 
 
-	public static bool Fly(bool NewFly)
+	public static void Fly(bool NewFly)
 	{
-		Game.PossessedPlayer.SetFly(NewFly);
-		return NewFly;
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				Plr.SetFly(NewFly);
+			}
+		);
 	}
 
 
-	public static bool ToggleFly()
+	public static void ToggleFly()
 	{
-		Game.PossessedPlayer.SetFly(!Game.PossessedPlayer.FlyMode);
-		return Game.PossessedPlayer.FlyMode;
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				Plr.SetFly(!Plr.FlyMode);
+			}
+		);
 	}
 
 
-	public static bool Give(Items.ID Type) //TODO: Allow as client and giving items to other players
+	public static void Give(Items.ID Type) //TODO: Allow as client and giving items to other players
 	{
 		if(!Net.Work.IsNetworkServer())
 		{
 			Console.ThrowPrint("Cannot give item as client");
-			return false;
+			return;
 		}
 
-		Game.PossessedPlayer.ItemGive(new Items.Instance(Type));
-		return true;
+		Game.PossessedPlayer.MatchSome(
+			(Plr) => Plr.ItemGive(new Items.Instance(Type))
+		);
 	}
 
 
 	public static void HudHide()
 	{
-		Game.PossessedPlayer.HUDInstance.Hide();
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				Plr.HUDInstance.Hide();
+			}
+		);
 	}
 
 
 	public static void HudShow()
 	{
-		Game.PossessedPlayer.HUDInstance.Show();
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				Plr.HUDInstance.Show();
+			}
+		);
 	}
 
 

@@ -43,8 +43,17 @@ public class Locker : PipeCoreLogic, IHasInventory
 		Friends = new HashSet<PipeCoreLogic>();
 
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-		Godot.Collections.Dictionary Results;
-		Results = State.IntersectRay(Translation, Position1.GlobalTransform.origin, new Godot.Collections.Array() { this, OpenEnd, Game.PossessedPlayer }, 2|4);
+		Godot.Collections.Dictionary Results = State.IntersectRay(
+			Translation,
+			Position1.GlobalTransform.origin,
+			new Godot.Collections.Array {
+				this,
+				OpenEnd,
+				Game.PossessedPlayer.ValueOr(() => null)
+			},
+			2 | 4
+		);
+
 		if(Results.Count > 0 && Results["collider"] is OpenEnd)
 		{
 			OpenEndMesh.Show();

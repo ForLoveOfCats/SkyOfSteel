@@ -3,6 +3,6 @@
 [ext_resource path="res://Items/Meshes/ERROR.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://World/Materials/GreenGhost.tres" type="Material" id=2]
 
-[node name="MeshInstance" type="MeshInstance"]
+[node name="GhostMesh" type="MeshInstance"]
 mesh = ExtResource( 1 )
 material/0 = ExtResource( 2 )

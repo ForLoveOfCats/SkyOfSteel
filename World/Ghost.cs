@@ -1,6 +1,7 @@
 using Godot;
 using System.Linq;
-using System.Collections.Generic;
+
+
 
 public class Ghost : Area
 {
@@ -8,14 +9,8 @@ public class Ghost : Area
 	Material RedMat;
 	MeshInstance GhostMesh;
 
-	public Items.ID CurrentMeshType;
+	public Items.ID CurrentMeshType = Items.ID.NONE;
 	public bool CanBuild = false;
-
-	List<Items.ID> OldType;
-	List<Vector3> OldPositions;
-	List<Vector3> OldRotations;
-	List<bool> OldVisible;
-	List<bool> OldCanBuild;
 
 	Ghost()
 	{
@@ -23,35 +18,6 @@ public class Ghost : Area
 
 		GreenMat = GD.Load("res://World/Materials/GreenGhost.tres") as Material;
 		RedMat = GD.Load("res://World/Materials/RedGhost.tres") as Material;
-
-		//Godot's `Area` object likes to not register body entry's for several
-		  //physics ticks so these postion, rotation, and visibility queues
-		  //are required to prevent flashes of the incorrect color/build abilty
-		OldType = new List<Items.ID>()
-			{
-				Items.ID.ERROR,
-				Items.ID.ERROR
-			};
-		OldPositions = new List<Vector3>()
-			{
-				new Vector3(0,0,0),
-				new Vector3(0,0,0)
-			};
-		OldRotations = new List<Vector3>()
-			{
-				new Vector3(0,0,0),
-				new Vector3(0,0,0)
-			};
-		OldVisible = new List<bool>()
-			{
-				false,
-				false,
-			};
-		OldCanBuild = new List<bool>()
-			{
-				false,
-				false,
-			};
 	}
 
 
@@ -59,92 +25,64 @@ public class Ghost : Area
 	{
 		GhostMesh = (MeshInstance) GD.Load<PackedScene>("res://World/GhostMesh.tscn").Instance();
 		GetParent().AddChild(GhostMesh);
-
-		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
- 		if(Item != null) //null means no item in slot
-		{
-			GhostMesh.Mesh = Items.Meshes[Item.Id];
-			CurrentMeshType = Item.Id;
-		}
 	}
 
 
-	public override void _PhysicsProcess(float Delta)
+	public override void _Process(float Delta)
 	{
-		GhostMesh.Translation = OldPositions[0];
-		GhostMesh.RotationDegrees = OldRotations[0];
-		GhostMesh.Visible = OldVisible[0];
+		Game.PossessedPlayer.Match(
+			none: () => GhostMesh.Visible = false,
 
-		GhostMesh.Mesh = Items.Meshes[OldType[0]];
-		CurrentMeshType = OldType[0];
-
-		Player Plr = Game.PossessedPlayer;
-		OldVisible.RemoveAt(0);
-		OldVisible.Add(false);
-		if(Plr.Inventory[Plr.InventorySlot] != null)
-		{
-			var BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
-			if(BuildRayCast.IsColliding())
+		some: (Plr) =>
 			{
-				if(BuildRayCast.GetCollider() is Tile Base)
+				if(Plr.Inventory[Plr.InventorySlot] == null)
+				{
+					GhostMesh.Visible = false;
+					CurrentMeshType = Items.ID.NONE;
+					return;
+				}
+
+				CurrentMeshType = Plr.Inventory[Plr.InventorySlot].Id;
+				GhostMesh.Mesh = Items.Meshes[CurrentMeshType];
+
+				var BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
+				if(BuildRayCast.IsColliding() && BuildRayCast.GetCollider() is Tile Base)
 				{
 					Vector3? GhostPosition = Items.TryCalculateBuildPosition(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
 					if(GhostPosition != null)
 					{
+						GhostMesh.Visible = true;
+
 						Vector3 GhostRotation = Items.CalculateBuildRotation(CurrentMeshType, Base, Plr.RotationDegrees.y, Plr.BuildRotation, BuildRayCast.GetCollisionPoint());
-						Translation = (Vector3)GhostPosition;
+
+						Translation = (Vector3) GhostPosition;
 						RotationDegrees = GhostRotation;
-						OldVisible[1] = true;
+						GhostMesh.Translation = (Vector3) GhostPosition;
+						GhostMesh.RotationDegrees = GhostRotation;
+
+						CanBuild = true;
+						if(GetOverlappingBodies().Count > 0)
+						{
+							foreach(Node Body in GetOverlappingBodies())
+							{
+								Items.ID[] DisallowedCollisions = Items.IdInfos[CurrentMeshType].DisallowedCollisions;
+								if(DisallowedCollisions != null && Body is Tile Branch && DisallowedCollisions.Contains(Branch.ItemId))
+									CanBuild = false;
+							}
+						}
+
+						if(CanBuild)
+							GhostMesh.MaterialOverride = GreenMat;
+						else
+							GhostMesh.MaterialOverride = RedMat;
+
+						return;
 					}
 				}
+
+				CanBuild = false;
+				GhostMesh.Visible = false;
 			}
-		}
-		if(OldVisible[1] == false)
-		{
-			OldVisible[0] = false;
-			GhostMesh.Visible = false;
-		}
-
-		OldCanBuild.RemoveAt(0);
-		if(GetOverlappingBodies().Count > 0)
-		{
-			bool _CanBuild = true;
-			foreach(Node Body in GetOverlappingBodies())
-			{
-				Items.Instance SelectedItem = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-				if(SelectedItem == null)
-					continue;
-
-				Items.ID[] DisallowedCollisions = Items.IdInfos[SelectedItem.Id].DisallowedCollisions;
-				if(DisallowedCollisions != null && Body is Tile && DisallowedCollisions.Contains(((Tile)Body).Type))
-				{
-					GhostMesh.MaterialOverride = RedMat;
-					_CanBuild = false;
-				}
-			}
-			OldCanBuild.Add(_CanBuild);
-			if(_CanBuild)
-			{
-				GhostMesh.MaterialOverride = GreenMat;
-			}
-		}
-		else
-		{
-			GhostMesh.MaterialOverride = GreenMat;
-			OldCanBuild.Add(true);
-		}
-		CanBuild = OldCanBuild[0];
-
-		OldPositions.RemoveAt(0);
-		OldPositions.Add(Translation);
-		OldRotations.RemoveAt(0);
-		OldRotations.Add(RotationDegrees);
-
-		Items.Instance Item = Game.PossessedPlayer.Inventory[Game.PossessedPlayer.InventorySlot];
-		if(Item != null && Item.Id != CurrentMeshType) //null means no item in slot
-		{
-			OldType.RemoveAt(0);
-			OldType.Add(Item.Id);
-		}
+		);
 	}
 }

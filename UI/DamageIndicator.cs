@@ -42,15 +42,20 @@ public class DamageIndicator : Sprite
 
 	public override void _Process(float Delta)
 	{
-		Vector2 PlayerPosition2D = new Vector2(Game.PossessedPlayer.Translation.x, Game.PossessedPlayer.Translation.z);
-		Rotation = PlayerPosition2D.AngleToPoint(ShotFirePos2D) + Game.PossessedPlayer.Rotation.y;
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				var PlayerPosition2D = new Vector2(Plr.Translation.x, Plr.Translation.z);
+				Rotation = PlayerPosition2D.AngleToPoint(ShotFirePos2D) + Plr.Rotation.y;
 
-		RemainingLife -= Delta;
-		if(RemainingLife <= 0)
-			QueueFree();
+				RemainingLife -= Delta;
+				if(RemainingLife <= 0)
+					QueueFree();
 
-		Mat.SetShaderParam("alpha", RemainingLife/MaxLife);
+				Mat.SetShaderParam("alpha", RemainingLife / MaxLife);
 
-		CenterSprite();
+				CenterSprite();
+			}
+		);
 	}
 }

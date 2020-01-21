@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using Optional;
+
 
 
 public class Game : Node
@@ -12,7 +14,7 @@ public class Game : Node
 
 	public static int MaxPlayers = 8;
 	public static bool BindsEnabled = false;
-	public static Player PossessedPlayer;
+	public static Option<Player> PossessedPlayer;
 
 	public static float LookSensitivity = 15;
 	public static float Deadzone = 0.25f;
@@ -120,7 +122,7 @@ public class Game : Node
 		Net.Players.Add(Id, NewPlayer);
 
 		if(Possess)
-			PossessedPlayer = NewPlayer;
+			PossessedPlayer = NewPlayer.Some();
 
 		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
 

@@ -38,14 +38,18 @@ public class InventoryMenu : VBoxContainer
 		PlayerVBox = GetNode<VBoxContainer>("HBoxContainer/PlayerCenter/PlayerVBox");
 		OtherGrid = GetNode<GridContainer>("HBoxContainer/OtherVBox/OtherCenter/OtherGrid");
 
-		Player Plr = Game.PossessedPlayer;
-		PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
-		for(int Index = 0; Index < Plr.Inventory.SlotCount - 1; Index++) //Ignore eleventh slot, used for dropping
-		{
-			InventoryIcon Icon = InstantiateIcon(Index, Plr);
-			PlayerVBox.AddChild(Icon);
-			PlayerIcons[Index] = Icon;
-		}
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
+				for(int Index = 0; Index < Plr.Inventory.SlotCount - 1; Index++) //Ignore eleventh slot, used for dropping
+				{
+					InventoryIcon Icon = InstantiateIcon(Index, Plr);
+					PlayerVBox.AddChild(Icon);
+					PlayerIcons[Index] = Icon;
+				}
+			}
+		);
 
 		if(Other != null)
 		{
@@ -103,7 +107,12 @@ public class InventoryMenu : VBoxContainer
 
 	public override void DropData(Vector2 Pos, object Data)
 	{
-		if(Data is int FromSlot && From != null)
-			From.Source.TransferTo(Game.PossessedPlayer.GetPath(), FromSlot, 10, From.CountMode);
+		Game.PossessedPlayer.MatchSome(
+			(Plr) =>
+			{
+				if(Data is int FromSlot && From != null)
+					From.Source.TransferTo(Plr.GetPath(), FromSlot, 10, From.CountMode);
+			}
+		);
 	}
 }
