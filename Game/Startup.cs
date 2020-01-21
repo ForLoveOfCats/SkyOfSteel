@@ -103,8 +103,8 @@ public class Startup : Node
 		Bindings.Bind("G",               nameof(Menu.BuildInventory));
 		Bindings.Bind("XboxStart",       nameof(Menu.BuildInventory));
 
-		Bindings.Bind("K",               nameof(Player.InputRespawn));
-		Bindings.Bind("XboxSelect",      nameof(Player.InputRespawn));
+		Bindings.Bind("K",               nameof(Player.InputReset));
+		Bindings.Bind("XboxSelect",      nameof(Player.InputReset));
 		Bindings.Bind("T",               nameof(Player.ToggleFly));
 		Bindings.Bind("LeftStickClick",  nameof(Player.ToggleFly));
 

@@ -198,7 +198,7 @@ public class Player : Character, IPushable, IHasInventory
 			return;
 		}
 
-		Respawn();
+		Reset();
 
 		if(Net.Work.IsNetworkServer())
 		{
@@ -267,16 +267,16 @@ public class Player : Character, IPushable, IHasInventory
 	}
 
 
-	[SteelInputWithoutArg(typeof(Player), nameof(InputRespawn))]
-	public static void InputRespawn()
+	[SteelInputWithoutArg(typeof(Player), nameof(InputReset))]
+	public static void InputReset()
 	{
 		Game.PossessedPlayer.MatchSome(
-			(Plr) => Plr.Respawn()
+			(Plr) => Plr.Reset()
 		);
 	}
 
 
-	public void Respawn()
+	public void Reset()
 	{
 		HUDInstance.ClearDamageIndicators();
 		MovementReset();
@@ -1009,7 +1009,7 @@ public class Player : Character, IPushable, IHasInventory
 			return;
 
 		if(Health <= 0)
-			Respawn();
+			Reset();
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
