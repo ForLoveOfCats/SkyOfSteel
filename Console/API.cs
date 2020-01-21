@@ -43,9 +43,7 @@ public static class API
 			if(Ip == "" || Ip == "localhost")
 				Ip = "127.0.0.1";
 
-
-			IPAddress Address; //Unused, just to check if valid ip
-			if(!IPAddress.TryParse(Ip, out Address)) //Requires an `out` argument
+			if(!IPAddress.TryParse(Ip, out IPAddress Address))
 			{
 				Console.ThrowPrint("Please provide a valid IP address");
 				return false;
