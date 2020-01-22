@@ -56,6 +56,7 @@ public class Player : Character, IPushable, IHasInventory
 	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
 
 	public float Health = 0;
+	public bool Dying = false;
 	private int __team = 1;
 	public int Team
 	{
@@ -282,6 +283,30 @@ public class Player : Character, IPushable, IHasInventory
 		MovementReset();
 		Ads = false;
 		Health = MaxHealth;
+	}
+
+
+	[Remote]
+	public void Die()
+	{
+		if(!Net.Work.IsNetworkServer())
+			RpcId(Net.ServerId, nameof(Die));
+		else
+		{
+			Net.SteelRpc(this, nameof(NetDie));
+			NetDie();
+		}
+	}
+
+
+	[Remote]
+	public void NetDie()
+	{
+		if(Possessed)
+			Game.PossessedPlayer = Player.None();
+
+		Net.Players[Id] = Player.None();
+		QueueFree();
 	}
 
 
@@ -978,6 +1003,15 @@ public class Player : Character, IPushable, IHasInventory
 		if(Frozen)
 			return;
 
+		if(Possessed && !Dying && Health <= 0)
+		{
+			Die();
+			Dying = true;
+		}
+
+		if(Dying)
+			return;
+
 		if(Net.Work.IsNetworkServer())
 		{
 			List<DroppedItem> ToPickUpList = new List<DroppedItem>();
@@ -995,21 +1029,22 @@ public class Player : Character, IPushable, IHasInventory
 			{
 				foreach(DroppedItem Item in ToPickUpList)
 				{
-					Player Plr = Net.Players[Id];
-					Plr.ItemGive(new Items.Instance(Item.Type));
-					Plr.NotifyPickedUpItem();
+					Net.Players[Id].MatchSome(
+						(Plr) =>
+						{
+							Plr.ItemGive(new Items.Instance(Item.Type));
+							Plr.NotifyPickedUpItem();
 
-					Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
-					World.Self.RemoveDroppedItem(Item.Name);
+							Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
+							World.Self.RemoveDroppedItem(Item.Name);
+						}
+					);
 				}
 			}
 		}
 
 		if(!Possessed)
 			return;
-
-		if(Health <= 0)
-			Reset();
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
@@ -1313,6 +1348,9 @@ public class Player : Character, IPushable, IHasInventory
 			NetUpdateDelta += Delta;
 			return;
 		}
+
+		if(Dying)
+			return;
 
 		Assert.ActualAssert(MinAdsMultiplier > 0 && MinAdsMultiplier <= 1);
 		AdsMultiplier =

@@ -444,18 +444,18 @@ public class World : Node
 			foreach(int Id in Net.PeerList)
 			{
 				if(Id == Net.ServerId) //Skip self (we are the server)
-				{
 					continue;
-				}
 
-				Vector3 PlayerPos = Net.Players[Id].Translation;
-				if(GetChunkPos(Position).DistanceTo(new Vector3(PlayerPos.x, 0, PlayerPos.z)) <= ChunkLoadDistances[Id]*(PlatformSize*9))
-				{
-					if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
+				Net.Players[Id].MatchSome(
+					(Plr) =>
 					{
-						RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
+						if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= ChunkLoadDistances[Id] * (PlatformSize * 9))
+						{
+							if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
+								RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
+						}
 					}
-				}
+				);
 			}
 		}
 
@@ -781,8 +781,10 @@ public class World : Node
 			throw new Exception($"Attempted to run {nameof(InitialNetWorldLoad)} on client");
 
 		RequestChunks(Id, PlayerPosition, RenderDistance);
-		Net.Players[Id].SetFreeze(false);
-		Net.Players[Id].GiveDefaultItems();
+
+		Assert.ActualAssert(Net.Players[Id].HasValue); //Todo: Spawn the player here
+		Net.Players[Id].ValueOrFailure().SetFreeze(false);
+		Net.Players[Id].ValueOrFailure().GiveDefaultItems();
 	}
 
 

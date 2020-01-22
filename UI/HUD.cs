@@ -199,18 +199,24 @@ public class HUD : Node
 
 				foreach(KeyValuePair<int, Label> Current in NickLabels)
 				{
-					Player OwningPlayer = Net.Players[Current.Key];
-					Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0, 7.5f, 0);
-					if(OwningPlayer.Team != Plr.Team || Plr.Cam.IsPositionBehind(PlayerPos))
-					{
-						Current.Value.Visible = false;
-					}
-					else
-					{
-						Current.Value.Visible = Visible;
-						Current.Value.MarginLeft = Plr.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x / 2;
-						Current.Value.MarginTop = Plr.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y / 2;
-					}
+					Net.Players[Current.Key].Match(
+						none: () => Current.Value.Visible = false,
+
+						some: (OwningPlayer) =>
+						{
+							Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0, 7.5f, 0);
+							if(OwningPlayer.Team != Plr.Team || Plr.Cam.IsPositionBehind(PlayerPos))
+							{
+								Current.Value.Visible = false;
+							}
+							else
+							{
+								Current.Value.Visible = Visible;
+								Current.Value.MarginLeft = Plr.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x / 2;
+								Current.Value.MarginTop = Plr.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y / 2;
+							}
+						}
+					);
 				}
 
 				ChunkInfoLabel.Text = $"Current Chunk: ({Plr.CurrentChunk.Item1}, 0, {Plr.CurrentChunk.Item2})";

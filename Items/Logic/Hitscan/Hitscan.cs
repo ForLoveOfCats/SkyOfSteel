@@ -152,16 +152,19 @@ public class Hitscan : Spatial
 
 				foreach(QueuedDamage Instance in QueuedDamageList)
 				{
-					Player DamagedPlayer = Net.Players[Instance.Id];
+					Net.Players[Instance.Id].MatchSome(
+						(DamagedPlayer) =>
+						{
+							if(DamagedPlayer.Health - Instance.Damage <= 0)
+								Plr.SfxManager.FpKillsound();
 
-					if(DamagedPlayer.Health - Instance.Damage <= 0)
-						Plr.SfxManager.FpKillsound();
+							DamagedPlayer.Health -= Instance.Damage; //For high fire rate and high ping
+							if(DamagedPlayer.Health < 0)
+								DamagedPlayer.Health = 0;
 
-					DamagedPlayer.Health -= Instance.Damage; //For high fire rate and high ping
-					if(DamagedPlayer.Health < 0)
-						DamagedPlayer.Health = 0;
-
-					DamagedPlayer.RpcId(Instance.Id, nameof(Player.ApplyDamage), Instance.Damage, Instance.Origin);
+							DamagedPlayer.RpcId(Instance.Id, nameof(Player.ApplyDamage), Instance.Damage, Instance.Origin);
+						}
+					);
 				}
 
 				QueuedDamageList.Clear();

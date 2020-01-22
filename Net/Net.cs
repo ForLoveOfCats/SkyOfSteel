@@ -1,4 +1,5 @@
 using Godot;
+using Optional;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ public class Net : Node
 	public static string Ip { get; private set; }
 
 	public static List<int> PeerList = new List<int>();
-	public static Dictionary<int, Player> Players = new Dictionary<int, Player>();
+	public static Dictionary<int, Option<Player>> Players = new Dictionary<int, Option<Player>>();
 	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
 	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
@@ -184,7 +185,9 @@ public class Net : Node
 
 		if(PeerList.Contains(Id)) //May be disconnecting from a client which did not fully connect
 		{
-			Self.GetTree().Root.GetNode($"RuntimeRoot/SkyScene/{Id}").QueueFree();
+			Players[Id].MatchSome(
+				(Plr) => Plr.QueueFree()
+			);
 			PeerList.Remove(Id);
 		}
 		Players.Remove(Id);
@@ -262,7 +265,6 @@ public class Net : Node
 
 		Self.GetTree().NetworkPeer = null;
 		PeerList.Clear();
-		Net.Players.Clear();
 		Nicknames.Clear();
 		Net.Players.Clear();
 
