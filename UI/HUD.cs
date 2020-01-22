@@ -199,7 +199,7 @@ public class HUD : Node
 
 				foreach(KeyValuePair<int, Label> Current in NickLabels)
 				{
-					Net.Players[Current.Key].Match(
+					Net.Players[Current.Key].Plr.Match(
 						none: () => Current.Value.Visible = false,
 
 						some: (OwningPlayer) =>

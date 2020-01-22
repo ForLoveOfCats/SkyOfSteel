@@ -446,7 +446,7 @@ public class World : Node
 				if(Id == Net.ServerId) //Skip self (we are the server)
 					continue;
 
-				Net.Players[Id].MatchSome(
+				Net.Players[Id].Plr.MatchSome(
 					(Plr) =>
 					{
 						if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= ChunkLoadDistances[Id] * (PlatformSize * 9))
@@ -782,9 +782,9 @@ public class World : Node
 
 		RequestChunks(Id, PlayerPosition, RenderDistance);
 
-		Assert.ActualAssert(Net.Players[Id].HasValue); //Todo: Spawn the player here
-		Net.Players[Id].ValueOrFailure().SetFreeze(false);
-		Net.Players[Id].ValueOrFailure().GiveDefaultItems();
+		Assert.ActualAssert(Net.Players[Id].Plr.HasValue); //Todo: Spawn the player here
+		Net.Players[Id].Plr.ValueOrFailure().SetFreeze(false);
+		Net.Players[Id].Plr.ValueOrFailure().GiveDefaultItems();
 	}
 
 

@@ -310,7 +310,7 @@ public class Player : Character, IPushable, IHasInventory
 			Menu.BuildPause();
 		}
 
-		Net.Players[Id] = Player.None();
+		Net.Players[Id].Plr = Player.None();
 		QueueFree();
 	}
 
@@ -1034,7 +1034,7 @@ public class Player : Character, IPushable, IHasInventory
 			{
 				foreach(DroppedItem Item in ToPickUpList)
 				{
-					Net.Players[Id].MatchSome(
+					Net.Players[Id].Plr.MatchSome(
 						(Plr) =>
 						{
 							Plr.ItemGive(new Items.Instance(Item.Type));

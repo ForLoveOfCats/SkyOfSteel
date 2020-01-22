@@ -7,6 +7,17 @@ using System.Collections.Generic;
 
 public class Net : Node
 {
+	public class PlayerData
+	{
+		public Option<Player> Plr;
+
+		public PlayerData()
+		{
+			Plr = Player.None();
+		}
+	}
+
+
 	private const int MaxWaitForServerDelay = 10;
 	private const float VersionDisconnectDelay = 10; /*How many seconds the server will wait for a client to identify
 	                                                    their version before disconnecting from a client which refuses
@@ -17,7 +28,7 @@ public class Net : Node
 	private static int Port = 27015;
 	public static string Ip { get; private set; }
 
-	public static Dictionary<int, Option<Player>> Players = new Dictionary<int, Option<Player>>();
+	public static Dictionary<int, PlayerData> Players = new Dictionary<int, PlayerData>();
 	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
 	public static float WaitingForServerTimer { get; private set; } = MaxWaitForServerDelay;
@@ -136,7 +147,7 @@ public class Net : Node
 	{
 		Console.Log($"Connected to server at '{Ip}'");
 		World.Start();
-		Players.Add(Self.GetTree().GetNetworkUniqueId(), Player.None());
+		Players.Add(Self.GetTree().GetNetworkUniqueId(), new PlayerData());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
 		RpcId(ServerId, nameof(ReceiveNick), GetTree().GetNetworkUniqueId(),  Game.Nickname);
@@ -151,7 +162,7 @@ public class Net : Node
 			return; //Make sure we are not the new peer
 		}
 
-		Players.Add(Id, Player.None());
+		Players.Add(Id, new PlayerData());
 		Game.SpawnPlayer(Id, false);
 		World.ChunkLoadDistances[Id] = 0;
 	}
@@ -185,7 +196,7 @@ public class Net : Node
 
 		if(Players.ContainsKey(Id)) //May be disconnecting from a client which did not fully connect
 		{
-			Players[Id].MatchSome(
+			Players[Id].Plr.MatchSome(
 				(Plr) => Plr.QueueFree()
 			);
 			Players.Remove(Id);
@@ -230,7 +241,7 @@ public class Net : Node
 
 		Console.Log($"Started hosting on port '{Port}'");
 
-		Players.Add(Self.GetTree().GetNetworkUniqueId(), Player.None());
+		Players.Add(Self.GetTree().GetNetworkUniqueId(), new PlayerData());
 		Nicknames[ServerId] = Game.Nickname;
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 

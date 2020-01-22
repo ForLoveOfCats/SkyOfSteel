@@ -152,7 +152,7 @@ public class Hitscan : Spatial
 
 				foreach(QueuedDamage Instance in QueuedDamageList)
 				{
-					Net.Players[Instance.Id].MatchSome(
+					Net.Players[Instance.Id].Plr.MatchSome(
 						(DamagedPlayer) =>
 						{
 							if(DamagedPlayer.Health - Instance.Damage <= 0)
