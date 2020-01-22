@@ -205,7 +205,7 @@ public class HUD : Node
 						some: (OwningPlayer) =>
 						{
 							Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0, 7.5f, 0);
-							if(OwningPlayer.Team != Plr.Team || Plr.Cam.IsPositionBehind(PlayerPos))
+							if(Net.Players[OwningPlayer.Id].Team != Net.Players[Plr.Id].Team || Plr.Cam.IsPositionBehind(PlayerPos))
 							{
 								Current.Value.Visible = false;
 							}

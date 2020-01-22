@@ -57,18 +57,6 @@ public class Player : Character, IPushable, IHasInventory
 
 	public float Health = 0;
 	public bool Dying = false;
-	private int __team = 1;
-	public int Team
-	{
-		get => __team;
-		set
-		{
-			__team = value;
-
-			if(Net.Work.GetNetworkUniqueId() == Id) //Just in case
-				Net.SteelRpc(this, nameof(NotifyTeamChange), value);
-		}
-	}
 
 	public int ForwardAxis = 0;
 	public int RightAxis = 0;
@@ -1291,13 +1279,6 @@ public class Player : Character, IPushable, IHasInventory
 		}
 
 		NetUpdateDelta = Single.Epsilon;
-	}
-
-
-	[Remote]
-	public void NotifyTeamChange(int NewTeam)
-	{
-		__team = NewTeam;
 	}
 
 

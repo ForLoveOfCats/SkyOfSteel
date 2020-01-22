@@ -10,6 +10,7 @@ public class Net : Node
 	public class PlayerData
 	{
 		public Option<Player> Plr;
+		public int Team = 1;
 
 		public PlayerData()
 		{
@@ -289,6 +290,31 @@ public class Net : Node
 	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
 	{
 		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), new Vector3(), Game.ChunkRenderDistance);
+	}
+
+
+	[Remote]
+	public void RequestTeamChange(int NewTeam)
+	{
+		if(!Net.Work.IsNetworkServer())
+		{
+			RpcId(ServerId, nameof(RequestTeamChange), NewTeam);
+			return;
+		}
+
+		int Id = Net.Work.GetRpcSenderId();
+		if(Id == 0)
+			Id = ServerId; //We are changing our own team
+
+		NotifyTeamChange(Id, NewTeam);
+		SteelRpc(this, nameof(NotifyTeamChange), Id, NewTeam);
+	}
+
+
+	[Remote]
+	public void NotifyTeamChange(int Id, int NewTeam)
+	{
+		Players[Id].Team = NewTeam;
 	}
 
 
