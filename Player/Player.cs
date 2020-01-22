@@ -303,7 +303,12 @@ public class Player : Character, IPushable, IHasInventory
 	public void NetDie()
 	{
 		if(Possessed)
+		{
+			Cam.ClearCurrent(false);
 			Game.PossessedPlayer = Player.None();
+			World.UnloadAndRequestChunks(new Vector3(), 0);
+			Menu.BuildPause();
+		}
 
 		Net.Players[Id] = Player.None();
 		QueueFree();
@@ -1225,7 +1230,7 @@ public class Player : Character, IPushable, IHasInventory
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
 		{
 			CurrentChunk = World.GetChunkTuple(Translation);
-			World.UnloadAndRequestChunks();
+			World.UnloadAndRequestChunks(Translation, Game.ChunkRenderDistance);
 		}
 	}
 

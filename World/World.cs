@@ -788,85 +788,80 @@ public class World : Node
 	}
 
 
-	public static void UnloadAndRequestChunks()
+	public static void UnloadAndRequestChunks(Vector3 Position, int ChunkRenderDistance)
 	{
 		if(!IsOpen)
 			return;
 
-		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
+		foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in Chunks.ToArray())
+		{
+			var ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
+			if(ChunkPos.DistanceTo(Position.Flattened()) <= ChunkRenderDistance * (PlatformSize * 9))
 			{
-				foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in Chunks.ToArray())
+				if(Self.GetTree().IsNetworkServer())
 				{
-					var ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-					if(ChunkPos.DistanceTo(Plr.Translation.Flattened()) <= Game.ChunkRenderDistance * (PlatformSize * 9))
-					{
-						if(Self.GetTree().IsNetworkServer())
-						{
-							foreach(Tile CurrentTile in Chunk.Value.Tiles)
-								CurrentTile.Show();
+					foreach(Tile CurrentTile in Chunk.Value.Tiles)
+						CurrentTile.Show();
 
-							foreach(MobClass Mob in Chunk.Value.Mobs)
-								Mob.Show();
+					foreach(MobClass Mob in Chunk.Value.Mobs)
+						Mob.Show();
 
-							foreach(DroppedItem Item in Chunk.Value.Items)
-								Item.Show();
-						}
-					}
+					foreach(DroppedItem Item in Chunk.Value.Items)
+						Item.Show();
+				}
+			}
+			else
+			{
+				var TilesBeingRemoved = new List<Tile>();
+				foreach(Tile CurrentTile in Chunk.Value.Tiles)
+				{
+					if(Self.GetTree().IsNetworkServer())
+						CurrentTile.Hide();
 					else
-					{
-						var TilesBeingRemoved = new List<Tile>();
-						foreach(Tile CurrentTile in Chunk.Value.Tiles)
-						{
-							if(Self.GetTree().IsNetworkServer())
-								CurrentTile.Hide();
-							else
-								TilesBeingRemoved.Add(CurrentTile);
-						}
-
-						foreach(Tile CurrentTile in TilesBeingRemoved)
-							CurrentTile.Remove(Force: true);
-
-						List<MobClass> MobsBeingRemoved = new List<MobClass>();
-						foreach(MobClass Mob in Chunk.Value.Mobs)
-						{
-							if(Self.GetTree().IsNetworkServer())
-								Mob.Hide();
-							else
-								MobsBeingRemoved.Add(Mob);
-						}
-
-						foreach(MobClass Mob in MobsBeingRemoved)
-							Mob.QueueFree();
-
-						List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
-						foreach(DroppedItem Item in Chunk.Value.Items)
-						{
-							if(Self.GetTree().IsNetworkServer())
-								Item.Hide();
-							else
-								ItemsBeingRemoved.Add(Item);
-						}
-
-						foreach(DroppedItem Item in ItemsBeingRemoved)
-							Item.Remove();
-					}
+						TilesBeingRemoved.Add(CurrentTile);
 				}
 
+				foreach(Tile CurrentTile in TilesBeingRemoved)
+					CurrentTile.Remove(Force: true);
 
-				if(!Self.GetTree().IsNetworkServer())
-					Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Plr.Translation, Game.ChunkRenderDistance);
+				List<MobClass> MobsBeingRemoved = new List<MobClass>();
+				foreach(MobClass Mob in Chunk.Value.Mobs)
+				{
+					if(Self.GetTree().IsNetworkServer())
+						Mob.Hide();
+					else
+						MobsBeingRemoved.Add(Mob);
+				}
+
+				foreach(MobClass Mob in MobsBeingRemoved)
+					Mob.QueueFree();
+
+				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
+				foreach(DroppedItem Item in Chunk.Value.Items)
+				{
+					if(Self.GetTree().IsNetworkServer())
+						Item.Hide();
+					else
+						ItemsBeingRemoved.Add(Item);
+				}
+
+				foreach(DroppedItem Item in ItemsBeingRemoved)
+					Item.Remove();
 			}
-		);
+		}
+
+
+		if(!Self.GetTree().IsNetworkServer())
+			Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Position.Flattened(), ChunkRenderDistance);
 	}
 
 
 	[Remote]
-	public void RequestChunks(int Id, Vector3 PlayerPosition, int RenderDistance) //Can be called non-rpc by passing int id
+	public void RequestChunks(int Id, Vector3 Position, int RenderDistance) //Can be called non-rpc by passing int id
 	{
 		if(!GetTree().IsNetworkServer())
 		{
-			RpcId(Net.ServerId, nameof(RequestChunks), new object[] {Id, PlayerPosition, RenderDistance});
+			RpcId(Net.ServerId, nameof(RequestChunks), Id, Position, RenderDistance);
 			return; //If not already on the server run on server and return early on client
 		}
 
@@ -878,7 +873,7 @@ public class World : Node
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(new Vector3(PlayerPosition.x,0,PlayerPosition.z)) <= RenderDistance*(PlatformSize*9))
+			if(ChunkPos.DistanceTo(Position.Flattened()) <= RenderDistance*(PlatformSize*9))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(RemoteLoadedChunks[Id].Contains(ChunkTuple) || RemoteLoadingChunks[Id].Contains(ChunkTuple))

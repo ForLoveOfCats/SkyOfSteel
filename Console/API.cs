@@ -149,7 +149,9 @@ public static class API
 	public static bool ChunkRenderDistance(int Distance)
 	{
 		Game.ChunkRenderDistance = Distance;
-		World.UnloadAndRequestChunks();
+		Game.PossessedPlayer.MatchSome(
+			(Plr) => World.UnloadAndRequestChunks(Plr.Translation, Game.ChunkRenderDistance)
+		);
 		return true;
 	}
 
