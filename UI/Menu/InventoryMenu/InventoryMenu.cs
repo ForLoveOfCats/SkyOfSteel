@@ -77,28 +77,6 @@ public class InventoryMenu : VBoxContainer
 	}
 
 
-	//TODO: Remove, was moved to Items
-	//Is still used here for dropping stacks
-	public int CalcRetrieveCount(int Value)
-	{
-		switch(From.CountMode)
-		{
-			case Items.IntentCount.ALL:
-				//Keep original count as original
-				break;
-			case Items.IntentCount.HALF:
-				if(Value != 1)
-					Value /= 2; //Relying on rounding down via truncation
-				break;
-			case Items.IntentCount.SINGLE:
-				Value = 1;
-				break;
-		}
-
-		return Value;
-	}
-
-
 	public override bool CanDropData(Vector2 Pos, object Data)
 	{
 		return Data is int;

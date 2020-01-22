@@ -110,7 +110,7 @@ public class InventoryIcon : TextureRect
 			if(Case == UsageCase.MENU)
 				Count = NotNull.Count;
 			else if(Case == UsageCase.PREVIEW)
-				Count = ParentMenu.CalcRetrieveCount(NotNull.Count);
+				Count = Items.CalcRetrieveCount(ParentMenu.From.CountMode, NotNull.Count);
 
 			CountLabel.Text = Count.ToString();
 		}
