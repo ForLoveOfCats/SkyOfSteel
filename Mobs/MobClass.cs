@@ -132,7 +132,7 @@ public abstract class MobClass : Character, IInGrid, IPushable
 		{
 			TimeSinceUpdate = 0;
 
-			foreach(int Id in Net.PeerList)
+			foreach(int Id in Net.Players.Keys)
 			{
 				if(Id == Net.Work.GetNetworkUniqueId())
 					continue;

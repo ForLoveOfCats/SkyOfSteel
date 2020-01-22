@@ -17,7 +17,6 @@ public class Net : Node
 	private static int Port = 27015;
 	public static string Ip { get; private set; }
 
-	public static List<int> PeerList = new List<int>();
 	public static Dictionary<int, Option<Player>> Players = new Dictionary<int, Option<Player>>();
 	public static Dictionary<int, float> WaitingForVersion = new Dictionary<int, float>();
 	public static bool IsWaitingForServer { get; private set; } = false;
@@ -28,6 +27,7 @@ public class Net : Node
 	public static MultiplayerAPI Work; //Get it? Net.Work
 
 	public static Net Self;
+
 	Net()
 	{
 		if(Engine.EditorHint) {return;}
@@ -48,7 +48,7 @@ public class Net : Node
 
 	public static void SteelRpc(Node Instance, string Method, params object[] Args) //Doesn't rpc clients which are not ready
 	{
-		foreach(int Id in PeerList)
+		foreach(int Id in Players.Keys)
 		{
 			if(Id == Self.GetTree().GetNetworkUniqueId())
 			{
@@ -61,7 +61,7 @@ public class Net : Node
 
 	public static void SteelRpcUnreliable(Node Instance, string Method, params object[] Args) //Doesn't rpc clients which are not ready
 	{
-		foreach(int Id in PeerList)
+		foreach(int Id in Players.Keys)
 		{
 			if(Id == Self.GetTree().GetNetworkUniqueId())
 			{
@@ -118,7 +118,7 @@ public class Net : Node
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
 		SetupNewPeer(GetTree().GetRpcSenderId());
 		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
-		foreach(int Id in PeerList)
+		foreach(int Id in Players.Keys)
 		{
 			if(Id == GetTree().GetRpcSenderId())
 			{
@@ -136,7 +136,7 @@ public class Net : Node
 	{
 		Console.Log($"Connected to server at '{Ip}'");
 		World.Start();
-		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+		Players.Add(Self.GetTree().GetNetworkUniqueId(), Player.None());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
 		RpcId(ServerId, nameof(ReceiveNick), GetTree().GetNetworkUniqueId(),  Game.Nickname);
@@ -151,8 +151,8 @@ public class Net : Node
 			return; //Make sure we are not the new peer
 		}
 
+		Players.Add(Id, Player.None());
 		Game.SpawnPlayer(Id, false);
-		PeerList.Add(Id);
 		World.ChunkLoadDistances[Id] = 0;
 	}
 
@@ -183,14 +183,13 @@ public class Net : Node
 	{
 		Console.Log($"Player '{Id}' disconnected");
 
-		if(PeerList.Contains(Id)) //May be disconnecting from a client which did not fully connect
+		if(Players.ContainsKey(Id)) //May be disconnecting from a client which did not fully connect
 		{
 			Players[Id].MatchSome(
 				(Plr) => Plr.QueueFree()
 			);
-			PeerList.Remove(Id);
+			Players.Remove(Id);
 		}
-		Players.Remove(Id);
 
 		if(Nicknames.ContainsKey(Id))
 		{
@@ -222,7 +221,7 @@ public class Net : Node
 			return;
 		}
 
-		PeerList.Clear();
+		Players.Clear();
 		World.Start();
 
 		var Peer = new NetworkedMultiplayerENet();
@@ -231,7 +230,7 @@ public class Net : Node
 
 		Console.Log($"Started hosting on port '{Port}'");
 
-		PeerList.Add(Self.GetTree().GetNetworkUniqueId());
+		Players.Add(Self.GetTree().GetNetworkUniqueId(), Player.None());
 		Nicknames[ServerId] = Game.Nickname;
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
@@ -264,9 +263,8 @@ public class Net : Node
 			En.CloseConnection();
 
 		Self.GetTree().NetworkPeer = null;
-		PeerList.Clear();
 		Nicknames.Clear();
-		Net.Players.Clear();
+		Players.Clear();
 
 		IsWaitingForServer = false;
 		WaitingForServerTimer = MaxWaitForServerDelay;

@@ -119,7 +119,7 @@ public class Game : Node
 		NewPlayer.Possessed = Possess;
 		NewPlayer.Id = Id;
 		NewPlayer.Name = Id.ToString();
-		Net.Players.Add(Id, NewPlayer.Some());
+		Net.Players[Id] = NewPlayer.Some();
 
 		if(Possess)
 			PossessedPlayer = NewPlayer.Some();

@@ -441,7 +441,7 @@ public class World : Node
 				}
 			}
 
-			foreach(int Id in Net.PeerList)
+			foreach(int Id in Net.Players.Keys)
 			{
 				if(Id == Net.ServerId) //Skip self (we are the server)
 					continue;
@@ -870,7 +870,7 @@ public class World : Node
 			return; //If not already on the server run on server and return early on client
 		}
 
-		if(!Net.PeerList.Contains(Id)) {return;}
+		if(!Net.Players.ContainsKey(Id)) {return;}
 
 		ChunkLoadDistances[Id] = RenderDistance;
 
