@@ -1,13 +1,13 @@
 using Godot;
+using System.Collections.Generic;
 using static Godot.Mathf;
 using static SteelMath;
-using System.Collections.Generic;
+
 
 
 public class JumperRocket : Spatial, IProjectileCollision
 {
-	public bool IsLocal;
-	public Player FiringPlayer; //The player which fired the rocket, to prevent colliding fire-er
+	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
 	public Vector3 Momentum;
 	public float Life = 0;
@@ -27,6 +27,9 @@ public class JumperRocket : Spatial, IProjectileCollision
 
 	public void ProjectileCollided(Vector3 CollisionPointPosition)
 	{
+		if(!Net.Work.IsNetworkServer())
+			return;
+
 		Triggered = true;
 		TriggeredPosition = CollisionPointPosition;
 	}
@@ -34,12 +37,6 @@ public class JumperRocket : Spatial, IProjectileCollision
 
 	public void EffectAreaEntered(Node Body)
 	{
-		if(IsLocal)
-		{
-			if(Body == FiringPlayer)
-				return;
-		}
-
 		if(!AffectedBodies.Contains(Body))
 			AffectedBodies.Add(Body);
 	}
@@ -47,46 +44,29 @@ public class JumperRocket : Spatial, IProjectileCollision
 
 	public void EffectAreaExited(Node Body)
 	{
-		if(IsLocal)
-		{
-			if(Body == FiringPlayer)
-				return;
-		}
-
 		if(AffectedBodies.Contains(Body))
 			AffectedBodies.Remove(Body);
 	}
 
 
 	[Remote]
-	public void Explode()
+	public void Explode(Vector3 Position)
 	{
-		if(TriggeredPosition != null)
-			Translation = (Vector3)TriggeredPosition;
-
-		Vector3 Origin = GetNode<Spatial>("ExplosionOrigin").GlobalTransform.origin;
-
-		if(IsLocal)
+		foreach(Node Body in AffectedBodies)
 		{
-			if(FiringPlayer.Translation.DistanceTo(Origin) <= RocketJumper.MaxRocketDistance)
-				AffectedBodies.Add(FiringPlayer);
-		}
-
-		foreach(Node _Body in AffectedBodies)
-		{
-			if(_Body is IPushable Body)
+			if(Body is IPushable Pushable)
 			{
 				PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-				Godot.Collections.Dictionary Results = State.IntersectRay(Origin, Body.Translation, new Godot.Collections.Array(){Body}, 1);
+				Godot.Collections.Dictionary Results = State.IntersectRay(Position, Pushable.Translation, new Godot.Collections.Array(){Pushable}, 1);
 				if(Results.Count > 0)
 					continue;
 
-				float Distance = Clamp(Origin.DistanceTo(Body.Translation), 1, RocketJumper.MaxRocketDistance);
+				float Distance = Clamp(Position.DistanceTo(Pushable.Translation), 1, RocketJumper.MaxRocketDistance);
 				float Power =
 					LogBase(-Distance + RocketJumper.MaxRocketDistance + 1, 2)
 					/ LogBase(RocketJumper.MaxRocketDistance + 1, 2);
 
-				Vector3 Push = ((Body.Translation - Origin) / RocketJumper.MaxRocketDistance).Normalized()
+				Vector3 Push = ((Pushable.Translation - Position) / RocketJumper.MaxRocketDistance).Normalized()
 					* RocketJumper.MaxRocketPush * Power;
 				{
 					Vector3 Flat = Push.Flattened();
@@ -95,18 +75,18 @@ public class JumperRocket : Spatial, IProjectileCollision
 					Push.z = Flat.z;
 				}
 				Push.y *= RocketJumper.RocketVerticalMultiplyer;
-				Body.ApplyPush(Push);
+				Pushable.ApplyPush(Push);
 			}
 		}
 		AffectedBodies.Clear();
 
 		var ExplodeSfxInstance = (AudioStreamPlayer3D) ExplodeSfx.Instance();
 		ExplodeSfxInstance.Play();
-		ExplodeSfxInstance.Translation = Translation;
+		ExplodeSfxInstance.Translation = Position;
 		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
 
 		var ParticleSystem = (CPUParticles) ExplodeParticles.Instance();
-		ParticleSystem.Translation = Translation;
+		ParticleSystem.Translation = Position;
 		ParticleSystem.Emitting = true;
 		World.EntitiesRoot.AddChild(ParticleSystem);
 
@@ -116,16 +96,23 @@ public class JumperRocket : Spatial, IProjectileCollision
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(IsLocal)
-		{
-			if(Triggered || (Life >= RocketJumper.RocketFuseTime))
-			{
-				Explode();
-				Net.SteelRpc(this, nameof(Explode));
-			}
-		}
-
+		//No need to check for collisions
+		//ProjectileCollision will do that on the server
 		Translation += Momentum * Delta;
-		Life += Delta;
+
+		if(!Net.Work.IsNetworkServer())
+			return;
+
+		if(Triggered || (Life >= RocketJumper.RocketFuseTime))
+		{
+			if(TriggeredPosition == null)
+				TriggeredPosition = GetNode<Spatial>("ExplosionOrigin").GlobalTransform.origin;
+			var Position = (Vector3) TriggeredPosition;
+
+			Explode(Position);
+			Net.SteelRpc(this, nameof(Explode), Position);
+		}
+		else
+			Life += Delta;
 	}
 }

@@ -1,6 +1,6 @@
 using Godot;
 using static Godot.Mathf;
-using static SteelMath;
+
 
 
 public class RocketJumper : Node
@@ -33,8 +33,7 @@ public class RocketJumper : Node
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
 		var Rocket = (JumperRocket) JumperRocketScene.Instance();
-		Rocket.IsLocal = true;
-		Rocket.FiringPlayer = UsingPlayer;
+		Rocket.FirerId = UsingPlayer.Id;
 		Rocket.Translation = UsingPlayer.ProjectileEmitter.GlobalTransform.origin;
 		Rocket.RotationDegrees = new Vector3(-UsingPlayer.IntendedLookVertical, UsingPlayer.LookHorizontal, 0);
 		Rocket.Momentum = new Vector3(0, 0, RocketTravelSpeed)
@@ -43,7 +42,7 @@ public class RocketJumper : Node
 		Rocket.Name = System.Guid.NewGuid().ToString();
 		World.EntitiesRoot.AddChild(Rocket);
 
-		Net.SteelRpc(Self, nameof(RemoteFire), Rocket.Translation, Rocket.RotationDegrees, Rocket.Momentum, Rocket.Name);
+		Net.SteelRpc(Self, nameof(RemoteFire), UsingPlayer.Id, Rocket.Translation, Rocket.RotationDegrees, Rocket.Momentum, Rocket.Name);
 
 		UsingPlayer.SfxManager.FpRocketFire();
 		UsingPlayer.SetCooldown(0, FireCooldown, true);
@@ -51,10 +50,10 @@ public class RocketJumper : Node
 
 
 	[Remote]
-	public void RemoteFire(Vector3 Position, Vector3 Rotation, Vector3 Momentum, string Name)
+	public void RemoteFire(int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string Name)
 	{
 		var Rocket = (JumperRocket) JumperRocketScene.Instance();
-		Rocket.IsLocal = false;
+		Rocket.FirerId = Firer;
 		Rocket.Translation = Position;
 		Rocket.RotationDegrees = Rotation;
 		Rocket.Momentum = Momentum;
