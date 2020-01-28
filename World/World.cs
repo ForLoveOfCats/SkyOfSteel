@@ -48,38 +48,23 @@ public class World : Node
 		DroppedItemScene = GD.Load<PackedScene>("res://Items/DroppedItem.tscn");
 		DebugPlotPointScene = GD.Load<PackedScene>("res://World/DebugPlotPoint.tscn");
 
-		Directory TilesDir = new Directory();
-		TilesDir.Open("res://World/Scenes/");
-		TilesDir.ListDirBegin(true, true);
-		string FileName = TilesDir.GetNext();
-		while(true)
-		{
-			if(FileName == "")
-			{
-				break;
-			}
-			var Scene = GD.Load<PackedScene>("res://World/Scenes/"+FileName);
-			if((Scene.Instance() as Tile) == null)
-			{
-				throw new System.Exception($"Tile scene '{FileName}' does not inherit Structure");
-			}
+		var ErrorScene = GD.Load<PackedScene>("res://World/Scenes/ERROR.tscn");
 
-			FileName = TilesDir.GetNext();
-		}
-
-		foreach(Items.ID Type in System.Enum.GetValues(typeof(Items.ID)))
+		foreach(Items.ID Type in Enum.GetValues(typeof(Items.ID)))
 		{
 			if(Type == Items.ID.NONE) continue;
 
 			File ToLoad = new File();
 			if(ToLoad.FileExists($"res://World/Scenes/{Type}.tscn"))
 			{
-				Scenes.Add(Type, GD.Load($"res://World/Scenes/{Type}.tscn") as PackedScene);
+				var Scene = GD.Load<PackedScene>($"res://World/Scenes/{Type}.tscn");
+				if(!(Scene.Instance() is Tile))
+					throw new System.Exception($"Tile scene for '{Type}' does not inherit Structure");
+				else
+					Scenes.Add(Type, Scene);
 			}
 			else
-			{
-				Scenes.Add(Type, GD.Load("res://World/Scenes/ERROR.tscn") as PackedScene);
-			}
+				Scenes.Add(Type, ErrorScene);
 		}
 	}
 
