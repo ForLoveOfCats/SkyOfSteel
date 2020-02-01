@@ -2,8 +2,13 @@ using Godot;
 
 
 
-public interface IProjectileCollision
+public interface IProjectile
 {
+	Vector3 Translation { get; set; }
+	Vector3 RotationDegrees { get; set; }
+	Vector3 Momentum { get; set; }
+	string Name { get; set; }
+
 	int FirerId { get; set; }
 
 	void ProjectileCollided(Vector3 CollisionPointPosition);
@@ -17,14 +22,14 @@ public class ProjectileCollision : Spatial
 	[Export] private string EndPointPath;
 	#pragma warning restore 0649
 
-	IProjectileCollision Parent;
+	IProjectile Parent;
 	Spatial StartPoint;
 	Spatial EndPoint;
 
 
 	public override void _Ready()
 	{
-		Parent = GetParent<IProjectileCollision>();
+		Parent = GetParent<IProjectile>();
 		Assert.ActualAssert(Parent != null);
 
 		StartPoint = GetNode<Spatial>(StartPointPath);

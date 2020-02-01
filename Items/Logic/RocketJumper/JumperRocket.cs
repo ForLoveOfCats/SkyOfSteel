@@ -5,11 +5,11 @@ using static SteelMath;
 
 
 
-public class JumperRocket : Spatial, IProjectileCollision
+public class JumperRocket : Spatial, IProjectile
 {
 	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
-	public Vector3 Momentum;
+	public Vector3 Momentum { get; set; }
 	public float Life = 0;
 	public bool Triggered = false;
 	public Vector3? TriggeredPosition = null;

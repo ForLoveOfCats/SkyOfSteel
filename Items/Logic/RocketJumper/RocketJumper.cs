@@ -32,32 +32,9 @@ public class RocketJumper : Node
 
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
-		var Rocket = (JumperRocket) JumperRocketScene.Instance();
-		Rocket.FirerId = UsingPlayer.Id;
-		Rocket.Translation = UsingPlayer.ProjectileEmitter.GlobalTransform.origin;
-		Rocket.RotationDegrees = new Vector3(-UsingPlayer.IntendedLookVertical, UsingPlayer.LookHorizontal, 0);
-		Rocket.Momentum = new Vector3(0, 0, RocketTravelSpeed)
-			.Rotated(new Vector3(1,0,0), Deg2Rad(Rocket.RotationDegrees.x))
-			.Rotated(new Vector3(0,1,0), Deg2Rad(Rocket.RotationDegrees.y));
-		Rocket.Name = System.Guid.NewGuid().ToString();
-		World.EntitiesRoot.AddChild(Rocket);
-
-		Net.SteelRpc(Self, nameof(RemoteFire), UsingPlayer.Id, Rocket.Translation, Rocket.RotationDegrees, Rocket.Momentum, Rocket.Name);
+		Projectiles.Fire(Projectiles.ProjectileID.ROCKET_JUMPER, UsingPlayer);
 
 		UsingPlayer.SfxManager.FpRocketFire();
 		UsingPlayer.SetCooldown(0, FireCooldown, true);
-	}
-
-
-	[Remote]
-	public void RemoteFire(int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string Name)
-	{
-		var Rocket = (JumperRocket) JumperRocketScene.Instance();
-		Rocket.FirerId = Firer;
-		Rocket.Translation = Position;
-		Rocket.RotationDegrees = Rotation;
-		Rocket.Momentum = Momentum;
-		Rocket.Name = Name;
-		World.EntitiesRoot.AddChild(Rocket);
 	}
 }
