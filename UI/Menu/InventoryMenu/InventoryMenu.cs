@@ -42,7 +42,7 @@ public class InventoryMenu : VBoxContainer
 			(Plr) =>
 			{
 				PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
-				for(int Index = 0; Index < Plr.Inventory.SlotCount - 1; Index++) //Ignore eleventh slot, used for dropping
+				for(int Index = 0; Index < Plr.Inventory.SlotCount; Index++)
 				{
 					InventoryIcon Icon = InstantiateIcon(Index, Plr);
 					PlayerVBox.AddChild(Icon);
