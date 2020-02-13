@@ -7,12 +7,12 @@ using static SteelMath;
 
 public class JumperRocket : Spatial, IProjectile
 {
-	public static float RocketTravelSpeed = 150; //Units-per-second
-	public static float RocketFuseTime = 4f; //In seconds
-	public static float MaxRocketPush = 72; //Units-per-second force applied
-	public static float MaxRocketDistance = 30; //Make sure that radius of AffectArea on JumperRocket matches
-	public static float RocketHorizontalMultiplyer = 1f;
-	public static float RocketVerticalMultiplyer = 0.65f;
+	public const float RocketTravelSpeed = 150; //Units-per-second
+	public const float RocketFuseTime = 4f; //In seconds
+	public const float MaxRocketPush = 72; //Units-per-second force applied
+	public const float MaxRocketDistance = 30; //Make sure that radius of AffectArea on JumperRocket matches
+	public const float RocketHorizontalMultiplyer = 1f;
+	public const float RocketVerticalMultiplyer = 0.65f;
 
 	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
