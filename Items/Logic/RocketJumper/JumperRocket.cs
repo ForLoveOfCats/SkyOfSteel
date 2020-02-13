@@ -7,6 +7,13 @@ using static SteelMath;
 
 public class JumperRocket : Spatial, IProjectile
 {
+	public static float RocketTravelSpeed = 150; //Units-per-second
+	public static float RocketFuseTime = 4f; //In seconds
+	public static float MaxRocketPush = 72; //Units-per-second force applied
+	public static float MaxRocketDistance = 30; //Make sure that radius of AffectArea on JumperRocket matches
+	public static float RocketHorizontalMultiplyer = 1f;
+	public static float RocketVerticalMultiplyer = 0.65f;
+
 	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
 	public Vector3 Momentum { get; set; }
@@ -61,20 +68,20 @@ public class JumperRocket : Spatial, IProjectile
 				if(Results.Count > 0)
 					continue;
 
-				float Distance = Clamp(Position.DistanceTo(Pushable.Translation), 1, RocketJumper.MaxRocketDistance);
+				float Distance = Clamp(Position.DistanceTo(Pushable.Translation), 1, MaxRocketDistance);
 				float Power =
-					LogBase(-Distance + RocketJumper.MaxRocketDistance + 1, 2)
-					/ LogBase(RocketJumper.MaxRocketDistance + 1, 2);
+					LogBase(-Distance + MaxRocketDistance + 1, 2)
+					/ LogBase(MaxRocketDistance + 1, 2);
 
-				Vector3 Push = ((Pushable.Translation - Position) / RocketJumper.MaxRocketDistance).Normalized()
-					* RocketJumper.MaxRocketPush * Power;
+				Vector3 Push = ((Pushable.Translation - Position) / MaxRocketDistance).Normalized()
+					* MaxRocketPush * Power;
 				{
 					Vector3 Flat = Push.Flattened();
-					Flat *= RocketJumper.RocketHorizontalMultiplyer;
+					Flat *= RocketHorizontalMultiplyer;
 					Push.x = Flat.x;
 					Push.z = Flat.z;
 				}
-				Push.y *= RocketJumper.RocketVerticalMultiplyer;
+				Push.y *= RocketVerticalMultiplyer;
 				Pushable.ApplyPush(Push);
 			}
 		}
@@ -103,7 +110,7 @@ public class JumperRocket : Spatial, IProjectile
 		if(!Net.Work.IsNetworkServer())
 			return;
 
-		if(Triggered || (Life >= RocketJumper.RocketFuseTime))
+		if(Triggered || (Life >= RocketFuseTime))
 		{
 			if(TriggeredPosition == null)
 				TriggeredPosition = GetNode<Spatial>("ExplosionOrigin").GlobalTransform.origin;
