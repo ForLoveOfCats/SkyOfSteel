@@ -199,17 +199,17 @@ public class Player : Character, IPushable, IHasInventory
 
 	public void GiveDefaultItems()
 	{
-		ItemGive(new Items.Instance(Items.ID.PLATFORM) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.WALL) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.SLOPE) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.LOCKER) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 20});
-		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 20});
-		// ItemGive(new Items.Instance(Items.ID.SWIFTSPARK));
+		ItemGive(new Items.Instance(Items.ID.PLATFORM) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.WALL) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.SLOPE) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.LOCKER) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 50});
+		// ItemGive(new Items.Instance(Items.ID.SWIFTSPARK) {Count = 50});
 	}
 
 
@@ -308,14 +308,24 @@ public class Player : Character, IPushable, IHasInventory
 	}
 
 
-	public void ItemGive(Items.Instance ToGive)
+	public Option<int[]> ItemGive(Items.Instance ToGive)
 	{
-		int Slot = Inventory.Give(ToGive);
+		Option<int[]> Slots = Inventory.Give(ToGive);
 
-		if(Possessed)
-			HUDInstance.HotbarUpdate();
-		else
-			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, Inventory[Slot].Count);
+		Slots.MatchSome(
+			(ActualSlots) =>
+			{
+				if(Possessed)
+					HUDInstance.HotbarUpdate();
+				else
+				{
+					foreach(int Slot in ActualSlots)
+						RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, Inventory[Slot].Count);
+				}
+			}
+		);
+
+		return Slots;
 	}
 
 
@@ -457,11 +467,20 @@ public class Player : Character, IPushable, IHasInventory
 					Net.Players[Id].Plr.MatchSome(
 						(Plr) =>
 						{
-							Plr.ItemGive(new Items.Instance(Item.Type));
-							Plr.NotifyPickedUpItem();
+							var Instance = new Items.Instance(Item.Type);
+							Option<int[]> Slots = Plr.ItemGive(Instance);
 
-							Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
-							World.Self.RemoveDroppedItem(Item.Name);
+							//TODO: Grab ungiven count from Instance to only pick up part of stack
+							//Dropped items currently are only one item though
+
+							Slots.MatchSome(
+								(ActualSlots) =>
+								{
+									Plr.NotifyPickedUpItem();
+									Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
+									World.Self.RemoveDroppedItem(Item.Name);
+								}
+							);
 						}
 					);
 				}

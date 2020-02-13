@@ -1,5 +1,7 @@
-using System;
 using Godot;
+using Optional;
+using System;
+using System.Collections.Generic;
 using static Godot.Mathf;
 
 
@@ -34,7 +36,7 @@ public class InventoryComponent
 	}
 
 
-	public int Give(Items.Instance ToGive)
+	public Option<int[]> Give(Items.Instance ToGive)
 	{
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception("Attempted to give item on client");
@@ -48,9 +50,10 @@ public class InventoryComponent
 			Contents[Slot].Count += GivingCount;
 
 			if(ToGive.Count <= 0)
-				return Slot;
+				return Option.Some(new int[] {Slot});
 		}
 
+		var Slots = new List<int>();
 		for(int Slot = 0; Slot < SlotCount; Slot++)
 		{
 			if(Contents[Slot] is null)
@@ -61,12 +64,14 @@ public class InventoryComponent
 					Count = GivingCount,
 				};
 
+				Slots.Add(Slot);
+
 				if(ToGive.Count <= 0)
-					return Slot;
+					return Option.Some(Slots.ToArray());
 			}
 		}
 
-		return -1; //Full inventory and items left to give, TODO: Handle this better
+		return Option.None<int[]>(); //Full inventory and items left to give
 	}
 
 
