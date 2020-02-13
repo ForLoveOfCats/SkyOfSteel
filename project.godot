@@ -30,7 +30,6 @@ WorldAutoload="*res://World/World.cs"
 Menu="*res://UI/Menu/Menu.cs"
 Startup="*res://Game/Startup.cs"
 Hitscan="*res://Items/Logic/Hitscan/Hitscan.cs"
-RocketJumper="*res://Items/Logic/RocketJumper/RocketJumper.cs"
 Mobs="*res://Mobs/Mobs.cs"
 Projectiles="*res://Projectiles/Projectiles.cs"
 
