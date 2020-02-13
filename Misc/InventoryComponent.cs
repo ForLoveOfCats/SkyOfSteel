@@ -1,14 +1,16 @@
 using System;
 using Godot;
+using static Godot.Mathf;
 
 
 
 public class InventoryComponent
 {
+	public const int MaxStackCount = 50;
+
+
 	private Items.Instance[] Contents;
-
 	private IHasInventory Owner;
-
 	public readonly int SlotCount;
 
 
@@ -41,20 +43,30 @@ public class InventoryComponent
 		{
 			if(Contents[Slot] is null || Contents[Slot].Id != ToGive.Id) continue;
 
-			Contents[Slot].Count += ToGive.Count;
-			return Slot;
+			int GivingCount = Clamp(MaxStackCount - Contents[Slot].Count, 0, ToGive.Count);
+			ToGive.Count -= GivingCount;
+			Contents[Slot].Count += GivingCount;
+
+			if(ToGive.Count <= 0)
+				return Slot;
 		}
 
 		for(int Slot = 0; Slot < SlotCount; Slot++)
 		{
 			if(Contents[Slot] is null)
 			{
-				Contents[Slot] = ToGive;
-				return Slot;
+				int GivingCount = Clamp(ToGive.Count, 0, MaxStackCount);
+				ToGive.Count -= GivingCount;
+				Contents[Slot] = new Items.Instance(ToGive.Id) {
+					Count = GivingCount,
+				};
+
+				if(ToGive.Count <= 0)
+					return Slot;
 			}
 		}
 
-		return -1; //Full, TODO: Handle this better
+		return -1; //Full inventory and items left to give, TODO: Handle this better
 	}
 
 
@@ -76,14 +88,20 @@ public class InventoryComponent
 		{
 			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
 			if(Count <= 0)
-				return; //No item(s) were retrieved from the source, abort
+				return;
 
 			if(To.Inventory[ToSlot] == null || To.Inventory[ToSlot].Id == Item.Id)
 			{
 				if(To.Inventory[ToSlot] == null)
 					To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
 				else
+				{
+					Count = Clamp(MaxStackCount - To.Inventory[ToSlot].Count, 0, Count);
 					To.NetUpdateInventorySlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
+				}
+
+				if(Count <= 0)
+					return;
 
 				if(Item.Count == Count)
 					Owner.NetEmptyInventorySlot(FromSlot);
