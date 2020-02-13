@@ -74,22 +74,28 @@ public class InventoryComponent
 	{
 		if(Contents[FromSlot] is Items.Instance Item && Game.RuntimeRoot.GetNode(Path) is IHasInventory To)
 		{
-			if(To.Inventory[ToSlot] != null && To.Inventory[ToSlot].Id != Item.Id)
-				return; //The target slot is not empty and it is of a different type, abort
-
 			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
 			if(Count <= 0)
 				return; //No item(s) were retrieved from the source, abort
 
-			if(To.Inventory[ToSlot] == null)
-				To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
-			else
-				To.NetUpdateInventorySlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
+			if(To.Inventory[ToSlot] == null || To.Inventory[ToSlot].Id == Item.Id)
+			{
+				if(To.Inventory[ToSlot] == null)
+					To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
+				else
+					To.NetUpdateInventorySlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
 
-			if(Item.Count == Count)
-				Owner.NetEmptyInventorySlot(FromSlot);
-			else
-				Owner.NetUpdateInventorySlot(FromSlot, Item.Id, Item.Count - Count);
+				if(Item.Count == Count)
+					Owner.NetEmptyInventorySlot(FromSlot);
+				else
+					Owner.NetUpdateInventorySlot(FromSlot, Item.Id, Item.Count - Count);
+			}
+			else if(To.Inventory[ToSlot] != null && Item.Count == Count)
+			{
+				var OriginalAtTarget = To.Inventory[ToSlot];
+				To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
+				Owner.NetUpdateInventorySlot(FromSlot, OriginalAtTarget.Id, OriginalAtTarget.Count);
+			}
 		}
 	}
 }
