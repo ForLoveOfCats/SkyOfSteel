@@ -39,6 +39,14 @@ public static class Backend
 				Function = (Args) => API.Host(Args)
 			}
 		},
+
+		{
+			"give",
+			new CommandInfo {
+				HelpMessage = $"Gives a <player> an <item> of <count>",
+				Function = (Args) => API.Give(Args)
+			}
+		},
 	};
 
 
