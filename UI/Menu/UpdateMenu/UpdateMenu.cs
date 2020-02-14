@@ -19,7 +19,10 @@ public class UpdateMenu : VBoxContainer
 
 	public void IgnorePressed()
 	{
-		Menu.BuildNick();
+		if(Game.Nickname != Game.DefaultNickname)
+			Menu.BuildMain();
+		else
+			Menu.BuildNick();
 	}
 
 

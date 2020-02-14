@@ -8,9 +8,6 @@ public class NickMenu : VBoxContainer
 
 	public override void _Ready()
 	{
-		if(Game.Nickname != Game.DefaultNickname)
-			Menu.BuildMain();
-
 		NameEdit = GetNode<LineEdit>("HBoxContainer/NameEdit");
 		AlertLabel = GetNode<Label>("AlertLabel");
 

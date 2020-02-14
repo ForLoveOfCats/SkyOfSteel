@@ -7,6 +7,8 @@ public class Intro : VBoxContainer
 	{
 		if(Game.RemoteVersion != null && Game.Version != Game.RemoteVersion)
 			Menu.BuildUpdate();
+		else if(Game.Nickname != Game.DefaultNickname)
+			Menu.BuildMain();
 		else
 			Menu.BuildNick();
 	}

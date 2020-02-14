@@ -49,7 +49,11 @@ public class Game : Node
 		GetTree().SetAutoAcceptQuit(false);
 
 		Menu.Setup();
-		Menu.BuildIntro();
+
+		if(OS.IsDebugBuild())
+			Menu.BuildMain();
+		else
+			Menu.BuildIntro();
 	}
 
 
