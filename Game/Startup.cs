@@ -20,6 +20,7 @@ public class Startup : Node
 		SetupDefaults();
 
 		//Then command line arguments are processed
+		bool ConnectFlag = false;
 		string[] CmdArgs = OS.GetCmdlineArgs();
 		foreach(string CurrentArg in CmdArgs)
 		{
@@ -27,17 +28,17 @@ public class Startup : Node
 
 			switch(CurrentArg)
 			{
-				case "-host": {
-					Net.Host();
-					break;
-				}
-
 				case "-connect": {
+					ConnectFlag = true;
 					Net.ConnectTo("127.0.0.1");
 					break;
 				}
 			}
 		}
+
+		if(OS.IsDebugBuild() && !ConnectFlag)
+			Game.Nickname = "me";
+
 
 		if(CmdArgs.Length > 0)
 			Console.LogLabel.Text += "\n";
