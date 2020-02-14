@@ -19,27 +19,7 @@ public static class Backend
 			"help",
 			new CommandInfo {
 				HelpMessage = "Lists all commands or displays a the help message for an individual command",
-				Function = (Args) =>
-				{
-					if(Args.Length == 0)
-					{
-						Console.Print("All commands:");
-						foreach(KeyValuePair<string, CommandInfo> Command in Commands)
-							Console.Print($"  {Command.Key}: {Command.Value.HelpMessage}");
-					}
-					else
-					{
-						if(ArgCountMismatch(Args, 1))
-							return;
-
-						if(Commands.TryGetValue(Args[0], out CommandInfo Command))
-							Console.Print($"{Args[0]}: {Command.HelpMessage}");
-						else
-						{
-							Console.ThrowPrint($"No command '{Args[0]}', try running 'help' to view  a list of all commands");
-						}
-					}
-				}
+				Function = (Args) => API.Help(Args)
 			}
 		},
 
@@ -50,18 +30,16 @@ public static class Backend
 				Function = (Args) => Game.Quit()
 			}
 		},
+
+
+		{
+			"host",
+			new CommandInfo {
+				HelpMessage = $"Starts hosting on port {Net.Port}. Specify 'new' or 'existing' followed by savefile name",
+				Function = (Args) => API.Host(Args)
+			}
+		},
 	};
-
-
-	public static bool ArgCountMismatch(string[] Args, int Expected)
-	{
-		bool Mismatch = Args.Length != Expected;
-
-		if(Mismatch)
-			Console.ThrowPrint($"Expected {Expected} arguments but recieved {Args.Length} arguments");
-
-		return Mismatch;
-	}
 
 
 	public static void RunCommand(string Line)

@@ -6,15 +6,86 @@ using System.Collections.Generic;
 
 public static class API
 {
-	public static bool Host()
+	private static bool ArgCountMismatch(string[] Args, int Expected)
 	{
+		bool Mismatch = Args.Length != Expected;
+
+		if(Mismatch)
+			Console.ThrowPrint(
+				$"Expected {Expected} arguments but recieved {Args.Length} arguments"
+			);
+
+		return Mismatch;
+	}
+
+
+	public static void Help(string[] Args)
+	{
+		if(Args.Length == 0)
+		{
+			Console.Print("All commands:");
+			foreach(KeyValuePair<string, Backend.CommandInfo> Command in Backend.Commands)
+				Console.Print($"  {Command.Key}: {Command.Value.HelpMessage}");
+		}
+		else
+		{
+			if(ArgCountMismatch(Args, 1))
+				return;
+
+			if(Backend.Commands.TryGetValue(Args[0], out var Command))
+				Console.Print($"{Args[0]}: {Command.HelpMessage}");
+			else
+			{
+				Console.ThrowPrint(
+					$"No command '{Args[0]}', try running 'help' to view  a list of all commands"
+				);
+				return;
+			}
+		}
+	}
+
+
+	public static void Host(string[] Args)
+	{
+		if(ArgCountMismatch(Args, 2))
+			return;
+
 		if(Game.Nickname == Game.DefaultNickname)
 		{
 			Console.ThrowPrint("Please set a multiplayer nickname before hosting");
-			return false;
+			return;
 		}
+
+		string Mode = Args[0];
+		string Name = Args[1];
+		string Path = $"{OS.GetUserDataDir()}/Saves/{Name}";
+
+		if(Mode == "new")
+		{
+			if(System.IO.Directory.Exists(Path))
+			{
+				Console.ThrowPrint($"Savefile '{Name}' already exists");
+				return;
+			}
+
+			System.IO.Directory.CreateDirectory(Path);
+		}
+		else if(Mode == "existing")
+		{
+			if(!System.IO.Directory.Exists(Path))
+			{
+				Console.ThrowPrint($"No savefile named '{Name}'");
+				return;
+			}
+		}
+		else
+		{
+			Console.ThrowPrint($"Expected 'new' or 'existing' but found '{Mode}'");
+			return;
+		}
+
 		Net.Host();
-		return true;
+		World.Load(Name);
 	}
 
 

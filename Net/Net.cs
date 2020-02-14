@@ -26,7 +26,7 @@ public class Net : Node
 
 	public static int ServerId = 1;
 
-	private static int Port = 27015;
+	public static int Port = 27015;
 	public static string Ip { get; private set; }
 
 	public static Dictionary<int, PlayerData> Players = new Dictionary<int, PlayerData>();
