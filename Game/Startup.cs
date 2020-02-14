@@ -40,11 +40,7 @@ public class Startup : Node
 		}
 
 		if(CmdArgs.Length > 0)
-		{
 			Console.LogLabel.Text += "\n";
-		}
-
-		Console.Print("The console is disabled in 0.1.6");
 	}
 
 

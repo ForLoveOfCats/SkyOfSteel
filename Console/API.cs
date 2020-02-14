@@ -229,10 +229,4 @@ public static class API
 			return false;
 		}
 	}
-
-
-	public static void Quit()
-	{
-		Game.Quit();
-	}
 }

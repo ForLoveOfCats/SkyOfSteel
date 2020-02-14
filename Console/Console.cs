@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
+
 public class Console : Node
 {
 	public static bool IsOpen = false;
@@ -75,7 +76,9 @@ public class Console : Node
 
 
 	public static void RunConsoleLine(string Line)
-	{}
+	{
+		Backend.RunCommand(Line);
+	}
 
 
 	public static void Print(object ToPrint)
