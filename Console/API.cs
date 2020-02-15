@@ -161,14 +161,22 @@ public static class API
 	}
 
 
-	public static void FpsMax(int TargetFps)
+	public static void FpsMax(string[] Args)
 	{
-		if(TargetFps <= 1)
+		if(Args.Length == 0)
 		{
-			Console.ThrowPrint("Please provide a valid fps value which is greater than 1");
+			Console.Print($"Current max fps: {Engine.TargetFps}");
 			return;
 		}
 
-		Engine.TargetFps = Convert.ToInt32(TargetFps);
+		if(ArgCountMismatch(Args, 1))
+			return;
+
+		string TargetString = Args[0];
+
+		if(int.TryParse(TargetString, out int Target) && Target >= 10)
+			Engine.TargetFps = Target;
+		else
+			Console.ThrowPrint($"Invalid max fps {TargetString}");
 	}
 }

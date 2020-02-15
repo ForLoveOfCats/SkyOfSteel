@@ -55,6 +55,14 @@ public static class Backend
 				Function = (Args) => API.ChunkRenderDistance(Args)
 			}
 		},
+
+		{
+			"fps_max",
+			new CommandInfo {
+				HelpMessage = $"Prints the current max fps or sets max target fps",
+				Function = (Args) => API.FpsMax(Args)
+			}
+		},
 	};
 
 

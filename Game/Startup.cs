@@ -47,7 +47,7 @@ public class Startup : Node
 
 	public static void SetupDefaults()
 	{
-		API.FpsMax(200);
+		Engine.TargetFps = 200;
 		Game.ChunkRenderDistance = 10;
 
 		Bindings.Bind("W",               nameof(PlayerInput.ForwardMove));
