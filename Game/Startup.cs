@@ -48,7 +48,7 @@ public class Startup : Node
 	public static void SetupDefaults()
 	{
 		API.FpsMax(200);
-		API.ChunkRenderDistance(10);
+		Game.ChunkRenderDistance = 10;
 
 		Bindings.Bind("W",               nameof(PlayerInput.ForwardMove));
 		Bindings.Bind("LeftStickUp",     nameof(PlayerInput.ForwardMove));

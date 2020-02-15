@@ -142,13 +142,22 @@ public static class API
 	}
 
 
-	public static bool ChunkRenderDistance(int Distance)
+	public static void ChunkRenderDistance(string[] Args)
 	{
-		Game.ChunkRenderDistance = Distance;
-		Game.PossessedPlayer.MatchSome(
-			(Plr) => World.UnloadAndRequestChunks(Plr.Translation, Game.ChunkRenderDistance)
-		);
-		return true;
+		if(ArgCountMismatch(Args, 1))
+			return;
+
+		string DistanceString = Args[0];
+
+		if(int.TryParse(DistanceString, out int Distance) && Distance > 1)
+		{
+			Game.ChunkRenderDistance = Distance;
+			Game.PossessedPlayer.MatchSome(
+				(Plr) => World.UnloadAndRequestChunks(Plr.Translation, Game.ChunkRenderDistance)
+			);
+		}
+		else
+			Console.ThrowPrint($"Invalid chunk render distance {DistanceString}");
 	}
 
 

@@ -47,6 +47,14 @@ public static class Backend
 				Function = (Args) => API.Give(Args)
 			}
 		},
+
+		{
+			"chunk_render_distance",
+			new CommandInfo {
+				HelpMessage = $"Sets tile render distance in chunks",
+				Function = (Args) => API.ChunkRenderDistance(Args)
+			}
+		},
 	};
 
 
