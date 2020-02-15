@@ -1,7 +1,4 @@
 using Godot;
-using Optional;
-using System;
-using System.Net;
 using System.Collections.Generic;
 
 
@@ -26,15 +23,23 @@ public static class API
 		{
 			Console.Print("All commands:");
 			foreach(KeyValuePair<string, Backend.CommandInfo> Command in Backend.Commands)
-				Console.Print($"  {Command.Key}: {Command.Value.HelpMessage}");
+			{
+				foreach(string Message in Command.Value.HelpMessages)
+					Console.Print($"  {Message}");
+			}
 		}
 		else
 		{
 			if(ArgCountMismatch(Args, 1))
 				return;
 
-			if(Backend.Commands.TryGetValue(Args[0], out var Command))
-				Console.Print($"{Args[0]}: {Command.HelpMessage}");
+			string CommandName = Args[0];
+
+			if(Backend.Commands.TryGetValue(CommandName, out var Command))
+			{
+				foreach(string Message in Command.HelpMessages)
+					Console.Print($"  {Message}");
+			}
 			else
 			{
 				Console.ThrowPrint(

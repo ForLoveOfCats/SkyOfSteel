@@ -8,7 +8,7 @@ public static class Backend
 
 	public struct CommandInfo
 	{
-		public string HelpMessage;
+		public string[] HelpMessages;
 		public CommandFunction Function;
 	}
 
@@ -18,7 +18,10 @@ public static class Backend
 		{
 			"help",
 			new CommandInfo {
-				HelpMessage = "Lists all commands or displays a the help message for an individual command",
+				HelpMessages = new string[] {
+					"'help' Lists all commands",
+					"'help <command>' Displays the help message for an individual command",
+				},
 				Function = (Args) => API.Help(Args)
 			}
 		},
@@ -26,7 +29,9 @@ public static class Backend
 		{
 			"quit",
 			new CommandInfo {
-				HelpMessage = "Immediately closes the game",
+				HelpMessages = new string[] {
+					"'quit' Immediately closes the game",
+				},
 				Function = (Args) => Game.Quit()
 			}
 		},
@@ -35,7 +40,9 @@ public static class Backend
 		{
 			"host",
 			new CommandInfo {
-				HelpMessage = $"Starts hosting on port {Net.Port}. Specify 'new' or 'existing' followed by savefile name",
+				HelpMessages = new string[] {
+					$"'host new <savefile>' Starts hosting new savefile on port {Net.Port}",
+				},
 				Function = (Args) => API.Host(Args)
 			}
 		},
@@ -43,7 +50,9 @@ public static class Backend
 		{
 			"give",
 			new CommandInfo {
-				HelpMessage = $"Gives a <player> an <item> of <count>",
+				HelpMessages = new string[] {
+					"'give <player> <item> <count>' Gives the specified player an item of count",
+				},
 				Function = (Args) => API.Give(Args)
 			}
 		},
@@ -51,7 +60,9 @@ public static class Backend
 		{
 			"chunk_render_distance",
 			new CommandInfo {
-				HelpMessage = $"Sets tile render distance in chunks",
+				HelpMessages = new string[] {
+					"'chunk_render_distance <distance>' Sets tile render distance in chunks",
+				},
 				Function = (Args) => API.ChunkRenderDistance(Args)
 			}
 		},
@@ -59,7 +70,10 @@ public static class Backend
 		{
 			"fps_max",
 			new CommandInfo {
-				HelpMessage = $"Prints the current max fps or sets max target fps",
+				HelpMessages = new string[] {
+					"'fps_max' Prints the current max fps",
+					"'fps_max <fps>' Sets the max fps",
+				},
 				Function = (Args) => API.FpsMax(Args)
 			}
 		},
