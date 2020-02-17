@@ -335,7 +335,7 @@ public class PlayerInput
 
 					Plr.ViewmodelMomentum = new Vector2(
 						Plr.ViewmodelMomentum.x,
-						Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens) * Player.ViewmodelMomentumVertInputMultiplier, -Player.ViewmodelMomentumMax, Player.ViewmodelMomentumMax)
+						Clamp(Plr.ViewmodelMomentum.y + Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1)
 					);
 				}
 			}
@@ -357,7 +357,7 @@ public class PlayerInput
 
 					Plr.ViewmodelMomentum = new Vector2(
 						Plr.ViewmodelMomentum.x,
-						Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens) * Player.ViewmodelMomentumVertInputMultiplier, -Player.ViewmodelMomentumMax, Player.ViewmodelMomentumMax)
+						Clamp(Plr.ViewmodelMomentum.y - Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1)
 					);
 				}
 			}
@@ -379,7 +379,7 @@ public class PlayerInput
 					Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 					Plr.ViewmodelMomentum = new Vector2(
-						Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens) * Player.ViewmodelMomentumHorzInputMultiplier, -Player.ViewmodelMomentumMax, Player.ViewmodelMomentumMax),
+						Clamp(Plr.ViewmodelMomentum.x - Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1),
 						Plr.ViewmodelMomentum.y
 					);
 				}
@@ -402,7 +402,7 @@ public class PlayerInput
 					Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 					Plr.ViewmodelMomentum = new Vector2(
-						Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens) * Player.ViewmodelMomentumHorzInputMultiplier, -Player.ViewmodelMomentumMax, Player.ViewmodelMomentumMax),
+						Clamp(Plr.ViewmodelMomentum.x + Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1),
 						Plr.ViewmodelMomentum.y
 					);
 				}

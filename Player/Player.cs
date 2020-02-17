@@ -34,9 +34,10 @@ public class Player : Character, IPushable, IHasInventory
 	public const float MaxAirLegRotation = 80;
 	public const float MaxHealth = 100;
 	public const float LookDivisor = 6;
-	public const float ViewmodelMomentumMax = 12; //Probably never reaches this max
-	public const float ViewmodelMomentumHorzInputMultiplier = 0.9f;
-	public const float ViewmodelMomentumVertInputMultiplier = 0.9f;
+
+	public const float ViewmodelSensitivity = 0.1f;
+	public const float MaxViewmodelItemRotation = 12f;
+	public const float MaxViewmodelArmRotation = 4f;
 
 	public const float AdsMultiplierMovementEffect = 1.66f;
 	public const float MinAdsMultiplier = 0.7f;
@@ -799,16 +800,16 @@ public class Player : Character, IPushable, IHasInventory
 
 		float Length = ViewmodelMomentum.Length();
 		Vector2 Normalized = ViewmodelMomentum.Normalized();
-		ViewmodelMomentum = Normalized * Clamp(Length - (Length*Delta*28f), 0, ViewmodelMomentumMax);
+		ViewmodelMomentum = Normalized * Clamp(Length - Delta*3f, 0, float.MaxValue);
 
 		ViewmodelItem.RotationDegrees = new Vector3(
-			ViewmodelMomentum.y*AdsMultiplier*1.2f,
-			180 - ViewmodelMomentum.x*AdsMultiplier*1.2f,
+			SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelItemRotation * AdsMultiplier,
+			180 - SafeSign(ViewmodelMomentum.x) * ViewmodelMomentum.x*ViewmodelMomentum.x * MaxViewmodelItemRotation * AdsMultiplier,
 			0
 		);
 		ViewmodelArmJoint.RotationDegrees = new Vector3(
-			ViewmodelMomentum.y*AdsMultiplier,
-			ViewmodelMomentum.x*AdsMultiplier,
+			SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelArmRotation * AdsMultiplier,
+			SafeSign(ViewmodelMomentum.x) * ViewmodelMomentum.x*ViewmodelMomentum.x * MaxViewmodelArmRotation * AdsMultiplier,
 			0
 		);
 		ViewmodelArmJoint.Translation = new Vector3(
