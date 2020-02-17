@@ -9,7 +9,7 @@ public class ThumbnailRenderer : Node
 	MeshInstance ThumbnailTarget;
 	ShaderMaterial Mat;
 
-	float DelayRemaining = 2;
+	float DelayRemaining = 1;
 	int Index = 0;
 	List<Items.ID> IdList = new List<Items.ID>();
 
@@ -48,6 +48,55 @@ public class ThumbnailRenderer : Node
 
 		Mesh ItemMesh = GD.Load<Mesh>($"res://Items/Meshes/{IdList[Index]}.obj");
 		ThumbnailTarget.Mesh = ItemMesh;
+
+		ThumbnailTarget.RotationDegrees = new Vector3(0, 0, 0);
+
+		switch(IdList[Index])
+		{
+			case Items.ID.PLATFORM:
+				ThumbnailTarget.RotationDegrees = new Vector3(20, 30, 0);
+				break;
+
+			case Items.ID.WALL:
+				ThumbnailTarget.RotationDegrees = new Vector3(-5, 10, 0);
+				break;
+
+			case Items.ID.SLOPE:
+				ThumbnailTarget.RotationDegrees = new Vector3(0, 130, 0);
+				break;
+
+			case Items.ID.TRIANGLE_WALL:
+				ThumbnailTarget.RotationDegrees = new Vector3(0, 20, 0);
+				break;
+
+			case Items.ID.PIPE:
+				ThumbnailTarget.RotationDegrees = new Vector3(0, 90, 0);
+				break;
+
+			case Items.ID.PIPE_JOINT:
+				ThumbnailTarget.RotationDegrees = new Vector3(20, 40, 0);
+				break;
+
+			case Items.ID.LOCKER:
+				ThumbnailTarget.RotationDegrees = new Vector3(5, -18, 0);
+				break;
+
+			case Items.ID.ROCKET_JUMPER:
+				ThumbnailTarget.RotationDegrees = new Vector3(10, -80, 0);
+				break;
+
+			case Items.ID.THUNDERBOLT:
+				ThumbnailTarget.RotationDegrees = new Vector3(10, -80, 0);
+				break;
+
+			case Items.ID.SCATTERSHOCK:
+				ThumbnailTarget.RotationDegrees = new Vector3(10, -80, 0);
+				break;
+
+			case Items.ID.SWIFTSPARK:
+				ThumbnailTarget.RotationDegrees = new Vector3(10, -80, 0);
+				break;
+		}
 
 		Texture ItemTexture = GD.Load<Texture>($"res://Items/Textures/{IdList[Index]}.png");
 		ThumbnailTarget.MaterialOverride = Mat;
