@@ -46,6 +46,9 @@ public class Entities : Node
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendCreate)} on client");
 
+		if(((Node)Entity).IsQueuedForDeletion())
+			return;
+
 		switch(Entity)
 		{
 			case IProjectile Projectile:
