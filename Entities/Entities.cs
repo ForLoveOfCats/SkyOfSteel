@@ -91,10 +91,25 @@ public class Entities : Node
 
 	public static void SendUpdate(string Identifier, params object[] Args)
 	{
-		if(Net.Work.IsNetworkServer())
-			Net.SteelRpcUnreliable(Self, nameof(RecieveUpdate), Identifier, Args);
-		else
+		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendUpdate)} on client");
+
+		IEntity Entity = World.EntitiesRoot.GetNode<IEntity>(Identifier);
+
+		foreach(int Reciever in Net.Players.Keys)
+		{
+			if(Reciever == Net.Work.GetNetworkUniqueId())
+				continue;
+
+			Net.Players[Reciever].Plr.MatchSome(
+				(Plr) =>
+				{
+					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
+					if(Distance <= World.ChunkLoadDistances[Reciever] * (World.PlatformSize * 9))
+						Self.RpcUnreliableId(Reciever, nameof(RecieveUpdate), Identifier, Args);
+				}
+			);
+		}
 	}
 
 
