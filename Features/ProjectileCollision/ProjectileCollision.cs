@@ -2,8 +2,9 @@ using Godot;
 
 
 
-public interface IProjectile
+public interface IProjectile : IEntity
 {
+	Projectiles.ProjectileID ProjectileId { get; set; }
 	Vector3 Translation { get; set; }
 	Vector3 RotationDegrees { get; set; }
 	Vector3 Momentum { get; set; }

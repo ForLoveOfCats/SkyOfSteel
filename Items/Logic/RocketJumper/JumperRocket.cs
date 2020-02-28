@@ -14,6 +14,7 @@ public class JumperRocket : Spatial, IProjectile
 	public const float RocketHorizontalMultiplyer = 1f;
 	public const float RocketVerticalMultiplyer = 0.65f;
 
+	public Projectiles.ProjectileID ProjectileId { get; set; }
 	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
 	public Vector3 Momentum { get; set; }
@@ -57,6 +58,21 @@ public class JumperRocket : Spatial, IProjectile
 
 
 	[Remote]
+	public void Update(params object[] Args)
+	{
+		Assert.ArgArray(Args, typeof(Vector3));
+		Translation = (Vector3)Args[0];
+	}
+
+
+	[Remote]
+	public void Destroy(params object[] Args)
+	{
+		Assert.ArgArray(Args, typeof(Vector3));
+		Explode((Vector3)Args[0]);
+	}
+
+
 	public void Explode(Vector3 Position)
 	{
 		foreach(Node Body in AffectedBodies)
@@ -64,6 +80,7 @@ public class JumperRocket : Spatial, IProjectile
 			if(Body is IPushable Pushable)
 			{
 				PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
+				GD.Print($"Pushable with translation {Pushable.Translation}");
 				Godot.Collections.Dictionary Results = State.IntersectRay(Position, Pushable.Translation, new Godot.Collections.Array(){Pushable}, 1);
 				if(Results.Count > 0)
 					continue;
@@ -103,10 +120,6 @@ public class JumperRocket : Spatial, IProjectile
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		//No need to check for collisions
-		//ProjectileCollision will do that on the server
-		Translation += Momentum * Delta;
-
 		if(!Net.Work.IsNetworkServer())
 			return;
 
@@ -117,9 +130,13 @@ public class JumperRocket : Spatial, IProjectile
 			var Position = (Vector3) TriggeredPosition;
 
 			Explode(Position);
-			Net.SteelRpc(this, nameof(Explode), Position);
+			Entities.SendDestroy(Name, Position);
+			return;
 		}
 		else
 			Life += Delta;
+
+		Translation += Momentum * Delta;
+		Entities.SendUpdate(Name, Translation);
 	}
 }

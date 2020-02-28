@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 
 
@@ -22,54 +23,94 @@ public class Entities : Node
 	[Remote]
 	private void PleaseSendMeCreate(string Identifier)
 	{
+		GD.Print("Recieved PleaseSendMeCreate");
+
 		if(!Net.Work.IsNetworkServer())
-			return;
+			throw new Exception($"Cannot run {nameof(PleaseSendMeCreate)} on client");
+
+		int Requester = Net.Work.GetRpcSenderId();
+		if(Requester == 0)
+			throw new Exception($"{nameof(PleaseSendMeCreate)} was run not as an RPC");
 
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 			return;
+
+		Assert.ActualAssert(Entity is IEntity);
+		SendCreate(Requester, (IEntity)Entity);
+	}
+
+
+	public static void SendCreate(int Reciever, IEntity Entity)
+	{
+		if(!Net.Work.IsNetworkServer())
+			throw new Exception($"Cannot run {nameof(SendCreate)} on client");
+
+		switch(Entity)
+		{
+			case IProjectile Projectile:
+			{
+				Projectiles.Self.RpcId(
+					Reciever,
+					nameof(Projectiles.ActualFire),
+					Projectile.ProjectileId,
+					Projectile.FirerId,
+					Projectile.Translation,
+					Projectile.RotationDegrees,
+					Projectile.Momentum,
+					Projectile.Name
+				);
+				return;
+			}
+		}
+	}
+
+
+	public static void SendDestroy(string Identifier, params object[] Args)
+	{
+		if(Net.Work.IsNetworkServer())
+			Net.SteelRpc(Self, nameof(RecieveDestroy), Identifier, Args);
+		else
+			throw new Exception($"Cannot run {nameof(SendDestroy)} on client");
 	}
 
 
 	[Remote]
-	private void Recieve(PURPOSE Purpose, string Identifier, object[] Args)
+	private void RecieveDestroy(string Identifier, params object[] Args)
 	{
-		if(!Net.Work.IsNetworkServer() && Net.Work.GetRpcSenderId() != Net.ServerId)
+		GD.Print("Recieved destroy");
+
+		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
+		if(Entity is null)
+			return;
+
+		Assert.ActualAssert(Entity is IEntity);
+		((IEntity)Entity).Destroy(Args);
+	}
+
+
+	public static void SendUpdate(string Identifier, params object[] Args)
+	{
+		if(Net.Work.IsNetworkServer())
+			Net.SteelRpcUnreliable(Self, nameof(RecieveUpdate), Identifier, Args);
+		else
+			throw new Exception($"Cannot run {nameof(SendUpdate)} on client");
+	}
+
+
+	[Remote]
+	private void RecieveUpdate(string Identifier, params object[] Args)
+	{
+		GD.Print("Recieved update");
+
+		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
+		if(Entity is null)
 		{
-			Console.ThrowLog("Recieved entity message from another client");
+			RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
 			return;
 		}
 
-		switch(Purpose)
-		{
-			case PURPOSE.CREATE:
-			{
-				if(World.EntitiesRoot.HasNode(Identifier))
-					return;
-
-				return;
-			}
-
-			case PURPOSE.DESTROY:
-			{
-				Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
-				if(Entity is null)
-					return;
-
-				return;
-			}
-
-			case PURPOSE.UPDATE:
-			{
-				Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
-				if(Entity is null)
-				{
-					RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
-					return;
-				}
-
-				return;
-			}
-		}
+		Assert.ActualAssert(Entity is IEntity);
+		((IEntity)Entity).Update(Args);
 	}
 }
