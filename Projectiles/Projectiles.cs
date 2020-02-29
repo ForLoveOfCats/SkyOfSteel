@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using static Godot.Mathf;
 
@@ -51,21 +52,10 @@ public class Projectiles : Node
 			.Rotated(new Vector3(0,1,0), Deg2Rad(Rotation.y));
 		string NameArg = System.Guid.NewGuid().ToString();
 
-		Self.ServerPleaseFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
-	}
-
-
-	[Remote]
-	private void ServerPleaseFire(ProjectileID ProjectileId, int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string NameArg)
-	{
-		if(!Net.Work.IsNetworkServer())
-		{
-			RpcId(Net.ServerId, nameof(ServerPleaseFire), ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
-			return;
-		}
-
-		//Only fire on ourself, the entity messaging system will spawn it on any clients neading it
-		ActualFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+		if(Net.Work.IsNetworkServer())
+			Self.ActualFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+		else
+			Self.RpcId(Net.ServerId, nameof(ActualFire), ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
 	}
 
 
