@@ -62,6 +62,9 @@ public class Projectiles : Node
 	[Remote]
 	public void ActualFire(ProjectileID ProjectileId, int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string NameArg)
 	{
+		if(World.EntitiesRoot.HasNode(NameArg))
+			return;
+
 		var Instance = (IProjectile) Data[ProjectileId].Scene.Instance();
 		Instance.ProjectileId = ProjectileId;
 		Instance.FirerId = Firer;
