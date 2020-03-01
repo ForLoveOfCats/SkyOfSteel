@@ -66,6 +66,20 @@ public class Entities : Node
 				);
 				return;
 			}
+
+			case DroppedItem Item:
+			{
+				World.Self.RpcId(
+					Reciever,
+					nameof(World.DropOrUpdateItem),
+					Item.Type,
+					Item.Translation,
+					Item.RotationDegrees.y,
+					Item.Momentum,
+					Item.Name
+				);
+				return;
+			}
 		}
 	}
 

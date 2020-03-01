@@ -3,7 +3,7 @@ using static Godot.Mathf;
 
 
 
-public class DroppedItem : KinematicBody, IInGrid, IPushable
+public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 {
 	private const float Gravity = 50f;
 	private const float MaxFallSpeed = 100f;
@@ -32,6 +32,28 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 	}
 
 
+	[Remote]
+	public void PhaseOut()
+	{
+		World.RemoveDroppedItem(Name);
+	}
+
+
+	[Remote]
+	public void Destroy(params object[] Args)
+	{
+		World.RemoveDroppedItem(Name);
+	}
+
+
+	[Remote]
+	public void Update(params object[] Args)
+	{
+		Assert.ArgArray(Args, typeof(Vector3));
+		Translation = (Vector3)Args[0];
+	}
+
+
 	public void GridUpdate()
 	{
 		PhysicsEnabled = true;
@@ -51,7 +73,7 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 
 	public void Remove()
 	{
-		World.Self.RemoveDroppedItem(this.Name);
+		World.RemoveDroppedItem(Name);
 		World.ItemList.Remove(this);
 	}
 
@@ -60,6 +82,9 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 	{
 		Mesh.RotationDegrees = new Vector3(0, Mesh.RotationDegrees.y+(360*Delta*RPS), 0);
 		Life += Delta;
+
+		if(!Net.Work.IsNetworkServer())
+			return;
 
 		if(PhysicsEnabled)
 		{
@@ -98,5 +123,8 @@ public class DroppedItem : KinematicBody, IInGrid, IPushable
 				World.Grid.AddItem(this);
 			}
 		}
+
+		Entities.AsServerMaybePhaseOut(this);
+		Entities.SendUpdate(Name, Translation);
 	}
 }

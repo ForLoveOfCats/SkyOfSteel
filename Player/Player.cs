@@ -478,8 +478,8 @@ public class Player : Character, IPushable, IHasInventory
 								(ActualSlots) =>
 								{
 									Plr.NotifyPickedUpItem();
-									Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
-									World.Self.RemoveDroppedItem(Item.Name);
+									Entities.SendDestroy(Name);
+									Item.Destroy();
 								}
 							);
 						}

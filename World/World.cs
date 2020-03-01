@@ -738,8 +738,7 @@ public class World : Node
 	}
 
 
-	[Remote]
-	public void RemoveDroppedItem(string Guid) //NOTE: Make sure to remove from World.ItemList after client callsite
+	public static void RemoveDroppedItem(string Guid)
 	{
 		if(EntitiesRoot.HasNode(Guid))
 		{
