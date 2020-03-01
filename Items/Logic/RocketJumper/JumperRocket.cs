@@ -66,6 +66,13 @@ public class JumperRocket : Spatial, IProjectile
 
 
 	[Remote]
+	public void PhaseOut()
+	{
+		QueueFree();
+	}
+
+
+	[Remote]
 	public void Destroy(params object[] Args)
 	{
 		Assert.ArgArray(Args, typeof(Vector3));
@@ -122,6 +129,8 @@ public class JumperRocket : Spatial, IProjectile
 	{
 		if(!Net.Work.IsNetworkServer())
 			return;
+
+		Entities.AsServerMaybePhaseOut(this);
 
 		if(Triggered || (Life >= RocketFuseTime))
 		{

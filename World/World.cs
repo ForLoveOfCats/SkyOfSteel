@@ -20,7 +20,7 @@ public class World : Node
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadingChunks = new Dictionary<int, List<Tuple<int,int>>>();
-	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
+	public static Dictionary<int, int> ChunkRenderDistances = new Dictionary<int, int>();
 	public static List<DroppedItem> ItemList = new List<DroppedItem>();
 	public static GridClass Grid = new GridClass();
 	public static Pathfinding Pathfinder = new Pathfinding();
@@ -434,7 +434,7 @@ public class World : Node
 				Net.Players[Id].Plr.MatchSome(
 					(Plr) =>
 					{
-						if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= ChunkLoadDistances[Id] * (PlatformSize * 9))
+						if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= ChunkRenderDistances[Id] * (PlatformSize * 9))
 						{
 							if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
 								RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
@@ -852,7 +852,7 @@ public class World : Node
 
 		if(!Net.Players.ContainsKey(Id)) {return;}
 
-		ChunkLoadDistances[Id] = RenderDistance;
+		ChunkRenderDistances[Id] = RenderDistance;
 
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{

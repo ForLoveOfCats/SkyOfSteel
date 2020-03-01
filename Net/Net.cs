@@ -165,7 +165,7 @@ public class Net : Node
 
 		Players.Add(Id, new PlayerData());
 		Game.SpawnPlayer(Id, false);
-		World.ChunkLoadDistances[Id] = 0;
+		World.ChunkRenderDistances[Id] = 0;
 	}
 
 
@@ -211,7 +211,7 @@ public class Net : Node
 			);
 		}
 
-		World.ChunkLoadDistances.Remove(Id);
+		World.ChunkRenderDistances.Remove(Id);
 		World.RemoteLoadedChunks.Remove(Id);
 	}
 
