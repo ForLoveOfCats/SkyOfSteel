@@ -80,6 +80,20 @@ public class Entities : Node
 				);
 				return;
 			}
+
+			case Tile Branch:
+			{
+				Net.SteelRpc(
+					World.Self,
+					nameof(World.PlaceWithName),
+					Branch.ItemId,
+					Branch.Translation,
+					Branch.RotationDegrees,
+					Branch.OwnerId,
+					Branch.Name
+				);
+				return;
+			}
 		}
 	}
 
@@ -124,6 +138,19 @@ public class Entities : Node
 
 		Assert.ActualAssert(Entity is IEntity);
 		((IEntity)Entity).PhaseOut();
+	}
+
+
+	[Remote]
+	public void PleaseDestroyMe(string Identifier, params object[] Args)
+	{
+		if(Net.Work.IsNetworkServer())
+		{
+			SendDestroy(Identifier, Args);
+			RecieveDestroy(Identifier, Args);
+		}
+		else
+			Self.RpcId(Net.ServerId, nameof(PleaseDestroyMe), Identifier, Args);
 	}
 
 

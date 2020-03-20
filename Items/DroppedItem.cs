@@ -42,6 +42,7 @@ public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 	[Remote]
 	public void Destroy(params object[] Args)
 	{
+		Assert.ArgArray(Args);
 		World.RemoveDroppedItem(Name);
 	}
 

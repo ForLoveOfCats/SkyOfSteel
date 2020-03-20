@@ -28,7 +28,6 @@ public class World : Node
 	public static bool IsOpen = false;
 	public static string SaveName = null;
 
-	public static Node TilesRoot = null;
 	public static Node EntitiesRoot = null;
 	public static Node MobsRoot = null;
 	public static ProceduralSky WorldSky = null;
@@ -87,7 +86,12 @@ public class World : Node
 
 	public static void DefaultPlatforms()
 	{
-		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
+		string GuidName = System.Guid.NewGuid().ToString();
+		var BranchType = Items.ID.PLATFORM;
+		var Position = new Vector3();
+		var Rotation = new Vector3();
+		Self.PlaceWithName(BranchType, Position, Rotation, 0, GuidName);
+		Net.SteelRpc(Self, nameof(PlaceWithName), BranchType, Position, Rotation, 0, GuidName);
 	}
 
 
@@ -103,10 +107,6 @@ public class World : Node
 		Game.RuntimeRoot.AddChild(SkyScene);
 
 		SkyScene.AddChild(new Starfield());
-
-		TilesRoot = new Node();
-		TilesRoot.Name = "TilesRoot";
-		SkyScene.AddChild(TilesRoot);
 
 		EntitiesRoot = new Node();
 		EntitiesRoot.Name = "EntitiesRoot";
@@ -130,7 +130,6 @@ public class World : Node
 		}
 
 		//This is NOT a leak! Their parent was just freed ^
-		TilesRoot = null;
 		EntitiesRoot = null;
 		MobsRoot = null;
 
@@ -162,7 +161,7 @@ public class World : Node
 		}
 		foreach(Tile Branch in Branches)
 		{
-			Branch.Remove(Force:true);
+			World.Self.RemoveTile(Branch.Name);
 		}
 
 		DroppedItem[] RemovingItems = new DroppedItem[ItemList.Count];
@@ -359,44 +358,29 @@ public class World : Node
 	}
 
 
-	public static Tile PlaceOn(Items.ID BranchType, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
+	public static void PlaceOn(Items.ID BranchType, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
 	{
 		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
 			Vector3 Rotation = Items.CalculateBuildRotation(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
-			return Place(BranchType, (Vector3)Position, Rotation, OwnerId);
+			string GuidName = System.Guid.NewGuid().ToString();
+			Self.PlaceWithName(BranchType, (Vector3)Position, Rotation, OwnerId, GuidName);
+			Net.SteelRpc(Self, nameof(PlaceWithName), BranchType, (Vector3)Position, Rotation, OwnerId, GuidName);
 		}
-
-		return null;
 	}
-
-
-	public static Tile Place(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
-	{
-		string Name = System.Guid.NewGuid().ToString();
-		Tile Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
-
-		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
-		{
-			Net.SteelRpc(Self, nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
-		}
-
-		return Branch;
-	}
-
 
 	[Remote]
-	public Tile PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	public void PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
 		//Nested if to prevent very long line
-		if(GetTree().NetworkPeer != null && !Net.Work.IsNetworkServer() && Game.PossessedPlayer.HasValue)
+		if(Net.Work.NetworkPeer != null && !Net.Work.IsNetworkServer() && Game.PossessedPlayer.HasValue)
 		{
 			Player Plr = Game.PossessedPlayer.ValueOrFailure();
 			if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) > Game.ChunkRenderDistance*(PlatformSize*9))
 			{
 				//If network is inited, not the server, and platform it to far away then...
-				return null; //...don't place
+				return; //...don't place
 			}
 		}
 
@@ -406,13 +390,13 @@ public class World : Node
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
 		Branch.Name = Name; //Name is a GUID and can be used to reference a structure over network
-		TilesRoot.AddChild(Branch);
+		EntitiesRoot.AddChild(Branch);
 
 		AddTileToChunk(Branch);
 		Grid.AddItem(Branch);
 		Grid.QueueUpdateNearby(Branch.Translation);
 
-		if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
+		if(Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			TryAddTileToPathfinder(Branch);
 
@@ -443,8 +427,6 @@ public class World : Node
 				);
 			}
 		}
-
-		return Branch;
 	}
 
 
@@ -716,9 +698,9 @@ public class World : Node
 	[Remote]
 	public void RemoveTile(string TileName)
 	{
-		if(TilesRoot.HasNode(TileName))
+		if(EntitiesRoot.HasNode(TileName))
 		{
-			var Branch = TilesRoot.GetNode<Tile>(TileName);
+			var Branch = EntitiesRoot.GetNode<Tile>(TileName);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
 			Chunks[ChunkTuple].Tiles.Remove(Branch);
 			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
@@ -806,7 +788,7 @@ public class World : Node
 				}
 
 				foreach(Tile CurrentTile in TilesBeingRemoved)
-					CurrentTile.Remove(Force: true);
+					World.Self.RemoveTile(CurrentTile.Name);
 
 				List<MobClass> MobsBeingRemoved = new List<MobClass>();
 				foreach(MobClass Mob in Chunk.Value.Mobs)
@@ -976,7 +958,8 @@ public class World : Node
 			Tuple<Items.ID,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 			if(Info != null)
 			{
-				Place(Info.Item1, Info.Item2, Info.Item3, 1);
+				string GuidName = System.Guid.NewGuid().ToString();
+				Self.PlaceWithName(Info.Item1, Info.Item2, Info.Item3, 1, GuidName);
 				PlaceCount++;
 			}
 		}
