@@ -216,4 +216,79 @@ public class Entities : Node
 		Assert.ActualAssert(Entity is IEntity);
 		((IEntity)Entity).Update(Args);
 	}
+
+
+	public static void SendInventory(IEntity Entity)
+	{
+		if(!Net.Work.IsNetworkServer())
+			throw new Exception($"Cannot run {nameof(SendInventory)} on client");
+
+		if(Entity is IHasInventory HasInventory)
+		{
+			foreach(int Reciever in Net.Players.Keys)
+			{
+				if(Reciever == Net.Work.GetNetworkUniqueId())
+					continue;
+
+				Net.Players[Reciever].Plr.MatchSome(
+					(Plr) =>
+					{
+						float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
+						if(Distance <= World.ChunkRenderDistances[Reciever] * (World.PlatformSize * 9))
+						{
+							var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
+							var Counts = new int[HasInventory.Inventory.Contents.Length];
+
+							int Index = 0;
+							foreach(Items.Instance Item in HasInventory.Inventory.Contents)
+							{
+								Ids[Index] = Item.Id;
+								Counts[Index] = Item.Count;
+								Index += 1;
+							}
+
+							Self.RpcUnreliableId(Reciever, nameof(RecieveInventory), Entity.Name, Ids, Counts);
+						}
+					}
+				);
+			}
+		}
+		else
+			Console.ThrowLog("Attempted to send the inventory of an entity without an inventory");
+	}
+
+
+	[Remote]
+	private void RecieveInventory(string Identifier, Items.ID[] Ids, int[] Counts)
+	{
+		GD.Print("Recieved inventory");
+
+		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
+		if(Entity is null)
+		{
+			RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
+			return;
+		}
+
+		Assert.ActualAssert(Entity is IEntity);
+		if(Entity is IHasInventory HasInventory)
+		{
+			Assert.ActualAssert(Ids.Length == Counts.Length);
+			Assert.ActualAssert(HasInventory.Inventory.Contents.Length == Ids.Length);
+
+			int Index = 0;
+			while(Index < Ids.Length)
+			{
+				if(Ids[Index] == Items.ID.NONE)
+					HasInventory.Inventory.Contents[Index] = null;
+				else
+				{
+					HasInventory.Inventory.Contents[Index].Id = Ids[Index];
+					HasInventory.Inventory.Contents[Index].Count = Counts[Index];
+				}
+			}
+		}
+		else
+			Console.ThrowLog("Recieved an inventory for an entity without an inventory");
+	}
 }

@@ -11,7 +11,7 @@ public class InventoryComponent
 	public const int MaxStackCount = 50;
 
 
-	private Items.Instance[] Contents;
+	public Items.Instance[] Contents;
 	private IHasInventory Owner;
 	public readonly int SlotCount;
 
