@@ -172,7 +172,12 @@ public class World : Node
 		}
 
 		foreach(Node Entity in EntitiesRoot.GetChildren())
+		{
+			if(Entity is Player)
+				continue;
+
 			Entity.QueueFree();
+		}
 
 		foreach(Node MobInstance in MobsRoot.GetChildren())
 			MobInstance.QueueFree();
@@ -741,14 +746,15 @@ public class World : Node
 
 
 	[Remote]
-	public void InitialNetWorldLoad(int Id, Vector3 PlayerPosition, int RenderDistance)
+	public void InitialNetWorldSend(int Id, Vector3 PlayerPosition, int RenderDistance)
 	{
 		if(!Net.Work.IsNetworkServer())
-			throw new Exception($"Attempted to run {nameof(InitialNetWorldLoad)} on client");
+			throw new Exception($"Attempted to run {nameof(InitialNetWorldSend)} on client");
 
 		RequestChunks(Id, PlayerPosition, RenderDistance);
 
-		Assert.ActualAssert(Net.Players[Id].Plr.HasValue); //Todo: Spawn the player here
+		Game.SpawnPlayer(Id, false);
+		Assert.ActualAssert(Net.Players[Id].Plr.HasValue);
 		Net.Players[Id].Plr.ValueOrFailure().SetFreeze(false);
 		Net.Players[Id].Plr.ValueOrFailure().GiveDefaultItems();
 	}

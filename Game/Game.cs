@@ -117,8 +117,18 @@ public class Game : Node
 	}
 
 
+	[Remote]
+	public void NetSpawnPlayer(int Id)
+	{
+		SpawnPlayer(Id, false);
+	}
+
+
 	public static void SpawnPlayer(int Id, bool Possess)
 	{
+		if(World.EntitiesRoot.HasNode(Id.ToString()))
+			return;
+
 		var NewPlayer = (Player) GD.Load<PackedScene>("res://Player/Player.tscn").Instance();
 		NewPlayer.Possessed = Possess;
 		NewPlayer.Id = Id;
@@ -128,8 +138,7 @@ public class Game : Node
 		if(Possess)
 			PossessedPlayer = NewPlayer.Some();
 
-		RuntimeRoot.GetNode("SkyScene").AddChild(NewPlayer);
-
+		World.EntitiesRoot.AddChild(NewPlayer);
 		NewPlayer.MovementReset();
 	}
 

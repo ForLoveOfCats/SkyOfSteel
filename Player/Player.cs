@@ -7,7 +7,7 @@ using static Godot.Mathf;
 
 
 
-public class Player : Character, IPushable, IHasInventory
+public class Player : Character, IEntity, IPushable, IHasInventory
 {
 	public const float Height = 10;
 	public const float RequiredUncrouchHeight = 11;
@@ -258,35 +258,6 @@ public class Player : Character, IPushable, IHasInventory
 
 
 	[Remote]
-	public void Die()
-	{
-		if(!Net.Work.IsNetworkServer())
-			RpcId(Net.ServerId, nameof(Die));
-		else
-		{
-			Net.SteelRpc(this, nameof(NetDie));
-			NetDie();
-		}
-	}
-
-
-	[Remote]
-	public void NetDie()
-	{
-		if(Possessed)
-		{
-			Cam.ClearCurrent(false);
-			Game.PossessedPlayer = Player.None();
-			World.UnloadAndRequestChunks(new Vector3(), 0);
-			Menu.BuildPause();
-		}
-
-		Net.Players[Id].Plr = Player.None();
-		QueueFree();
-	}
-
-
-	[Remote]
 	public void ApplyDamage(float Damage, Vector3 Origin)
 	{
 		Health = Clamp(Health - Damage, 0, MaxHealth);
@@ -441,7 +412,7 @@ public class Player : Character, IPushable, IHasInventory
 
 		if(Possessed && !Dying && Health <= 0)
 		{
-			Die();
+			Entities.Self.PleaseDestroyMe(Name);
 			Dying = true;
 		}
 
@@ -486,6 +457,8 @@ public class Player : Character, IPushable, IHasInventory
 					);
 				}
 			}
+
+			Entities.AsServerMaybePhaseOut(this);
 		}
 
 		if(!Possessed)
@@ -663,8 +636,17 @@ public class Player : Character, IPushable, IHasInventory
 			else
 				ItemId = Items.ID.ERROR;
 
-			Net.SteelRpcUnreliable(this, nameof(Update), this.Transform, ActualLookVertical, IsJumping, IsCrouching, Health, ItemId,
-			                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
+			Entities.ClientSendUpdate(
+				Name,
+				this.Transform,
+				ActualLookVertical,
+				IsJumping,
+				IsCrouching,
+				Health,
+				ItemId,
+				Momentum.Rotated(new Vector3(0,1,0),
+				Deg2Rad(LoopRotation(-LookHorizontal))).z
+			);
 		}
 
 		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
@@ -676,7 +658,38 @@ public class Player : Character, IPushable, IHasInventory
 
 
 	[Remote]
-	public void Update(Transform TargetTransform, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
+	public void PhaseOut()
+	{
+		Assert.ActualAssert(!Possessed);
+		Destroy();
+	}
+
+
+	[Remote]
+	public void Destroy(params object[] Args)
+	{
+		if(Possessed)
+		{
+			Cam.ClearCurrent(false);
+			Game.PossessedPlayer = Player.None();
+			World.UnloadAndRequestChunks(new Vector3(), 0);
+			Menu.BuildPause();
+		}
+
+		Net.Players[Id].Plr = Player.None();
+		QueueFree();
+	}
+
+
+	[Remote]
+	public void Update(params object[] Args)
+	{
+		Assert.ArgArray(Args, typeof(Transform), typeof(float), typeof(bool), typeof(bool), typeof(float), typeof(System.Int32), typeof(float));
+		ActualUpdate((Transform)Args[0], (float)Args[1], (bool)Args[2], (bool)Args[3], (float)Args[4], (Items.ID)Args[5], (float)Args[6]);
+	}
+
+
+	private void ActualUpdate(Transform TargetTransform, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
 	{
 		Health = Hp;
 

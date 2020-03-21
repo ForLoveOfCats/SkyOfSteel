@@ -159,12 +159,9 @@ public class Net : Node
 	public void SetupNewPeer(int Id) //Run on all clients except for the new client
 	{
 		if(Id == GetTree().GetNetworkUniqueId())
-		{
 			return; //Make sure we are not the new peer
-		}
 
 		Players.Add(Id, new PlayerData());
-		Game.SpawnPlayer(Id, false);
 		World.ChunkRenderDistances[Id] = 0;
 	}
 
@@ -289,7 +286,7 @@ public class Net : Node
 	[Remote]
 	public void ReadyToRequestWorld() //Called by server on client when client can request world chunks
 	{
-		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldLoad), Self.GetTree().GetNetworkUniqueId(), new Vector3(), Game.ChunkRenderDistance);
+		World.Self.RpcId(ServerId, nameof(World.InitialNetWorldSend), Self.GetTree().GetNetworkUniqueId(), new Vector3(), Game.ChunkRenderDistance);
 	}
 
 

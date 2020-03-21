@@ -94,6 +94,16 @@ public class Entities : Node
 				);
 				return;
 			}
+
+			case Player Plr:
+			{
+				Game.Self.RpcId(
+					Reciever,
+					nameof(Game.NetSpawnPlayer),
+					Plr.Id
+				);
+				return;
+			}
 		}
 	}
 
@@ -177,6 +187,45 @@ public class Entities : Node
 	}
 
 
+	public static void ClientSendUpdate(string Identifier, params object[] Args)
+	{
+		if(Net.Work.IsNetworkServer())
+			Self.RecieveClientSendUpdate(Net.Work.GetNetworkUniqueId(), Identifier, Args);
+		else
+			Self.RpcUnreliableId(Net.ServerId, nameof(RecieveClientSendUpdate), Net.Work.GetNetworkUniqueId(), Identifier, Args);
+	}
+
+
+	[Remote]
+	private void RecieveClientSendUpdate(int ClientId, string Identifier, params object[] Args)
+	{
+		if(!Net.Work.IsNetworkServer())
+			throw new Exception($"Cannot run {nameof(SendUpdate)} on client");
+
+		IEntity Entity = World.EntitiesRoot.GetNode<IEntity>(Identifier);
+
+		foreach(int Reciever in Net.Players.Keys)
+		{
+			if(Reciever == ClientId)
+				continue;
+			else if(Reciever == Net.ServerId)
+			{
+				Self.RecieveUpdate(Identifier, Args);
+				continue;
+			}
+
+			Net.Players[Reciever].Plr.MatchSome(
+				(Plr) =>
+				{
+					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
+					if(Distance <= World.ChunkRenderDistances[Reciever] * (World.PlatformSize * 9))
+						Self.RpcUnreliableId(Reciever, nameof(RecieveUpdate), Identifier, Args);
+				}
+			);
+		}
+	}
+
+
 	public static void SendUpdate(string Identifier, params object[] Args)
 	{
 		if(!Net.Work.IsNetworkServer())
@@ -186,7 +235,7 @@ public class Entities : Node
 
 		foreach(int Reciever in Net.Players.Keys)
 		{
-			if(Reciever == Net.Work.GetNetworkUniqueId())
+			if(Reciever == Net.ServerId)
 				continue;
 
 			Net.Players[Reciever].Plr.MatchSome(
