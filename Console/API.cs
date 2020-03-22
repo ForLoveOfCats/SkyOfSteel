@@ -10,7 +10,7 @@ public static class API
 
 		if(Mismatch)
 			Console.ThrowPrint(
-				$"Expected {Expected} arguments but recieved {Args.Length} arguments"
+				$"Expected {Expected} arguments but received {Args.Length} arguments"
 			);
 
 		return Mismatch;

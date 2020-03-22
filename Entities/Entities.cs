@@ -24,7 +24,7 @@ public class Entities : Node
 	[Remote]
 	private void PleaseSendMeCreate(string Identifier)
 	{
-		GD.Print("Recieved PleaseSendMeCreate");
+		GD.Print("Received PleaseSendMeCreate");
 
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(PleaseSendMeCreate)} on client");
@@ -42,7 +42,7 @@ public class Entities : Node
 	}
 
 
-	public static void SendCreate(int Reciever, IEntity Entity)
+	public static void SendCreate(int Receiver, IEntity Entity)
 	{
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendCreate)} on client");
@@ -55,7 +55,7 @@ public class Entities : Node
 			case IProjectile Projectile:
 			{
 				Projectiles.Self.RpcId(
-					Reciever,
+					Receiver,
 					nameof(Projectiles.ActualFire),
 					Projectile.ProjectileId,
 					Projectile.FirerId,
@@ -70,7 +70,7 @@ public class Entities : Node
 			case DroppedItem Item:
 			{
 				World.Self.RpcId(
-					Reciever,
+					Receiver,
 					nameof(World.DropOrUpdateItem),
 					Item.Type,
 					Item.Translation,
@@ -84,7 +84,7 @@ public class Entities : Node
 			case Tile Branch:
 			{
 				World.Self.RpcId(
-					Reciever,
+					Receiver,
 					nameof(World.PlaceWithName),
 					Branch.ItemId,
 					Branch.Translation,
@@ -98,7 +98,7 @@ public class Entities : Node
 			case Player Plr:
 			{
 				Game.Self.RpcId(
-					Reciever,
+					Receiver,
 					nameof(Game.NetSpawnPlayer),
 					Plr.Id
 				);
@@ -115,21 +115,21 @@ public class Entities : Node
 	{
 		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
 		{
-			int Reciever = KV.Key;
+			int Receiver = KV.Key;
 			KV.Value.Plr.MatchSome(
 				(Plr) =>
 				{
 					int ChunkRenderDistance = Game.ChunkRenderDistance;
-					if(Reciever != Net.ServerId)
-						ChunkRenderDistance = World.ChunkRenderDistances[Reciever];
+					if(Receiver != Net.ServerId)
+						ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
 
 					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
 					if(Distance > ChunkRenderDistance*World.PlatformSize*9)
 					{
-						if(Reciever == Net.ServerId)
+						if(Receiver == Net.ServerId)
 							Entity.Visible = false;
 						else
-							Entities.Self.RpcUnreliableId(Reciever, nameof(Entities.RecievePhaseOut), Entity.Name);
+							Entities.Self.RpcUnreliableId(Receiver, nameof(Entities.ReceivePhaseOut), Entity.Name);
 					}
 				}
 			);
@@ -138,9 +138,9 @@ public class Entities : Node
 
 
 	[Remote]
-	private void RecievePhaseOut(string Identifier)
+	private void ReceivePhaseOut(string Identifier)
 	{
-		GD.Print("Recieved phase out");
+		GD.Print("Received phase out");
 
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
@@ -157,7 +157,7 @@ public class Entities : Node
 		if(Net.Work.IsNetworkServer())
 		{
 			SendDestroy(Identifier, Args);
-			RecieveDestroy(Identifier, Args);
+			ReceiveDestroy(Identifier, Args);
 		}
 		else
 			Self.RpcId(Net.ServerId, nameof(PleaseDestroyMe), Identifier, Args);
@@ -167,16 +167,16 @@ public class Entities : Node
 	public static void SendDestroy(string Identifier, params object[] Args)
 	{
 		if(Net.Work.IsNetworkServer())
-			Net.SteelRpc(Self, nameof(RecieveDestroy), Identifier, Args);
+			Net.SteelRpc(Self, nameof(ReceiveDestroy), Identifier, Args);
 		else
 			throw new Exception($"Cannot run {nameof(SendDestroy)} on client");
 	}
 
 
 	[Remote]
-	private void RecieveDestroy(string Identifier, params object[] Args)
+	private void ReceiveDestroy(string Identifier, params object[] Args)
 	{
-		GD.Print("Recieved destroy");
+		GD.Print("Received destroy");
 
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
@@ -190,36 +190,36 @@ public class Entities : Node
 	public static void ClientSendUpdate(string Identifier, params object[] Args)
 	{
 		if(Net.Work.IsNetworkServer())
-			Self.RecieveClientSendUpdate(Net.Work.GetNetworkUniqueId(), Identifier, Args);
+			Self.ReceiveClientSendUpdate(Net.Work.GetNetworkUniqueId(), Identifier, Args);
 		else
-			Self.RpcUnreliableId(Net.ServerId, nameof(RecieveClientSendUpdate), Net.Work.GetNetworkUniqueId(), Identifier, Args);
+			Self.RpcUnreliableId(Net.ServerId, nameof(ReceiveClientSendUpdate), Net.Work.GetNetworkUniqueId(), Identifier, Args);
 	}
 
 
 	[Remote]
-	private void RecieveClientSendUpdate(int ClientId, string Identifier, params object[] Args)
+	private void ReceiveClientSendUpdate(int ClientId, string Identifier, params object[] Args)
 	{
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendUpdate)} on client");
 
 		IEntity Entity = World.EntitiesRoot.GetNode<IEntity>(Identifier);
 
-		foreach(int Reciever in Net.Players.Keys)
+		foreach(int Receiver in Net.Players.Keys)
 		{
-			if(Reciever == ClientId)
+			if(Receiver == ClientId)
 				continue;
-			else if(Reciever == Net.ServerId)
+			else if(Receiver == Net.ServerId)
 			{
-				Self.RecieveUpdate(Identifier, Args);
+				Self.ReceiveUpdate(Identifier, Args);
 				continue;
 			}
 
-			Net.Players[Reciever].Plr.MatchSome(
+			Net.Players[Receiver].Plr.MatchSome(
 				(Plr) =>
 				{
 					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-					if(Distance <= World.ChunkRenderDistances[Reciever] * (World.PlatformSize * 9))
-						Self.RpcUnreliableId(Reciever, nameof(RecieveUpdate), Identifier, Args);
+					if(Distance <= World.ChunkRenderDistances[Receiver] * (World.PlatformSize * 9))
+						Self.RpcUnreliableId(Receiver, nameof(ReceiveUpdate), Identifier, Args);
 				}
 			);
 		}
@@ -233,17 +233,17 @@ public class Entities : Node
 
 		IEntity Entity = World.EntitiesRoot.GetNode<IEntity>(Identifier);
 
-		foreach(int Reciever in Net.Players.Keys)
+		foreach(int Receiver in Net.Players.Keys)
 		{
-			if(Reciever == Net.ServerId)
+			if(Receiver == Net.ServerId)
 				continue;
 
-			Net.Players[Reciever].Plr.MatchSome(
+			Net.Players[Receiver].Plr.MatchSome(
 				(Plr) =>
 				{
 					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-					if(Distance <= World.ChunkRenderDistances[Reciever] * (World.PlatformSize * 9))
-						Self.RpcUnreliableId(Reciever, nameof(RecieveUpdate), Identifier, Args);
+					if(Distance <= World.ChunkRenderDistances[Receiver] * (World.PlatformSize * 9))
+						Self.RpcUnreliableId(Receiver, nameof(ReceiveUpdate), Identifier, Args);
 				}
 			);
 		}
@@ -251,9 +251,9 @@ public class Entities : Node
 
 
 	[Remote]
-	private void RecieveUpdate(string Identifier, params object[] Args)
+	private void ReceiveUpdate(string Identifier, params object[] Args)
 	{
-		GD.Print("Recieved update");
+		GD.Print("Received update");
 
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
@@ -274,16 +274,16 @@ public class Entities : Node
 
 		if(Entity is IHasInventory HasInventory)
 		{
-			foreach(int Reciever in Net.Players.Keys)
+			foreach(int Receiver in Net.Players.Keys)
 			{
-				if(Reciever == Net.Work.GetNetworkUniqueId())
+				if(Receiver == Net.Work.GetNetworkUniqueId())
 					continue;
 
-				Net.Players[Reciever].Plr.MatchSome(
+				Net.Players[Receiver].Plr.MatchSome(
 					(Plr) =>
 					{
 						float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-						if(Distance <= World.ChunkRenderDistances[Reciever] * (World.PlatformSize * 9))
+						if(Distance <= World.ChunkRenderDistances[Receiver] * (World.PlatformSize * 9))
 						{
 							var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
 							var Counts = new int[HasInventory.Inventory.Contents.Length];
@@ -296,7 +296,7 @@ public class Entities : Node
 								Index += 1;
 							}
 
-							Self.RpcUnreliableId(Reciever, nameof(RecieveInventory), Entity.Name, Ids, Counts);
+							Self.RpcUnreliableId(Receiver, nameof(ReceiveInventory), Entity.Name, Ids, Counts);
 						}
 					}
 				);
@@ -308,9 +308,9 @@ public class Entities : Node
 
 
 	[Remote]
-	private void RecieveInventory(string Identifier, Items.ID[] Ids, int[] Counts)
+	private void ReceiveInventory(string Identifier, Items.ID[] Ids, int[] Counts)
 	{
-		GD.Print("Recieved inventory");
+		GD.Print("Received inventory");
 
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
@@ -338,6 +338,6 @@ public class Entities : Node
 			}
 		}
 		else
-			Console.ThrowLog("Recieved an inventory for an entity without an inventory");
+			Console.ThrowLog("Received an inventory for an entity without an inventory");
 	}
 }
