@@ -109,8 +109,8 @@ public class Entities : Node
 
 
 	//Checks if the entity should be phased out
-	//On the client a phase out is to be freed but not "destroyed"
-	//On the server a phase out is to be made invisible
+	//On the client a phase out frees the entity but does not "destroy" it
+	//On the server a phase out makes the entity invisible
 	public static void AsServerMaybePhaseOut(IEntity Entity)
 	{
 		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
@@ -129,7 +129,12 @@ public class Entities : Node
 						if(Receiver == Net.ServerId)
 							Entity.Visible = false;
 						else
-							Entities.Self.RpcUnreliableId(Receiver, nameof(Entities.ReceivePhaseOut), Entity.Name);
+							Entities.Self.RpcId(Receiver, nameof(Entities.ReceivePhaseOut), Entity.Name);
+					}
+					else
+					{
+						if(Receiver == Net.ServerId)
+							Entity.Visible = true;
 					}
 				}
 			);
