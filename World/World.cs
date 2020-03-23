@@ -902,31 +902,8 @@ public class World : Node
 	{
 		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 
-		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
-		{
-			Self.RpcId(Id, nameof(PlaceWithName), Branch.ItemId, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.Name);
-
-			//If the tile has an inventory then send it along too, because reliable RCPs are ordered these operations are applied after
-			//the node is created on the client thus avoiding any errors. Woot for ordered RCPs!
-			if(Branch is IHasInventory HasInv)
-			{
-				for(int Index = 0; Index < HasInv.Inventory.SlotCount; Index++)
-				{
-					if(HasInv.Inventory[Index] is Items.Instance Item)
-						Branch.RpcId(Id, nameof(IHasInventory.NetUpdateInventorySlot), Index, Item.Id, Item.Count);
-				}
-			}
-		}
-
-		foreach(MobClass Mob in Chunks[ChunkLocation].Mobs)
-		{
-			Mobs.Self.RpcId(Id, nameof(Mobs.NetSpawnMob), Mob.Type, Mob.Name);
-		}
-
-		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)
-		{
-			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.RotationDegrees.y, Item.Momentum, Item.Name);
-		}
+		foreach(IEntity Entity in Chunks[ChunkLocation].Entities)
+			Entities.SendCreate(Id, Entity);
 
 		//After sending all the chunk data lets tell the client that its all
 		Self.RpcId(Id, nameof(NotifyEndOfChunk), ChunkLocation.Item1, ChunkLocation.Item2);

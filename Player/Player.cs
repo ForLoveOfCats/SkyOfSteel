@@ -186,6 +186,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			Body.GetNode<HitboxClass>("HeadJoint/HeadHitbox").OwningPlayer = this;
 			Body.GetNode<HitboxClass>("LegsJoint/LegsHitbox").OwningPlayer = this;
 
+			World.AddEntityToChunk(this);
 			return;
 		}
 
