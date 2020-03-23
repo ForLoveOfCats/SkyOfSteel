@@ -313,6 +313,35 @@ public class World : Node
 	}
 
 
+	public static void AddEntityToChunk(IEntity Entity)
+	{
+		var ChunkTuple = GetChunkTuple(Entity.Translation);
+
+		if(Chunks.TryGetValue(ChunkTuple, out var Chunk))
+			Chunk.Entities.Add(Entity);
+		else
+		{
+			Chunk = new ChunkClass();
+			Chunk.Entities.Add(Entity);
+			Chunks.Add(ChunkTuple, Chunk);
+		}
+
+		Entity.CurrentChunk = ChunkTuple;
+	}
+
+
+	public static void RemoveEntityFromChunk(IEntity Entity)
+	{
+		if(Chunks.TryGetValue(Entity.CurrentChunk, out var Chunk))
+		{
+			Chunk.Entities.Remove(Entity);
+
+			if(Chunk.IsEmpty())
+				Chunks.Remove(Entity.CurrentChunk);
+		}
+	}
+
+
 	static void AddTileToChunk(Tile Branch)
 	{
 		if(ChunkExists(Branch.Translation))

@@ -54,7 +54,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	private bool Frozen = true;
 	public bool FlyMode { get; private set;} = false;
 
-	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
+	public System.Tuple<int, int> DepreciatedCurrentChunk = new System.Tuple<int, int>(0, 0);
+	public Tuple<int, int> CurrentChunk { get; set; } //TODO: This is for IEntity, unify
 
 	public float Health = 0;
 	public bool Dying = false;
@@ -195,6 +196,14 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			SetFreeze(false);
 			GiveDefaultItems();
 		}
+
+		World.AddEntityToChunk(this);
+	}
+
+
+	public override void _ExitTree()
+	{
+		World.RemoveEntityFromChunk(this);
 	}
 
 
@@ -418,6 +427,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 
 		if(Dying)
 			return;
+
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 
 		if(Net.Work.IsNetworkServer())
 		{
@@ -649,11 +660,13 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			);
 		}
 
-		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
+		if(!World.GetChunkTuple(Translation).Equals(DepreciatedCurrentChunk))
 		{
-			CurrentChunk = World.GetChunkTuple(Translation);
+			DepreciatedCurrentChunk = World.GetChunkTuple(Translation);
 			World.UnloadAndRequestChunks(Translation, Game.ChunkRenderDistance);
 		}
+
+		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 
 
@@ -685,7 +698,9 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public void Update(params object[] Args)
 	{
 		Assert.ArgArray(Args, typeof(Transform), typeof(float), typeof(bool), typeof(bool), typeof(float), typeof(System.Int32), typeof(float));
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		ActualUpdate((Transform)Args[0], (float)Args[1], (bool)Args[2], (bool)Args[3], (float)Args[4], (Items.ID)Args[5], (float)Args[6]);
+		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 
 

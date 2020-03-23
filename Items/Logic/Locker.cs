@@ -34,6 +34,8 @@ public class Locker : PipeCoreLogic, IHasInventory
 		OpenEnd = GetNode<StaticBody>("OpenEnd");
 
 		CallDeferred(nameof(GridUpdate));
+
+		base._Ready();
 	}
 
 

@@ -77,6 +77,8 @@ public class PipeJoint : PipeCoreLogic
 		SixthOpenEnd = GetNode<StaticBody>("SixthOpenEnd");
 
 		CallDeferred(nameof(GridUpdate));
+
+		base._Ready();
 	}
 
 

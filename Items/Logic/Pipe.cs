@@ -35,6 +35,8 @@ public class Pipe : PipeCoreLogic
 		SecondOpenEnd = GetNode<StaticBody>("SecondOpenEnd");
 
 		CallDeferred(nameof(GridUpdate));
+
+		base._Ready();
 	}
 
 

@@ -108,6 +108,18 @@ public class Entities : Node
 	}
 
 
+	public static void MovedTick(IEntity Entity, Tuple<int, int> OriginalChunkTuple)
+	{
+		var ChunkTuple = World.GetChunkTuple(Entity.Translation);
+
+		if(!ChunkTuple.Equals(OriginalChunkTuple))
+		{
+			World.RemoveEntityFromChunk(Entity);
+			World.AddEntityToChunk(Entity);
+		}
+	}
+
+
 	//Checks if the entity should be phased out
 	//On the client a phase out frees the entity but does not "destroy" it
 	//On the server a phase out makes the entity invisible

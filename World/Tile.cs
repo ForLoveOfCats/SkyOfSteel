@@ -5,9 +5,22 @@ using Optional;
 
 public class Tile : StaticBody, IEntity, IInGrid
 {
+	public System.Tuple<int, int> CurrentChunk { get; set; }
 	public Items.ID ItemId = Items.ID.ERROR;
 	public int OwnerId = 0;
 	public Pathfinding.PointData Point = null;
+
+
+	public override void _Ready()
+	{
+		World.AddEntityToChunk(this);
+	}
+
+
+	public override void _ExitTree()
+	{
+		World.RemoveEntityFromChunk(this);
+	}
 
 
 	public virtual void GridUpdate()

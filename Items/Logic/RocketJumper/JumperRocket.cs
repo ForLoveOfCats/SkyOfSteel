@@ -14,6 +14,7 @@ public class JumperRocket : Spatial, IProjectile
 	public const float RocketHorizontalMultiplyer = 1f;
 	public const float RocketVerticalMultiplyer = 0.65f;
 
+	public System.Tuple<int, int> CurrentChunk { get; set; }
 	public Projectiles.ProjectileID ProjectileId { get; set; }
 	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
 	public HashSet<Node> AffectedBodies = new HashSet<Node>();
@@ -30,6 +31,18 @@ public class JumperRocket : Spatial, IProjectile
 	{
 		ExplodeSfx = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplodeSfx.tscn");
 		ExplodeParticles = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplosionParticles.tscn");
+	}
+
+
+	public override void _Ready()
+	{
+		World.AddEntityToChunk(this);
+	}
+
+
+	public override void _ExitTree()
+	{
+		World.RemoveEntityFromChunk(this);
 	}
 
 
@@ -61,7 +74,9 @@ public class JumperRocket : Spatial, IProjectile
 	public void Update(params object[] Args)
 	{
 		Assert.ArgArray(Args, typeof(Vector3));
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Translation = (Vector3)Args[0];
+		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 
 
@@ -130,7 +145,7 @@ public class JumperRocket : Spatial, IProjectile
 		if(!Net.Work.IsNetworkServer())
 			return;
 
-		Entities.AsServerMaybePhaseOut(this);
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 
 		if(Triggered || (Life >= RocketFuseTime))
 		{
@@ -146,6 +161,9 @@ public class JumperRocket : Spatial, IProjectile
 			Life += Delta;
 
 		Translation += Momentum * Delta;
+		Entities.AsServerMaybePhaseOut(this);
 		Entities.SendUpdate(Name, Translation);
+
+		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 }

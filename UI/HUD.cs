@@ -219,7 +219,7 @@ public class HUD : Node
 					);
 				}
 
-				ChunkInfoLabel.Text = $"Current Chunk: ({Plr.CurrentChunk.Item1}, 0, {Plr.CurrentChunk.Item2})";
+				ChunkInfoLabel.Text = $"Current Chunk: ({Plr.DepreciatedCurrentChunk.Item1}, 0, {Plr.DepreciatedCurrentChunk.Item2})";
 				PlayerPositionLabel.Text = $"Player Position: {Plr.Translation.Round()}";
 				FPSLabel.Text = $"{Engine.GetFramesPerSecond()} fps";
 			}

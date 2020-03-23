@@ -184,4 +184,29 @@ public static class API
 		else
 			Console.ThrowPrint($"Invalid max fps {TargetString}");
 	}
+
+
+	public static void ChunkEntityCount(string[] Args)
+	{
+		if(ArgCountMismatch(Args, 0))
+			return;
+
+		Game.PossessedPlayer.Match(
+			some: (Plr) =>
+			{
+				var ChunkTuple = World.GetChunkTuple(Plr.Translation);
+
+				int Count = 0;
+				if(World.Chunks.TryGetValue(ChunkTuple, out var Chunk))
+					Count = Chunk.Entities.Count;
+
+				Console.Print($"Chunk {ChunkTuple} contains {Count} entities");
+			},
+
+			none: () =>
+			{
+				Console.ThrowPrint("The local player is currently dead");
+			}
+		);
+	}
 }

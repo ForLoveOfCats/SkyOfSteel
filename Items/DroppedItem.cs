@@ -12,6 +12,7 @@ public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 	public static float MinPickupLife = 0.6f; //In seconds
 
 	public System.Tuple<int, int> CurrentChunkTuple;
+	public System.Tuple<int, int> CurrentChunk { get; set; } //TODO: This is for IEntity, unify
 	public Vector3 Momentum; //Needs to be set when created or else will crash with NullReferenceException
 	public bool PhysicsEnabled = true;
 	public float Life = 0f;
@@ -29,6 +30,13 @@ public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 		GetNode<MeshInstance>("MeshInstance").MaterialOverride = Mat;
 
 		CurrentChunkTuple = World.GetChunkTuple(Translation);
+		World.AddEntityToChunk(this);
+	}
+
+
+	public override void _ExitTree()
+	{
+		World.RemoveEntityFromChunk(this);
 	}
 
 
@@ -51,7 +59,9 @@ public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 	public void Update(params object[] Args)
 	{
 		Assert.ArgArray(Args, typeof(Vector3));
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Translation = (Vector3)Args[0];
+		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 
 
@@ -89,6 +99,8 @@ public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 
 		if(PhysicsEnabled)
 		{
+			var OriginalChunkTuple = World.GetChunkTuple(Translation);
+
 			Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), floorMaxAngle:Deg2Rad(60));
 			if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation))) //We just crossed into a different chunk
 			{
@@ -123,6 +135,8 @@ public class DroppedItem : KinematicBody, IEntity, IInGrid, IPushable
 				Momentum = new Vector3(0,0,0);
 				World.Grid.AddItem(this);
 			}
+
+			Entities.MovedTick(this, OriginalChunkTuple);
 		}
 
 		Entities.AsServerMaybePhaseOut(this);

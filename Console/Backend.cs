@@ -77,6 +77,16 @@ public static class Backend
 				Function = (Args) => API.FpsMax(Args)
 			}
 		},
+
+		{
+			"chunk_entity_count",
+			new CommandInfo {
+				HelpMessages = new string[] {
+					"'chunk_entity_count' Prints the entity count of the local player's current chunk"
+				},
+				Function = (Args) => API.ChunkEntityCount(Args)
+			}
+		}
 	};
 
 
