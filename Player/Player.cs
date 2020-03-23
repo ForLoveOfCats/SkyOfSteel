@@ -461,7 +461,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 								(ActualSlots) =>
 								{
 									Plr.NotifyPickedUpItem();
-									Entities.SendDestroy(Name);
+									Entities.SendDestroy(Item.Name);
 									Item.Destroy();
 								}
 							);
