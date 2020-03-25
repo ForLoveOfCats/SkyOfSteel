@@ -135,18 +135,18 @@ public class Entities : Node
 					if(Receiver != Net.ServerId)
 						ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
 
-					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-					if(Distance > ChunkRenderDistance*World.PlatformSize*9)
+					var EntityChunk = World.GetChunkTuple(Entity.Translation);
+					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkRenderDistance, Plr.Translation))
+					{
+						if(Receiver == Net.ServerId)
+							Entity.Visible = true;
+					}
+					else
 					{
 						if(Receiver == Net.ServerId)
 							Entity.Visible = false;
 						else
 							Entities.Self.RpcId(Receiver, nameof(Entities.ReceivePhaseOut), Entity.Name);
-					}
-					else
-					{
-						if(Receiver == Net.ServerId)
-							Entity.Visible = true;
 					}
 				}
 			);
@@ -234,8 +234,9 @@ public class Entities : Node
 			Net.Players[Receiver].Plr.MatchSome(
 				(Plr) =>
 				{
-					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-					if(Distance <= World.ChunkRenderDistances[Receiver] * (World.PlatformSize * 9))
+					var EntityChunk = World.GetChunkTuple(Entity.Translation);
+					var ChunkDistance = World.ChunkRenderDistances[Receiver];
+					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkDistance, Plr.Translation))
 						Self.RpcUnreliableId(Receiver, nameof(ReceiveUpdate), Identifier, Args);
 				}
 			);
@@ -258,8 +259,8 @@ public class Entities : Node
 			Net.Players[Receiver].Plr.MatchSome(
 				(Plr) =>
 				{
-					float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-					if(Distance <= World.ChunkRenderDistances[Receiver] * (World.PlatformSize * 9))
+					var EntityChunk = World.GetChunkTuple(Entity.Translation);
+					if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
 						Self.RpcUnreliableId(Receiver, nameof(ReceiveUpdate), Identifier, Args);
 				}
 			);
@@ -299,8 +300,8 @@ public class Entities : Node
 				Net.Players[Receiver].Plr.MatchSome(
 					(Plr) =>
 					{
-						float Distance = World.GetChunkPos(Entity.Translation).DistanceTo(Plr.Translation.Flattened());
-						if(Distance <= World.ChunkRenderDistances[Receiver] * (World.PlatformSize * 9))
+						var EntityChunk = World.GetChunkTuple(Entity.Translation);
+						if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
 						{
 							var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
 							var Counts = new int[HasInventory.Inventory.Contents.Length];

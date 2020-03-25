@@ -313,6 +313,14 @@ public class World : Node
 	}
 
 
+	public static bool ChunkWithinDistanceFrom(Tuple<int, int> ChunkTuple, int Distance, Vector3 From)
+	{
+		Vector3 ChunkPos = new Vector3(ChunkTuple.Item1, 0, ChunkTuple.Item2);
+		From = GetChunkPos(From);
+		return From.DistanceTo(ChunkPos) <= Distance * ChunkSize;
+	}
+
+
 	public static void AddEntityToChunk(IEntity Entity)
 	{
 		var ChunkTuple = GetChunkTuple(Entity.Translation);
@@ -411,7 +419,8 @@ public class World : Node
 		if(Net.Work.NetworkPeer != null && !Net.Work.IsNetworkServer() && Game.PossessedPlayer.HasValue)
 		{
 			Player Plr = Game.PossessedPlayer.ValueOrFailure();
-			if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) > Game.ChunkRenderDistance*(PlatformSize*9))
+			var PositionChunk = GetChunkTuple(Position);
+			if(!ChunkWithinDistanceFrom(PositionChunk, Game.ChunkRenderDistance, Plr.Translation))
 			{
 				//If network is inited, not the server, and platform it to far away then...
 				return; //...don't place
@@ -437,7 +446,8 @@ public class World : Node
 			if(Game.PossessedPlayer.HasValue)
 			{
 				Player Plr = Game.PossessedPlayer.ValueOrFailure();
-				if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) > Game.ChunkRenderDistance * (PlatformSize * 9))
+				var PositionChunk = GetChunkTuple(Position);
+				if(!ChunkWithinDistanceFrom(PositionChunk, Game.ChunkRenderDistance, Plr.Translation))
 				{
 					//If network is inited, am the server, and platform is to far away then...
 					Branch.Hide(); //...make it not visible but allow it to remain in the world
@@ -452,7 +462,8 @@ public class World : Node
 				Net.Players[Id].Plr.MatchSome(
 					(Plr) =>
 					{
-						if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= ChunkRenderDistances[Id] * (PlatformSize * 9))
+						var PositionChunk = GetChunkTuple(Position);
+						if(ChunkWithinDistanceFrom(PositionChunk, ChunkRenderDistances[Id], Plr.Translation))
 						{
 							if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
 								RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
@@ -796,8 +807,7 @@ public class World : Node
 
 		foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in Chunks.ToArray())
 		{
-			var ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			if(ChunkPos.DistanceTo(Position.Flattened()) <= ChunkRenderDistance * (PlatformSize * 9))
+			if(World.ChunkWithinDistanceFrom(Chunk.Key, ChunkRenderDistance, Position))
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
@@ -874,7 +884,7 @@ public class World : Node
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(Position.Flattened()) <= RenderDistance*(PlatformSize*9))
+			if(ChunkWithinDistanceFrom(ChunkTuple, RenderDistance, Position))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(RemoteLoadedChunks[Id].Contains(ChunkTuple) || RemoteLoadingChunks[Id].Contains(ChunkTuple))
@@ -1045,7 +1055,8 @@ public class World : Node
 			Game.PossessedPlayer.MatchSome(
 				(Plr) =>
 				{
-					if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= Game.ChunkRenderDistance * (PlatformSize * 9))
+					var PositionChunk = GetChunkTuple(Position);
+					if(ChunkWithinDistanceFrom(PositionChunk, Game.ChunkRenderDistance, Plr.Translation))
 					{
 						var ToDrop = (DroppedItem) DroppedItemScene.Instance();
 						ToDrop.Translation = Position;
