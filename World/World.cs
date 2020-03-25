@@ -913,7 +913,11 @@ public class World : Node
 		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 
 		foreach(IEntity Entity in Chunks[ChunkLocation].Entities)
+		{
 			Entities.SendCreate(Id, Entity);
+			if(Entity is IHasInventory HasInventory)
+				Entities.SendInventoryTo(HasInventory, Id);
+		}
 
 		//After sending all the chunk data lets tell the client that its all
 		Self.RpcId(Id, nameof(NotifyEndOfChunk), ChunkLocation.Item1, ChunkLocation.Item2);

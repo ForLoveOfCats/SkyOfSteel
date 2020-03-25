@@ -157,8 +157,6 @@ public class Entities : Node
 	[Remote]
 	private void ReceivePhaseOut(string Identifier)
 	{
-		GD.Print("Received phase out");
-
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 			return;
@@ -193,8 +191,6 @@ public class Entities : Node
 	[Remote]
 	private void ReceiveDestroy(string Identifier, params object[] Args)
 	{
-		GD.Print("Received destroy");
-
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 			return;
@@ -271,8 +267,6 @@ public class Entities : Node
 	[Remote]
 	private void ReceiveUpdate(string Identifier, params object[] Args)
 	{
-		GD.Print("Received update");
-
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 		{
@@ -285,43 +279,75 @@ public class Entities : Node
 	}
 
 
-	public static void SendInventory(IEntity Entity)
+	public static void SendInventory(IHasInventory HasInventory)
 	{
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendInventory)} on client");
 
-		if(Entity is IHasInventory HasInventory)
+		foreach(int Receiver in Net.Players.Keys)
 		{
-			foreach(int Receiver in Net.Players.Keys)
-			{
-				if(Receiver == Net.Work.GetNetworkUniqueId())
-					continue;
+			if(Receiver == Net.Work.GetNetworkUniqueId())
+				continue;
 
-				Net.Players[Receiver].Plr.MatchSome(
-					(Plr) =>
+			Net.Players[Receiver].Plr.MatchSome(
+				(Plr) =>
+				{
+					var EntityChunk = World.GetChunkTuple(HasInventory.Translation);
+					if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
 					{
-						var EntityChunk = World.GetChunkTuple(Entity.Translation);
-						if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
-						{
-							var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
-							var Counts = new int[HasInventory.Inventory.Contents.Length];
+						var Ids = new Items.ID[HasInventory.Inventory.SlotCount];
+						var Counts = new int[HasInventory.Inventory.SlotCount];
 
-							int Index = 0;
-							foreach(Items.Instance Item in HasInventory.Inventory.Contents)
+						int Index = 0;
+						while(Index < HasInventory.Inventory.SlotCount)
+						{
+							Items.Instance Item = HasInventory.Inventory.Contents[Index];
+
+							if(Item is null)
 							{
-								Ids[Index] = Item.Id;
-								Counts[Index] = Item.Count;
+								Ids[Index] = Items.ID.NONE;
+								Counts[Index] = 0;
 								Index += 1;
+								continue;
 							}
 
-							Self.RpcUnreliableId(Receiver, nameof(ReceiveInventory), Entity.Name, Ids, Counts);
+							Ids[Index] = Item.Id;
+							Counts[Index] = Item.Count;
+							Index += 1;
 						}
+
+						Self.RpcUnreliableId(Receiver, nameof(ReceiveInventory), HasInventory.Name, Ids, Counts);
 					}
-				);
-			}
+				}
+			);
 		}
-		else
-			Console.ThrowLog("Attempted to send the inventory of an entity without an inventory");
+	}
+
+
+	public static void SendInventoryTo(IHasInventory HasInventory, int Receiver)
+	{
+		var Ids = new Items.ID[HasInventory.Inventory.SlotCount];
+		var Counts = new int[HasInventory.Inventory.SlotCount];
+
+		int Index = 0;
+		while(Index < HasInventory.Inventory.SlotCount)
+		{
+			Items.Instance Item = HasInventory.Inventory.Contents[Index];
+
+			if(Item is null)
+			{
+				Ids[Index] = Items.ID.NONE;
+				Counts[Index] = 0;
+				Index += 1;
+				continue;
+			}
+
+			Ids[Index] = Item.Id;
+			Counts[Index] = Item.Count;
+			Index += 1;
+		}
+
+		Self.RpcUnreliableId(Receiver, nameof(ReceiveInventory), HasInventory.Name, Ids, Counts);
 	}
 
 
@@ -341,7 +367,7 @@ public class Entities : Node
 		if(Entity is IHasInventory HasInventory)
 		{
 			Assert.ActualAssert(Ids.Length == Counts.Length);
-			Assert.ActualAssert(HasInventory.Inventory.Contents.Length == Ids.Length);
+			Assert.ActualAssert(HasInventory.Inventory.SlotCount == Ids.Length);
 
 			int Index = 0;
 			while(Index < Ids.Length)
@@ -350,9 +376,13 @@ public class Entities : Node
 					HasInventory.Inventory.Contents[Index] = null;
 				else
 				{
-					HasInventory.Inventory.Contents[Index].Id = Ids[Index];
-					HasInventory.Inventory.Contents[Index].Count = Counts[Index];
+					var Item = new Items.Instance(Ids[Index]) {
+						Count = Counts[Index]
+					};
+					HasInventory.Inventory.Contents[Index] = Item;
 				}
+
+				Index += 1;
 			}
 		}
 		else
