@@ -38,14 +38,35 @@ public class Entities : Node
 			return;
 
 		Assert.ActualAssert(Entity is IEntity);
-		SendCreate(Requester, (IEntity)Entity);
+		SendCreateTo(Requester, (IEntity)Entity);
 	}
 
 
-	public static void SendCreate(int Receiver, IEntity Entity)
+	public static void SendCreate(IEntity Entity)
+	{
+		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
+		{
+			int Receiver = KV.Key;
+			if(Receiver == Net.Work.GetNetworkUniqueId())
+				continue;
+
+			KV.Value.Plr.MatchSome(
+				(Plr) =>
+				{
+					int ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
+					var EntityChunk = World.GetChunkTuple(Entity.Translation);
+					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkRenderDistance, Plr.Translation))
+						SendCreateTo(Receiver, Entity);
+				}
+			);
+		}
+	}
+
+
+	public static void SendCreateTo(int Receiver, IEntity Entity)
 	{
 		if(!Net.Work.IsNetworkServer())
-			throw new Exception($"Cannot run {nameof(SendCreate)} on client");
+			throw new Exception($"Cannot run {nameof(SendCreateTo)} on client");
 
 		if(((Node)Entity).IsQueuedForDeletion())
 			return;

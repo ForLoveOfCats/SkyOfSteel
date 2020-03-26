@@ -73,5 +73,8 @@ public class Projectiles : Node
 		Instance.Momentum = Momentum;
 		Instance.Name = NameArg;
 		World.EntitiesRoot.AddChild((Node)Instance);
+
+		if(Net.Work.IsNetworkServer())
+			Entities.SendCreate(Instance);
 	}
 }

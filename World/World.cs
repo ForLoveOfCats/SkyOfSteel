@@ -914,7 +914,7 @@ public class World : Node
 
 		foreach(IEntity Entity in Chunks[ChunkLocation].Entities)
 		{
-			Entities.SendCreate(Id, Entity);
+			Entities.SendCreateTo(Id, Entity);
 			if(Entity is IHasInventory HasInventory)
 				Entities.SendInventoryTo(HasInventory, Id);
 		}
