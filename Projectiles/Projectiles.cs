@@ -55,7 +55,10 @@ public class Projectiles : Node
 		if(Net.Work.IsNetworkServer())
 			Self.ActualFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
 		else
+		{
+			Self.ActualFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
 			Self.RpcId(Net.ServerId, nameof(ActualFire), ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+		}
 	}
 
 

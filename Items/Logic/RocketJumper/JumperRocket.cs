@@ -1,7 +1,7 @@
 using Godot;
-using System.Collections.Generic;
 using static Godot.Mathf;
 using static SteelMath;
+using Optional.Unsafe;
 
 
 
@@ -47,9 +47,6 @@ public class JumperRocket : Spatial, IProjectile
 
 	public void ProjectileCollided(Vector3 CollisionPointPosition)
 	{
-		if(!Net.Work.IsNetworkServer())
-			return;
-
 		Triggered = true;
 		TriggeredPosition = CollisionPointPosition;
 	}
@@ -95,8 +92,30 @@ public class JumperRocket : Spatial, IProjectile
 	}
 
 
-	public void Explode(Vector3 Position)
+	public static Vector3 CalculatePush(IPushable Pushable, Vector3 Position)
 	{
+		float Distance = Clamp(Position.DistanceTo(Pushable.Translation), 1, MaxRocketDistance);
+		float Power =
+			LogBase(-Distance + MaxRocketDistance + 1, 2)
+			/ LogBase(MaxRocketDistance + 1, 2);
+
+		Vector3 Push = ((Pushable.Translation - Position) / MaxRocketDistance).Normalized() * MaxRocketPush * Power;
+		{
+			Vector3 Flat = Push.Flattened();
+			Flat *= RocketHorizontalMultiplyer;
+			Push.x = Flat.x;
+			Push.z = Flat.z;
+		}
+		Push.y *= RocketVerticalMultiplyer;
+
+		return Push;
+	}
+
+
+	public void ServerExplode(Vector3 Position)
+	{
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+
 		var WithinArea = World.GetEntitiesWithinArea(Position, MaxRocketDistance);
 		foreach(Node Body in WithinArea)
 		{
@@ -108,20 +127,13 @@ public class JumperRocket : Spatial, IProjectile
 				if(Results.Count > 0)
 					continue;
 
-				float Distance = Clamp(Position.DistanceTo(Pushable.Translation), 1, MaxRocketDistance);
-				float Power =
-					LogBase(-Distance + MaxRocketDistance + 1, 2)
-					/ LogBase(MaxRocketDistance + 1, 2);
+				Vector3 Push = CalculatePush(Pushable, Position);
 
-				Vector3 Push = ((Pushable.Translation - Position) / MaxRocketDistance).Normalized()
-					* MaxRocketPush * Power;
-				{
-					Vector3 Flat = Push.Flattened();
-					Flat *= RocketHorizontalMultiplyer;
-					Push.x = Flat.x;
-					Push.z = Flat.z;
-				}
-				Push.y *= RocketVerticalMultiplyer;
+				if(Pushable is Player Plr
+					&& Game.PossessedPlayer.HasValue
+					&& Plr != Game.PossessedPlayer.ValueOrFailure())
+					continue;
+
 				Pushable.ApplyPush(Push);
 				Entities.SendPush(Pushable, Push);
 			}
@@ -136,24 +148,42 @@ public class JumperRocket : Spatial, IProjectile
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(!Net.Work.IsNetworkServer())
-			return;
-
-		var OriginalChunkTuple = World.GetChunkTuple(Translation);
-
 		if(Triggered || (Life >= RocketFuseTime))
 		{
 			if(TriggeredPosition == null)
 				TriggeredPosition = GetNode<Spatial>("ExplosionOrigin").GlobalTransform.origin;
 			var Position = (Vector3) TriggeredPosition;
 
-			Explode(Position);
+			if(Net.Work.IsNetworkServer())
+				ServerExplode(Position);
+			else //Client
+			{
+				Game.PossessedPlayer.MatchSome(
+					(Plr) =>
+					{
+						if(Position.DistanceTo(Plr.Translation) <= MaxRocketDistance)
+						{
+							Vector3 Push = CalculatePush(Plr, Position);
+							Plr.ApplyPush(Push);
+						}
+					}
+				);
+
+				ExplodeSoundVisual(Position);
+				QueueFree();
+			}
+
 			return;
 		}
 		else
 			Life += Delta;
 
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Translation += Momentum * Delta;
+
+		if(!Net.Work.IsNetworkServer())
+			return;
+
 		Entities.AsServerMaybePhaseOut(this);
 		Entities.SendUpdate(Name, Translation);
 

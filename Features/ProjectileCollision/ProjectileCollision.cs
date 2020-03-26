@@ -41,9 +41,6 @@ public class ProjectileCollision : Spatial
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(!Net.Work.IsNetworkServer())
-			return;
-
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 		Godot.Collections.Dictionary Results = State.IntersectRay(
 			StartPoint.GlobalTransform.origin,
