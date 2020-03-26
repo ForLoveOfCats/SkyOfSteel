@@ -409,4 +409,44 @@ public class Entities : Node
 		else
 			Console.ThrowLog("Received an inventory for an entity without an inventory");
 	}
+
+
+	public static void SendPush(IPushable Pushable, Vector3 Push)
+	{
+		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
+		{
+			int Receiver = KV.Key;
+			if(Receiver == Net.Work.GetNetworkUniqueId())
+				continue;
+
+			KV.Value.Plr.MatchSome(
+				(Plr) =>
+				{
+					int ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
+					var PushableChunk = World.GetChunkTuple(Pushable.Translation);
+					if(World.ChunkWithinDistanceFrom(PushableChunk, ChunkRenderDistance, Plr.Translation))
+						Self.RpcId(Receiver, nameof(ReceivePush), Pushable.Name, Push);
+				}
+			);
+		}
+	}
+
+
+	[Remote]
+	private void ReceivePush(string Identifier, Vector3 Push)
+	{
+		GD.Print("Received push");
+
+		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
+		if(Entity is null)
+		{
+			RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
+			return;
+		}
+
+		if(Entity is IPushable Pushable)
+			Pushable.ApplyPush(Push);
+		else
+			Console.ThrowLog("Received a push message for an unpushable entity");
+	}
 }

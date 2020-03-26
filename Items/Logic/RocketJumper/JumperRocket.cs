@@ -91,12 +91,28 @@ public class JumperRocket : Spatial, IProjectile
 	public void Destroy(params object[] Args)
 	{
 		Assert.ArgArray(Args, typeof(Vector3));
-		Explode((Vector3)Args[0]);
+		ExplodeSoundVisual((Vector3)Args[0]);
+		QueueFree();
+	}
+
+
+	public static void ExplodeSoundVisual(Vector3 Position)
+	{
+		var ExplodeSfxInstance = (AudioStreamPlayer3D) ExplodeSfx.Instance();
+		ExplodeSfxInstance.Play();
+		ExplodeSfxInstance.Translation = Position;
+		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
+
+		var ParticleSystem = (CPUParticles) ExplodeParticles.Instance();
+		ParticleSystem.Translation = Position;
+		ParticleSystem.Emitting = true;
+		World.EntitiesRoot.AddChild(ParticleSystem);
 	}
 
 
 	public void Explode(Vector3 Position)
 	{
+		GD.Print("Explode");
 		foreach(Node Body in AffectedBodies)
 		{
 			if(Body is IPushable Pushable)
@@ -122,20 +138,14 @@ public class JumperRocket : Spatial, IProjectile
 				}
 				Push.y *= RocketVerticalMultiplyer;
 				Pushable.ApplyPush(Push);
+				Entities.SendPush(Pushable, Push);
 			}
 		}
 		AffectedBodies.Clear();
 
-		var ExplodeSfxInstance = (AudioStreamPlayer3D) ExplodeSfx.Instance();
-		ExplodeSfxInstance.Play();
-		ExplodeSfxInstance.Translation = Position;
-		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
+		ExplodeSoundVisual(Position);
 
-		var ParticleSystem = (CPUParticles) ExplodeParticles.Instance();
-		ParticleSystem.Translation = Position;
-		ParticleSystem.Emitting = true;
-		World.EntitiesRoot.AddChild(ParticleSystem);
-
+		Entities.SendDestroy(Name, Position);
 		QueueFree();
 	}
 
@@ -154,7 +164,6 @@ public class JumperRocket : Spatial, IProjectile
 			var Position = (Vector3) TriggeredPosition;
 
 			Explode(Position);
-			Entities.SendDestroy(Name, Position);
 			return;
 		}
 		else
