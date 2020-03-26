@@ -10,14 +10,13 @@ public class JumperRocket : Spatial, IProjectile
 	public const float RocketTravelSpeed = 150; //Units-per-second
 	public const float RocketFuseTime = 4f; //In seconds
 	public const float MaxRocketPush = 72; //Units-per-second force applied
-	public const float MaxRocketDistance = 30; //Make sure that radius of AffectArea on JumperRocket matches
+	public const float MaxRocketDistance = 30;
 	public const float RocketHorizontalMultiplyer = 1f;
 	public const float RocketVerticalMultiplyer = 0.65f;
 
 	public System.Tuple<int, int> CurrentChunk { get; set; }
 	public Projectiles.ProjectileID ProjectileId { get; set; }
 	public int FirerId { get; set; } //The player which fired the rocket, to prevent colliding fire-er
-	public HashSet<Node> AffectedBodies = new HashSet<Node>();
 	public Vector3 Momentum { get; set; }
 	public float Life = 0;
 	public bool Triggered = false;
@@ -53,20 +52,6 @@ public class JumperRocket : Spatial, IProjectile
 
 		Triggered = true;
 		TriggeredPosition = CollisionPointPosition;
-	}
-
-
-	public void EffectAreaEntered(Node Body)
-	{
-		if(!AffectedBodies.Contains(Body))
-			AffectedBodies.Add(Body);
-	}
-
-
-	public void EffectAreaExited(Node Body)
-	{
-		if(AffectedBodies.Contains(Body))
-			AffectedBodies.Remove(Body);
 	}
 
 
@@ -112,8 +97,8 @@ public class JumperRocket : Spatial, IProjectile
 
 	public void Explode(Vector3 Position)
 	{
-		GD.Print("Explode");
-		foreach(Node Body in AffectedBodies)
+		var WithinArea = World.GetEntitiesWithinArea(Position, MaxRocketDistance);
+		foreach(Node Body in WithinArea)
 		{
 			if(Body is IPushable Pushable)
 			{
@@ -141,7 +126,6 @@ public class JumperRocket : Spatial, IProjectile
 				Entities.SendPush(Pushable, Push);
 			}
 		}
-		AffectedBodies.Clear();
 
 		ExplodeSoundVisual(Position);
 

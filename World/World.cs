@@ -350,6 +350,38 @@ public class World : Node
 	}
 
 
+	public static List<IEntity> GetEntitiesWithinArea(Vector3 Center, float Radius)
+	{
+		//TODO: Make this more generic, more performant
+		Assert.ActualAssert(Radius < ChunkSize);
+
+		var Output = new List<IEntity>();
+
+		var ChunkList = new List<Tuple<int, int>>();
+		ChunkList.Add(GetChunkTuple(Center));
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(ChunkSize, 0, 0))); //Forward
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(-ChunkSize, 0, 0))); //Backward
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(0, 0, ChunkSize))); //Right
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(0, 0, -ChunkSize))); //Left
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(ChunkSize, 0, ChunkSize))); //Forward right
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(ChunkSize, 0, -ChunkSize))); //Forward left
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(-ChunkSize, 0, ChunkSize))); //Backward right
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(-ChunkSize, 0, -ChunkSize))); //Backward left
+
+		foreach(var ChunkTuple in ChunkList)
+		{
+			if(Chunks.TryGetValue(ChunkTuple, out ChunkClass Chunk))
+				Output = Output.Concat(Chunk.Entities).ToList(); //TODO: Eww
+		}
+
+		return Output;
+	}
+
+
 	static void AddTileToChunk(Tile Branch)
 	{
 		if(ChunkExists(Branch.Translation))
