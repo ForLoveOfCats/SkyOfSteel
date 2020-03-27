@@ -830,62 +830,39 @@ public class World : Node
 		if(!IsOpen)
 			return;
 
+		var DeadChunks = new List<Tuple<int, int>>();
+
 		foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in Chunks.ToArray())
 		{
 			if(World.ChunkWithinDistanceFrom(Chunk.Key, ChunkRenderDistance, Position))
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
-					foreach(Tile CurrentTile in Chunk.Value.Tiles)
-						CurrentTile.Show();
-
-					foreach(MobClass Mob in Chunk.Value.Mobs)
-						Mob.Show();
-
-					foreach(DroppedItem Item in Chunk.Value.Items)
-						Item.Show();
+					foreach(IEntity Entity in Chunk.Value.Entities)
+						Entity.Visible = true;
 				}
+				//Client logic is handled by RPC calling `RequestChunks` on the server
 			}
 			else
 			{
-				var TilesBeingRemoved = new List<Tile>();
-				foreach(Tile CurrentTile in Chunk.Value.Tiles)
+				if(Net.Work.IsNetworkServer())
 				{
-					if(Self.GetTree().IsNetworkServer())
-						CurrentTile.Hide();
-					else
-						TilesBeingRemoved.Add(CurrentTile);
+					foreach(IEntity Entity in Chunk.Value.Entities)
+						Entity.Visible = false;
 				}
-
-				foreach(Tile CurrentTile in TilesBeingRemoved)
-					World.Self.RemoveTile(CurrentTile.Name);
-
-				List<MobClass> MobsBeingRemoved = new List<MobClass>();
-				foreach(MobClass Mob in Chunk.Value.Mobs)
+				else
 				{
-					if(Self.GetTree().IsNetworkServer())
-						Mob.Hide();
-					else
-						MobsBeingRemoved.Add(Mob);
+					var EntitiesBeingRemoved = new List<IEntity>(Chunk.Value.Entities);
+					foreach(IEntity Entity in EntitiesBeingRemoved)
+						Entity.PhaseOut();
+
+					DeadChunks.Add(Chunk.Key);
 				}
-
-				foreach(MobClass Mob in MobsBeingRemoved)
-					Mob.QueueFree();
-
-				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
-				foreach(DroppedItem Item in Chunk.Value.Items)
-				{
-					if(Self.GetTree().IsNetworkServer())
-						Item.Hide();
-					else
-						ItemsBeingRemoved.Add(Item);
-				}
-
-				foreach(DroppedItem Item in ItemsBeingRemoved)
-					Item.Remove();
 			}
 		}
 
+		foreach(var ChunkTuple in DeadChunks)
+			Chunks.Remove(ChunkTuple);
 
 		if(!Self.GetTree().IsNetworkServer())
 			Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Position.Flattened(), ChunkRenderDistance);
