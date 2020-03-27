@@ -125,6 +125,17 @@ public class Entities : Node
 				);
 				return;
 			}
+
+			case MobClass Mob:
+			{
+				Mobs.Self.RpcId(
+					Receiver,
+					nameof(Mobs.NetSpawnMob),
+					Mob.Type,
+					Mob.Name
+				);
+				return;
+			}
 		}
 	}
 

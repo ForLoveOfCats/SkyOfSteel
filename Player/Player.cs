@@ -641,6 +641,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			}
 		}
 
+		Entities.MovedTick(this, OriginalChunkTuple);
+
 		{
 			Items.ID ItemId;
 			if(Inventory[InventorySlot] != null)
@@ -666,8 +668,6 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			DepreciatedCurrentChunk = World.GetChunkTuple(Translation);
 			World.UnloadAndRequestChunks(Translation, Game.ChunkRenderDistance);
 		}
-
-		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 
 

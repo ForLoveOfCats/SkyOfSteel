@@ -184,9 +184,9 @@ public class JumperRocket : Spatial, IProjectile
 		if(!Net.Work.IsNetworkServer())
 			return;
 
+		Entities.MovedTick(this, OriginalChunkTuple);
+
 		Entities.AsServerMaybePhaseOut(this);
 		Entities.SendUpdate(Name, Translation);
-
-		Entities.MovedTick(this, OriginalChunkTuple);
 	}
 }

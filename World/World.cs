@@ -29,7 +29,6 @@ public class World : Node
 	public static string SaveName = null;
 
 	public static Node EntitiesRoot = null;
-	public static Node MobsRoot = null;
 	public static ProceduralSky WorldSky = null;
 	public static Godot.Environment WorldEnv = null;
 
@@ -92,6 +91,8 @@ public class World : Node
 		var Rotation = new Vector3();
 		Self.PlaceWithName(BranchType, Position, Rotation, 0, GuidName);
 		Net.SteelRpc(Self, nameof(PlaceWithName), BranchType, Position, Rotation, 0, GuidName);
+
+		Mobs.SpawnMob(Mobs.ID.Slime);
 	}
 
 
@@ -112,10 +113,6 @@ public class World : Node
 		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
 
-		MobsRoot = new Node();
-		MobsRoot.Name = "MobsRoot";
-		SkyScene.AddChild(MobsRoot);
-
 		TimeOfDay = DayNightMinutes*60/4;
 		IsOpen = true;
 	}
@@ -131,7 +128,6 @@ public class World : Node
 
 		//This is NOT a leak! Their parent was just freed ^
 		EntitiesRoot = null;
-		MobsRoot = null;
 
 		Net.Players.Clear();
 		Game.PossessedPlayer = Player.None();
@@ -178,9 +174,6 @@ public class World : Node
 
 			Entity.QueueFree();
 		}
-
-		foreach(Node MobInstance in MobsRoot.GetChildren())
-			MobInstance.QueueFree();
 
 		Pathfinder.Clear();
 		Chunks.Clear();
@@ -402,7 +395,7 @@ public class World : Node
 	public static void AddMobToChunk(MobClass Mob)
 	{
 		var ChunkTuple = GetChunkTuple(Mob.Translation);
-		Mob.CurrentChunkTuple = ChunkTuple;
+		Mob.DepreciatedCurrentChunkTuple = ChunkTuple;
 
 		if(ChunkExists(Mob.Translation))
 			Chunks[ChunkTuple].Mobs.Add(Mob);
