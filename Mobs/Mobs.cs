@@ -50,7 +50,7 @@ public class Mobs : Node
 	[Remote]
 	public void NetSpawnMob(ID Id, string GuidName)
 	{
-		if(World.EntitiesRoot.HasNode(Id.ToString()))
+		if(World.EntitiesRoot.HasNode(GuidName))
 			return;
 
 		var Mob = (MobClass) Scenes[Id].Instance();
