@@ -204,6 +204,15 @@ public class HUD : Node
 
 						some: (OwningPlayer) =>
 						{
+							//On the server when a player instance is unloaded due to render distance it technically still exists
+							//So as precaution if the nametag's player is outside the render distance we hide it
+							var OwningPlayerChunk = World.GetChunkTuple(OwningPlayer.Translation);
+							if(!World.ChunkWithinDistanceFrom(OwningPlayerChunk, Game.ChunkRenderDistance, Plr.Translation))
+							{
+								Current.Value.Visible = false;
+								return; //continue foreach by exiting lambda
+							}
+
 							Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0, 7.5f, 0);
 							if(Net.Players[OwningPlayer.Id].Team != Net.Players[Plr.Id].Team || Plr.Cam.IsPositionBehind(PlayerPos))
 							{
