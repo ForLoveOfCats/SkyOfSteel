@@ -6,14 +6,6 @@ using System.Collections.Generic;
 
 public class Entities : Node
 {
-	public enum PURPOSE
-	{
-		CREATE,
-		DESTROY,
-		UPDATE,
-	}
-
-
 	public static Entities Self;
 	private Entities()
 	{
