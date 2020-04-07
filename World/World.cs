@@ -20,7 +20,7 @@ public class World : Node
 	public static Dictionary<Tuple<int,int>, ChunkClass> Chunks = new Dictionary<Tuple<int,int>, ChunkClass>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadedChunks = new Dictionary<int, List<Tuple<int,int>>>();
 	public static Dictionary<int, List<Tuple<int,int>>> RemoteLoadingChunks = new Dictionary<int, List<Tuple<int,int>>>();
-	public static Dictionary<int, int> ChunkLoadDistances = new Dictionary<int, int>();
+	public static Dictionary<int, int> ChunkRenderDistances = new Dictionary<int, int>();
 	public static List<DroppedItem> ItemList = new List<DroppedItem>();
 	public static GridClass Grid = new GridClass();
 	public static Pathfinding Pathfinder = new Pathfinding();
@@ -28,9 +28,7 @@ public class World : Node
 	public static bool IsOpen = false;
 	public static string SaveName = null;
 
-	public static Node TilesRoot = null;
 	public static Node EntitiesRoot = null;
-	public static Node MobsRoot = null;
 	public static ProceduralSky WorldSky = null;
 	public static Godot.Environment WorldEnv = null;
 
@@ -87,7 +85,14 @@ public class World : Node
 
 	public static void DefaultPlatforms()
 	{
-		Place(Items.ID.PLATFORM, new Vector3(), new Vector3(), 0);
+		string GuidName = System.Guid.NewGuid().ToString();
+		var BranchType = Items.ID.PLATFORM;
+		var Position = new Vector3();
+		var Rotation = new Vector3();
+		Self.PlaceWithName(BranchType, Position, Rotation, 0, GuidName);
+		Net.SteelRpc(Self, nameof(PlaceWithName), BranchType, Position, Rotation, 0, GuidName);
+
+		Mobs.SpawnMob(Mobs.ID.Slime);
 	}
 
 
@@ -104,17 +109,9 @@ public class World : Node
 
 		SkyScene.AddChild(new Starfield());
 
-		TilesRoot = new Node();
-		TilesRoot.Name = "TilesRoot";
-		SkyScene.AddChild(TilesRoot);
-
 		EntitiesRoot = new Node();
 		EntitiesRoot.Name = "EntitiesRoot";
 		SkyScene.AddChild(EntitiesRoot);
-
-		MobsRoot = new Node();
-		MobsRoot.Name = "MobsRoot";
-		SkyScene.AddChild(MobsRoot);
 
 		TimeOfDay = DayNightMinutes*60/4;
 		IsOpen = true;
@@ -130,9 +127,7 @@ public class World : Node
 		}
 
 		//This is NOT a leak! Their parent was just freed ^
-		TilesRoot = null;
 		EntitiesRoot = null;
-		MobsRoot = null;
 
 		Net.Players.Clear();
 		Game.PossessedPlayer = Player.None();
@@ -162,7 +157,7 @@ public class World : Node
 		}
 		foreach(Tile Branch in Branches)
 		{
-			Branch.Remove(Force:true);
+			World.Self.RemoveTile(Branch.Name);
 		}
 
 		DroppedItem[] RemovingItems = new DroppedItem[ItemList.Count];
@@ -173,10 +168,12 @@ public class World : Node
 		}
 
 		foreach(Node Entity in EntitiesRoot.GetChildren())
-			Entity.QueueFree();
+		{
+			if(Entity is Player)
+				continue;
 
-		foreach(Node MobInstance in MobsRoot.GetChildren())
-			MobInstance.QueueFree();
+			Entity.QueueFree();
+		}
 
 		Pathfinder.Clear();
 		Chunks.Clear();
@@ -309,6 +306,75 @@ public class World : Node
 	}
 
 
+	public static bool ChunkWithinDistanceFrom(Tuple<int, int> ChunkTuple, int Distance, Vector3 From)
+	{
+		Vector3 ChunkPos = new Vector3(ChunkTuple.Item1, 0, ChunkTuple.Item2);
+		From = GetChunkPos(From);
+		return From.DistanceTo(ChunkPos) <= Distance * ChunkSize;
+	}
+
+
+	public static void AddEntityToChunk(IEntity Entity)
+	{
+		var ChunkTuple = GetChunkTuple(Entity.Translation);
+
+		if(Chunks.TryGetValue(ChunkTuple, out var Chunk))
+			Chunk.Entities.Add(Entity);
+		else
+		{
+			Chunk = new ChunkClass();
+			Chunk.Entities.Add(Entity);
+			Chunks.Add(ChunkTuple, Chunk);
+		}
+
+		Entity.CurrentChunk = ChunkTuple;
+	}
+
+
+	public static void RemoveEntityFromChunk(IEntity Entity)
+	{
+		if(Chunks.TryGetValue(Entity.CurrentChunk, out var Chunk))
+		{
+			Chunk.Entities.Remove(Entity);
+
+			if(Chunk.IsEmpty())
+				Chunks.Remove(Entity.CurrentChunk);
+		}
+	}
+
+
+	public static List<IEntity> GetEntitiesWithinArea(Vector3 Center, float Radius)
+	{
+		//TODO: Make this more generic, more performant
+		Assert.ActualAssert(Radius < ChunkSize);
+
+		var Output = new List<IEntity>();
+
+		var ChunkList = new List<Tuple<int, int>>();
+		ChunkList.Add(GetChunkTuple(Center));
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(ChunkSize, 0, 0))); //Forward
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(-ChunkSize, 0, 0))); //Backward
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(0, 0, ChunkSize))); //Right
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(0, 0, -ChunkSize))); //Left
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(ChunkSize, 0, ChunkSize))); //Forward right
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(ChunkSize, 0, -ChunkSize))); //Forward left
+
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(-ChunkSize, 0, ChunkSize))); //Backward right
+		ChunkList.Add(GetChunkTuple(Center + new Vector3(-ChunkSize, 0, -ChunkSize))); //Backward left
+
+		foreach(var ChunkTuple in ChunkList)
+		{
+			if(Chunks.TryGetValue(ChunkTuple, out ChunkClass Chunk))
+				Output = Output.Concat(Chunk.Entities).ToList(); //TODO: Eww
+		}
+
+		return Output;
+	}
+
+
 	static void AddTileToChunk(Tile Branch)
 	{
 		if(ChunkExists(Branch.Translation))
@@ -329,7 +395,7 @@ public class World : Node
 	public static void AddMobToChunk(MobClass Mob)
 	{
 		var ChunkTuple = GetChunkTuple(Mob.Translation);
-		Mob.CurrentChunkTuple = ChunkTuple;
+		Mob.DepreciatedCurrentChunkTuple = ChunkTuple;
 
 		if(ChunkExists(Mob.Translation))
 			Chunks[ChunkTuple].Mobs.Add(Mob);
@@ -359,44 +425,30 @@ public class World : Node
 	}
 
 
-	public static Tile PlaceOn(Items.ID BranchType, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
+	public static void PlaceOn(Items.ID BranchType, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitPoint, int OwnerId)
 	{
 		Vector3? Position = Items.TryCalculateBuildPosition(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
 		if(Position != null) //If null then unsupported branch/base combination
 		{
 			Vector3 Rotation = Items.CalculateBuildRotation(BranchType, Base, PlayerOrientation, BuildRotation, HitPoint);
-			return Place(BranchType, (Vector3)Position, Rotation, OwnerId);
+			string GuidName = System.Guid.NewGuid().ToString();
+			Self.PlaceWithName(BranchType, (Vector3)Position, Rotation, OwnerId, GuidName);
+			Net.SteelRpc(Self, nameof(PlaceWithName), BranchType, (Vector3)Position, Rotation, OwnerId, GuidName);
 		}
-
-		return null;
 	}
-
-
-	public static Tile Place(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId)
-	{
-		string Name = System.Guid.NewGuid().ToString();
-		Tile Branch = Self.PlaceWithName(BranchType, Position, Rotation, OwnerId, Name);
-
-		if(Self.GetTree().NetworkPeer != null) //Don't sync place if network is not ready
-		{
-			Net.SteelRpc(Self, nameof(PlaceWithName), new object[] {BranchType, Position, Rotation, OwnerId, Name});
-		}
-
-		return Branch;
-	}
-
 
 	[Remote]
-	public Tile PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
+	public void PlaceWithName(Items.ID BranchType, Vector3 Position, Vector3 Rotation, int OwnerId, string Name)
 	{
 		//Nested if to prevent very long line
-		if(GetTree().NetworkPeer != null && !Net.Work.IsNetworkServer() && Game.PossessedPlayer.HasValue)
+		if(Net.Work.NetworkPeer != null && !Net.Work.IsNetworkServer() && Game.PossessedPlayer.HasValue)
 		{
 			Player Plr = Game.PossessedPlayer.ValueOrFailure();
-			if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) > Game.ChunkRenderDistance*(PlatformSize*9))
+			var PositionChunk = GetChunkTuple(Position);
+			if(!ChunkWithinDistanceFrom(PositionChunk, Game.ChunkRenderDistance, Plr.Translation))
 			{
 				//If network is inited, not the server, and platform it to far away then...
-				return null; //...don't place
+				return; //...don't place
 			}
 		}
 
@@ -406,20 +458,21 @@ public class World : Node
 		Branch.Translation = Position;
 		Branch.RotationDegrees = Rotation;
 		Branch.Name = Name; //Name is a GUID and can be used to reference a structure over network
-		TilesRoot.AddChild(Branch);
+		EntitiesRoot.AddChild(Branch);
 
 		AddTileToChunk(Branch);
 		Grid.AddItem(Branch);
 		Grid.QueueUpdateNearby(Branch.Translation);
 
-		if(GetTree().NetworkPeer != null && GetTree().IsNetworkServer())
+		if(Net.Work.NetworkPeer != null && Net.Work.IsNetworkServer())
 		{
 			TryAddTileToPathfinder(Branch);
 
 			if(Game.PossessedPlayer.HasValue)
 			{
 				Player Plr = Game.PossessedPlayer.ValueOrFailure();
-				if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) > Game.ChunkRenderDistance * (PlatformSize * 9))
+				var PositionChunk = GetChunkTuple(Position);
+				if(!ChunkWithinDistanceFrom(PositionChunk, Game.ChunkRenderDistance, Plr.Translation))
 				{
 					//If network is inited, am the server, and platform is to far away then...
 					Branch.Hide(); //...make it not visible but allow it to remain in the world
@@ -434,7 +487,8 @@ public class World : Node
 				Net.Players[Id].Plr.MatchSome(
 					(Plr) =>
 					{
-						if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= ChunkLoadDistances[Id] * (PlatformSize * 9))
+						var PositionChunk = GetChunkTuple(Position);
+						if(ChunkWithinDistanceFrom(PositionChunk, ChunkRenderDistances[Id], Plr.Translation))
 						{
 							if(!RemoteLoadedChunks[Id].Contains(GetChunkTuple(Position)))
 								RemoteLoadedChunks[Id].Add(GetChunkTuple(Position));
@@ -443,8 +497,6 @@ public class World : Node
 				);
 			}
 		}
-
-		return Branch;
 	}
 
 
@@ -716,9 +768,9 @@ public class World : Node
 	[Remote]
 	public void RemoveTile(string TileName)
 	{
-		if(TilesRoot.HasNode(TileName))
+		if(EntitiesRoot.HasNode(TileName))
 		{
-			var Branch = TilesRoot.GetNode<Tile>(TileName);
+			var Branch = EntitiesRoot.GetNode<Tile>(TileName);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(Branch.Translation);
 			Chunks[ChunkTuple].Tiles.Remove(Branch);
 			if(Chunks[ChunkTuple].Tiles.Count <= 0 && Chunks[ChunkTuple].Items.Count <= 0)
@@ -738,8 +790,7 @@ public class World : Node
 	}
 
 
-	[Remote]
-	public void RemoveDroppedItem(string Guid) //NOTE: Make sure to remove from World.ItemList after client callsite
+	public static void RemoveDroppedItem(string Guid)
 	{
 		if(EntitiesRoot.HasNode(Guid))
 		{
@@ -760,14 +811,15 @@ public class World : Node
 
 
 	[Remote]
-	public void InitialNetWorldLoad(int Id, Vector3 PlayerPosition, int RenderDistance)
+	public void InitialNetWorldSend(int Id, Vector3 PlayerPosition, int RenderDistance)
 	{
 		if(!Net.Work.IsNetworkServer())
-			throw new Exception($"Attempted to run {nameof(InitialNetWorldLoad)} on client");
+			throw new Exception($"Attempted to run {nameof(InitialNetWorldSend)} on client");
 
 		RequestChunks(Id, PlayerPosition, RenderDistance);
 
-		Assert.ActualAssert(Net.Players[Id].Plr.HasValue); //Todo: Spawn the player here
+		Game.SpawnPlayer(Id, false);
+		Assert.ActualAssert(Net.Players[Id].Plr.HasValue);
 		Net.Players[Id].Plr.ValueOrFailure().SetFreeze(false);
 		Net.Players[Id].Plr.ValueOrFailure().GiveDefaultItems();
 	}
@@ -778,63 +830,39 @@ public class World : Node
 		if(!IsOpen)
 			return;
 
+		var DeadChunks = new List<Tuple<int, int>>();
+
 		foreach(KeyValuePair<Tuple<int, int>, ChunkClass> Chunk in Chunks.ToArray())
 		{
-			var ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
-			if(ChunkPos.DistanceTo(Position.Flattened()) <= ChunkRenderDistance * (PlatformSize * 9))
+			if(World.ChunkWithinDistanceFrom(Chunk.Key, ChunkRenderDistance, Position))
 			{
 				if(Self.GetTree().IsNetworkServer())
 				{
-					foreach(Tile CurrentTile in Chunk.Value.Tiles)
-						CurrentTile.Show();
-
-					foreach(MobClass Mob in Chunk.Value.Mobs)
-						Mob.Show();
-
-					foreach(DroppedItem Item in Chunk.Value.Items)
-						Item.Show();
+					foreach(IEntity Entity in Chunk.Value.Entities)
+						Entity.Visible = true;
 				}
+				//Client logic is handled by RPC calling `RequestChunks` on the server
 			}
 			else
 			{
-				var TilesBeingRemoved = new List<Tile>();
-				foreach(Tile CurrentTile in Chunk.Value.Tiles)
+				if(Net.Work.IsNetworkServer())
 				{
-					if(Self.GetTree().IsNetworkServer())
-						CurrentTile.Hide();
-					else
-						TilesBeingRemoved.Add(CurrentTile);
+					foreach(IEntity Entity in Chunk.Value.Entities)
+						Entity.Visible = false;
 				}
-
-				foreach(Tile CurrentTile in TilesBeingRemoved)
-					CurrentTile.Remove(Force: true);
-
-				List<MobClass> MobsBeingRemoved = new List<MobClass>();
-				foreach(MobClass Mob in Chunk.Value.Mobs)
+				else
 				{
-					if(Self.GetTree().IsNetworkServer())
-						Mob.Hide();
-					else
-						MobsBeingRemoved.Add(Mob);
+					var EntitiesBeingRemoved = new List<IEntity>(Chunk.Value.Entities);
+					foreach(IEntity Entity in EntitiesBeingRemoved)
+						Entity.PhaseOut();
+
+					DeadChunks.Add(Chunk.Key);
 				}
-
-				foreach(MobClass Mob in MobsBeingRemoved)
-					Mob.QueueFree();
-
-				List<DroppedItem> ItemsBeingRemoved = new List<DroppedItem>();
-				foreach(DroppedItem Item in Chunk.Value.Items)
-				{
-					if(Self.GetTree().IsNetworkServer())
-						Item.Hide();
-					else
-						ItemsBeingRemoved.Add(Item);
-				}
-
-				foreach(DroppedItem Item in ItemsBeingRemoved)
-					Item.Remove();
 			}
 		}
 
+		foreach(var ChunkTuple in DeadChunks)
+			Chunks.Remove(ChunkTuple);
 
 		if(!Self.GetTree().IsNetworkServer())
 			Self.RequestChunks(Self.GetTree().GetNetworkUniqueId(), Position.Flattened(), ChunkRenderDistance);
@@ -852,13 +880,13 @@ public class World : Node
 
 		if(!Net.Players.ContainsKey(Id)) {return;}
 
-		ChunkLoadDistances[Id] = RenderDistance;
+		ChunkRenderDistances[Id] = RenderDistance;
 
 		foreach(KeyValuePair<System.Tuple<int, int>, ChunkClass> Chunk in Chunks)
 		{
 			Vector3 ChunkPos = new Vector3(Chunk.Key.Item1, 0, Chunk.Key.Item2);
 			Tuple<int,int> ChunkTuple = GetChunkTuple(ChunkPos);
-			if(ChunkPos.DistanceTo(Position.Flattened()) <= RenderDistance*(PlatformSize*9))
+			if(ChunkWithinDistanceFrom(ChunkTuple, RenderDistance, Position))
 			{
 				//This chunk is close enough to the player that we should send it along
 				if(RemoteLoadedChunks[Id].Contains(ChunkTuple) || RemoteLoadingChunks[Id].Contains(ChunkTuple))
@@ -886,30 +914,11 @@ public class World : Node
 	{
 		Self.RpcId(Id, nameof(PrepareChunkSpace), new Vector2(ChunkLocation.Item1, ChunkLocation.Item2));
 
-		foreach(Tile Branch in Chunks[ChunkLocation].Tiles)
+		foreach(IEntity Entity in Chunks[ChunkLocation].Entities)
 		{
-			Self.RpcId(Id, nameof(PlaceWithName), Branch.ItemId, Branch.Translation, Branch.RotationDegrees, Branch.OwnerId, Branch.Name);
-
-			//If the tile has an inventory then send it along too, because reliable RCPs are ordered these operations are applied after
-			//the node is created on the client thus avoiding any errors. Woot for ordered RCPs!
-			if(Branch is IHasInventory HasInv)
-			{
-				for(int Index = 0; Index < HasInv.Inventory.SlotCount; Index++)
-				{
-					if(HasInv.Inventory[Index] is Items.Instance Item)
-						Branch.RpcId(Id, nameof(IHasInventory.NetUpdateInventorySlot), Index, Item.Id, Item.Count);
-				}
-			}
-		}
-
-		foreach(MobClass Mob in Chunks[ChunkLocation].Mobs)
-		{
-			Mobs.Self.RpcId(Id, nameof(Mobs.NetSpawnMob), Mob.Type, Mob.Name);
-		}
-
-		foreach(DroppedItem Item in Chunks[ChunkLocation].Items)
-		{
-			Self.RpcId(Id, nameof(DropOrUpdateItem), Item.Type, Item.Translation, Item.RotationDegrees.y, Item.Momentum, Item.Name);
+			Entities.SendCreateTo(Id, Entity);
+			if(Entity is IHasInventory HasInventory)
+				Entities.SendInventoryTo(HasInventory, Id);
 		}
 
 		//After sending all the chunk data lets tell the client that its all
@@ -977,7 +986,8 @@ public class World : Node
 			Tuple<Items.ID,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
 			if(Info != null)
 			{
-				Place(Info.Item1, Info.Item2, Info.Item3, 1);
+				string GuidName = System.Guid.NewGuid().ToString();
+				Self.PlaceWithName(Info.Item1, Info.Item2, Info.Item3, 1, GuidName);
 				PlaceCount++;
 			}
 		}
@@ -1051,7 +1061,8 @@ public class World : Node
 			Game.PossessedPlayer.MatchSome(
 				(Plr) =>
 				{
-					if(GetChunkPos(Position).DistanceTo(Plr.Translation.Flattened()) <= Game.ChunkRenderDistance * (PlatformSize * 9))
+					var PositionChunk = GetChunkTuple(Position);
+					if(ChunkWithinDistanceFrom(PositionChunk, Game.ChunkRenderDistance, Plr.Translation))
 					{
 						var ToDrop = (DroppedItem) DroppedItemScene.Instance();
 						ToDrop.Translation = Position;

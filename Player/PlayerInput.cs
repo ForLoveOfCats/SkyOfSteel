@@ -554,19 +554,13 @@ public class PlayerInput
 			{
 				if(Sens > 0)
 				{
-					Vector3 Vel = Plr.CalcThrowVelocity();
-
-					if(Net.Work.IsNetworkServer())
-						Plr.ThrowItemFromSlot(Plr.InventorySlot, Vel);
-					else
+					if(Plr.Inventory[Plr.InventorySlot] != null)
 					{
-						Plr.RpcId(Net.ServerId, nameof(Player.ThrowItemFromSlot), Plr.InventorySlot, Vel);
+						Plr.SfxManager.FpThrow();
+						Plr.SetCooldown(0, Player.SlotSwitchCooldown, false);
 
-						if(Plr.Inventory[Plr.InventorySlot] != null)
-						{
-							Plr.SfxManager.FpThrow();
-							Plr.SetCooldown(0, Player.SlotSwitchCooldown, false);
-						}
+						Vector3 Vel = Plr.CalcThrowVelocity();
+						Entities.ThrowSlotFromAt(Plr, Plr.InventorySlot, Items.IntentCount.SINGLE, Plr.Cam.GlobalTransform.origin, Vel);
 					}
 				}
 			}

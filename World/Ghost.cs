@@ -33,7 +33,7 @@ public class Ghost : Area
 		Game.PossessedPlayer.Match(
 			none: () => GhostMesh.Visible = false,
 
-		some: (Plr) =>
+			some: (Plr) =>
 			{
 				if(Plr.Inventory[Plr.InventorySlot] == null)
 				{

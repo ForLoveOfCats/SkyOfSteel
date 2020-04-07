@@ -10,7 +10,7 @@ public static class API
 
 		if(Mismatch)
 			Console.ThrowPrint(
-				$"Expected {Expected} arguments but recieved {Args.Length} arguments"
+				$"Expected {Expected} arguments but received {Args.Length} arguments"
 			);
 
 		return Mismatch;
@@ -183,5 +183,30 @@ public static class API
 			Engine.TargetFps = Target;
 		else
 			Console.ThrowPrint($"Invalid max fps {TargetString}");
+	}
+
+
+	public static void ChunkEntityCount(string[] Args)
+	{
+		if(ArgCountMismatch(Args, 0))
+			return;
+
+		Game.PossessedPlayer.Match(
+			some: (Plr) =>
+			{
+				var ChunkTuple = World.GetChunkTuple(Plr.Translation);
+
+				int Count = 0;
+				if(World.Chunks.TryGetValue(ChunkTuple, out var Chunk))
+					Count = Chunk.Entities.Count;
+
+				Console.Print($"Chunk {ChunkTuple} contains {Count} entities");
+			},
+
+			none: () =>
+			{
+				Console.ThrowPrint("The local player is currently dead");
+			}
+		);
 	}
 }

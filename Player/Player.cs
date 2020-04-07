@@ -7,7 +7,7 @@ using static Godot.Mathf;
 
 
 
-public class Player : Character, IPushable, IHasInventory
+public class Player : Character, IEntity, IPushable, IHasInventory
 {
 	public const float Height = 10;
 	public const float RequiredUncrouchHeight = 11;
@@ -54,7 +54,8 @@ public class Player : Character, IPushable, IHasInventory
 	private bool Frozen = true;
 	public bool FlyMode { get; private set;} = false;
 
-	public System.Tuple<int, int> CurrentChunk = new System.Tuple<int, int>(0, 0);
+	public System.Tuple<int, int> DepreciatedCurrentChunk = new System.Tuple<int, int>(0, 0);
+	public Tuple<int, int> CurrentChunk { get; set; } //TODO: This is for IEntity, unify
 
 	public float Health = 0;
 	public bool Dying = false;
@@ -128,7 +129,7 @@ public class Player : Character, IPushable, IHasInventory
 		if(Engine.EditorHint) {return;}
 
 		//Init eleven slots, only use ten of them. The eleventh is used for dropping
-		Inventory = new InventoryComponent(this, 11, HiddenLast:true);
+		Inventory = new InventoryComponent(this, 10);
 
 		HUDInstance = (HUD) GD.Load<PackedScene>("res://UI/HUD.tscn").Instance();
 	}
@@ -185,6 +186,7 @@ public class Player : Character, IPushable, IHasInventory
 			Body.GetNode<HitboxClass>("HeadJoint/HeadHitbox").OwningPlayer = this;
 			Body.GetNode<HitboxClass>("LegsJoint/LegsHitbox").OwningPlayer = this;
 
+			World.AddEntityToChunk(this);
 			return;
 		}
 
@@ -195,6 +197,14 @@ public class Player : Character, IPushable, IHasInventory
 			SetFreeze(false);
 			GiveDefaultItems();
 		}
+
+		World.AddEntityToChunk(this);
+	}
+
+
+	public override void _ExitTree()
+	{
+		World.RemoveEntityFromChunk(this);
 	}
 
 
@@ -258,35 +268,6 @@ public class Player : Character, IPushable, IHasInventory
 
 
 	[Remote]
-	public void Die()
-	{
-		if(!Net.Work.IsNetworkServer())
-			RpcId(Net.ServerId, nameof(Die));
-		else
-		{
-			Net.SteelRpc(this, nameof(NetDie));
-			NetDie();
-		}
-	}
-
-
-	[Remote]
-	public void NetDie()
-	{
-		if(Possessed)
-		{
-			Cam.ClearCurrent(false);
-			Game.PossessedPlayer = Player.None();
-			World.UnloadAndRequestChunks(new Vector3(), 0);
-			Menu.BuildPause();
-		}
-
-		Net.Players[Id].Plr = Player.None();
-		QueueFree();
-	}
-
-
-	[Remote]
 	public void ApplyDamage(float Damage, Vector3 Origin)
 	{
 		Health = Clamp(Health - Damage, 0, MaxHealth);
@@ -300,7 +281,7 @@ public class Player : Character, IPushable, IHasInventory
 		if(!Possessed)
 		{
 			Assert.ActualAssert(Net.Work.IsNetworkServer());
-			Net.SteelRpc(this, nameof(NotifyPickedUpItem));
+			RpcId(Id, nameof(NotifyPickedUpItem));
 			return;
 		}
 
@@ -311,22 +292,8 @@ public class Player : Character, IPushable, IHasInventory
 
 	public Option<int[]> ItemGive(Items.Instance ToGive)
 	{
-		Option<int[]> Slots = Inventory.Give(ToGive);
-
-		Slots.MatchSome(
-			(ActualSlots) =>
-			{
-				if(Possessed)
-					HUDInstance.HotbarUpdate();
-				else
-				{
-					foreach(int Slot in ActualSlots)
-						RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, Inventory[Slot].Count);
-				}
-			}
-		);
-
-		return Slots;
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+		return Inventory.Give(ToGive);
 	}
 
 
@@ -386,38 +353,6 @@ public class Player : Character, IPushable, IHasInventory
 	}
 
 
-	[Remote]
-	public void ThrowItemFromSlot(int Slot, Vector3 Vel)
-	{
-		if(Inventory[Slot] != null)
-		{
-			World.Self.DropItem(Inventory[Slot].Id, Translation+Cam.Translation, Vel);
-
-			if(Inventory[Slot].Count > 1)
-			{
-				Inventory[Slot].Count -= 1;
-
-				if(Id != Net.Work.GetNetworkUniqueId())
-					RpcId(Id, nameof(NetUpdateInventorySlot), Slot, Inventory[Slot].Id, Inventory[Slot].Count);
-			}
-			else
-			{
-				Inventory.EmptySlot((Slot));
-
-				if(Id != Net.Work.GetNetworkUniqueId())
-					RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
-			}
-
-			if(Id == Net.Work.GetNetworkUniqueId())
-			{
-				HUDInstance.HotbarUpdate();
-				SfxManager.FpThrow();
-				SetCooldown(0, SlotSwitchCooldown, false);
-			}
-		}
-	}
-
-
 	public float GetAdsMovementMultiplyer()
 	{
 		return Clamp(((AdsMultiplier-1) * AdsMultiplierMovementEffect)+1, 0, 1);
@@ -441,12 +376,14 @@ public class Player : Character, IPushable, IHasInventory
 
 		if(Possessed && !Dying && Health <= 0)
 		{
-			Die();
+			Entities.Self.PleaseDestroyMe(Name);
 			Dying = true;
 		}
 
 		if(Dying)
 			return;
+
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 
 		if(Net.Work.IsNetworkServer())
 		{
@@ -478,14 +415,16 @@ public class Player : Character, IPushable, IHasInventory
 								(ActualSlots) =>
 								{
 									Plr.NotifyPickedUpItem();
-									Net.SteelRpc(World.Self, nameof(World.RemoveDroppedItem), Item.Name);
-									World.Self.RemoveDroppedItem(Item.Name);
+									Entities.SendDestroy(Item.Name);
+									Item.Destroy();
 								}
 							);
 						}
 					);
 				}
 			}
+
+			Entities.AsServerMaybePhaseOut(this);
 		}
 
 		if(!Possessed)
@@ -656,6 +595,8 @@ public class Player : Character, IPushable, IHasInventory
 			}
 		}
 
+		Entities.MovedTick(this, OriginalChunkTuple);
+
 		{
 			Items.ID ItemId;
 			if(Inventory[InventorySlot] != null)
@@ -663,20 +604,62 @@ public class Player : Character, IPushable, IHasInventory
 			else
 				ItemId = Items.ID.ERROR;
 
-			Net.SteelRpcUnreliable(this, nameof(Update), this.Transform, ActualLookVertical, IsJumping, IsCrouching, Health, ItemId,
-			                       Momentum.Rotated(new Vector3(0,1,0), Deg2Rad(LoopRotation(-LookHorizontal))).z);
+			Entities.ClientSendUpdate(
+				Name,
+				this.Transform,
+				ActualLookVertical,
+				IsJumping,
+				IsCrouching,
+				Health,
+				ItemId,
+				Momentum.Rotated(new Vector3(0,1,0),
+				Deg2Rad(LoopRotation(-LookHorizontal))).z
+			);
 		}
 
-		if(!World.GetChunkTuple(Translation).Equals(CurrentChunk))
+		if(!World.GetChunkTuple(Translation).Equals(DepreciatedCurrentChunk))
 		{
-			CurrentChunk = World.GetChunkTuple(Translation);
+			DepreciatedCurrentChunk = World.GetChunkTuple(Translation);
 			World.UnloadAndRequestChunks(Translation, Game.ChunkRenderDistance);
 		}
 	}
 
 
 	[Remote]
-	public void Update(Transform TargetTransform, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
+	public void PhaseOut()
+	{
+		Assert.ActualAssert(!Possessed);
+		Destroy();
+	}
+
+
+	[Remote]
+	public void Destroy(params object[] Args)
+	{
+		if(Possessed)
+		{
+			Cam.ClearCurrent(false);
+			Game.PossessedPlayer = Player.None();
+			World.UnloadAndRequestChunks(new Vector3(), 0);
+			Menu.BuildPause();
+		}
+
+		Net.Players[Id].Plr = Player.None();
+		QueueFree();
+	}
+
+
+	[Remote]
+	public void Update(params object[] Args)
+	{
+		Assert.ArgArray(Args, typeof(Transform), typeof(float), typeof(bool), typeof(bool), typeof(float), typeof(System.Int32), typeof(float));
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
+		ActualUpdate((Transform)Args[0], (float)Args[1], (bool)Args[2], (bool)Args[3], (float)Args[4], (Items.ID)Args[5], (float)Args[6]);
+		Entities.MovedTick(this, OriginalChunkTuple);
+	}
+
+
+	private void ActualUpdate(Transform TargetTransform, float HeadRotation, bool Jumping, bool Crouching, float Hp, Items.ID ItemId, float ForwardMomentum)
 	{
 		Health = Hp;
 
@@ -731,51 +714,6 @@ public class Player : Character, IPushable, IHasInventory
 		}
 
 		NetUpdateDelta = Single.Epsilon;
-	}
-
-
-	[Remote]
-	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
-	{
-		if(Slot == 10)
-		{
-			//This is the eleventh slot, it is used only for dropping stacks
-			if(Possessed)
-			{
-				Vector3 StartPos = Translation + Cam.Translation;
-				for(int Index = 0; Index < Count; Index++)
-					World.Self.DropItem(ItemId, StartPos, CalcThrowVelocity());
-			}
-		}
-		else
-			Inventory.UpdateSlot(Slot, ItemId, Count);
-
-		if(Possessed)
-			HUDInstance.HotbarUpdate();
-		else if(Net.Work.IsNetworkServer())
-			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ItemId, Count);
-	}
-
-
-	[Remote]
-	public void NetEmptyInventorySlot(int Slot)
-	{
-		Inventory.EmptySlot(Slot);
-
-		if(Possessed)
-			HUDInstance.HotbarUpdate();
-		else if(Net.Work.IsNetworkServer())
-			RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
-	}
-
-
-	[Remote]
-	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
-	{
-		if(!Net.Work.IsNetworkServer())
-			RpcId(Net.ServerId, nameof(TransferTo), Path, FromSlot, ToSlot, CountMode);
-		else
-			Inventory.TransferTo(Path, FromSlot, ToSlot, CountMode);
 	}
 
 

@@ -50,11 +50,14 @@ public class Mobs : Node
 	[Remote]
 	public void NetSpawnMob(ID Id, string GuidName)
 	{
+		if(World.EntitiesRoot.HasNode(GuidName))
+			return;
+
 		var Mob = (MobClass) Scenes[Id].Instance();
 		Mob.Type = Id;
 		Mob.Translation = new Vector3(0, 2, 0);
 		Mob.Name = GuidName;
 		World.AddMobToChunk(Mob);
-		World.MobsRoot.AddChild(Mob);
+		World.EntitiesRoot.AddChild(Mob);
 	}
 }

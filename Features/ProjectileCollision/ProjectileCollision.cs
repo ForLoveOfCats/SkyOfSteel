@@ -2,12 +2,11 @@ using Godot;
 
 
 
-public interface IProjectile
+public interface IProjectile : IEntity
 {
-	Vector3 Translation { get; set; }
+	Projectiles.ProjectileID ProjectileId { get; set; }
 	Vector3 RotationDegrees { get; set; }
 	Vector3 Momentum { get; set; }
-	string Name { get; set; }
 
 	int FirerId { get; set; }
 
@@ -42,9 +41,6 @@ public class ProjectileCollision : Spatial
 
 	public override void _PhysicsProcess(float Delta)
 	{
-		if(!Net.Work.IsNetworkServer())
-			return;
-
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 		Godot.Collections.Dictionary Results = State.IntersectRay(
 			StartPoint.GlobalTransform.origin,

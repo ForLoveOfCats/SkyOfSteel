@@ -7,7 +7,7 @@ using static Pathfinding;
 
 
 
-public abstract class MobClass : Character, IInGrid, IPushable
+public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
@@ -25,7 +25,8 @@ public abstract class MobClass : Character, IInGrid, IPushable
 	public Option<PointData> TargetPoint = PointData.None();
 	public Option<Tile> Floor = Tile.None();
 	public Vector3 CurrentArea = new Vector3();
-	public System.Tuple<int, int> CurrentChunkTuple;
+	public System.Tuple<int, int> DepreciatedCurrentChunkTuple;
+	public Tuple<int, int> CurrentChunk { get; set; } //TODO: This is for IEntity, unify
 
 	float TimeSinceUpdate = 0;
 
@@ -36,6 +37,8 @@ public abstract class MobClass : Character, IInGrid, IPushable
 
 	public override void _Ready()
 	{
+		World.AddEntityToChunk(this);
+
 		if(!Net.Work.IsNetworkServer())
 		{
 			SetProcess(false);
@@ -44,6 +47,12 @@ public abstract class MobClass : Character, IInGrid, IPushable
 
 		World.Grid.AddItem(this);
 		UpdateFloor();
+	}
+
+
+	public override void _ExitTree()
+	{
+		World.RemoveEntityFromChunk(this);
 	}
 
 
@@ -75,11 +84,13 @@ public abstract class MobClass : Character, IInGrid, IPushable
 
 	public override void _Process(float Delta) //NOTE: Only runs on server
 	{
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+
 		TimeSinceUpdate += Delta;
 
-		if(!CurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
+		if(!DepreciatedCurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
 		{
-			World.Chunks[CurrentChunkTuple].Mobs.Remove(this);
+			World.Chunks[DepreciatedCurrentChunkTuple].Mobs.Remove(this);
 			World.AddMobToChunk(this);
 		}
 
@@ -127,30 +138,37 @@ public abstract class MobClass : Character, IInGrid, IPushable
 		else //Not on floor
 			Momentum.y = Clamp(Momentum.y - Gravity*Delta, -MaxFallSpeed, MaxFallSpeed); //Apply gravity
 
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Momentum = Move(Momentum, Delta, 1, 60, TopSpeed);
-		if(TimeSinceUpdate >= MaxTimeSinceUpdate)
-		{
-			TimeSinceUpdate = 0;
 
-			foreach(int Id in Net.Players.Keys)
-			{
-				if(Id == Net.Work.GetNetworkUniqueId())
-					continue;
+		Entities.MovedTick(this, OriginalChunkTuple);
 
-				var ChunkTuple = World.GetChunkTuple(Translation);
-				if(World.RemoteLoadedChunks[Id].Contains(ChunkTuple))
-				{
-					//This player has our chunk loaded, update
-					RpcId(Id, nameof(Update), Translation);
-				}
-			}
-		}
+		Entities.AsServerMaybePhaseOut(this);
+		Entities.SendUpdate(Name, Translation);
 	}
 
 
 	[Remote]
-	public void Update(Vector3 Position)
+	public void Update(params object[] Args)
 	{
-		Translation = Position;
+		Assert.ArgArray(Args, typeof(Vector3));
+		var OriginalChunkTuple = World.GetChunkTuple(Translation);
+		Translation = (Vector3)Args[0];
+		Entities.MovedTick(this, OriginalChunkTuple);
+	}
+
+
+	[Remote]
+	public void PhaseOut()
+	{
+		QueueFree();
+	}
+
+
+	[Remote]
+	public void Destroy(params object[] Args)
+	{
+		Assert.ArgArray(Args);
+		QueueFree();
 	}
 }

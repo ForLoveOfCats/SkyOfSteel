@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using static Godot.Mathf;
 
@@ -52,29 +53,31 @@ public class Projectiles : Node
 		string NameArg = System.Guid.NewGuid().ToString();
 
 		if(Net.Work.IsNetworkServer())
-			Self.NonStaticFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+			Self.ActualFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
 		else
-			Self.RpcId(Net.ServerId, nameof(NonStaticFire), ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+		{
+			Self.ActualFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+			Self.RpcId(Net.ServerId, nameof(ActualFire), ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
+		}
 	}
 
 
 	[Remote]
-	private void NonStaticFire(ProjectileID ProjectileId, int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string NameArg)
+	public void ActualFire(ProjectileID ProjectileId, int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string NameArg)
 	{
-		NetFire(ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
-		Net.SteelRpc(this, nameof(NetFire), ProjectileId, Firer, Position, Rotation, Momentum, NameArg);
-	}
+		if(World.EntitiesRoot.HasNode(NameArg))
+			return;
 
-
-	[Remote]
-	public void NetFire(ProjectileID ProjectileId, int Firer, Vector3 Position, Vector3 Rotation, Vector3 Momentum, string NameArg)
-	{
 		var Instance = (IProjectile) Data[ProjectileId].Scene.Instance();
+		Instance.ProjectileId = ProjectileId;
 		Instance.FirerId = Firer;
 		Instance.Translation = Position;
 		Instance.RotationDegrees = Rotation;
 		Instance.Momentum = Momentum;
 		Instance.Name = NameArg;
 		World.EntitiesRoot.AddChild((Node)Instance);
+
+		if(Net.Work.IsNetworkServer())
+			Entities.SendCreate(Instance);
 	}
 }
