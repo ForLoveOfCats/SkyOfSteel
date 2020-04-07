@@ -80,45 +80,18 @@ public class Locker : PipeCoreLogic, IHasInventory
 
 	public override void OnRemove()
 	{
-		for(int Index = 0; Index < Inventory.SlotCount; Index++)
+		if(Net.Work.IsNetworkServer())
 		{
-			if(Inventory[Index] is Items.Instance Item)
+			for(int Index = 0; Index < Inventory.SlotCount; Index++)
 			{
-				for(int C = 0; C < Item.Count; C++)
-					World.Self.DropItem(Item.Id, Translation, new Vector3());
+				if(Inventory[Index] is Items.Instance Item)
+				{
+					for(int C = 0; C < Item.Count; C++)
+						World.Self.DropItem(Item.Id, Translation, new Vector3());
+				}
 			}
 		}
 
 		base.OnRemove();
-	}
-
-
-	[Remote]
-	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
-	{
-		Inventory.UpdateSlot(Slot, ItemId, Count);
-
-		if(Net.Work.IsNetworkServer())
-			Net.SteelRpc(this, nameof(NetUpdateInventorySlot), Slot, ItemId, Count);
-	}
-
-
-	[Remote]
-	public void NetEmptyInventorySlot(int Slot)
-	{
-		Inventory.EmptySlot(Slot);
-
-		if(Net.Work.IsNetworkServer())
-			Net.SteelRpc(this, nameof(NetEmptyInventorySlot), Slot);
-	}
-
-
-	[Remote]
-	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
-	{
-		if(!Net.Work.IsNetworkServer())
-			RpcId(Net.ServerId, nameof(TransferTo), Path, FromSlot, ToSlot, CountMode);
-		else
-			Inventory.TransferTo(Path, FromSlot, ToSlot, CountMode);
 	}
 }

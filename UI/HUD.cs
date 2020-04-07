@@ -197,6 +197,8 @@ public class HUD : Node
 				HealthBar.MaxValue = Player.MaxHealth;
 				HealthBar.Value = Plr.Health;
 
+				HotbarUpdate(); //TODO: Use InventoryIcon
+
 				foreach(KeyValuePair<int, Label> Current in NickLabels)
 				{
 					Net.Players[Current.Key].Plr.Match(

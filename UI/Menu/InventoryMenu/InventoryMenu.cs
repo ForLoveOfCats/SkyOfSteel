@@ -89,7 +89,21 @@ public class InventoryMenu : VBoxContainer
 			(Plr) =>
 			{
 				if(Data is int FromSlot && From != null)
-					From.Source.TransferTo(Plr.GetPath(), FromSlot, 10, From.CountMode);
+				{
+					Game.PossessedPlayer.MatchSome(
+						(Plr) =>
+						{
+							if(Plr.Inventory[FromSlot] != null)
+							{
+								Plr.SfxManager.FpThrow();
+								Plr.SetCooldown(0, Player.SlotSwitchCooldown, false);
+
+								Vector3 Vel = Plr.CalcThrowVelocity();
+								Entities.ThrowSlotFromAt(Plr, FromSlot, From.CountMode, Plr.Cam.GlobalTransform.origin, Vel);
+							}
+						}
+					);
+				}
 			}
 		);
 	}

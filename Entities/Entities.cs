@@ -414,6 +414,53 @@ public class Entities : Node
 	}
 
 
+	public static void TransferFromTo(IHasInventory From, int FromSlot, IHasInventory ToPath, int ToSlot, Items.IntentCount CountMode)
+	{
+		if(Net.Work.IsNetworkServer())
+			Self.ReceiveTransferFromTo(From.GetPath(), FromSlot, ToPath.GetPath(), ToSlot, CountMode);
+		else
+			Self.RpcId(Net.ServerId, nameof(ReceiveTransferFromTo), From.GetPath(), FromSlot, ToPath.GetPath(), ToSlot, CountMode);
+	}
+
+
+	[Remote]
+	private void ReceiveTransferFromTo(NodePath FromPath, int FromSlot, NodePath ToPath, int ToSlot, Items.IntentCount CountMode)
+	{
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+
+		var MaybeFrom = World.EntitiesRoot.GetNodeOrNull(FromPath);
+		var MaybeTo = World.EntitiesRoot.GetNodeOrNull(ToPath);
+
+		if(MaybeFrom is IHasInventory From && MaybeTo is IHasInventory To)
+			From.Inventory.TransferTo(To, FromSlot, ToSlot, CountMode);
+		else //Either From or To is null or not IHasInventory
+			Console.ThrowLog($"Received invalid {nameof(ReceiveTransferFromTo)}"); //TODO: Log more information
+	}
+
+
+	public static void ThrowSlotFromAt(IHasInventory From, int FromSlot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity)
+	{
+		if(Net.Work.IsNetworkServer())
+			Self.ReceiveThrowSlotFromAt(From.GetPath(), FromSlot, CountMode, At, Velocity);
+		else
+			Self.RpcId(Net.ServerId, nameof(ReceiveThrowSlotFromAt), From.GetPath(), FromSlot, CountMode, At, Velocity);
+	}
+
+
+	[Remote]
+	private void ReceiveThrowSlotFromAt(NodePath FromPath, int FromSlot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity)
+	{
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+
+		var MaybeFrom = World.EntitiesRoot.GetNodeOrNull(FromPath);
+
+		if(MaybeFrom is IHasInventory From)
+			From.Inventory.ThrowAt(FromSlot, CountMode, At, Velocity);
+		else
+			Console.ThrowLog($"Received invalid {nameof(ReceiveThrowSlotFromAt)}"); //TODO: Log more information
+	}
+
+
 	public static void SendPush(IPushable Pushable, Vector3 Push)
 	{
 		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)

@@ -36,7 +36,7 @@ public class InventoryComponent
 	}
 
 
-	public Option<int[]> Give(Items.Instance ToGive)
+	public Option<int[]> Give(Items.Instance ToGive) //TODO: Re-evaluate return values
 	{
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception("Attempted to give item on client");
@@ -50,7 +50,10 @@ public class InventoryComponent
 			Contents[Slot].Count += GivingCount;
 
 			if(ToGive.Count <= 0)
+			{
+				Entities.SendInventory(Owner);
 				return Option.Some(new int[] {Slot});
+			}
 		}
 
 		var Slots = new List<int>();
@@ -67,10 +70,14 @@ public class InventoryComponent
 				Slots.Add(Slot);
 
 				if(ToGive.Count <= 0)
+				{
+					Entities.SendInventory(Owner);
 					return Option.Some(Slots.ToArray());
+				}
 			}
 		}
 
+		Entities.SendInventory(Owner);
 		return Option.None<int[]>(); //Full inventory and items left to give
 	}
 
@@ -87,9 +94,11 @@ public class InventoryComponent
 	}
 
 
-	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
+	public void TransferTo(IHasInventory To, int FromSlot, int ToSlot, Items.IntentCount CountMode)
 	{
-		if(Contents[FromSlot] is Items.Instance Item && Game.RuntimeRoot.GetNode(Path) is IHasInventory To)
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+
+		if(Contents[FromSlot] is Items.Instance Item)
 		{
 			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
 			if(Count <= 0)
@@ -98,27 +107,51 @@ public class InventoryComponent
 			if(To.Inventory[ToSlot] == null || To.Inventory[ToSlot].Id == Item.Id)
 			{
 				if(To.Inventory[ToSlot] == null)
-					To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
+					To.Inventory.UpdateSlot(ToSlot, Item.Id, Count);
 				else
 				{
 					Count = Clamp(MaxStackCount - To.Inventory[ToSlot].Count, 0, Count);
-					To.NetUpdateInventorySlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
+					To.Inventory.UpdateSlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
 				}
 
 				if(Count <= 0)
 					return;
 
 				if(Item.Count == Count)
-					Owner.NetEmptyInventorySlot(FromSlot);
+					Owner.Inventory.EmptySlot(FromSlot);
 				else
-					Owner.NetUpdateInventorySlot(FromSlot, Item.Id, Item.Count - Count);
+					Owner.Inventory.UpdateSlot(FromSlot, Item.Id, Item.Count - Count);
 			}
 			else if(To.Inventory[ToSlot] != null && Item.Count == Count)
 			{
 				var OriginalAtTarget = To.Inventory[ToSlot];
-				To.NetUpdateInventorySlot(ToSlot, Item.Id, Count);
-				Owner.NetUpdateInventorySlot(FromSlot, OriginalAtTarget.Id, OriginalAtTarget.Count);
+				To.Inventory.UpdateSlot(ToSlot, Item.Id, Count);
+				Owner.Inventory.UpdateSlot(FromSlot, OriginalAtTarget.Id, OriginalAtTarget.Count);
 			}
+
+			Entities.SendInventory(Owner);
+			Entities.SendInventory(To);
+		}
+	}
+
+
+	public void ThrowAt(int Slot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity)
+	{
+		if(Contents[Slot] is Items.Instance Item)
+		{
+			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
+			if(Count <= 0)
+				return;
+
+			for(int Index = 0; Index < Count; Index += 1)
+				World.Self.DropItem(Item.Id, At, Velocity);
+
+			if(Count >= Item.Count) //Dropping entire stack
+				EmptySlot(Slot);
+			else
+				UpdateSlot(Slot, Item.Id, Item.Count - Count);
+
+			Entities.SendInventory(Owner);
 		}
 	}
 }

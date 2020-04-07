@@ -80,7 +80,7 @@ public class InventoryIcon : TextureRect
 			if(Source == ParentMenu.From.Source && Slot == FromSlot)
 				return; //Same source and slot, we dropped on ourself
 
-			ParentMenu.From.Source.TransferTo(Source.GetPath(), FromSlot, Slot, ParentMenu.From.CountMode);
+			Entities.TransferFromTo(ParentMenu.From.Source, FromSlot, Source, Slot, ParentMenu.From.CountMode);
 		}
 	}
 

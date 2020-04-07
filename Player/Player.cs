@@ -281,7 +281,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 		if(!Possessed)
 		{
 			Assert.ActualAssert(Net.Work.IsNetworkServer());
-			Net.SteelRpc(this, nameof(NotifyPickedUpItem));
+			RpcId(Id, nameof(NotifyPickedUpItem));
 			return;
 		}
 
@@ -292,22 +292,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 
 	public Option<int[]> ItemGive(Items.Instance ToGive)
 	{
-		Option<int[]> Slots = Inventory.Give(ToGive);
-
-		Slots.MatchSome(
-			(ActualSlots) =>
-			{
-				if(Possessed)
-					HUDInstance.HotbarUpdate();
-				else
-				{
-					foreach(int Slot in ActualSlots)
-						RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ToGive.Id, Inventory[Slot].Count);
-				}
-			}
-		);
-
-		return Slots;
+		Assert.ActualAssert(Net.Work.IsNetworkServer());
+		return Inventory.Give(ToGive);
 	}
 
 
@@ -364,38 +350,6 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			.Rotated(new Vector3(0,1,0), Deg2Rad(LookHorizontal + HDiff));
 
 		return Vel;
-	}
-
-
-	[Remote]
-	public void ThrowItemFromSlot(int Slot, Vector3 Vel)
-	{
-		if(Inventory[Slot] != null)
-		{
-			World.Self.DropItem(Inventory[Slot].Id, Translation+Cam.Translation, Vel);
-
-			if(Inventory[Slot].Count > 1)
-			{
-				Inventory[Slot].Count -= 1;
-
-				if(Id != Net.Work.GetNetworkUniqueId())
-					RpcId(Id, nameof(NetUpdateInventorySlot), Slot, Inventory[Slot].Id, Inventory[Slot].Count);
-			}
-			else
-			{
-				Inventory.EmptySlot((Slot));
-
-				if(Id != Net.Work.GetNetworkUniqueId())
-					RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
-			}
-
-			if(Id == Net.Work.GetNetworkUniqueId())
-			{
-				HUDInstance.HotbarUpdate();
-				SfxManager.FpThrow();
-				SetCooldown(0, SlotSwitchCooldown, false);
-			}
-		}
 	}
 
 
@@ -760,51 +714,6 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 		}
 
 		NetUpdateDelta = Single.Epsilon;
-	}
-
-
-	[Remote]
-	public void NetUpdateInventorySlot(int Slot, Items.ID ItemId, int Count)
-	{
-		if(Slot == 10)
-		{
-			//This is the eleventh slot, it is used only for dropping stacks
-			if(Possessed)
-			{
-				Vector3 StartPos = Translation + Cam.Translation;
-				for(int Index = 0; Index < Count; Index++)
-					World.Self.DropItem(ItemId, StartPos, CalcThrowVelocity());
-			}
-		}
-		else
-			Inventory.UpdateSlot(Slot, ItemId, Count);
-
-		if(Possessed)
-			HUDInstance.HotbarUpdate();
-		else if(Net.Work.IsNetworkServer())
-			RpcId(Id, nameof(NetUpdateInventorySlot), Slot, ItemId, Count);
-	}
-
-
-	[Remote]
-	public void NetEmptyInventorySlot(int Slot)
-	{
-		Inventory.EmptySlot(Slot);
-
-		if(Possessed)
-			HUDInstance.HotbarUpdate();
-		else if(Net.Work.IsNetworkServer())
-			RpcId(Id, nameof(NetEmptyInventorySlot), Slot);
-	}
-
-
-	[Remote]
-	public void TransferTo(NodePath Path, int FromSlot, int ToSlot, Items.IntentCount CountMode)
-	{
-		if(!Net.Work.IsNetworkServer())
-			RpcId(Net.ServerId, nameof(TransferTo), Path, FromSlot, ToSlot, CountMode);
-		else
-			Inventory.TransferTo(Path, FromSlot, ToSlot, CountMode);
 	}
 
 
