@@ -16,8 +16,6 @@ public class Entities : Node
 	[Remote]
 	private void PleaseSendMeCreate(string Identifier)
 	{
-		GD.Print("Received PleaseSendMeCreate");
-
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(PleaseSendMeCreate)} on client");
 
@@ -378,8 +376,6 @@ public class Entities : Node
 	[Remote]
 	private void ReceiveInventory(string Identifier, Items.ID[] Ids, int[] Counts)
 	{
-		GD.Print("Received inventory");
-
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 		{
@@ -485,8 +481,6 @@ public class Entities : Node
 	[Remote]
 	private void ReceivePush(string Identifier, Vector3 Push)
 	{
-		GD.Print("Received push");
-
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 		{

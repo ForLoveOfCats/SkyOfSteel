@@ -122,7 +122,6 @@ public class JumperRocket : Spatial, IProjectile
 			if(Body is IPushable Pushable)
 			{
 				PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-				GD.Print($"Pushable with translation {Pushable.Translation}");
 				Godot.Collections.Dictionary Results = State.IntersectRay(Position, Pushable.Translation, new Godot.Collections.Array(){Pushable}, 1);
 				if(Results.Count > 0)
 					continue;
