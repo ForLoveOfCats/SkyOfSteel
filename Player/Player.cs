@@ -129,7 +129,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 		if(Engine.EditorHint) {return;}
 
 		//Init eleven slots, only use ten of them. The eleventh is used for dropping
-		Inventory = new InventoryComponent(this, 11, HiddenLast:true);
+		Inventory = new InventoryComponent(this, 10);
 
 		HUDInstance = (HUD) GD.Load<PackedScene>("res://UI/HUD.tscn").Instance();
 	}
