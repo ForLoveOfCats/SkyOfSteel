@@ -9,8 +9,11 @@ using static Godot.Mathf;
 
 public class Player : Character, IEntity, IPushable, IHasInventory
 {
-	public const float Height = 10;
+	public const float Height = 5.5f;
+	public const float CrouchedHeight = 2f;
+	public const float CrouchedHeightDifference = Height - CrouchedHeight;
 	public const float RequiredUncrouchHeight = 11;
+	public const float CrouchTransitionSpeed = 0.15f; //Seconds to crouch/uncrouch
 	public const float MovementSpeed = 36;
 	public const float FlySprintMultiplier = 5; //Speed while sprint flying is base speed times this value
 	public const float CrouchMovementDivisor = 2.8f;
@@ -110,8 +113,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public Spatial ProjectileEmitterHinge;
 	public Spatial ProjectileEmitter;
 
-	public CollisionShape LargeCollisionCapsule;
-	public CollisionShape SmallCollisionCapsule;
+	public CollisionShape BodyCollision;
+	public CapsuleShape BodyCapsule;
 
 	public Spatial HeadJoint;
 	public Spatial LegsJoint;
@@ -152,8 +155,9 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 		ProjectileEmitterHinge = GetNode<Spatial>("ProjectileEmitterHinge");
 		ProjectileEmitter = GetNode<Spatial>("ProjectileEmitterHinge/ProjectileEmitter");
 
-		LargeCollisionCapsule = GetNode<CollisionShape>("LargeCollisionShape");
-		SmallCollisionCapsule = GetNode<CollisionShape>("SmallCollisionShape");
+		BodyCollision = GetNode<CollisionShape>("BodyCollision");
+		BodyCapsule = (CapsuleShape) BodyCollision.Shape;
+		Assert.ActualAssert(BodyCapsule.Height == Height);
 
 		if(Possessed)
 		{
@@ -357,6 +361,52 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public float GetAdsMovementMultiplyer()
 	{
 		return Clamp(((AdsMultiplier-1) * AdsMultiplierMovementEffect)+1, 0, 1);
+	}
+
+
+	public void TickCrouch(float Delta)
+	{
+		float TargetHeight = BodyCapsule.Height - (CrouchedHeightDifference / CrouchTransitionSpeed)*Delta;
+		TargetHeight = Clamp(TargetHeight, CrouchedHeight, Height);
+
+		if(OnFloor)
+		{
+			Translation = new Vector3(
+				Translation.x,
+				Translation.y - (BodyCapsule.Height - TargetHeight),
+				Translation.z
+			);
+		}
+
+		BodyCapsule.Height = TargetHeight;
+		BodyCollision.Translation = new Vector3(
+			BodyCollision.Translation.x,
+			(Height - BodyCapsule.Height) / 2f,
+			BodyCollision.Translation.z
+		);
+	}
+
+
+	public void TickUncrouch(float Delta)
+	{
+		float TargetHeight = BodyCapsule.Height + (CrouchedHeightDifference / CrouchTransitionSpeed)*Delta;
+		TargetHeight = Clamp(TargetHeight, CrouchedHeight, Height);
+
+		if(OnFloor)
+		{
+			Translation = new Vector3(
+				Translation.x,
+				Translation.y + (TargetHeight - BodyCapsule.Height),
+				Translation.z
+			);
+		}
+
+		BodyCapsule.Height = TargetHeight;
+		BodyCollision.Translation = new Vector3(
+			BodyCollision.Translation.x,
+			(Height - BodyCapsule.Height) / 2f,
+			BodyCollision.Translation.z
+		);
 	}
 
 
@@ -564,37 +614,40 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 		else
 			Momentum = Move(Momentum, Delta, 1, 60f, MovementSpeed);
 
-		if(IsCrouching && CrouchAxis == 0)
+		if(CrouchAxis == 0)
 		{
 			PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 
-			Godot.Collections.Dictionary DownResults = State.IntersectRay(Translation, Translation - new Vector3(0, Height, 0), new Godot.Collections.Array{this}, 1);
-			Godot.Collections.Dictionary UpResults = State.IntersectRay(Translation, Translation + new Vector3(0, Height, 0), new Godot.Collections.Array{this}, 1);
+			Godot.Collections.Dictionary DownResults = State.IntersectRay(Translation, Translation - new Vector3(0, RequiredUncrouchHeight, 0), new Godot.Collections.Array{this}, 1);
+			Godot.Collections.Dictionary UpResults = State.IntersectRay(Translation, Translation + new Vector3(0, RequiredUncrouchHeight, 0), new Godot.Collections.Array{this}, 1);
 
-			bool UnCrouch = true;
-			if(DownResults.Count > 0 && UpResults.Count > 0)
+			bool UnCrouch = false;
+			if(UpResults.Count == 0)
+				UnCrouch = true;
+			else if(UpResults.Count > 0 && DownResults.Count == 0)
+				UnCrouch = true;
+			else if(UpResults.Count > 0 && DownResults.Count > 0)
 			{
-				float DownY = ((Vector3)DownResults["position"]).y;
 				float UpY = ((Vector3)UpResults["position"]).y;
+				float DownY = ((Vector3)DownResults["position"]).y;
 
-				if(UpY - DownY <= RequiredUncrouchHeight)
-					UnCrouch = false;
+				GD.Print(UpY - DownY);
+				if(UpY - DownY >= RequiredUncrouchHeight)
+					UnCrouch = true;
 			}
+
+			GD.Print(UnCrouch);
 
 			if(UnCrouch)
 			{
 				IsCrouching = false;
-				SmallCollisionCapsule.Disabled = true;
-				LargeCollisionCapsule.Disabled = false;
-
-				if(DownResults.Count > 0)
-				{
-					float DownY = ((Vector3)DownResults["position"]).y;
-					if(Translation.y - DownY <= Height/2)
-						Translation = new Vector3(Translation.x, DownY + (Height/2), Translation.z);
-				}
+				TickUncrouch(Delta);
 			}
+			else
+				TickCrouch(Delta);
 		}
+		else if(IsCrouching)
+			TickCrouch(Delta);
 
 		Entities.MovedTick(this, OriginalChunkTuple);
 

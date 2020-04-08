@@ -305,9 +305,6 @@ public class PlayerInput
 						else
 							Plr.Momentum.y = -Player.MovementSpeed;
 					}
-
-					Plr.LargeCollisionCapsule.Disabled = true;
-					Plr.SmallCollisionCapsule.Disabled = false;
 				}
 				else
 				{
