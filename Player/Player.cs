@@ -35,9 +35,10 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public const float MaxHealth = 100;
 	public const float LookDivisor = 6;
 
-	public const float ViewmodelSensitivity = 0.1f;
-	public const float MaxViewmodelItemRotation = 12f;
-	public const float MaxViewmodelArmRotation = 4f;
+	public const float ViewmodelSensitivity = 0.08f;
+	public const float ViewmodelMomentumFriction = 3f;
+	public const float MaxViewmodelItemRotation = 5f;
+	public const float MaxViewmodelArmRotation = 5f;
 
 	public const float AdsMultiplierMovementEffect = 1.66f;
 	public const float MinAdsMultiplier = 0.7f;
@@ -736,9 +737,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 
 		Cam.Fov = Game.Fov*AdsMultiplier;
 
-		float Length = ViewmodelMomentum.Length();
-		Vector2 Normalized = ViewmodelMomentum.Normalized();
-		ViewmodelMomentum = Normalized * Clamp(Length - Delta*3f, 0, float.MaxValue);
+		float Length = Clamp(ViewmodelMomentum.Length() - Delta*ViewmodelMomentumFriction, 0, 1);
+		ViewmodelMomentum = ViewmodelMomentum.Normalized() * Length;
 
 		ViewmodelItem.RotationDegrees = new Vector3(
 			SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelItemRotation * AdsMultiplier,
@@ -746,8 +746,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			0
 		);
 		ViewmodelArmJoint.RotationDegrees = new Vector3(
-			SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelArmRotation * AdsMultiplier,
-			SafeSign(ViewmodelMomentum.x) * ViewmodelMomentum.x*ViewmodelMomentum.x * MaxViewmodelArmRotation * AdsMultiplier,
+			-SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelArmRotation * AdsMultiplier,
+			-SafeSign(ViewmodelMomentum.x) * ViewmodelMomentum.x*ViewmodelMomentum.x * MaxViewmodelArmRotation * AdsMultiplier,
 			0
 		);
 		ViewmodelArmJoint.Translation = new Vector3(
