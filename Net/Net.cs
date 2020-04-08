@@ -239,10 +239,6 @@ public class Net : Node
 
 		Console.Log($"Started hosting on port '{Port}'");
 
-		Players.Add(Self.GetTree().GetNetworkUniqueId(), new PlayerData());
-		Nicknames[ServerId] = Game.Nickname;
-		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
-
 		World.DefaultPlatforms();
 	}
 

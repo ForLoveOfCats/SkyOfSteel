@@ -271,6 +271,12 @@ public class World : Node
 
 			SaveName = SaveNameArg;
 			Console.Log($"Loaded {PlaceCount.ToString()} structures from save '{SaveNameArg}'");
+
+			//TODO: Save/load player data in savefile
+			Net.Players.Add(Self.GetTree().GetNetworkUniqueId(), new Net.PlayerData());
+			Net.Nicknames[Net.ServerId] = Game.Nickname;
+			Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+
 			return true;
 		}
 		else
