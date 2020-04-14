@@ -480,7 +480,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
-		if(JumpAxis > 0 && OnFloor && !IsCrouching && !Ads)
+		if(JumpAxis > 0 && OnFloor && !Ads)
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
