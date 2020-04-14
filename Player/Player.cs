@@ -631,12 +631,9 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 				float UpY = ((Vector3)UpResults["position"]).y;
 				float DownY = ((Vector3)DownResults["position"]).y;
 
-				GD.Print(UpY - DownY);
 				if(UpY - DownY >= RequiredUncrouchHeight)
 					UnCrouch = true;
 			}
-
-			GD.Print(UnCrouch);
 
 			if(UnCrouch)
 			{
