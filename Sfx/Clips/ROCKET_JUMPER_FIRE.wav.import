@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ROCKET_JUMPER_FIRE.wav-2b5b7e0bd93ad90a9ec9d1dcfa442b19.sample"
+
+[deps]
+
+source_file="res://Sfx/Clips/ROCKET_JUMPER_FIRE.wav"
+dest_files=[ "res://.import/ROCKET_JUMPER_FIRE.wav-2b5b7e0bd93ad90a9ec9d1dcfa442b19.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

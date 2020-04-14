@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/PLAYER_WALLKICK.wav-ebe54a1e1923d112f06629f793fdf32d.sample"
+
+[deps]
+
+source_file="res://Sfx/Clips/PLAYER_WALLKICK.wav"
+dest_files=[ "res://.import/PLAYER_WALLKICK.wav-ebe54a1e1923d112f06629f793fdf32d.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
