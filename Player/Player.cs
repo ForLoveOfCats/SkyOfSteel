@@ -24,10 +24,8 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public const float SlideFrictionDivisor = 13;
 	public const float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public const float FlyFriction = MovementSpeed * FlySprintMultiplier / FlyDecelerateTime;
-	public const float JumpStartForce = 22f;
-	public const float JumpContinueForce = 0.41f;
-	public const float MaxJumpLength = 0.22f;
-	public const float Gravity = 55f;
+	public const float Gravity = 95f;
+	public const float JumpStartForce = 42f;
 	public const float InteractReach = 12f;
 	public const float ItemThrowPower = 40f;
 	public const float ItemPickupDistance = 8f;
@@ -82,7 +80,6 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public bool IsFlySprinting = false;
 	public bool IsJumping = false;
 	public bool WasOnFloor = false;
-	public float JumpTimer = 0f;
 	public Vector3 Momentum = new Vector3(0,0,0);
 	public float LastMomentumY = 0;
 	public float LookHorizontal = 0;
@@ -489,19 +486,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			IsJumping = true;
 		}
 
-		if(IsJumping && !WasOnFloor)
-		{
-			Momentum.y += JumpContinueForce*Delta;
-
-			JumpTimer += Delta;
-			if(JumpTimer >= MaxJumpLength)
-			{
-				JumpTimer = 0;
-				IsJumping = false;
-			}
-		}
-
-		if(!OnFloor && !IsJumping && !FlyMode)
+		if(!OnFloor && !FlyMode)
 			Momentum.y = Clamp(Momentum.y - Gravity*Delta, -MaxVerticalSpeed, MaxVerticalSpeed);
 
 		if(FlyMode && JumpAxis <= 0 && !IsCrouching)

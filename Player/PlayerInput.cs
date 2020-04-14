@@ -263,11 +263,8 @@ public class PlayerInput
 
 						Plr.IsJumping = false;
 					}
-					else if(Plr.OnFloor)
-					{
-						Plr.Momentum.y = Player.JumpStartForce;
-						Plr.IsJumping = true;
-					}
+
+					//NOTE: Actual jump is handled in Player same as a bhop
 
 					Plr.JumpAxis = 1;
 				}

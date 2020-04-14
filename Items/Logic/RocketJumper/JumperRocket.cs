@@ -9,10 +9,10 @@ public class JumperRocket : Spatial, IProjectile
 {
 	public const float RocketTravelSpeed = 150; //Units-per-second
 	public const float RocketFuseTime = 4f; //In seconds
-	public const float MaxRocketPush = 72; //Units-per-second force applied
+	public const float MaxRocketPush = 80; //Units-per-second force applied
 	public const float MaxRocketDistance = 30;
 	public const float RocketHorizontalMultiplyer = 1f;
-	public const float RocketVerticalMultiplyer = 0.65f;
+	public const float RocketVerticalMultiplyer = 0.75f;
 
 	public System.Tuple<int, int> CurrentChunk { get; set; }
 	public Projectiles.ProjectileID ProjectileId { get; set; }
