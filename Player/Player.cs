@@ -287,7 +287,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 			return;
 		}
 
-		SfxManager.FpPickup();
+		Sfx.PlayPlayer(Sfx.ID.ITEM_PICKUP, this);
 		SetCooldown(0, SlotSwitchCooldown, false);
 	}
 

@@ -80,20 +80,6 @@ public class PlayerSfxManager : Spatial
 
 
 	[Remote]
-	public void TpPickup()
-	{
-		TpPickupSfx.Play();
-	}
-
-
-	public void FpPickup()
-	{
-		FpPickupSfx.Play();
-		Net.SteelRpc(this, nameof(TpPickup));
-	}
-
-
-	[Remote]
 	public void TpRocketFire()
 	{
 		TpRocketFireSfx.Play();
