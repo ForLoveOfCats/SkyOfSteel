@@ -21,7 +21,7 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 	public const float AirAcceleration = 25; //How many units per second to accelerate
 	public const float DecelerateTime = 0.1f; //How many seconds needed to stop from full speed
 	public const float Friction = MovementSpeed / DecelerateTime;
-	public const float SlideFrictionDivisor = 13;
+	public const float SlideFrictionDivisor = 6f;
 	public const float FlyDecelerateTime = 0.15f; //How many seconds needed to stop from full speed
 	public const float FlyFriction = MovementSpeed * FlySprintMultiplier / FlyDecelerateTime;
 	public const float Gravity = 95f;
