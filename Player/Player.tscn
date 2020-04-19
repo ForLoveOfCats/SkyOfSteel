@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Player/Player.cs" type="Script" id=1]
 [ext_resource path="res://Player/Body/BodyScene.tscn" type="PackedScene" id=2]
@@ -7,7 +7,6 @@
 [ext_resource path="res://Player/LandSfx.wav" type="AudioStream" id=8]
 [ext_resource path="res://Player/WallKickSfx.wav" type="AudioStream" id=9]
 [ext_resource path="res://Player/ItemThrowSfx.wav" type="AudioStream" id=10]
-[ext_resource path="res://Player/ItemPickupSfx.wav" type="AudioStream" id=11]
 [ext_resource path="res://Items/Logic/RocketJumper/FireSfx.wav" type="AudioStream" id=12]
 [ext_resource path="res://Items/Logic/RocketJumper/ExplodeSfx.wav" type="AudioStream" id=13]
 [ext_resource path="res://Items/Logic/Hitscan/Hitsound.wav" type="AudioStream" id=14]
@@ -83,15 +82,6 @@ volume_db = -15.0
 
 [node name="TpThrowSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
 stream = ExtResource( 10 )
-unit_db = 1.0
-unit_size = 2.0
-
-[node name="FpPickupSfx" type="AudioStreamPlayer" parent="PlayerSfxManager"]
-stream = ExtResource( 11 )
-volume_db = -15.0
-
-[node name="TpPickupSfx" type="AudioStreamPlayer3D" parent="PlayerSfxManager"]
-stream = ExtResource( 11 )
 unit_db = 1.0
 unit_size = 2.0
 
