@@ -23,19 +23,6 @@ public class SavedTile
 	}
 
 
-	public string ToJson()
-	{
-		if(Enumerable.SequenceEqual(R, new float[] {0f,0f,0f}))
-		{
-			return $"{{\"T\":{T},\"P\":[{string.Join(",", P)}]}}";
-		}
-		else
-		{
-			return $"{{\"T\":{T},\"P\":[{string.Join(",", P)}],\"R\":[{string.Join(",", R)}]}}";
-		}
-	}
-
-
 	public Tuple<Items.ID,Vector3,Vector3> GetInfoOrNull()
 	{
 		//Returns null if data is invalid

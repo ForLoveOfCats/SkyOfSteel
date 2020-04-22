@@ -1,11 +1,13 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+
 
 
 public class SavedChunk
 {
 	public int[] P;
-	public SavedTile[] S; //Only used when deserializing
+	public SavedTile[] S;
 
 	Tuple<int,int> ChunkTuple;
 
@@ -13,34 +15,19 @@ public class SavedChunk
 	{
 		ChunkTuple = ChunkTupleArg;
 		P = new int[2] {ChunkTuple.Item1, ChunkTuple.Item2};
+
+		var Tiles = new List<SavedTile>();
+		foreach(Tile Branch in World.Chunks[ChunkTuple].Tiles)
+		{
+			if(Branch.OwnerId == 0)
+				continue;
+
+			Tiles.Add(new SavedTile(Branch.ItemId, Branch.Translation, Branch.RotationDegrees));
+		}
+
+		S = Tiles.ToArray();
 	}
 
 	public SavedChunk()
-	{
-	}
-
-
-	public string ToJson()
-	{
-		string Out = $"{{\"P\":[{string.Join(",", P)}],\"S\":[";
-
-		System.Collections.Generic.List<Tile> Tiles = World.Chunks[ChunkTuple].Tiles;
-		foreach(Tile Branch in Tiles)
-		{
-			if(Branch.OwnerId == 0)
-			{
-				continue;
-			}
-
-			Out += new SavedTile(Branch.ItemId, Branch.Translation, Branch.RotationDegrees).ToJson() + ",";
-		}
-
-		if(Out[Out.Length-1] == ',')
-		{
-			Out = Out.Remove(Out.Length-1);
-		}
-		Out += "]}";
-
-		return Out;
-	}
+	{}
 }

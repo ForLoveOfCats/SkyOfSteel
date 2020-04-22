@@ -959,7 +959,7 @@ public class World : Node
 
 	public static int SaveChunk(Tuple<int,int> ChunkTuple, string SaveNameArg)
 	{
-		string SerializedChunk = new SavedChunk(ChunkTuple).ToJson();
+		string SerializedChunk = Newtonsoft.Json.JsonConvert.SerializeObject(new SavedChunk(ChunkTuple));
 		System.IO.File.WriteAllText($"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Chunks/{ChunkTuple.ToString()}.json", SerializedChunk);
 
 		int SaveCount = 0;
