@@ -8,6 +8,7 @@ public class SavedChunk
 {
 	public int[] P;
 	public SavedTile[] S;
+	public List<SavedTile> Tiles = new List<SavedTile>();
 
 	Tuple<int,int> ChunkTuple;
 
@@ -26,6 +27,16 @@ public class SavedChunk
 		}
 
 		S = Tiles.ToArray();
+
+		foreach(IEntity Entity in World.Chunks[ChunkTuple].Entities)
+		{
+			switch(Entity)
+			{
+				case Tile Branch:
+					Tiles.Add(Branch.ToSavable());
+					break;
+			}
+		}
 	}
 
 	public SavedChunk()

@@ -13,5 +13,6 @@ public interface IEntity
 	void Update(params object[] Args);
 	void PhaseOut();
 	void Destroy(params object[] Args);
+
 	void _ExitTree();
 }
