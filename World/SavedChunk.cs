@@ -6,8 +6,7 @@ using System.Collections.Generic;
 
 public class SavedChunk
 {
-	public int[] P;
-	public SavedTile[] S;
+	public Vector3 P;
 	public List<SavedTile> Tiles = new List<SavedTile>();
 
 	Tuple<int,int> ChunkTuple;
@@ -15,25 +14,15 @@ public class SavedChunk
 	public SavedChunk(Tuple<int,int> ChunkTupleArg)
 	{
 		ChunkTuple = ChunkTupleArg;
-		P = new int[2] {ChunkTuple.Item1, ChunkTuple.Item2};
-
-		var Tiles = new List<SavedTile>();
-		foreach(Tile Branch in World.Chunks[ChunkTuple].Tiles)
-		{
-			if(Branch.OwnerId == 0)
-				continue;
-
-			Tiles.Add(new SavedTile(Branch.ItemId, Branch.Translation, Branch.RotationDegrees));
-		}
-
-		S = Tiles.ToArray();
+		P = new Vector3(ChunkTuple.Item1, 0, ChunkTuple.Item2);
 
 		foreach(IEntity Entity in World.Chunks[ChunkTuple].Entities)
 		{
 			switch(Entity)
 			{
 				case Tile Branch:
-					Tiles.Add(Branch.ToSavable());
+					if(Branch.OwnerId != 0)
+						Tiles.Add(Branch.ToSavable());
 					break;
 			}
 		}

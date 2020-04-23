@@ -6,16 +6,19 @@ using Optional;
 
 public class SavedTile
 {
-	public int T = (int)Items.ID.ERROR;
-	public float[] P;
-	public float[] R;
+	public int I = (int)Items.ID.ERROR;
+	public int O;
+	public Vector3 P;
+	public Vector3 R;
 
-	public SavedTile(Items.ID Type, Vector3 Position, Vector3 Rotation)
+	public SavedTile(Tile Branch)
 	{
-		this.T = (int)Type;
-		this.P = new float[3] {Position.x, Position.y, Position.z};
-		this.R = new float[3] {Rotation.x, Rotation.y, Rotation.z};
+		I = (int)Branch.ItemId;
+		O = Branch.OwnerId;
+		P = Branch.Translation;
+		R = Branch.RotationDegrees;
 
+		//TODO: Hmmmmm
 		for(int i = 0; i <= 2; i++)
 		{
 			P[i] = (float)Math.Round(P[i]);
@@ -23,25 +26,8 @@ public class SavedTile
 		}
 	}
 
-
-	public Tuple<Items.ID,Vector3,Vector3> GetInfoOrNull()
-	{
-		//Returns null if data is invalid
-
-		if(P.Length != 3)
-		{
-			return null;
-		}
-		Vector3 Pos = new Vector3(P[0], P[1], P[2]);
-
-		if(R.Length != 3)
-		{
-			return null;
-		}
-		Vector3 Rot = new Vector3(R[0], R[1], R[2]);
-
-		return new Tuple<Items.ID,Vector3,Vector3>((Items.ID)T, Pos, Rot);
-	}
+	public SavedTile()
+	{}
 }
 
 
@@ -72,7 +58,7 @@ public class Tile : StaticBody, IEntity, IInGrid
 
 	public SavedTile ToSavable()
 	{
-		return new SavedTile(ItemId, Translation, RotationDegrees);
+		return new SavedTile(this);
 	}
 
 

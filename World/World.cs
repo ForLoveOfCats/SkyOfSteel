@@ -261,12 +261,7 @@ public class World : Node
 					Path = $"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/Chunks/{FileName}";
 				else
 					Path = $"{OS.GetUserDataDir()}/Saves/{SaveNameArg}/{FileName}";
-				Tuple<bool,int> Returned = LoadChunk(System.IO.File.ReadAllText(Path));
-				PlaceCount += Returned.Item2;
-				if(!Returned.Item1)
-				{
-					Console.ThrowLog($"Invalid chunk file {FileName} loading save '{SaveNameArg}'");
-				}
+				LoadChunk(System.IO.File.ReadAllText(Path)); //TODO: Try catch
 			}
 
 			SaveName = SaveNameArg;
@@ -974,30 +969,18 @@ public class World : Node
 	}
 
 
-	public static Tuple<bool,int> LoadChunk(string ToLoad) //Doesn't actually have to be a single chunk
+	//Doesn't actually have to be a single chunk
+	//NOTE: Throws exceptions on failure
+	public static void LoadChunk(string ToLoad)
 	{
 		SavedChunk LoadedChunk;
-		try
-		{
-			LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(ToLoad);
-		}
-		catch(Newtonsoft.Json.JsonReaderException)
-		{
-			return new Tuple<bool,int>(false, 0);
-		}
+		LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(ToLoad);
 
-		int PlaceCount = 0;
-		foreach(SavedTile SavedBranch in LoadedChunk.S)
+		foreach(SavedTile Saved in LoadedChunk.Tiles)
 		{
-			Tuple<Items.ID,Vector3,Vector3> Info = SavedBranch.GetInfoOrNull();
-			if(Info != null)
-			{
-				string GuidName = System.Guid.NewGuid().ToString();
-				Self.PlaceWithName(Info.Item1, Info.Item2, Info.Item3, 1, GuidName);
-				PlaceCount++;
-			}
+			string GuidName = System.Guid.NewGuid().ToString();
+			Self.PlaceWithName((Items.ID)Saved.I, Saved.P, Saved.R, Saved.O, GuidName);
 		}
-		return new Tuple<bool,int>(true, PlaceCount);
 	}
 
 
