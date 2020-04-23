@@ -6,19 +6,23 @@ using Optional;
 
 public class SavedTile
 {
-	public int I = (int)Items.ID.ERROR;
-	public int O;
-	public Vector3 P;
-	public Vector3 R;
+	[Newtonsoft.Json.JsonProperty("I")]
+	public Items.ID Id = Items.ID.ERROR;
+	[Newtonsoft.Json.JsonProperty("O")]
+	public int Owner;
+	[Newtonsoft.Json.JsonProperty("P")]
+	public Vector3 Pos;
+	[Newtonsoft.Json.JsonProperty("R")]
+	public Vector3 Rot;
 	[Newtonsoft.Json.JsonProperty("V")]
 	public int InventoryIndex = -1;
 
 	public SavedTile(SavedChunk Chunk, Tile Branch)
 	{
-		I = (int)Branch.ItemId;
-		O = Branch.OwnerId;
-		P = Branch.Translation;
-		R = Branch.RotationDegrees;
+		Id = Branch.ItemId;
+		Owner = Branch.OwnerId;
+		Pos = Branch.Translation;
+		Rot = Branch.RotationDegrees;
 
 		if(Branch is IHasInventory HasInventory)
 			InventoryIndex = Chunk.AddInventory(new SavedInventory(HasInventory.Inventory));
@@ -26,8 +30,8 @@ public class SavedTile
 		//TODO: Hmmmmm
 		for(int i = 0; i <= 2; i++)
 		{
-			P[i] = (float)Math.Round(P[i]);
-			R[i] = (float)Math.Round(R[i]);
+			Pos[i] = (float)Math.Round(Pos[i]);
+			Rot[i] = (float)Math.Round(Rot[i]);
 		}
 	}
 

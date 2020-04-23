@@ -978,7 +978,7 @@ public class World : Node
 		foreach(SavedTile Saved in LoadedChunk.Tiles)
 		{
 			string GuidName = System.Guid.NewGuid().ToString();
-			Self.PlaceWithName((Items.ID)Saved.I, Saved.P, Saved.R, Saved.O, GuidName);
+			Self.PlaceWithName(Saved.Id, Saved.Pos, Saved.Rot, Saved.Owner, GuidName);
 			if(Saved.InventoryIndex >= 0)
 			{
 				Node Branch = EntitiesRoot.GetNode(GuidName);
