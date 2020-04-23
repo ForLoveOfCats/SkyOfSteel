@@ -317,11 +317,11 @@ public class Entities : Node
 					var EntityChunk = World.GetChunkTuple(HasInventory.Translation);
 					if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
 					{
-						var Ids = new Items.ID[HasInventory.Inventory.SlotCount];
-						var Counts = new int[HasInventory.Inventory.SlotCount];
+						var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
+						var Counts = new int[HasInventory.Inventory.Contents.Length];
 
 						int Index = 0;
-						while(Index < HasInventory.Inventory.SlotCount)
+						while(Index < HasInventory.Inventory.Contents.Length)
 						{
 							Items.Instance Item = HasInventory.Inventory.Contents[Index];
 
@@ -348,11 +348,11 @@ public class Entities : Node
 
 	public static void SendInventoryTo(IHasInventory HasInventory, int Receiver)
 	{
-		var Ids = new Items.ID[HasInventory.Inventory.SlotCount];
-		var Counts = new int[HasInventory.Inventory.SlotCount];
+		var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
+		var Counts = new int[HasInventory.Inventory.Contents.Length];
 
 		int Index = 0;
-		while(Index < HasInventory.Inventory.SlotCount)
+		while(Index < HasInventory.Inventory.Contents.Length)
 		{
 			Items.Instance Item = HasInventory.Inventory.Contents[Index];
 
@@ -387,7 +387,7 @@ public class Entities : Node
 		if(Entity is IHasInventory HasInventory)
 		{
 			Assert.ActualAssert(Ids.Length == Counts.Length);
-			Assert.ActualAssert(HasInventory.Inventory.SlotCount == Ids.Length);
+			Assert.ActualAssert(HasInventory.Inventory.Contents.Length == Ids.Length);
 
 			int Index = 0;
 			while(Index < Ids.Length)

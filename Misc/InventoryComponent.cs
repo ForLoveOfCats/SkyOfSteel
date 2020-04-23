@@ -6,6 +6,22 @@ using static Godot.Mathf;
 
 
 
+public class SavedInventory
+{
+	[Newtonsoft.Json.JsonProperty("C")]
+	public Items.Instance[] Contents;
+
+	public SavedInventory()
+	{}
+
+	public SavedInventory(InventoryComponent Inventory)
+	{
+		Contents = Inventory.Contents;
+	}
+}
+
+
+
 public class InventoryComponent
 {
 	public const int MaxStackCount = 50;
@@ -13,14 +29,12 @@ public class InventoryComponent
 
 	public Items.Instance[] Contents;
 	private IHasInventory Owner;
-	public readonly int SlotCount;
 
 
 	public InventoryComponent(IHasInventory OwnerArg, int SlotCountArg)
 	{
-		Contents = new Items.Instance[SlotCountArg];
 		Owner = OwnerArg;
-		SlotCount = SlotCountArg;
+		Contents = new Items.Instance[SlotCountArg];
 	}
 
 
@@ -36,7 +50,7 @@ public class InventoryComponent
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception("Attempted to give item on client");
 
-		for(int Slot = 0; Slot < SlotCount; Slot++)
+		for(int Slot = 0; Slot < Contents.Length; Slot++)
 		{
 			if(Contents[Slot] is null || Contents[Slot].Id != ToGive.Id) continue;
 
@@ -52,7 +66,7 @@ public class InventoryComponent
 		}
 
 		var Slots = new List<int>();
-		for(int Slot = 0; Slot < SlotCount; Slot++)
+		for(int Slot = 0; Slot < Contents.Length; Slot++)
 		{
 			if(Contents[Slot] is null)
 			{

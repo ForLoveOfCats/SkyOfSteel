@@ -970,16 +970,22 @@ public class World : Node
 
 
 	//Doesn't actually have to be a single chunk
-	//NOTE: Throws exceptions on failure
+	//NOTE: Written for the happy path, throws exceptions on failure
 	public static void LoadChunk(string ToLoad)
 	{
-		SavedChunk LoadedChunk;
-		LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(ToLoad);
+		SavedChunk LoadedChunk = Newtonsoft.Json.JsonConvert.DeserializeObject<SavedChunk>(ToLoad);
 
 		foreach(SavedTile Saved in LoadedChunk.Tiles)
 		{
 			string GuidName = System.Guid.NewGuid().ToString();
 			Self.PlaceWithName((Items.ID)Saved.I, Saved.P, Saved.R, Saved.O, GuidName);
+			if(Saved.InventoryIndex >= 0)
+			{
+				Node Branch = EntitiesRoot.GetNode(GuidName);
+				SavedInventory Inventory = LoadedChunk.Inventories[Saved.InventoryIndex];
+				if(Branch is IHasInventory HasInventory && HasInventory.Inventory.Contents.Length == Inventory.Contents.Length)
+					HasInventory.Inventory.Contents = Inventory.Contents;
+			}
 		}
 	}
 

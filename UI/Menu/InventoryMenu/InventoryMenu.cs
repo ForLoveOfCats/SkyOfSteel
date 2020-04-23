@@ -41,8 +41,8 @@ public class InventoryMenu : VBoxContainer
 		Game.PossessedPlayer.MatchSome(
 			(Plr) =>
 			{
-				PlayerIcons = new InventoryIcon[Plr.Inventory.SlotCount];
-				for(int Index = 0; Index < Plr.Inventory.SlotCount; Index++)
+				PlayerIcons = new InventoryIcon[Plr.Inventory.Contents.Length];
+				for(int Index = 0; Index < Plr.Inventory.Contents.Length; Index++)
 				{
 					InventoryIcon Icon = InstantiateIcon(Index, Plr);
 					PlayerVBox.AddChild(Icon);
@@ -53,8 +53,8 @@ public class InventoryMenu : VBoxContainer
 
 		if(Other != null)
 		{
-			OtherIcons = new InventoryIcon[Other.Inventory.SlotCount];
-			for(int Index = 0; Index < Other.Inventory.SlotCount; Index++)
+			OtherIcons = new InventoryIcon[Other.Inventory.Contents.Length];
+			for(int Index = 0; Index < Other.Inventory.Contents.Length; Index++)
 			{
 				InventoryIcon Icon = InstantiateIcon(Index, Other);
 				OtherGrid.AddChild(Icon);

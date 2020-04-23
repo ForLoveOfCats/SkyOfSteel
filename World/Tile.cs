@@ -10,13 +10,18 @@ public class SavedTile
 	public int O;
 	public Vector3 P;
 	public Vector3 R;
+	[Newtonsoft.Json.JsonProperty("V")]
+	public int InventoryIndex = -1;
 
-	public SavedTile(Tile Branch)
+	public SavedTile(SavedChunk Chunk, Tile Branch)
 	{
 		I = (int)Branch.ItemId;
 		O = Branch.OwnerId;
 		P = Branch.Translation;
 		R = Branch.RotationDegrees;
+
+		if(Branch is IHasInventory HasInventory)
+			InventoryIndex = Chunk.AddInventory(new SavedInventory(HasInventory.Inventory));
 
 		//TODO: Hmmmmm
 		for(int i = 0; i <= 2; i++)
@@ -54,12 +59,6 @@ public class Tile : StaticBody, IEntity, IInGrid
 
 	public virtual void GridUpdate()
 	{}
-
-
-	public SavedTile ToSavable()
-	{
-		return new SavedTile(this);
-	}
 
 
 	[Remote]

@@ -82,7 +82,7 @@ public class Locker : PipeCoreLogic, IHasInventory
 	{
 		if(Net.Work.IsNetworkServer())
 		{
-			for(int Index = 0; Index < Inventory.SlotCount; Index++)
+			for(int Index = 0; Index < Inventory.Contents.Length; Index++)
 			{
 				if(Inventory[Index] is Items.Instance Item)
 				{

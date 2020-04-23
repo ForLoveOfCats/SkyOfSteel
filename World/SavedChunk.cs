@@ -8,6 +8,7 @@ public class SavedChunk
 {
 	public Vector3 P;
 	public List<SavedTile> Tiles = new List<SavedTile>();
+	public List<SavedInventory> Inventories = new List<SavedInventory>();
 
 	Tuple<int,int> ChunkTuple;
 
@@ -22,7 +23,7 @@ public class SavedChunk
 			{
 				case Tile Branch:
 					if(Branch.OwnerId != 0)
-						Tiles.Add(Branch.ToSavable());
+						Tiles.Add(new SavedTile(this, Branch));
 					break;
 			}
 		}
@@ -30,4 +31,10 @@ public class SavedChunk
 
 	public SavedChunk()
 	{}
+
+	public int AddInventory(SavedInventory Inventory)
+	{
+		Inventories.Add(Inventory);
+		return Inventories.Count - 1;
+	}
 }
