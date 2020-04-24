@@ -72,8 +72,8 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 	{
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 		var Excluding = new Godot.Collections.Array{this};
-		Vector3 End = Translation + Bottom + new Vector3(0, -1, 0);
-		var Results = State.IntersectRay(Translation, End, Excluding, 4);
+		Vector3 End = Translation + Bottom + new Vector3(0, -2, 0);
+		var Results = State.IntersectRay(Translation, End, Excluding, 3);
 		if(Results.Count > 0)
 		{
 			if(Results["collider"] is Tile Branch && Branch.Point != null)
@@ -99,10 +99,9 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 			CurrentArea = GridClass.CalculateArea(Translation);
 			World.Grid.QueueRemoveItem(this);
 			World.Grid.AddItem(this);
-
-			UpdateFloor();
 		}
 
+		UpdateFloor();
 		CalcWants(Floor);
 
 		if(OnFloor)

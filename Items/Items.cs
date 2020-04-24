@@ -53,7 +53,8 @@ public class Items : Node
 		ROCKET_JUMPER,
 		THUNDERBOLT,
 		SCATTERSHOCK,
-		SWIFTSPARK
+		SWIFTSPARK,
+		SLIME_SPAWNER
 	}
 
 	public enum IntentCount {ALL, SINGLE, HALF};
@@ -272,6 +273,18 @@ public class Items : Node
 					UseDelegate = SwiftSpark.Fire,
 					FullAuto = true,
 					CanAds = true
+				}
+			},
+
+			{
+				ID.SLIME_SPAWNER,
+
+				new IdInfo {
+					UseDelegate = (Items.Instance Item, Player UsingPlayer) => {
+						Mobs.SpawnMob(Mobs.ID.Slime, UsingPlayer.Translation);
+					},
+					FullAuto = false,
+					CanAds = false
 				}
 			}
 		};

@@ -91,8 +91,6 @@ public class World : Node
 		var Rotation = new Vector3();
 		Self.PlaceWithName(BranchType, Position, Rotation, 0, GuidName);
 		Net.SteelRpc(Self, nameof(PlaceWithName), BranchType, Position, Rotation, 0, GuidName);
-
-		Mobs.SpawnMob(Mobs.ID.Slime);
 	}
 
 

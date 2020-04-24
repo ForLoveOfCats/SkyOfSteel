@@ -216,13 +216,14 @@ public class Player : Character, IEntity, IPushable, IHasInventory
 		ItemGive(new Items.Instance(Items.ID.WALL) {Count = 50});
 		ItemGive(new Items.Instance(Items.ID.SLOPE) {Count = 50});
 		ItemGive(new Items.Instance(Items.ID.TRIANGLE_WALL) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 50});
+		// ItemGive(new Items.Instance(Items.ID.PIPE) {Count = 50});
+		// ItemGive(new Items.Instance(Items.ID.PIPE_JOINT) {Count = 50});
 		ItemGive(new Items.Instance(Items.ID.LOCKER) {Count = 50});
 		ItemGive(new Items.Instance(Items.ID.ROCKET_JUMPER) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 50});
-		ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 50});
+		// ItemGive(new Items.Instance(Items.ID.THUNDERBOLT) {Count = 50});
+		// ItemGive(new Items.Instance(Items.ID.SCATTERSHOCK) {Count = 50});
 		// ItemGive(new Items.Instance(Items.ID.SWIFTSPARK) {Count = 50});
+		ItemGive(new Items.Instance(Items.ID.SLIME_SPAWNER) {Count = 50});
 	}
 
 
