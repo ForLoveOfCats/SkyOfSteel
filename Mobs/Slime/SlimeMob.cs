@@ -5,8 +5,7 @@ using static Pathfinding;
 
 
 
-public class SlimeMob : MobClass
-{
+public class SlimeMob : MobClass {
 	public const float AccelerationTime = 0.3f;
 	public const float DecelerationTime = 0.2f;
 
@@ -17,12 +16,12 @@ public class SlimeMob : MobClass
 	}
 	protected override float Acceleration {
 		get {
-			return TopSpeed/AccelerationTime;
+			return TopSpeed / AccelerationTime;
 		}
 	}
 	protected override float Friction {
 		get {
-			return TopSpeed/DecelerationTime;
+			return TopSpeed / DecelerationTime;
 		}
 	}
 
@@ -35,8 +34,7 @@ public class SlimeMob : MobClass
 	private static Random RandomInstance = new Random();
 
 
-	private void UpdateTargetPoint(PointData Closest)
-	{
+	private void UpdateTargetPoint(PointData Closest) {
 		int Count = Closest.Friends.Count;
 		if(Count > 0)
 			TargetPoint = Closest.Friends[RandomInstance.Next(Count)].Some();
@@ -45,22 +43,19 @@ public class SlimeMob : MobClass
 	}
 
 
-	public override void CalcWants(Option<Tile> MaybeFloor)
-	{
+	public override void CalcWants(Option<Tile> MaybeFloor) {
 		MaybeFloor.Match(
-			some: Floor =>
-			{
+			some: Floor => {
 				TargetPoint.Match(
-					some: Target => {},
+					some: Target => { },
 
-					none: () =>
-					{
+					none: () => {
 						UpdateTargetPoint(Floor.Point);
 					}
 				);
 			},
 
-			none: () => {}
+			none: () => { }
 		);
 	}
 }

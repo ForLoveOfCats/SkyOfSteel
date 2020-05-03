@@ -5,15 +5,12 @@ using System.Linq;
 using System.Collections.Generic;
 
 
-public class Net : Node
-{
-	public class PlayerData
-	{
+public class Net : Node {
+	public class PlayerData {
 		public Option<Player> Plr;
 		public int Team = 1;
 
-		public PlayerData()
-		{
+		public PlayerData() {
 			Plr = Player.None();
 		}
 	}
@@ -40,30 +37,26 @@ public class Net : Node
 
 	public static Net Self;
 
-	Net()
-	{
-		if(Engine.EditorHint) {return;}
+	Net() {
+		if(Engine.EditorHint) { return; }
 
 		Self = this;
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		Work = Multiplayer; //This means that anywhere we can Net.Work.Whatever instead of Game.Self.GetTree().Whatever
 
 		GetTree().Connect("network_peer_connected", this, nameof(PlayerConnected));
 		GetTree().Connect("network_peer_disconnected", this, nameof(PlayerDisconnected));
-		GetTree().Connect("server_disconnected", this, nameof(ServerDisconnected), flags:(uint)ConnectFlags.Deferred);
+		GetTree().Connect("server_disconnected", this, nameof(ServerDisconnected), flags: (uint)ConnectFlags.Deferred);
 	}
 
 
 	public static void SteelRpc(Node Instance, string Method, params object[] Args) //Doesn't rpc clients which are not ready
 	{
-		foreach(int Id in Players.Keys)
-		{
-			if(Id == Self.GetTree().GetNetworkUniqueId())
-			{
+		foreach(int Id in Players.Keys) {
+			if(Id == Self.GetTree().GetNetworkUniqueId()) {
 				continue;
 			}
 			Instance.RpcId(Id, Method, Args);
@@ -73,10 +66,8 @@ public class Net : Node
 
 	public static void SteelRpcUnreliable(Node Instance, string Method, params object[] Args) //Doesn't rpc clients which are not ready
 	{
-		foreach(int Id in Players.Keys)
-		{
-			if(Id == Self.GetTree().GetNetworkUniqueId())
-			{
+		foreach(int Id in Players.Keys) {
+			if(Id == Self.GetTree().GetNetworkUniqueId()) {
 				continue;
 			}
 			Instance.RpcUnreliableId(Id, Method, Args);
@@ -84,8 +75,7 @@ public class Net : Node
 	}
 
 
-	public void PlayerConnected(int Id)
-	{
+	public void PlayerConnected(int Id) {
 		if(Id == 1) //Running on client and connected to server
 		{
 			IsWaitingForServer = false;
@@ -98,8 +88,7 @@ public class Net : Node
 			Console.Log($"Player '{Id}' connected");
 		}
 
-		if(GetTree().IsNetworkServer())
-		{
+		if(GetTree().IsNetworkServer()) {
 			//If we are the server
 			WaitingForVersion.Add(Id, 0); //then add new client to WaitingForVersion
 		}
@@ -109,8 +98,7 @@ public class Net : Node
 	[Remote]
 	public void ProvideVersion(string Version) //Run on server
 	{
-		if(!GetTree().IsNetworkServer())
-		{
+		if(!GetTree().IsNetworkServer()) {
 			return; //Make sure we really are the server
 		}
 
@@ -124,16 +112,14 @@ public class Net : Node
 
 		WaitingForVersion.Remove(GetTree().GetRpcSenderId());
 
-		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
-		World.RemoteLoadingChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int,int>>());
+		World.RemoteLoadedChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int, int>>());
+		World.RemoteLoadingChunks.Add(GetTree().GetRpcSenderId(), new List<Tuple<int, int>>());
 
 		RpcId(GetTree().GetRpcSenderId(), nameof(NotifySuccessConnect));
 		SetupNewPeer(GetTree().GetRpcSenderId());
 		SteelRpc(this, nameof(SetupNewPeer), GetTree().GetRpcSenderId());
-		foreach(int Id in Players.Keys)
-		{
-			if(Id == GetTree().GetRpcSenderId())
-			{
+		foreach(int Id in Players.Keys) {
+			if(Id == GetTree().GetRpcSenderId()) {
 				continue;
 			}
 			RpcId(GetTree().GetRpcSenderId(), nameof(SetupNewPeer), Id);
@@ -151,7 +137,7 @@ public class Net : Node
 		Players.Add(Self.GetTree().GetNetworkUniqueId(), new PlayerData());
 		Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
 
-		RpcId(ServerId, nameof(ReceiveNick), GetTree().GetNetworkUniqueId(),  Game.Nickname);
+		RpcId(ServerId, nameof(ReceiveNick), GetTree().GetNetworkUniqueId(), Game.Nickname);
 	}
 
 
@@ -167,29 +153,24 @@ public class Net : Node
 
 
 	[Remote]
-	public void ReceiveNick(int Id, string NickArg)
-	{
+	public void ReceiveNick(int Id, string NickArg) {
 		Nicknames[Id] = NickArg;
 
-		if(Id != GetTree().GetNetworkUniqueId())
-		{
+		if(Id != GetTree().GetNetworkUniqueId()) {
 			Game.PossessedPlayer.MatchSome(
 				(Plr) => Plr.HUDInstance.AddNickLabel(Id, NickArg)
 			);
 		}
 
-		if(GetTree().IsNetworkServer())
-		{
-			foreach(KeyValuePair<int, string> Entry in Nicknames)
-			{
+		if(GetTree().IsNetworkServer()) {
+			foreach(KeyValuePair<int, string> Entry in Nicknames) {
 				SteelRpc(this, nameof(ReceiveNick), Entry.Key, Entry.Value);
 			}
 		}
 	}
 
 
-	public void PlayerDisconnected(int Id)
-	{
+	public void PlayerDisconnected(int Id) {
 		Console.Log($"Player '{Id}' disconnected");
 
 		if(Players.ContainsKey(Id)) //May be disconnecting from a client which did not fully connect
@@ -200,8 +181,7 @@ public class Net : Node
 			Players.Remove(Id);
 		}
 
-		if(Nicknames.ContainsKey(Id))
-		{
+		if(Nicknames.ContainsKey(Id)) {
 			Nicknames.Remove(Id);
 			Game.PossessedPlayer.MatchSome(
 				(Plr) => Plr.HUDInstance.RemoveNickLabel(Id)
@@ -213,17 +193,14 @@ public class Net : Node
 	}
 
 
-	public void ServerDisconnected()
-	{
+	public void ServerDisconnected() {
 		Console.Log($"Lost connection to server at '{Ip}'");
 		Disconnect();
 	}
 
 
-	public static void Host()
-	{
-		if(Self.GetTree().NetworkPeer != null)
-		{
+	public static void Host() {
+		if(Self.GetTree().NetworkPeer != null) {
 			Console.ThrowPrint(Self.GetTree().IsNetworkServer()
 				? "Cannot host when already hosting"
 				: "Cannot host when connected to a server");
@@ -247,8 +224,7 @@ public class Net : Node
 	public delegate void ConnectToFailed(string Ip);
 
 
-	public static void ConnectTo(string InIp)
-	{
+	public static void ConnectTo(string InIp) {
 		//Set static string Ip
 		Ip = InIp;
 
@@ -260,8 +236,7 @@ public class Net : Node
 	}
 
 
-	public static void Disconnect(bool BuildMenu = true)
-	{
+	public static void Disconnect(bool BuildMenu = true) {
 		World.Close();
 
 		if(Self.GetTree().NetworkPeer is NetworkedMultiplayerENet En)
@@ -287,10 +262,8 @@ public class Net : Node
 
 
 	[Remote]
-	public void RequestTeamChange(int NewTeam)
-	{
-		if(!Net.Work.IsNetworkServer())
-		{
+	public void RequestTeamChange(int NewTeam) {
+		if(!Net.Work.IsNetworkServer()) {
 			RpcId(ServerId, nameof(RequestTeamChange), NewTeam);
 			return;
 		}
@@ -305,33 +278,27 @@ public class Net : Node
 
 
 	[Remote]
-	public void NotifyTeamChange(int Id, int NewTeam)
-	{
+	public void NotifyTeamChange(int Id, int NewTeam) {
 		Players[Id].Team = NewTeam;
 	}
 
 
-	public override void _Process(float Delta)
-	{
-		foreach(int Id in WaitingForVersion.Keys.ToArray())
-		{
+	public override void _Process(float Delta) {
+		foreach(int Id in WaitingForVersion.Keys.ToArray()) {
 			WaitingForVersion[Id] += Delta;
-			if(WaitingForVersion[Id] >= VersionDisconnectDelay)
-			{
+			if(WaitingForVersion[Id] >= VersionDisconnectDelay) {
 				Console.ThrowLog($"Player '{Id}' did not provide their client version and was kicked");
 				((NetworkedMultiplayerENet)GetTree().NetworkPeer).DisconnectPeer(Id); //Disconnect clients which didn't send their version in time
 				WaitingForVersion.Remove(Id);
 			}
 		}
 
-		if(IsWaitingForServer)
-		{
+		if(IsWaitingForServer) {
 			WaitingForServerTimer -= Delta;
-			if(WaitingForServerTimer <= 0)
-			{
+			if(WaitingForServerTimer <= 0) {
 				Self.EmitSignal(nameof(ConnectToFailed), Ip);
 				Console.ThrowLog($"Failed to connect to '{Ip}'");
-				Disconnect(BuildMenu:false);
+				Disconnect(BuildMenu: false);
 			}
 		}
 	}

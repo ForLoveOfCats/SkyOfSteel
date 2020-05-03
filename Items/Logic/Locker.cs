@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 
 
-public class Locker : PipeCoreLogic, IHasInventory
-{
+public class Locker : PipeCoreLogic, IHasInventory {
 	private bool InitiallyFilledFriends = false;
 
 	private Spatial Position1;
@@ -17,14 +16,12 @@ public class Locker : PipeCoreLogic, IHasInventory
 
 	public InventoryComponent Inventory { get; set; }
 
-	private Locker()
-	{
+	private Locker() {
 		Inventory = new InventoryComponent(this, 15);
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		System = new PipeSystem(this);
 		Friends = new HashSet<PipeCoreLogic>();
 
@@ -39,8 +36,7 @@ public class Locker : PipeCoreLogic, IHasInventory
 	}
 
 
-	public override void GridUpdate()
-	{
+	public override void GridUpdate() {
 		HashSet<PipeCoreLogic> OriginalFriends = Friends;
 		Friends = new HashSet<PipeCoreLogic>();
 
@@ -56,21 +52,18 @@ public class Locker : PipeCoreLogic, IHasInventory
 			2 | 4
 		);
 
-		if(Results.Count > 0 && Results["collider"] is OpenEnd)
-		{
+		if(Results.Count > 0 && Results["collider"] is OpenEnd) {
 			OpenEndMesh.Show();
 			OpenEndCollision.Disabled = false;
 			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 			Friends.Add(((OpenEnd)Results["collider"]).Parent);
 		}
-		else
-		{
+		else {
 			OpenEndMesh.Hide();
 			OpenEndCollision.Disabled = true;
 		}
 
-		if(InitiallyFilledFriends && !Friends.SetEquals(OriginalFriends))
-		{
+		if(InitiallyFilledFriends && !Friends.SetEquals(OriginalFriends)) {
 			System = new PipeSystem(this);
 			RecursiveAddFriendsToSystem();
 		}
@@ -78,14 +71,10 @@ public class Locker : PipeCoreLogic, IHasInventory
 	}
 
 
-	public override void OnRemove()
-	{
-		if(Net.Work.IsNetworkServer())
-		{
-			for(int Index = 0; Index < Inventory.Contents.Length; Index++)
-			{
-				if(Inventory[Index] is Items.Instance Item)
-				{
+	public override void OnRemove() {
+		if(Net.Work.IsNetworkServer()) {
+			for(int Index = 0; Index < Inventory.Contents.Length; Index++) {
+				if(Inventory[Index] is Items.Instance Item) {
 					for(int C = 0; C < Item.Count; C++)
 						World.Self.DropItem(Item.Id, Translation, new Vector3());
 				}

@@ -2,15 +2,12 @@ using Godot;
 
 
 
-public class InventoryMenu : VBoxContainer
-{
-	public class FromData
-	{
+public class InventoryMenu : VBoxContainer {
+	public class FromData {
 		public IHasInventory Source;
 		public Items.IntentCount CountMode;
 
-		public FromData(IHasInventory SourceArg, Items.IntentCount CountModeArg)
-		{
+		public FromData(IHasInventory SourceArg, Items.IntentCount CountModeArg) {
 			Source = SourceArg;
 			CountMode = CountModeArg;
 		}
@@ -20,7 +17,7 @@ public class InventoryMenu : VBoxContainer
 	public Texture Alpha;
 	public PackedScene InventoryIconScene;
 
-	public VBoxContainer PlayerVBox ;
+	public VBoxContainer PlayerVBox;
 	public InventoryIcon[] PlayerIcons;
 
 	public IHasInventory Other; //Will be null if we are just the normal inventory screen
@@ -30,8 +27,7 @@ public class InventoryMenu : VBoxContainer
 	public FromData From = null;
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;
 		InventoryIconScene = GD.Load<PackedScene>("res://UI/InventoryIcon.tscn");
 
@@ -39,11 +35,9 @@ public class InventoryMenu : VBoxContainer
 		OtherGrid = GetNode<GridContainer>("HBoxContainer/OtherVBox/OtherCenter/OtherGrid");
 
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				PlayerIcons = new InventoryIcon[Plr.Inventory.Contents.Length];
-				for(int Index = 0; Index < Plr.Inventory.Contents.Length; Index++)
-				{
+				for(int Index = 0; Index < Plr.Inventory.Contents.Length; Index++) {
 					InventoryIcon Icon = InstantiateIcon(Index, Plr);
 					PlayerVBox.AddChild(Icon);
 					PlayerIcons[Index] = Icon;
@@ -51,11 +45,9 @@ public class InventoryMenu : VBoxContainer
 			}
 		);
 
-		if(Other != null)
-		{
+		if(Other != null) {
 			OtherIcons = new InventoryIcon[Other.Inventory.Contents.Length];
-			for(int Index = 0; Index < Other.Inventory.Contents.Length; Index++)
-			{
+			for(int Index = 0; Index < Other.Inventory.Contents.Length; Index++) {
 				InventoryIcon Icon = InstantiateIcon(Index, Other);
 				OtherGrid.AddChild(Icon);
 				OtherIcons[Index] = Icon;
@@ -64,9 +56,8 @@ public class InventoryMenu : VBoxContainer
 	}
 
 
-	public InventoryIcon InstantiateIcon(int SlotArg, IHasInventory SourceArg)
-	{
-		var Icon = (InventoryIcon) InventoryIconScene.Instance();
+	public InventoryIcon InstantiateIcon(int SlotArg, IHasInventory SourceArg) {
+		var Icon = (InventoryIcon)InventoryIconScene.Instance();
 
 		Icon.ParentMenu = this;
 		Icon.Slot = SlotArg;
@@ -77,24 +68,18 @@ public class InventoryMenu : VBoxContainer
 	}
 
 
-	public override bool CanDropData(Vector2 Pos, object Data)
-	{
+	public override bool CanDropData(Vector2 Pos, object Data) {
 		return Data is int;
 	}
 
 
-	public override void DropData(Vector2 Pos, object Data)
-	{
+	public override void DropData(Vector2 Pos, object Data) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Data is int FromSlot && From != null)
-				{
+			(Plr) => {
+				if(Data is int FromSlot && From != null) {
 					Game.PossessedPlayer.MatchSome(
-						(Plr) =>
-						{
-							if(Plr.Inventory[FromSlot] != null)
-							{
+						(Plr) => {
+							if(Plr.Inventory[FromSlot] != null) {
 								Plr.SfxManager.FpThrow();
 								Plr.SetCooldown(0, Player.SlotSwitchCooldown, false);
 

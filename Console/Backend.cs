@@ -2,12 +2,10 @@ using System.Collections.Generic;
 
 
 
-public static class Backend
-{
+public static class Backend {
 	public delegate void CommandFunction(string[] Args);
 
-	public struct CommandInfo
-	{
+	public struct CommandInfo {
 		public string[] HelpMessages;
 		public CommandFunction Function;
 	}
@@ -90,22 +88,18 @@ public static class Backend
 	};
 
 
-	public static void RunCommand(string Line)
-	{
+	public static void RunCommand(string Line) {
 
 		string[] Split = Line.Split(null);
-		if(Split.Length >= 1)
-		{
+		if(Split.Length >= 1) {
 			string Name = Split[0];
 
 			string[] Args = new string[Split.Length - 1];
 			for(int Index = 1; Index < Split.Length; Index += 1)
 				Args[Index - 1] = Split[Index];
 
-			foreach(KeyValuePair<string, CommandInfo> Command in Commands)
-			{
-				if(Command.Key == Name)
-				{
+			foreach(KeyValuePair<string, CommandInfo> Command in Commands) {
+				if(Command.Key == Name) {
 					Command.Value.Function(Args);
 					return;
 				}

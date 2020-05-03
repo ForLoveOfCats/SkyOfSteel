@@ -1,70 +1,58 @@
 using Godot;
 
 
-public class MainMenu : VBoxContainer
-{
-	public override void _Ready()
-	{
+public class MainMenu : VBoxContainer {
+	public override void _Ready() {
 		GetNode<Label>("Version").Text = $"Version: {Game.Version}";
 	}
 
 
-	public void HostPressed()
-	{
+	public void HostPressed() {
 		Menu.BuildHost();
 	}
 
 
-	public void ConnectPressed()
-	{
+	public void ConnectPressed() {
 		Menu.BuildConnect();
 	}
 
 
-	public void WebsitePressed()
-	{
+	public void WebsitePressed() {
 		OS.ShellOpen("https://skyofsteel.org");
 	}
 
 
-	public void DiscordPressed()
-	{
+	public void DiscordPressed() {
 		OS.ShellOpen("https://www.discord.gg/Ag5Yckw");
 	}
 
 
-	public void ItchPressed()
-	{
+	public void ItchPressed() {
 		OS.ShellOpen("https://forloveofcats.itch.io/skyofsteel");
 	}
 
 
-	public void GithubPressed()
-	{
+	public void GithubPressed() {
 		OS.ShellOpen("https://github.com/ForLoveOfCats/SkyOfSteel");
 	}
 
 
-	public void HelpPressed()
-	{
+	public void HelpPressed() {
 		Menu.BuildHelp();
 	}
 
 
-	public void FilesPressed()
-	{
+	public void FilesPressed() {
 		OS.ShellOpen(OS.GetUserDataDir());
 	}
 
 
-	public void CreditsPressed()
-	{
+	public void CreditsPressed() {
 		Menu.BuildCredits();
 	}
 
 
-	public void QuitPressed()
-	{
+	public void QuitPressed() {
 		Game.Quit();
 	}
 }

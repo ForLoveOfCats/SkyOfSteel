@@ -4,18 +4,16 @@ using System.Collections.Generic;
 
 
 
-public class Mobs : Node
-{
-	public enum ID {Slime}
+public class Mobs : Node {
+	public enum ID { Slime }
 
 
 	private static Dictionary<ID, PackedScene> Scenes = null;
 
 	public static Mobs Self = null;
 
-	private Mobs()
-	{
-		if(Engine.EditorHint) {return;}
+	private Mobs() {
+		if(Engine.EditorHint) { return; }
 
 		Self = this;
 
@@ -25,8 +23,7 @@ public class Mobs : Node
 	}
 
 
-	public static void SpawnMob(ID Id, Vector3 Position)
-	{
+	public static void SpawnMob(ID Id, Vector3 Position) {
 		if(Net.Work.IsNetworkServer())
 			Self.RequestServerSpawnMob(Id, Position);
 		else
@@ -35,8 +32,7 @@ public class Mobs : Node
 
 
 	[Remote]
-	private void RequestServerSpawnMob(ID Id, Vector3 Position)
-	{
+	private void RequestServerSpawnMob(ID Id, Vector3 Position) {
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Attempted to run {nameof(RequestServerSpawnMob)} on client");
 
@@ -48,12 +44,11 @@ public class Mobs : Node
 
 
 	[Remote]
-	public void NetSpawnMob(ID Id, Vector3 Position, string GuidName)
-	{
+	public void NetSpawnMob(ID Id, Vector3 Position, string GuidName) {
 		if(World.EntitiesRoot.HasNode(GuidName))
 			return;
 
-		var Mob = (MobClass) Scenes[Id].Instance();
+		var Mob = (MobClass)Scenes[Id].Instance();
 		Mob.Type = Id;
 		Mob.Translation = Position;
 		Mob.Name = GuidName;

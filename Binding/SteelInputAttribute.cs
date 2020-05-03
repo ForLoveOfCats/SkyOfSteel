@@ -3,13 +3,11 @@ using System.Reflection;
 
 
 
-public class SteelInputWithoutArg : Attribute
-{
+public class SteelInputWithoutArg : Attribute {
 	public Action Function;
 
 
-	public SteelInputWithoutArg(Type T, string FunctionName)
-	{
+	public SteelInputWithoutArg(Type T, string FunctionName) {
 		MethodInfo Method = T.GetMethod(FunctionName);
 		if(!Method.IsStatic)
 			throw new Exception($"Method {FunctionName} is not static");
@@ -22,13 +20,11 @@ public class SteelInputWithoutArg : Attribute
 
 
 
-public class SteelInputWithArg : Attribute
-{
+public class SteelInputWithArg : Attribute {
 	public Action<float> Function;
 
 
-	public SteelInputWithArg(Type T, string FunctionName)
-	{
+	public SteelInputWithArg(Type T, string FunctionName) {
 		MethodInfo Method = T.GetMethod(FunctionName);
 		if(!Method.IsStatic)
 			throw new Exception($"Method {FunctionName} is not static");

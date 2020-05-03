@@ -1,16 +1,13 @@
 using Godot;
 
 
-public class CreditsMenu : VBoxContainer
-{
-	public void LicensesPressed()
-	{
+public class CreditsMenu : VBoxContainer {
+	public void LicensesPressed() {
 		Menu.BuildLicenses();
 	}
 
 
-	public void BackPressed()
-	{
+	public void BackPressed() {
 		Menu.BuildMain();
 	}
 }

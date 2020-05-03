@@ -1,8 +1,7 @@
 using Godot;
 
 
-public class PlayerSfxManager : Spatial
-{
+public class PlayerSfxManager : Spatial {
 	public AudioStreamPlayer FpLandSfx;
 	public AudioStreamPlayer3D TpLandSfx;
 
@@ -21,8 +20,7 @@ public class PlayerSfxManager : Spatial
 	public AudioStreamPlayer FpScattershockFireSfx;
 	public AudioStreamPlayer3D TpScattershockFireSfx;
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		FpLandSfx = GetNode<AudioStreamPlayer>("FpLandSfx");
 		TpLandSfx = GetNode<AudioStreamPlayer3D>("TpLandSfx");
 
@@ -44,8 +42,7 @@ public class PlayerSfxManager : Spatial
 
 
 	[Remote]
-	public void TpLand(float Volume)
-	{
+	public void TpLand(float Volume) {
 		TpLandSfx.UnitDb = Volume + 10;
 		TpLandSfx.Play();
 	}
@@ -60,68 +57,58 @@ public class PlayerSfxManager : Spatial
 
 
 	[Remote]
-	public void TpThrow()
-	{
+	public void TpThrow() {
 		TpThrowSfx.Play();
 	}
 
 
-	public void FpThrow()
-	{
+	public void FpThrow() {
 		FpThrowSfx.Play();
 		Net.SteelRpc(this, nameof(TpThrow));
 	}
 
 
 	[Remote]
-	public void TpRocketFire()
-	{
+	public void TpRocketFire() {
 		TpRocketFireSfx.Play();
 	}
 
 
-	public void FpRocketFire()
-	{
+	public void FpRocketFire() {
 		FpRocketFireSfx.Play();
 		Net.SteelRpc(this, nameof(TpRocketFire));
 	}
 
 
-	public void FpHitsound()
-	{
+	public void FpHitsound() {
 		FpHitsoundSfx.Play();
 	}
 
 
-	public void FpKillsound()
-	{
+	public void FpKillsound() {
 		FpKillsoundSfx.Play();
 	}
 
 
 	[Remote]
-	public void TpThunderboltFire()
-	{
+	public void TpThunderboltFire() {
 		TpThunderboltFireSfx.Play();
 	}
 
 
-	public void FpThunderboltFire()
-	{
+	public void FpThunderboltFire() {
 		FpThunderboltFireSfx.Play();
 		Net.SteelRpc(this, nameof(TpThunderboltFire));
 	}
 
 
 	[Remote]
-	public void TpScattershockFire()
-	{
+	public void TpScattershockFire() {
 		TpScattershockFireSfx.Play();
 	}
 
 
-	public void FpScattershockFire()
-	{
+	public void FpScattershockFire() {
 		FpScattershockFireSfx.Play();
 		Net.SteelRpc(this, nameof(TpScattershockFire));
 	}

@@ -2,23 +2,19 @@ using Godot;
 using System;
 
 
-public class UpdateMenu : VBoxContainer
-{
-	public override void _Ready()
-	{
+public class UpdateMenu : VBoxContainer {
+	public override void _Ready() {
 		Label MessageLabel = GetNode<Label>("MessageLabel");
 		MessageLabel.Text = $"You have {Game.Version} and {Game.RemoteVersion} is available";
 	}
 
 
-	public void DownloadPressed()
-	{
+	public void DownloadPressed() {
 		OS.ShellOpen("https://forloveofcats.itch.io/skyofsteel");
 	}
 
 
-	public void IgnorePressed()
-	{
+	public void IgnorePressed() {
 		if(Game.Nickname != Game.DefaultNickname)
 			Menu.BuildMain();
 		else
@@ -26,8 +22,7 @@ public class UpdateMenu : VBoxContainer
 	}
 
 
-	public void QuitPressed()
-	{
+	public void QuitPressed() {
 		Game.Quit();
 	}
 }

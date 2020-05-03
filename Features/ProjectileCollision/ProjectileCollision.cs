@@ -2,8 +2,7 @@ using Godot;
 
 
 
-public interface IProjectile : IEntity
-{
+public interface IProjectile : IEntity {
 	Projectiles.ProjectileID ProjectileId { get; set; }
 	Vector3 RotationDegrees { get; set; }
 	Vector3 Momentum { get; set; }
@@ -14,20 +13,18 @@ public interface IProjectile : IEntity
 }
 
 
-public class ProjectileCollision : Spatial
-{
-	#pragma warning disable 0649
+public class ProjectileCollision : Spatial {
+#pragma warning disable 0649
 	[Export] private string StartPointPath;
 	[Export] private string EndPointPath;
-	#pragma warning restore 0649
+#pragma warning restore 0649
 
 	IProjectile Parent;
 	Spatial StartPoint;
 	Spatial EndPoint;
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		Parent = GetParent<IProjectile>();
 		Assert.ActualAssert(Parent != null);
 
@@ -39,8 +36,7 @@ public class ProjectileCollision : Spatial
 	}
 
 
-	public override void _PhysicsProcess(float Delta)
-	{
+	public override void _PhysicsProcess(float Delta) {
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
 		Godot.Collections.Dictionary Results = State.IntersectRay(
 			StartPoint.GlobalTransform.origin,

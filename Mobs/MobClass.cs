@@ -7,11 +7,10 @@ using static Pathfinding;
 
 
 
-public abstract class MobClass : Character, IEntity, IInGrid, IPushable
-{
+public abstract class MobClass : Character, IEntity, IInGrid, IPushable {
 	private const float Gravity = 75f;
 	private const float MaxFallSpeed = 80f;
-	private const float MaxTimeSinceUpdate = 1f/30f;
+	private const float MaxTimeSinceUpdate = 1f / 30f;
 
 	protected abstract float TopSpeed { get; }
 	protected abstract float Acceleration { get; }
@@ -31,16 +30,13 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 	float TimeSinceUpdate = 0;
 
 
-	public virtual void CalcWants(Option<Tile> MaybeFloor)
-	{}
+	public virtual void CalcWants(Option<Tile> MaybeFloor) { }
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		World.AddEntityToChunk(this);
 
-		if(!Net.Work.IsNetworkServer())
-		{
+		if(!Net.Work.IsNetworkServer()) {
 			SetProcess(false);
 			return;
 		}
@@ -50,32 +46,27 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 	}
 
 
-	public override void _ExitTree()
-	{
+	public override void _ExitTree() {
 		World.RemoveEntityFromChunk(this);
 	}
 
 
-	public void GridUpdate()
-	{
+	public void GridUpdate() {
 		UpdateFloor();
 	}
 
 
-	public void ApplyPush(Vector3 Push)
-	{
+	public void ApplyPush(Vector3 Push) {
 		Momentum += Push;
 	}
 
 
-	public void UpdateFloor()
-	{
+	public void UpdateFloor() {
 		PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-		var Excluding = new Godot.Collections.Array{this};
+		var Excluding = new Godot.Collections.Array { this };
 		Vector3 End = Translation + Bottom + new Vector3(0, -2, 0);
 		var Results = State.IntersectRay(Translation, End, Excluding, 3);
-		if(Results.Count > 0)
-		{
+		if(Results.Count > 0) {
 			if(Results["collider"] is Tile Branch && Branch.Point != null)
 				Floor = Branch.Some();
 		}
@@ -88,14 +79,12 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 
 		TimeSinceUpdate += Delta;
 
-		if(!DepreciatedCurrentChunkTuple.Equals(World.GetChunkTuple(Translation)))
-		{
+		if(!DepreciatedCurrentChunkTuple.Equals(World.GetChunkTuple(Translation))) {
 			World.Chunks[DepreciatedCurrentChunkTuple].Mobs.Remove(this);
 			World.AddMobToChunk(this);
 		}
 
-		if(CurrentArea != GridClass.CalculateArea(Translation))
-		{
+		if(CurrentArea != GridClass.CalculateArea(Translation)) {
 			CurrentArea = GridClass.CalculateArea(Translation);
 			World.Grid.QueueRemoveItem(this);
 			World.Grid.AddItem(this);
@@ -104,20 +93,17 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 		UpdateFloor();
 		CalcWants(Floor);
 
-		if(OnFloor)
-		{
+		if(OnFloor) {
 			TargetPoint.Match(
-				some: Target =>
-				{
+				some: Target => {
 					if(Target.Pos.Flattened().DistanceTo(Translation.Flattened()) <= 2)
 						TargetPoint = PointData.None();
-					else
-					{
+					else {
 						//Apply push toward TargetPoint but don't go to fast
 						Momentum += ClampVec3(
 							Target.Pos.Flattened() - Translation.Flattened(),
-							Acceleration*Delta + Friction*Delta,
-							Acceleration*Delta + Friction*Delta
+							Acceleration * Delta + Friction * Delta,
+							Acceleration * Delta + Friction * Delta
 						);
 						Vector3 Clamped = ClampVec3(Momentum.Flattened(), 0, TopSpeed);
 						Momentum.x = Clamped.x;
@@ -125,17 +111,17 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 					}
 				},
 
-				none: () => {}
+				none: () => { }
 			);
 
 			//Friction
 			Vector3 Horz = Momentum.Flattened();
-			Horz = Horz.Normalized() * Clamp(Horz.Length() - Friction*Delta, 0, TopSpeed);
+			Horz = Horz.Normalized() * Clamp(Horz.Length() - Friction * Delta, 0, TopSpeed);
 			Momentum.x = Horz.x;
 			Momentum.z = Horz.z;
 		}
 		else //Not on floor
-			Momentum.y = Clamp(Momentum.y - Gravity*Delta, -MaxFallSpeed, MaxFallSpeed); //Apply gravity
+			Momentum.y = Clamp(Momentum.y - Gravity * Delta, -MaxFallSpeed, MaxFallSpeed); //Apply gravity
 
 		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Momentum = Move(Momentum, Delta, 1, 60, TopSpeed);
@@ -148,8 +134,7 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 
 
 	[Remote]
-	public void Update(params object[] Args)
-	{
+	public void Update(params object[] Args) {
 		Assert.ArgArray(Args, typeof(Vector3));
 		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Translation = (Vector3)Args[0];
@@ -158,15 +143,13 @@ public abstract class MobClass : Character, IEntity, IInGrid, IPushable
 
 
 	[Remote]
-	public void PhaseOut()
-	{
+	public void PhaseOut() {
 		QueueFree();
 	}
 
 
 	[Remote]
-	public void Destroy(params object[] Args)
-	{
+	public void Destroy(params object[] Args) {
 		Assert.ArgArray(Args);
 		QueueFree();
 	}

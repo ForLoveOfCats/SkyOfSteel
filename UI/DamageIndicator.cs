@@ -1,8 +1,7 @@
 using Godot;
 
 
-public class DamageIndicator : Sprite
-{
+public class DamageIndicator : Sprite {
 	public float MaxLife;
 	public float RemainingLife;
 
@@ -12,14 +11,12 @@ public class DamageIndicator : Sprite
 
 	public static Shader TransparencyShader;
 
-	static DamageIndicator()
-	{
+	static DamageIndicator() {
 		TransparencyShader = GD.Load<Shader>("res://UI/DamageIndicator.shader");
 	}
 
 
-	public void Setup(Vector3 Origin, float MaxLifeArg)
-	{
+	public void Setup(Vector3 Origin, float MaxLifeArg) {
 		MaxLife = MaxLifeArg;
 		RemainingLife = MaxLife;
 
@@ -34,17 +31,14 @@ public class DamageIndicator : Sprite
 	}
 
 
-	private void CenterSprite()
-	{
+	private void CenterSprite() {
 		GlobalPosition = OS.WindowSize / new Vector2(2, 2);
 	}
 
 
-	public override void _Process(float Delta)
-	{
+	public override void _Process(float Delta) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				var PlayerPosition2D = new Vector2(Plr.Translation.x, Plr.Translation.z);
 				Rotation = PlayerPosition2D.AngleToPoint(ShotFirePos2D) + Plr.Rotation.y;
 

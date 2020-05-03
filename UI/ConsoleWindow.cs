@@ -1,14 +1,12 @@
 using Godot;
 
 
-public class ConsoleWindow : Panel
-{
+public class ConsoleWindow : Panel {
 	bool IsOpen;
 	LineEdit InputLine;
 
 
-	public void Open()
-	{
+	public void Open() {
 		Show();
 		IsOpen = true;
 		InputLine.Editable = true;
@@ -17,8 +15,7 @@ public class ConsoleWindow : Panel
 	}
 
 
-	public void Close()
-	{
+	public void Close() {
 		Hide();
 		IsOpen = false;
 		InputLine.Editable = false;
@@ -26,17 +23,14 @@ public class ConsoleWindow : Panel
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		InputLine = GetNode("VBox/LineEdit") as LineEdit;
 		Close(); //Console.IsOpen should already be false
 	}
 
 
-	public override void _Process(float Delta)
-	{
-		if(Input.IsActionJustPressed("Enter") && IsOpen)
-		{
+	public override void _Process(float Delta) {
+		if(Input.IsActionJustPressed("Enter") && IsOpen) {
 			Console.Execute(InputLine.Text);
 			InputLine.Text = "";
 		}

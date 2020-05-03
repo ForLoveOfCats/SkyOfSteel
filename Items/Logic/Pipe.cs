@@ -5,8 +5,7 @@ using System.Collections.Generic;
 
 
 
-public class Pipe : PipeCoreLogic
-{
+public class Pipe : PipeCoreLogic {
 	private bool InitallyFilledFriends = false;
 
 	Spatial Position1;
@@ -19,8 +18,7 @@ public class Pipe : PipeCoreLogic
 	CollisionShape SecondEndCollision;
 	StaticBody SecondOpenEnd;
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		System = new PipeSystem(this);
 		Friends = new HashSet<PipeCoreLogic>();
 
@@ -40,8 +38,7 @@ public class Pipe : PipeCoreLogic
 	}
 
 
-	public override void GridUpdate()
-	{
+	public override void GridUpdate() {
 		HashSet<PipeCoreLogic> OriginalFriends = Friends;
 		Friends = new HashSet<PipeCoreLogic>();
 
@@ -56,15 +53,13 @@ public class Pipe : PipeCoreLogic
 			},
 			2 | 4
 		);
-		if(Results.Count > 0 && Results["collider"] is OpenEnd)
-		{
+		if(Results.Count > 0 && Results["collider"] is OpenEnd) {
 			FirstEndMesh.Show();
 			FirstEndCollision.Disabled = false;
 			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 			Friends.Add(((OpenEnd)Results["collider"]).Parent);
 		}
-		else
-		{
+		else {
 			FirstEndMesh.Hide();
 			FirstEndCollision.Disabled = true;
 		}
@@ -79,21 +74,18 @@ public class Pipe : PipeCoreLogic
 			},
 			2 | 4
 		);
-		if(Results.Count > 0 && Results["collider"] is OpenEnd)
-		{
+		if(Results.Count > 0 && Results["collider"] is OpenEnd) {
 			SecondEndMesh.Show();
 			SecondEndCollision.Disabled = false;
 			System.Consume(((OpenEnd)Results["collider"]).Parent.System);
 			Friends.Add(((OpenEnd)Results["collider"]).Parent);
 		}
-		else
-		{
+		else {
 			SecondEndMesh.Hide();
 			SecondEndCollision.Disabled = true;
 		}
 
-		if(InitallyFilledFriends && !Friends.SetEquals(OriginalFriends))
-		{
+		if(InitallyFilledFriends && !Friends.SetEquals(OriginalFriends)) {
 			System = new PipeSystem(this);
 			RecursiveAddFriendsToSystem();
 		}

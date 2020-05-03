@@ -6,28 +6,24 @@ using static Godot.Mathf;
 
 
 
-public class Items : Node
-{
+public class Items : Node {
 	public delegate Vector3? BuildInfoDelegate(Tile Base, float PlayerOrientation, int BuildRotation, Vector3 HitRelative);
 	public delegate void UseItemDelegate(Instance Item, Player UsingPlayer);
 
 
-	public class Instance
-	{
+	public class Instance {
 		[Newtonsoft.Json.JsonProperty("I")]
 		public Items.ID Id = Items.ID.ERROR;
 		[Newtonsoft.Json.JsonProperty("C")]
 		public int Count = 1;
 
-		public Instance(Items.ID IdArg)
-		{
+		public Instance(Items.ID IdArg) {
 			Id = IdArg;
 		}
 	}
 
 
-	public struct IdInfo
-	{
+	public struct IdInfo {
 		public BuildInfoDelegate PositionDelegate;
 		public BuildInfoDelegate RotationDelegate;
 
@@ -39,8 +35,7 @@ public class Items : Node
 	}
 
 
-	public enum ID
-	{
+	public enum ID {
 		NONE = int.MinValue,
 		ERROR = 0,
 		PLATFORM,
@@ -57,7 +52,7 @@ public class Items : Node
 		SLIME_SPAWNER
 	}
 
-	public enum IntentCount {ALL, SINGLE, HALF};
+	public enum IntentCount { ALL, SINGLE, HALF };
 
 	public static Dictionary<ID, Mesh> Meshes = new Dictionary<ID, Mesh>();
 	public static Dictionary<ID, Texture> Thumbnails = new Dictionary<ID, Texture>();
@@ -67,15 +62,13 @@ public class Items : Node
 
 	public static Shader TileShader { get; private set; }
 
-	Items()
-	{
-		if(Engine.EditorHint) {return;}
+	Items() {
+		if(Engine.EditorHint) { return; }
 
 		TileShader = GD.Load<Shader>("res://World/Materials/TileShader.shader");
 
 		//Assume that every item has a mesh, thumbnail, and texture. Will throw exception on game startup if not
-		foreach(Items.ID Type in System.Enum.GetValues(typeof(ID)))
-		{
+		foreach(Items.ID Type in System.Enum.GetValues(typeof(ID))) {
 			if(Type == Items.ID.NONE) continue;
 
 			Meshes.Add(Type, GD.Load<Mesh>($"res://Items/Meshes/{Type}.obj"));
@@ -85,10 +78,8 @@ public class Items : Node
 	}
 
 
-	public static int CalcRetrieveCount(IntentCount CountMode, int Value)
-	{
-		switch(CountMode)
-		{
+	public static int CalcRetrieveCount(IntentCount CountMode, int Value) {
+		switch(CountMode) {
 			case IntentCount.ALL:
 				//Keep original count as original
 				break;
@@ -105,12 +96,10 @@ public class Items : Node
 	}
 
 
-	public static Vector3? TryCalculateBuildPosition(ID Branch, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 Hit)
-	{
+	public static Vector3? TryCalculateBuildPosition(ID Branch, Tile Base, float PlayerOrientation, int BuildRotation, Vector3 Hit) {
 		BuildInfoDelegate Function = IdInfos[Branch].PositionDelegate;
 
-		if(Function != null)
-		{
+		if(Function != null) {
 			Vector3? PossiblePosition = Function(Base, PlayerOrientation, BuildRotation, Hit - Base.Translation);
 			if(PossiblePosition is Vector3 Position) //For now round all positions until it causes issues
 				return new Vector3(Round(Position.x), Round(Position.y), Round(Position.z));
@@ -124,8 +113,7 @@ public class Items : Node
 	{
 		BuildInfoDelegate Function = IdInfos[Branch].RotationDelegate;
 
-		if(Function != null)
-		{
+		if(Function != null) {
 			Vector3? PossibleRotation = Function(Base, PlayerOrientation, BuildRotation, Hit - Base.Translation);
 			if(PossibleRotation is Vector3 Rotation) //For now round all rotations until it causes issues
 				return new Vector3(Round(Rotation.x), Round(Rotation.y), Round(Rotation.z));
@@ -135,18 +123,15 @@ public class Items : Node
 	}
 
 
-	public static void UseItem(Instance Item, Player UsingPlayer)
-	{
+	public static void UseItem(Instance Item, Player UsingPlayer) {
 		UseItemDelegate PossibleFunc = IdInfos[Item.Id].UseDelegate;
-		if(PossibleFunc is UseItemDelegate Func)
-		{
+		if(PossibleFunc is UseItemDelegate Func) {
 			Func(Item, UsingPlayer);
 		}
 	}
 
 
-	public static void SetupItems()
-	{
+	public static void SetupItems() {
 		IdInfos = new Dictionary<ID, IdInfo>() {
 			{
 				ID.ERROR,
@@ -291,8 +276,7 @@ public class Items : Node
 
 		//Lets make sure that every ID has an entry
 		//This won't help mods but will help us greatly
-		foreach(ID Type in System.Enum.GetValues(typeof(ID)))
-		{
+		foreach(ID Type in System.Enum.GetValues(typeof(ID))) {
 			if(Type == ID.NONE) continue;
 
 			Assert.ActualAssert(IdInfos.ContainsKey(Type));

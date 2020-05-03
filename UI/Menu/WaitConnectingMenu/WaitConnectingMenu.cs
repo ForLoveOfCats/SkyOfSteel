@@ -1,33 +1,27 @@
 using Godot;
 
 
-public class WaitConnectingMenu : VBoxContainer
-{
+public class WaitConnectingMenu : VBoxContainer {
 	private Label Message;
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		Message = GetNode<Label>("Message");
 	}
 
 
-	public void ConnectFailed(string Ip)
-	{
+	public void ConnectFailed(string Ip) {
 		Message.Text = $"Failed to connect to '{Ip}'";
 	}
 
 
-	public void CancelPressed()
-	{
+	public void CancelPressed() {
 		Net.Disconnect();
 		Menu.BuildMain();
 	}
 
 
-	public override void _Process(float Delta)
-	{
-		if(Net.IsWaitingForServer)
-		{
+	public override void _Process(float Delta) {
+		if(Net.IsWaitingForServer) {
 			Message.Text = $"Attempting to connect to '{Net.Ip}'....      {(int)Net.WaitingForServerTimer}";
 		}
 	}

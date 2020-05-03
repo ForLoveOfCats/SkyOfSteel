@@ -2,8 +2,7 @@ using Godot;
 
 
 
-public interface IHasInventory
-{
+public interface IHasInventory {
 	InventoryComponent Inventory { get; set; }
 
 	string Name { get; set; }

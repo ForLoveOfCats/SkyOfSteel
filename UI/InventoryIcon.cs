@@ -2,9 +2,8 @@ using Godot;
 
 
 
-public class InventoryIcon : TextureRect
-{
-	public enum UsageCase {MENU, PREVIEW}
+public class InventoryIcon : TextureRect {
+	public enum UsageCase { MENU, PREVIEW }
 
 	public InventoryMenu ParentMenu = null;
 	public IHasInventory Source = null;
@@ -17,16 +16,14 @@ public class InventoryIcon : TextureRect
 
 	private static PackedScene InventoryIconScene;
 
-	static InventoryIcon()
-	{
-		if(Engine.EditorHint) {return;}
+	static InventoryIcon() {
+		if(Engine.EditorHint) { return; }
 
 		InventoryIconScene = GD.Load<PackedScene>("res://UI/InventoryIcon.tscn");
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		CountLabel = GetNode<Label>("Label");
 		CountLabel.Text = "";
 
@@ -34,29 +31,26 @@ public class InventoryIcon : TextureRect
 	}
 
 
-	public override void _Draw()
-	{
-		if(Case == UsageCase.MENU)
-		{
+	public override void _Draw() {
+		if(Case == UsageCase.MENU) {
 			var Rect = new Rect2(new Vector2(), RectSize);
 			DrawRect(Rect, new Color(1, 1, 1), false, 1);
 		}
 	}
 
 
-	public override object GetDragData(Vector2 Pos)
-	{
+	public override object GetDragData(Vector2 Pos) {
 		if(Source.Inventory[Slot] == null)
 			return null;
 
 		Items.IntentCount Mode = Items.IntentCount.ALL;
-		if(Input.IsKeyPressed((int) KeyList.Shift))
+		if(Input.IsKeyPressed((int)KeyList.Shift))
 			Mode = Items.IntentCount.HALF;
-		else if(Input.IsKeyPressed((int) Godot.KeyList.Control))
+		else if(Input.IsKeyPressed((int)Godot.KeyList.Control))
 			Mode = Items.IntentCount.SINGLE;
 		ParentMenu.From = new InventoryMenu.FromData(Source, Mode);
 
-		var Preview = (InventoryIcon) InventoryIconScene.Instance();
+		var Preview = (InventoryIcon)InventoryIconScene.Instance();
 		Preview.ParentMenu = ParentMenu;
 		Preview.Source = Source;
 		Preview.Slot = Slot;
@@ -67,16 +61,13 @@ public class InventoryIcon : TextureRect
 	}
 
 
-	public override bool CanDropData(Vector2 Pos, object Data)
-	{
+	public override bool CanDropData(Vector2 Pos, object Data) {
 		return Data is int;
 	}
 
 
-	public override void DropData(Vector2 Pos, object Data)
-	{
-		if(Data is int FromSlot && ParentMenu.From != null)
-		{
+	public override void DropData(Vector2 Pos, object Data) {
+		if(Data is int FromSlot && ParentMenu.From != null) {
 			if(Source == ParentMenu.From.Source && Slot == FromSlot)
 				return; //Same source and slot, we dropped on ourself
 
@@ -84,25 +75,20 @@ public class InventoryIcon : TextureRect
 		}
 	}
 
-	public void UpdateIcon()
-	{
-		if(Source.Inventory[Slot] == null)
-		{
+	public void UpdateIcon() {
+		if(Source.Inventory[Slot] == null) {
 			CurrentId = Items.ID.NONE;
 			Texture = ParentMenu.Alpha;
 		}
-		else
-		{
+		else {
 			CurrentId = Source.Inventory[Slot].Id;
 			Texture = Items.Thumbnails[CurrentId];
 		}
 	}
 
 
-	public override void _Process(float Delta)
-	{
-		if(Source.Inventory[Slot] is Items.Instance NotNull)
-		{
+	public override void _Process(float Delta) {
+		if(Source.Inventory[Slot] is Items.Instance NotNull) {
 			if(NotNull.Id != CurrentId)
 				UpdateIcon();
 
@@ -114,19 +100,16 @@ public class InventoryIcon : TextureRect
 
 			CountLabel.Text = Count.ToString();
 		}
-		else if(CurrentId != Items.ID.NONE)
-		{
+		else if(CurrentId != Items.ID.NONE) {
 			UpdateIcon();
 			CountLabel.Text = "";
 		}
 
-		if(Case == UsageCase.MENU && GetParent().GetParent() is CenterContainer Cont)
-		{
+		if(Case == UsageCase.MENU && GetParent().GetParent() is CenterContainer Cont) {
 			float Height = Cont.RectSize.y;
 			RectMinSize = new Vector2(Height / 11f, Height / 11f);
 		}
-		else if(Case == UsageCase.PREVIEW)
-		{
+		else if(Case == UsageCase.PREVIEW) {
 			float Height = GetViewport().GetVisibleRect().Size.y;
 			RectSize = new Vector2(Height / 9f, Height / 9f);
 		}

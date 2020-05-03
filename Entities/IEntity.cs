@@ -3,8 +3,7 @@ using System;
 
 
 
-public interface IEntity
-{
+public interface IEntity {
 	string Name { get; set; }
 	bool Visible { get; set; }
 	Vector3 Translation { get; set; }

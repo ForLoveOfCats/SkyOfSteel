@@ -4,18 +4,15 @@ using System.Collections.Generic;
 
 
 
-public class Entities : Node
-{
+public class Entities : Node {
 	public static Entities Self;
-	private Entities()
-	{
+	private Entities() {
 		Self = this;
 	}
 
 
 	[Remote]
-	private void PleaseSendMeCreate(string Identifier)
-	{
+	private void PleaseSendMeCreate(string Identifier) {
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(PleaseSendMeCreate)} on client");
 
@@ -32,17 +29,14 @@ public class Entities : Node
 	}
 
 
-	public static void SendCreate(IEntity Entity)
-	{
-		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
-		{
+	public static void SendCreate(IEntity Entity) {
+		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players) {
 			int Receiver = KV.Key;
 			if(Receiver == Net.Work.GetNetworkUniqueId())
 				continue;
 
 			KV.Value.Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					int ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
 					var EntityChunk = World.GetChunkTuple(Entity.Translation);
 					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkRenderDistance, Plr.Translation))
@@ -53,89 +47,80 @@ public class Entities : Node
 	}
 
 
-	public static void SendCreateTo(int Receiver, IEntity Entity)
-	{
+	public static void SendCreateTo(int Receiver, IEntity Entity) {
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendCreateTo)} on client");
 
 		if(((Node)Entity).IsQueuedForDeletion())
 			return;
 
-		switch(Entity)
-		{
-			case IProjectile Projectile:
-			{
-				Projectiles.Self.RpcId(
-					Receiver,
-					nameof(Projectiles.ActualFire),
-					Projectile.ProjectileId,
-					Projectile.FirerId,
-					Projectile.Translation,
-					Projectile.RotationDegrees,
-					Projectile.Momentum,
-					Projectile.Name
-				);
-				return;
-			}
+		switch(Entity) {
+			case IProjectile Projectile: {
+					Projectiles.Self.RpcId(
+						Receiver,
+						nameof(Projectiles.ActualFire),
+						Projectile.ProjectileId,
+						Projectile.FirerId,
+						Projectile.Translation,
+						Projectile.RotationDegrees,
+						Projectile.Momentum,
+						Projectile.Name
+					);
+					return;
+				}
 
-			case DroppedItem Item:
-			{
-				World.Self.RpcId(
-					Receiver,
-					nameof(World.DropOrUpdateItem),
-					Item.Type,
-					Item.Translation,
-					Item.RotationDegrees.y,
-					Item.Momentum,
-					Item.Name
-				);
-				return;
-			}
+			case DroppedItem Item: {
+					World.Self.RpcId(
+						Receiver,
+						nameof(World.DropOrUpdateItem),
+						Item.Type,
+						Item.Translation,
+						Item.RotationDegrees.y,
+						Item.Momentum,
+						Item.Name
+					);
+					return;
+				}
 
-			case Tile Branch:
-			{
-				World.Self.RpcId(
-					Receiver,
-					nameof(World.PlaceWithName),
-					Branch.ItemId,
-					Branch.Translation,
-					Branch.RotationDegrees,
-					Branch.OwnerId,
-					Branch.Name
-				);
-				return;
-			}
+			case Tile Branch: {
+					World.Self.RpcId(
+						Receiver,
+						nameof(World.PlaceWithName),
+						Branch.ItemId,
+						Branch.Translation,
+						Branch.RotationDegrees,
+						Branch.OwnerId,
+						Branch.Name
+					);
+					return;
+				}
 
-			case Player Plr:
-			{
-				Game.Self.RpcId(
-					Receiver,
-					nameof(Game.NetSpawnPlayer),
-					Plr.Id
-				);
-				return;
-			}
+			case Player Plr: {
+					Game.Self.RpcId(
+						Receiver,
+						nameof(Game.NetSpawnPlayer),
+						Plr.Id
+					);
+					return;
+				}
 
-			case MobClass Mob:
-			{
-				Mobs.Self.RpcId(
-					Receiver,
-					nameof(Mobs.NetSpawnMob),
-					Mob.Type,
-					Mob.Name
-				);
-				return;
-			}
+			case MobClass Mob: {
+					Mobs.Self.RpcId(
+						Receiver,
+						nameof(Mobs.NetSpawnMob),
+						Mob.Type,
+						Mob.Name
+					);
+					return;
+				}
 		}
 	}
 
 
-	public static void MovedTick(IEntity Entity, Tuple<int, int> OriginalChunkTuple)
-	{
+	public static void MovedTick(IEntity Entity, Tuple<int, int> OriginalChunkTuple) {
 		var ChunkTuple = World.GetChunkTuple(Entity.Translation);
 
-		if(!ChunkTuple.Equals(OriginalChunkTuple))
-		{
+		if(!ChunkTuple.Equals(OriginalChunkTuple)) {
 			World.RemoveEntityFromChunk(Entity);
 			World.AddEntityToChunk(Entity);
 		}
@@ -145,26 +130,21 @@ public class Entities : Node
 	//Checks if the entity should be phased out
 	//On the client a phase out frees the entity but does not "destroy" it
 	//On the server a phase out makes the entity invisible
-	public static void AsServerMaybePhaseOut(IEntity Entity)
-	{
-		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
-		{
+	public static void AsServerMaybePhaseOut(IEntity Entity) {
+		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players) {
 			int Receiver = KV.Key;
 			KV.Value.Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					int ChunkRenderDistance = Game.ChunkRenderDistance;
 					if(Receiver != Net.ServerId)
 						ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
 
 					var EntityChunk = World.GetChunkTuple(Entity.Translation);
-					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkRenderDistance, Plr.Translation))
-					{
+					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkRenderDistance, Plr.Translation)) {
 						if(Receiver == Net.ServerId)
 							Entity.Visible = true;
 					}
-					else
-					{
+					else {
 						if(Receiver == Net.ServerId)
 							Entity.Visible = false;
 						else
@@ -177,8 +157,7 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceivePhaseOut(string Identifier)
-	{
+	private void ReceivePhaseOut(string Identifier) {
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 			return;
@@ -189,10 +168,8 @@ public class Entities : Node
 
 
 	[Remote]
-	public void PleaseDestroyMe(string Identifier, params object[] Args)
-	{
-		if(Net.Work.IsNetworkServer())
-		{
+	public void PleaseDestroyMe(string Identifier, params object[] Args) {
+		if(Net.Work.IsNetworkServer()) {
 			SendDestroy(Identifier, Args);
 			ReceiveDestroy(Identifier, Args);
 		}
@@ -201,8 +178,7 @@ public class Entities : Node
 	}
 
 
-	public static void SendDestroy(string Identifier, params object[] Args)
-	{
+	public static void SendDestroy(string Identifier, params object[] Args) {
 		if(Net.Work.IsNetworkServer())
 			Net.SteelRpc(Self, nameof(ReceiveDestroy), Identifier, Args);
 		else
@@ -211,8 +187,7 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceiveDestroy(string Identifier, params object[] Args)
-	{
+	private void ReceiveDestroy(string Identifier, params object[] Args) {
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
 		if(Entity is null)
 			return;
@@ -222,8 +197,7 @@ public class Entities : Node
 	}
 
 
-	public static void ClientSendUpdate(string Identifier, params object[] Args)
-	{
+	public static void ClientSendUpdate(string Identifier, params object[] Args) {
 		if(Net.Work.IsNetworkServer())
 			Self.ReceiveClientSendUpdate(Net.Work.GetNetworkUniqueId(), Identifier, Args);
 		else
@@ -232,26 +206,22 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceiveClientSendUpdate(int ClientId, string Identifier, params object[] Args)
-	{
+	private void ReceiveClientSendUpdate(int ClientId, string Identifier, params object[] Args) {
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendUpdate)} on client");
 
 		IEntity Entity = World.EntitiesRoot.GetNode<IEntity>(Identifier);
 
-		foreach(int Receiver in Net.Players.Keys)
-		{
+		foreach(int Receiver in Net.Players.Keys) {
 			if(Receiver == ClientId)
 				continue;
-			else if(Receiver == Net.ServerId)
-			{
+			else if(Receiver == Net.ServerId) {
 				Self.ReceiveUpdate(Identifier, Args);
 				continue;
 			}
 
 			Net.Players[Receiver].Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					var EntityChunk = World.GetChunkTuple(Entity.Translation);
 					var ChunkDistance = World.ChunkRenderDistances[Receiver];
 					if(World.ChunkWithinDistanceFrom(EntityChunk, ChunkDistance, Plr.Translation))
@@ -262,21 +232,18 @@ public class Entities : Node
 	}
 
 
-	public static void SendUpdate(string Identifier, params object[] Args)
-	{
+	public static void SendUpdate(string Identifier, params object[] Args) {
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendUpdate)} on client");
 
 		IEntity Entity = World.EntitiesRoot.GetNode<IEntity>(Identifier);
 
-		foreach(int Receiver in Net.Players.Keys)
-		{
+		foreach(int Receiver in Net.Players.Keys) {
 			if(Receiver == Net.ServerId)
 				continue;
 
 			Net.Players[Receiver].Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					var EntityChunk = World.GetChunkTuple(Entity.Translation);
 					if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
 						Self.RpcUnreliableId(Receiver, nameof(ReceiveUpdate), Identifier, Args);
@@ -287,11 +254,9 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceiveUpdate(string Identifier, params object[] Args)
-	{
+	private void ReceiveUpdate(string Identifier, params object[] Args) {
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
-		if(Entity is null)
-		{
+		if(Entity is null) {
 			RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
 			return;
 		}
@@ -301,32 +266,26 @@ public class Entities : Node
 	}
 
 
-	public static void SendInventory(IHasInventory HasInventory)
-	{
+	public static void SendInventory(IHasInventory HasInventory) {
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception($"Cannot run {nameof(SendInventory)} on client");
 
-		foreach(int Receiver in Net.Players.Keys)
-		{
+		foreach(int Receiver in Net.Players.Keys) {
 			if(Receiver == Net.Work.GetNetworkUniqueId())
 				continue;
 
 			Net.Players[Receiver].Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					var EntityChunk = World.GetChunkTuple(HasInventory.Translation);
-					if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation))
-					{
+					if(World.ChunkWithinDistanceFrom(EntityChunk, World.ChunkRenderDistances[Receiver], Plr.Translation)) {
 						var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
 						var Counts = new int[HasInventory.Inventory.Contents.Length];
 
 						int Index = 0;
-						while(Index < HasInventory.Inventory.Contents.Length)
-						{
+						while(Index < HasInventory.Inventory.Contents.Length) {
 							Items.Instance Item = HasInventory.Inventory.Contents[Index];
 
-							if(Item is null)
-							{
+							if(Item is null) {
 								Ids[Index] = Items.ID.NONE;
 								Counts[Index] = 0;
 								Index += 1;
@@ -346,18 +305,15 @@ public class Entities : Node
 	}
 
 
-	public static void SendInventoryTo(IHasInventory HasInventory, int Receiver)
-	{
+	public static void SendInventoryTo(IHasInventory HasInventory, int Receiver) {
 		var Ids = new Items.ID[HasInventory.Inventory.Contents.Length];
 		var Counts = new int[HasInventory.Inventory.Contents.Length];
 
 		int Index = 0;
-		while(Index < HasInventory.Inventory.Contents.Length)
-		{
+		while(Index < HasInventory.Inventory.Contents.Length) {
 			Items.Instance Item = HasInventory.Inventory.Contents[Index];
 
-			if(Item is null)
-			{
+			if(Item is null) {
 				Ids[Index] = Items.ID.NONE;
 				Counts[Index] = 0;
 				Index += 1;
@@ -374,28 +330,23 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceiveInventory(string Identifier, Items.ID[] Ids, int[] Counts)
-	{
+	private void ReceiveInventory(string Identifier, Items.ID[] Ids, int[] Counts) {
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
-		if(Entity is null)
-		{
+		if(Entity is null) {
 			RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
 			return;
 		}
 
 		Assert.ActualAssert(Entity is IEntity);
-		if(Entity is IHasInventory HasInventory)
-		{
+		if(Entity is IHasInventory HasInventory) {
 			Assert.ActualAssert(Ids.Length == Counts.Length);
 			Assert.ActualAssert(HasInventory.Inventory.Contents.Length == Ids.Length);
 
 			int Index = 0;
-			while(Index < Ids.Length)
-			{
+			while(Index < Ids.Length) {
 				if(Ids[Index] == Items.ID.NONE)
 					HasInventory.Inventory.Contents[Index] = null;
-				else
-				{
+				else {
 					var Item = new Items.Instance(Ids[Index]) {
 						Count = Counts[Index]
 					};
@@ -410,8 +361,7 @@ public class Entities : Node
 	}
 
 
-	public static void TransferFromTo(IHasInventory From, int FromSlot, IHasInventory ToPath, int ToSlot, Items.IntentCount CountMode)
-	{
+	public static void TransferFromTo(IHasInventory From, int FromSlot, IHasInventory ToPath, int ToSlot, Items.IntentCount CountMode) {
 		if(Net.Work.IsNetworkServer())
 			Self.ReceiveTransferFromTo(From.GetPath(), FromSlot, ToPath.GetPath(), ToSlot, CountMode);
 		else
@@ -420,8 +370,7 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceiveTransferFromTo(NodePath FromPath, int FromSlot, NodePath ToPath, int ToSlot, Items.IntentCount CountMode)
-	{
+	private void ReceiveTransferFromTo(NodePath FromPath, int FromSlot, NodePath ToPath, int ToSlot, Items.IntentCount CountMode) {
 		Assert.ActualAssert(Net.Work.IsNetworkServer());
 
 		var MaybeFrom = World.EntitiesRoot.GetNodeOrNull(FromPath);
@@ -434,8 +383,7 @@ public class Entities : Node
 	}
 
 
-	public static void ThrowSlotFromAt(IHasInventory From, int FromSlot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity)
-	{
+	public static void ThrowSlotFromAt(IHasInventory From, int FromSlot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity) {
 		if(Net.Work.IsNetworkServer())
 			Self.ReceiveThrowSlotFromAt(From.GetPath(), FromSlot, CountMode, At, Velocity);
 		else
@@ -444,8 +392,7 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceiveThrowSlotFromAt(NodePath FromPath, int FromSlot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity)
-	{
+	private void ReceiveThrowSlotFromAt(NodePath FromPath, int FromSlot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity) {
 		Assert.ActualAssert(Net.Work.IsNetworkServer());
 
 		var MaybeFrom = World.EntitiesRoot.GetNodeOrNull(FromPath);
@@ -457,17 +404,14 @@ public class Entities : Node
 	}
 
 
-	public static void SendPush(IPushable Pushable, Vector3 Push)
-	{
-		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
-		{
+	public static void SendPush(IPushable Pushable, Vector3 Push) {
+		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players) {
 			int Receiver = KV.Key;
 			if(Receiver == Net.Work.GetNetworkUniqueId())
 				continue;
 
 			KV.Value.Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					int ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
 					var PushableChunk = World.GetChunkTuple(Pushable.Translation);
 					if(World.ChunkWithinDistanceFrom(PushableChunk, ChunkRenderDistance, Plr.Translation))
@@ -479,11 +423,9 @@ public class Entities : Node
 
 
 	[Remote]
-	private void ReceivePush(string Identifier, Vector3 Push)
-	{
+	private void ReceivePush(string Identifier, Vector3 Push) {
 		Node Entity = World.EntitiesRoot.GetNodeOrNull(Identifier);
-		if(Entity is null)
-		{
+		if(Entity is null) {
 			RpcId(Net.ServerId, nameof(PleaseSendMeCreate), Identifier);
 			return;
 		}

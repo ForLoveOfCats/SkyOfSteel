@@ -1,8 +1,7 @@
 using Godot;
 
 
-public class Menu : Node
-{
+public class Menu : Node {
 	public static bool IsOpen = true;
 	public static bool IngameMenuOpen = false;
 
@@ -26,14 +25,12 @@ public class Menu : Node
 
 	public static Menu Self;
 
-	public Menu()
-	{
+	public Menu() {
 		Self = this;
 	}
 
 
-	static Menu()
-	{
+	static Menu() {
 		if(Engine.EditorHint) return;
 
 		//All menu scene files are loaded on game startup
@@ -60,12 +57,10 @@ public class Menu : Node
 	}
 
 
-	public static void Reset()
-	{
+	public static void Reset() {
 		ShadedBackground.Hide();
 
-		if(Contents != null)
-		{
+		if(Contents != null) {
 			Contents.QueueFree();
 			Contents = null;
 		}
@@ -77,29 +72,26 @@ public class Menu : Node
 
 		//Fake a release event of the left mouse button to cancel any drag operations
 		var LeftMouseRelease = new InputEventMouseButton() {
-			ButtonIndex = (int) ButtonList.Left,
+			ButtonIndex = (int)ButtonList.Left,
 			Pressed = false
 		};
 		Self.GetTree().InputEvent(LeftMouseRelease);
 	}
 
 
-	public static void Close()
-	{
+	public static void Close() {
 		Reset();
 		IsOpen = false;
 		IngameMenuOpen = false;
 
-		if(!Console.IsOpen)
-		{
+		if(!Console.IsOpen) {
 			Game.BindsEnabled = true;
 			Input.SetMouseMode(Input.MouseMode.Captured);
 		}
 	}
 
 
-	public static void BuildIntro()
-	{
+	public static void BuildIntro() {
 		Reset();
 
 		Contents = Intro.Instance();
@@ -107,8 +99,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildUpdate()
-	{
+	public static void BuildUpdate() {
 		Reset();
 
 		Contents = Update.Instance();
@@ -116,8 +107,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildNick()
-	{
+	public static void BuildNick() {
 		Reset();
 
 		Contents = Nick.Instance();
@@ -125,8 +115,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildMain()
-	{
+	public static void BuildMain() {
 		Reset();
 
 		Contents = Main.Instance();
@@ -134,8 +123,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildHelp()
-	{
+	public static void BuildHelp() {
 		Reset();
 
 		Contents = Help.Instance();
@@ -143,8 +131,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildCredits()
-	{
+	public static void BuildCredits() {
 		Reset();
 
 		Contents = Credits.Instance();
@@ -152,8 +139,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildLicenses()
-	{
+	public static void BuildLicenses() {
 		Reset();
 
 		Contents = Licenses.Instance();
@@ -161,8 +147,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildHost()
-	{
+	public static void BuildHost() {
 		Reset();
 
 		Contents = Host.Instance();
@@ -170,8 +155,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildConnect()
-	{
+	public static void BuildConnect() {
 		Reset();
 
 		Contents = ConnectMenu.Instance();
@@ -179,8 +163,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildWaitConnecting()
-	{
+	public static void BuildWaitConnecting() {
 		Reset();
 
 		Contents = WaitConnecting.Instance();
@@ -189,8 +172,7 @@ public class Menu : Node
 	}
 
 
-	public static void BuildPause()
-	{
+	public static void BuildPause() {
 		Reset();
 
 		Contents = PauseMenu.Instance();
@@ -201,22 +183,20 @@ public class Menu : Node
 
 
 	[SteelInputWithoutArg(typeof(Menu), nameof(BuildInventory))]
-	public static void BuildInventory()
-	{
+	public static void BuildInventory() {
 		Reset();
 
-		Contents = (InventoryMenu) InventoryMenu.Instance();
+		Contents = (InventoryMenu)InventoryMenu.Instance();
 		MenuRoot.AddChild(Contents);
 		ShadedBackground.Show();
 		IngameMenuOpen = true;
 	}
 
 
-	public static void BuildInteractInventory(IHasInventory Other)
-	{
+	public static void BuildInteractInventory(IHasInventory Other) {
 		Reset();
 
-		var Inv = (InventoryMenu) InventoryMenu.Instance();
+		var Inv = (InventoryMenu)InventoryMenu.Instance();
 		Inv.Other = Other;
 		Contents = Inv;
 		MenuRoot.AddChild(Contents);

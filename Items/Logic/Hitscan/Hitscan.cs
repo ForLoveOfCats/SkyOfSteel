@@ -4,41 +4,35 @@ using System.Collections.Generic;
 
 
 
-public class Hitscan : Spatial
-{
-	public class AdditiveRecoil
-	{
+public class Hitscan : Spatial {
+	public class AdditiveRecoil {
 		public float Height = 0;
 		public float Length = 0;
 		public float Life = 0;
 
-		public AdditiveRecoil(float HeightArg, float LengthArg)
-		{
+		public AdditiveRecoil(float HeightArg, float LengthArg) {
 			Height = HeightArg;
 			Length = LengthArg;
 
-			Life = Length/8; //We start the life partway through the curve
-			//The "correct" value would be Length/10 to start at the vertex
-			//Instead it starts *just* before the vertex
+			Life = Length / 8; //We start the life partway through the curve
+							   //The "correct" value would be Length/10 to start at the vertex
+							   //Instead it starts *just* before the vertex
 		}
 
 
-		public float CaclulateOffset()
-		{
-			float DupStep = 5*(Life/(Length/2));
-			return Pow(DupStep*E, 1-DupStep) * Height;
+		public float CaclulateOffset() {
+			float DupStep = 5 * (Life / (Length / 2));
+			return Pow(DupStep * E, 1 - DupStep) * Height;
 		}
 	}
 
 
-	public class QueuedDamage
-	{
+	public class QueuedDamage {
 		public int Id;
 		public float Damage;
 		public Vector3 Origin;
 
-		public QueuedDamage(int IdArg, float DamageArg, Vector3 OriginArg)
-		{
+		public QueuedDamage(int IdArg, float DamageArg, Vector3 OriginArg) {
 			Id = IdArg;
 			Damage = DamageArg;
 			Origin = OriginArg;
@@ -59,9 +53,8 @@ public class Hitscan : Spatial
 
 	public static Hitscan Self;
 
-	Hitscan()
-	{
-		if(Engine.EditorHint) {return;}
+	Hitscan() {
+		if(Engine.EditorHint) { return; }
 
 		HitscanTrailScene = GD.Load<PackedScene>("res://Items/Logic/Hitscan/HitscanTrail.tscn");
 
@@ -70,17 +63,14 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void Reset()
-	{
+	public static void Reset() {
 		NextRecoilDirection = 1;
 	}
 
 
-	public static void QueueFire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg)
-	{
+	public static void QueueFire(float VerticalAngle, float HorizontalAngle, float Range, float HDmg, float BDmg, float LDmg) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				PhysicsDirectSpaceState State = Self.GetWorld().DirectSpaceState;
 
 				Vector3 Origin = Plr.Cam.GlobalTransform.origin;
@@ -99,13 +89,11 @@ public class Hitscan : Spatial
 					Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
 					Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), HitPoint);
 
-					if(Results["collider"] is HitboxClass Hitbox)
-					{
+					if(Results["collider"] is HitboxClass Hitbox) {
 						Player HitPlr = Hitbox.OwningPlayer;
 
 						float Damage = 0;
-						switch(Hitbox.Type)
-						{
+						switch(Hitbox.Type) {
 							case HitboxClass.TYPE.HEAD:
 								Damage = HDmg;
 								break;
@@ -119,10 +107,8 @@ public class Hitscan : Spatial
 
 
 						bool UpdatedExisting = false;
-						foreach(QueuedDamage Instance in QueuedDamageList)
-						{
-							if(Instance.Id == HitPlr.Id)
-							{
+						foreach(QueuedDamage Instance in QueuedDamageList) {
+							if(Instance.Id == HitPlr.Id) {
 								Instance.Damage += Damage;
 								UpdatedExisting = true;
 								break;
@@ -132,8 +118,7 @@ public class Hitscan : Spatial
 							QueuedDamageList.Add(new QueuedDamage(HitPlr.Id, Damage, Origin));
 					}
 				}
-				else
-				{
+				else {
 					Self.DrawTrail(Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
 					Net.SteelRpc(Self, nameof(DrawTrail), Origin + new Vector3(0, TrailStartAdjustment, 0), Endpoint);
 				}
@@ -142,19 +127,15 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void ApplyQueuedFire()
-	{
+	public static void ApplyQueuedFire() {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				if(QueuedDamageList.Count > 0)
 					Plr.SfxManager.FpHitsound();
 
-				foreach(QueuedDamage Instance in QueuedDamageList)
-				{
+				foreach(QueuedDamage Instance in QueuedDamageList) {
 					Net.Players[Instance.Id].Plr.MatchSome(
-						(DamagedPlayer) =>
-						{
+						(DamagedPlayer) => {
 							if(DamagedPlayer.Health - Instance.Damage <= 0)
 								Plr.SfxManager.FpKillsound();
 
@@ -173,18 +154,15 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void ApplyAdditiveRecoil(float Height, float Length)
-	{
+	public static void ApplyAdditiveRecoil(float Height, float Length) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				//Lessen recoil when ADS
 				Height *= Plr.AdsMultiplier;
 				Length *= Plr.AdsMultiplier;
 
 				//Lessen recoil when crouching
-				if(Plr.IsCrouching)
-				{
+				if(Plr.IsCrouching) {
 					Height *= CrouchAffectPercentage;
 					Length *= CrouchAffectPercentage;
 				}
@@ -195,11 +173,9 @@ public class Hitscan : Spatial
 	}
 
 
-	public static void ApplyEffectiveRecoil(float VerticalRecoil, float HorizontalRecoil)
-	{
+	public static void ApplyEffectiveRecoil(float VerticalRecoil, float HorizontalRecoil) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Assert.ActualAssert(NextRecoilDirection == 1 || NextRecoilDirection == -1);
 
 				//Lessen recoil when ADS
@@ -207,8 +183,7 @@ public class Hitscan : Spatial
 				HorizontalRecoil *= Plr.AdsMultiplier;
 
 				//Lessen recoil when crouching
-				if(Plr.IsCrouching)
-				{
+				if(Plr.IsCrouching) {
 					VerticalRecoil *= CrouchAffectPercentage;
 					HorizontalRecoil *= CrouchAffectPercentage;
 				}
@@ -226,7 +201,7 @@ public class Hitscan : Spatial
 	[Remote]
 	public void DrawTrail(Vector3 Start, Vector3 End) //Must be non-static to be RPC-ed
 	{
-		var Trail = (HitscanTrail) HitscanTrailScene.Instance();
+		var Trail = (HitscanTrail)HitscanTrailScene.Instance();
 		World.EntitiesRoot.AddChild(Trail);
 		Trail.Translation = (Start + End) / 2;
 

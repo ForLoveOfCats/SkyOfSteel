@@ -1,10 +1,8 @@
 
-public class SavedMeta
-{
+public class SavedMeta {
 	public float TimeOfDay;
 
-	public SavedMeta(float TimeOfDayArg)
-	{
+	public SavedMeta(float TimeOfDayArg) {
 		TimeOfDay = TimeOfDayArg;
 	}
 }

@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 
 
-public class Console : Node
-{
+public class Console : Node {
 	public static bool IsOpen = false;
 
 	public static ConsoleWindow Window;
@@ -17,16 +16,14 @@ public class Console : Node
 
 
 	public static Console Self;
-	private Console()
-	{
-		if(Engine.EditorHint) {return;}
+	private Console() {
+		if(Engine.EditorHint) { return; }
 
 		Self = this;
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		Window = GetTree().Root.GetNode<ConsoleWindow>("RuntimeRoot/ConsoleWindow");
 		InputLine = Window.GetNode<LineEdit>("VBox/LineEdit");
 		ConsoleLabel = Window.GetNode("VBox/HBox/Console") as RichTextLabel;
@@ -36,15 +33,12 @@ public class Console : Node
 	}
 
 
-	public override void _Input(InputEvent Event)
-	{
-		if(Event.IsAction("ui_up"))
-		{
+	public override void _Input(InputEvent Event) {
+		if(Event.IsAction("ui_up")) {
 			GetTree().SetInputAsHandled();
 			InputLine.GrabFocus();
 
-			if(Input.IsActionJustPressed("ui_up") && HistoryLocation > 0)
-			{
+			if(Input.IsActionJustPressed("ui_up") && HistoryLocation > 0) {
 				HistoryLocation -= 1;
 				InputLine.Text = History[HistoryLocation];
 
@@ -52,20 +46,16 @@ public class Console : Node
 			}
 		}
 
-		if(Event.IsAction("ui_down"))
-		{
+		if(Event.IsAction("ui_down")) {
 			GetTree().SetInputAsHandled();
 			InputLine.GrabFocus();
 
-			if(Input.IsActionJustPressed("ui_down") && HistoryLocation < History.Count)
-			{
+			if(Input.IsActionJustPressed("ui_down") && HistoryLocation < History.Count) {
 				HistoryLocation += 1;
-				if(HistoryLocation == History.Count)
-				{
+				if(HistoryLocation == History.Count) {
 					InputLine.Text = "";
 				}
-				else
-				{
+				else {
 					InputLine.Text = History[HistoryLocation];
 				}
 
@@ -75,42 +65,35 @@ public class Console : Node
 	}
 
 
-	public static void RunConsoleLine(string Line)
-	{
+	public static void RunConsoleLine(string Line) {
 		Backend.RunCommand(Line);
 	}
 
 
-	public static void Print(object ToPrint)
-	{
+	public static void Print(object ToPrint) {
 		ConsoleLabel.Text += $"{ToPrint}\n";
 	}
 
 
-	public static void Log(object ToLog)
-	{
+	public static void Log(object ToLog) {
 		LogLabel.Text += $"{ToLog}\n\n";
 	}
 
 
-	public static void ThrowPrint(object ToThrow)
-	{
+	public static void ThrowPrint(object ToThrow) {
 		Print($"ERROR: {ToThrow}");
 	}
 
 
-	public static void ThrowLog(object ToThrow)
-	{
+	public static void ThrowLog(object ToThrow) {
 		Log($"ERROR: {ToThrow}");
 	}
 
 
-	public static void Execute(string Command)
-	{
+	public static void Execute(string Command) {
 		Console.Print("\n>>> " + Command);
 
-		if(History.Count <= 0 || History[History.Count-1] != Command)
-		{
+		if(History.Count <= 0 || History[History.Count - 1] != Command) {
 			History.Add(Command);
 		}
 		HistoryLocation = History.Count;
@@ -119,22 +102,19 @@ public class Console : Node
 	}
 
 
-	public static void Close()
-	{
+	public static void Close() {
 		Window.Close();
 		IsOpen = false;
 		HistoryLocation = History.Count;
 
-		if(!Menu.IsOpen)
-		{
+		if(!Menu.IsOpen) {
 			Input.SetMouseMode(Input.MouseMode.Captured);
 			Game.BindsEnabled = true;
 		}
 	}
 
 
-	public static void Open()
-	{
+	public static void Open() {
 		Window.Open();
 		IsOpen = true;
 		HistoryLocation = History.Count;

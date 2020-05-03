@@ -3,11 +3,9 @@ using static Godot.Mathf;
 
 
 
-public class PlayerInput
-{
+public class PlayerInput {
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(ToggleFly))]
-	public static void ToggleFly()
-	{
+	public static void ToggleFly() {
 		Game.PossessedPlayer.MatchSome(
 			(Plr) => Plr.SetFly(!Plr.FlyMode)
 		);
@@ -15,8 +13,7 @@ public class PlayerInput
 
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InputReset))]
-	public static void InputReset()
-	{
+	public static void InputReset() {
 		Game.PossessedPlayer.MatchSome(
 			(Plr) => Plr.Reset()
 		);
@@ -24,13 +21,10 @@ public class PlayerInput
 
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventoryUp))]
-	public static void InventoryUp()
-	{
+	public static void InventoryUp() {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(!(Plr.CurrentCooldown < Plr.CurrentMaxCooldown && Plr.PreventSwitch))
-				{
+			(Plr) => {
+				if(!(Plr.CurrentCooldown < Plr.CurrentMaxCooldown && Plr.PreventSwitch)) {
 					Plr.BuildRotation = 0;
 
 					Plr.InventorySlot--;
@@ -48,13 +42,10 @@ public class PlayerInput
 
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventoryDown))]
-	public static void InventoryDown()
-	{
+	public static void InventoryDown() {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(!(Plr.CurrentCooldown < Plr.CurrentMaxCooldown && Plr.PreventSwitch))
-				{
+			(Plr) => {
+				if(!(Plr.CurrentCooldown < Plr.CurrentMaxCooldown && Plr.PreventSwitch)) {
 					Plr.BuildRotation = 0;
 
 					Plr.InventorySlot++;
@@ -72,44 +63,41 @@ public class PlayerInput
 
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot0))]
-	public static void InventorySlot0() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(0) );
+	public static void InventorySlot0() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(0));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot1))]
-	public static void InventorySlot1() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(1) );
+	public static void InventorySlot1() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(1));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot2))]
-	public static void InventorySlot2() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(2) );
+	public static void InventorySlot2() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(2));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot3))]
-	public static void InventorySlot3() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(3) );
+	public static void InventorySlot3() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(3));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot4))]
-	public static void InventorySlot4() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(4) );
+	public static void InventorySlot4() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(4));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot5))]
-	public static void InventorySlot5() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(5) );
+	public static void InventorySlot5() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(5));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot6))]
-	public static void InventorySlot6() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(6) );
+	public static void InventorySlot6() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(6));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot7))]
-	public static void InventorySlot7() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(7) );
+	public static void InventorySlot7() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(7));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot8))]
-	public static void InventorySlot8() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(8) );
+	public static void InventorySlot8() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(8));
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(InventorySlot9))]
-	public static void InventorySlot9() => Game.PossessedPlayer.MatchSome( (Plr) => Plr.InventorySlotSelect(9) );
+	public static void InventorySlot9() => Game.PossessedPlayer.MatchSome((Plr) => Plr.InventorySlotSelect(9));
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(BuildRotate))]
-	public static void BuildRotate(float Sens)
-	{
+	public static void BuildRotate(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0 && Plr.Inventory[Plr.InventorySlot] != null)
-				{
+			(Plr) => {
+				if(Sens > 0 && Plr.Inventory[Plr.InventorySlot] != null) {
 					Plr.BuildRotation++;
 					if(Plr.BuildRotation > 3)
 						Plr.BuildRotation = 0;
@@ -120,21 +108,16 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(ForwardMove))]
-	public static void ForwardMove(float Sens)
-	{
+	public static void ForwardMove(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Plr.ForwardSens = Sens;
-				if(Sens > 0)
-				{
+				if(Sens > 0) {
 					Plr.ForwardAxis = 1;
 				}
-				else if(Plr.ForwardAxis > 0)
-				{
+				else if(Plr.ForwardAxis > 0) {
 					Plr.ForwardAxis = 0;
-					if(Plr.BackwardSens > 0)
-					{
+					if(Plr.BackwardSens > 0) {
 						Plr.ForwardAxis = -1;
 					}
 				}
@@ -144,21 +127,16 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(BackwardMove))]
-	public static void BackwardMove(float Sens)
-	{
+	public static void BackwardMove(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Plr.BackwardSens = Sens;
-				if(Sens > 0)
-				{
+				if(Sens > 0) {
 					Plr.ForwardAxis = -1;
 				}
-				else if(Plr.ForwardAxis < 0)
-				{
+				else if(Plr.ForwardAxis < 0) {
 					Plr.ForwardAxis = 0;
-					if(Plr.ForwardSens > 0)
-					{
+					if(Plr.ForwardSens > 0) {
 						Plr.ForwardAxis = 1;
 					}
 				}
@@ -168,21 +146,16 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(RightMove))]
-	public static void RightMove(float Sens)
-	{
+	public static void RightMove(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Plr.RightSens = Sens;
-				if(Sens > 0)
-				{
+				if(Sens > 0) {
 					Plr.RightAxis = 1;
 				}
-				else if(Plr.RightAxis > 0)
-				{
+				else if(Plr.RightAxis > 0) {
 					Plr.RightAxis = 0;
-					if(Plr.LeftSens > 0)
-					{
+					if(Plr.LeftSens > 0) {
 						Plr.RightAxis = -1;
 					}
 				}
@@ -192,21 +165,16 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(LeftMove))]
-	public static void LeftMove(float Sens)
-	{
+	public static void LeftMove(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Plr.LeftSens = Sens;
-				if(Sens > 0)
-				{
+				if(Sens > 0) {
 					Plr.RightAxis = -1;
 				}
-				else if(Plr.RightAxis < 0)
-				{
+				else if(Plr.RightAxis < 0) {
 					Plr.RightAxis = 0;
-					if(Plr.RightSens > 0)
-					{
+					if(Plr.RightSens > 0) {
 						Plr.RightAxis = 1;
 					}
 				}
@@ -216,14 +184,11 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(FlySprint))]
-	public static void FlySprint(float Sens)
-	{
+	public static void FlySprint(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Plr.FlySprintSens = Sens;
-				if(Sens > 0 && Plr.FlyMode)
-				{
+				if(Sens > 0 && Plr.FlyMode) {
 					Plr.IsFlySprinting = true;
 
 					if(Plr.JumpAxis == 1)
@@ -231,8 +196,7 @@ public class PlayerInput
 					else if(Plr.IsCrouching)
 						Plr.Momentum.y = -Player.MovementSpeed * Player.FlySprintMultiplier;
 				}
-				else
-				{
+				else {
 					Plr.IsFlySprinting = false;
 					Plr.Momentum.y = Clamp(Plr.Momentum.y, -Player.MovementSpeed, Player.MovementSpeed);
 				}
@@ -242,22 +206,16 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(Jump))]
-	public static void Jump(float Sens)
-	{
+	public static void Jump(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Plr.JumpSens = Sens;
-				if(Sens > 0)
-				{
-					if(Plr.FlyMode)
-					{
-						if(Plr.IsFlySprinting)
-						{
+				if(Sens > 0) {
+					if(Plr.FlyMode) {
+						if(Plr.IsFlySprinting) {
 							Plr.Momentum.y = Player.MovementSpeed * Player.FlySprintMultiplier;
 						}
-						else
-						{
+						else {
 							Plr.Momentum.y = Player.MovementSpeed;
 						}
 
@@ -268,8 +226,7 @@ public class PlayerInput
 
 					Plr.JumpAxis = 1;
 				}
-				else
-				{
+				else {
 					Plr.JumpAxis = 0;
 					Plr.IsJumping = false;
 				}
@@ -279,21 +236,17 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(Crouch))]
-	public static void Crouch(float Sens)
-	{
+	public static void Crouch(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0)
-				{
+			(Plr) => {
+				if(Sens > 0) {
 					Plr.CrouchAxis = 1;
 					Plr.IsCrouching = true;
 
 					if(!Plr.FlyMode)
 						Plr.IsFlySprinting = false;
 
-					if(Plr.FlyMode)
-					{
+					if(Plr.FlyMode) {
 						Plr.JumpAxis = 0;
 						Plr.JumpSens = 0;
 
@@ -303,8 +256,7 @@ public class PlayerInput
 							Plr.Momentum.y = -Player.MovementSpeed;
 					}
 				}
-				else
-				{
+				else {
 					Plr.CrouchAxis = 0;
 
 					if(Plr.FlySprintSens > 0)
@@ -316,20 +268,17 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(LookUp))]
-	public static void LookUp(float Sens)
-	{
+	public static void LookUp(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0)
-				{
-					float Change = ((float) Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
+			(Plr) => {
+				if(Sens > 0) {
+					float Change = ((float)Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
 
 					Plr.ApplyLookVertical(Change);
 
 					Plr.ViewmodelMomentum = new Vector2(
 						Plr.ViewmodelMomentum.x,
-						Clamp(Plr.ViewmodelMomentum.y + Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1)
+						Clamp(Plr.ViewmodelMomentum.y + Sens * Player.ViewmodelSensitivity * Plr.AdsMultiplier, -1, 1)
 					);
 				}
 			}
@@ -338,20 +287,17 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(LookDown))]
-	public static void LookDown(float Sens)
-	{
+	public static void LookDown(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0)
-				{
-					float Change = ((float) Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
+			(Plr) => {
+				if(Sens > 0) {
+					float Change = ((float)Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
 
 					Plr.ApplyLookVertical(-Change);
 
 					Plr.ViewmodelMomentum = new Vector2(
 						Plr.ViewmodelMomentum.x,
-						Clamp(Plr.ViewmodelMomentum.y - Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1)
+						Clamp(Plr.ViewmodelMomentum.y - Sens * Player.ViewmodelSensitivity * Plr.AdsMultiplier, -1, 1)
 					);
 				}
 			}
@@ -360,20 +306,17 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(LookRight))]
-	public static void LookRight(float Sens)
-	{
+	public static void LookRight(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0)
-				{
-					float Change = ((float) Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
+			(Plr) => {
+				if(Sens > 0) {
+					float Change = ((float)Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
 
 					Plr.LookHorizontal -= Change;
 					Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 					Plr.ViewmodelMomentum = new Vector2(
-						Clamp(Plr.ViewmodelMomentum.x - Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1),
+						Clamp(Plr.ViewmodelMomentum.x - Sens * Player.ViewmodelSensitivity * Plr.AdsMultiplier, -1, 1),
 						Plr.ViewmodelMomentum.y
 					);
 				}
@@ -383,20 +326,17 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(LookLeft))]
-	public static void LookLeft(float Sens)
-	{
+	public static void LookLeft(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0)
-				{
-					float Change = ((float) Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
+			(Plr) => {
+				if(Sens > 0) {
+					float Change = ((float)Sens / Player.LookDivisor) * Game.LookSensitivity * Plr.AdsMultiplier;
 
 					Plr.LookHorizontal += Change;
 					Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 					Plr.ViewmodelMomentum = new Vector2(
-						Clamp(Plr.ViewmodelMomentum.x + Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1),
+						Clamp(Plr.ViewmodelMomentum.x + Sens * Player.ViewmodelSensitivity * Plr.AdsMultiplier, -1, 1),
 						Plr.ViewmodelMomentum.y
 					);
 				}
@@ -406,24 +346,17 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(PrimaryFire))]
-	public static void PrimaryFire(float Sens)
-	{
+	public static void PrimaryFire(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0 && !Plr.IsPrimaryFiring && Plr.CurrentCooldown >= Plr.CurrentMaxCooldown)
-				{
+			(Plr) => {
+				if(Sens > 0 && !Plr.IsPrimaryFiring && Plr.CurrentCooldown >= Plr.CurrentMaxCooldown) {
 					Plr.IsPrimaryFiring = true;
 
-					if(Plr.Inventory[Plr.InventorySlot] != null)
-					{
-						if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].PositionDelegate != null)
-						{
+					if(Plr.Inventory[Plr.InventorySlot] != null) {
+						if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].PositionDelegate != null) {
 							var BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
-							if(BuildRayCast.IsColliding())
-							{
-								if(BuildRayCast.GetCollider() is Tile Base && Plr.GhostInstance.CanBuild)
-								{
+							if(BuildRayCast.IsColliding()) {
+								if(BuildRayCast.GetCollider() is Tile Base && Plr.GhostInstance.CanBuild) {
 									Vector3? PlacePosition = Items.TryCalculateBuildPosition(
 										Plr.GhostInstance.CurrentMeshType,
 										Base, Plr.RotationDegrees.y,
@@ -431,8 +364,7 @@ public class PlayerInput
 										BuildRayCast.GetCollisionPoint()
 									);
 
-									if(PlacePosition != null)
-									{
+									if(PlacePosition != null) {
 										World.PlaceOn(
 											Plr.GhostInstance.CurrentMeshType,
 											Base,
@@ -447,15 +379,13 @@ public class PlayerInput
 							}
 						}
 
-						if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].UseDelegate != null)
-						{
+						if(Items.IdInfos[Plr.Inventory[Plr.InventorySlot].Id].UseDelegate != null) {
 							Items.UseItem(Plr.Inventory[Plr.InventorySlot], Plr);
 						}
 					}
 				}
 
-				if(Sens <= 0 && Plr.IsPrimaryFiring)
-				{
+				if(Sens <= 0 && Plr.IsPrimaryFiring) {
 					Plr.IsPrimaryFiring = false;
 				}
 			}
@@ -464,26 +394,19 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(SecondaryFire))]
-	public static void SecondaryFire(float Sens)
-	{
+	public static void SecondaryFire(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0 && !Plr.IsSecondaryFiring)
-				{
+			(Plr) => {
+				if(Sens > 0 && !Plr.IsSecondaryFiring) {
 					Plr.IsSecondaryFiring = true;
 
 					Items.Instance CurrentItem = Plr.Inventory[Plr.InventorySlot];
 
-					if(CurrentItem == null || !Items.IdInfos[CurrentItem.Id].CanAds)
-					{
-						if(Plr.CurrentCooldown >= Plr.CurrentMaxCooldown)
-						{
+					if(CurrentItem == null || !Items.IdInfos[CurrentItem.Id].CanAds) {
+						if(Plr.CurrentCooldown >= Plr.CurrentMaxCooldown) {
 							RayCast BuildRayCast = Plr.GetNode<RayCast>("SteelCamera/RayCast");
-							if(BuildRayCast.IsColliding())
-							{
-								if(BuildRayCast.GetCollider() is Tile Hit)
-								{
+							if(BuildRayCast.IsColliding()) {
+								if(BuildRayCast.GetCollider() is Tile Hit) {
 									Hit.NetRemove();
 									Plr.SetCooldown(0, Player.BuildingCooldown, true);
 								}
@@ -491,20 +414,17 @@ public class PlayerInput
 						}
 					}
 
-					else if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
-					{
+					else if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds) {
 						Plr.Ads = true;
 						Plr.IsFlySprinting = false;
 					}
 				}
 
-				if(Sens <= 0 && Plr.IsSecondaryFiring)
-				{
+				if(Sens <= 0 && Plr.IsSecondaryFiring) {
 					Plr.IsSecondaryFiring = false;
 
 					Items.Instance CurrentItem = Plr.Inventory[Plr.InventorySlot];
-					if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds)
-					{
+					if(CurrentItem != null && Items.IdInfos[CurrentItem.Id].CanAds) {
 						Plr.Ads = false;
 						if(Plr.FlySprintSens > 0)
 							FlySprint(Plr.FlySprintSens);
@@ -516,21 +436,18 @@ public class PlayerInput
 
 
 	[SteelInputWithoutArg(typeof(PlayerInput), nameof(Interact))]
-	public static void Interact()
-	{
+	public static void Interact() {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
+			(Plr) => {
 				Vector3 Start = Plr.Translation;
 				Vector3 End = Start + new Vector3(0, 0, Player.InteractReach)
 					.Rotated(new Vector3(1, 0, 0), Deg2Rad(Plr.ActualLookVertical))
 					.Rotated(new Vector3(0, 1, 0), Deg2Rad(Plr.LookHorizontal));
-				var Exclude = new Godot.Collections.Array {Plr};
+				var Exclude = new Godot.Collections.Array { Plr };
 
 				PhysicsDirectSpaceState State = Plr.GetWorld().DirectSpaceState;
 				Godot.Collections.Dictionary Results = State.IntersectRay(Start, End, Exclude, 4);
-				if(Results.Count > 0)
-				{
+				if(Results.Count > 0) {
 					object RawCollider = Results["collider"];
 					if(RawCollider is Locker CollidedLocker)
 						Menu.BuildInteractInventory(CollidedLocker);
@@ -541,15 +458,11 @@ public class PlayerInput
 
 
 	[SteelInputWithArg(typeof(PlayerInput), nameof(ThrowCurrentItem))]
-	public static void ThrowCurrentItem(float Sens)
-	{
+	public static void ThrowCurrentItem(float Sens) {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				if(Sens > 0)
-				{
-					if(Plr.Inventory[Plr.InventorySlot] != null)
-					{
+			(Plr) => {
+				if(Sens > 0) {
+					if(Plr.Inventory[Plr.InventorySlot] != null) {
 						Plr.SfxManager.FpThrow();
 						Plr.SetCooldown(0, Player.SlotSwitchCooldown, false);
 

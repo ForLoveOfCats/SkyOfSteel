@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 
 
-public class ThumbnailRenderer : Node
-{
+public class ThumbnailRenderer : Node {
 	Viewport RenderViewport;
 	MeshInstance ThumbnailTarget;
 	ShaderMaterial Mat;
@@ -14,8 +13,7 @@ public class ThumbnailRenderer : Node
 	List<Items.ID> IdList = new List<Items.ID>();
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		RenderViewport = GetNode<Viewport>("Viewport");
 
 		ThumbnailTarget = GetNode<MeshInstance>("MeshInstance");
@@ -29,8 +27,7 @@ public class ThumbnailRenderer : Node
 	}
 
 
-	public override void _Process(float Delta)
-	{
+	public override void _Process(float Delta) {
 		DelayRemaining -= Delta;
 		if(DelayRemaining >= 0)
 			return;
@@ -38,8 +35,7 @@ public class ThumbnailRenderer : Node
 		if(Index > 0 && Index <= IdList.Count)
 			RenderViewport.GetTexture().GetData().SavePng($"res://Items/Thumbnails/{IdList[Index - 1]}.png");
 
-		if(Index >= IdList.Count)
-		{
+		if(Index >= IdList.Count) {
 			Index += 1;
 			return;
 		}
@@ -51,8 +47,7 @@ public class ThumbnailRenderer : Node
 
 		ThumbnailTarget.RotationDegrees = new Vector3(0, 0, 0);
 
-		switch(IdList[Index])
-		{
+		switch(IdList[Index]) {
 			case Items.ID.PLATFORM:
 				ThumbnailTarget.RotationDegrees = new Vector3(20, 30, 0);
 				break;

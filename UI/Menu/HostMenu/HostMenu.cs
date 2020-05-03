@@ -1,8 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
-public class HostMenu : VBoxContainer
-{
+public class HostMenu : VBoxContainer {
 	PackedScene SlotButtonScene;
 	PackedScene LabelPieceScene;
 
@@ -18,8 +17,7 @@ public class HostMenu : VBoxContainer
 
 	public string SelectedSave = null;
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		SlotButtonScene = GD.Load<PackedScene>("res://UI/Menu/HostMenu/SlotButton.tscn");
 		LabelPieceScene = GD.Load<PackedScene>("res://UI/Menu/Pieces/LabelPiece.tscn");
 
@@ -46,74 +44,62 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void ResetSelectedSave()
-	{
+	public void ResetSelectedSave() {
 		SelectedSave = null;
 		SelectedSaveLabel.Text = "No save selected";
 	}
 
 
-	public void ResetSlotsVBox()
-	{
-		foreach(Node Child in SlotsVBox.GetChildren())
-		{
+	public void ResetSlotsVBox() {
+		foreach(Node Child in SlotsVBox.GetChildren()) {
 			Child.QueueFree();
 		}
 
 		Directory SaveDir = new Directory();
 		List<string> Names = new List<string>();
-		if(SaveDir.DirExists("user://Saves"))
-		{
+		if(SaveDir.DirExists("user://Saves")) {
 			SaveDir.Open("user://Saves");
 			SaveDir.ListDirBegin(skipNavigational: true, skipHidden: true);
-			while(true)
-			{
+			while(true) {
 				string SaveName = SaveDir.GetNext();
-				if(SaveName == "")
-				{
+				if(SaveName == "") {
 					break;
 				}
 				Names.Add(SaveName);
 			}
 			Names.Sort();
 
-			foreach(string Name in Names)
-			{
-				var Instanced = (SlotButton) SlotButtonScene.Instance();
+			foreach(string Name in Names) {
+				var Instanced = (SlotButton)SlotButtonScene.Instance();
 				Instanced.HostMenuInstance = this;
 				Instanced.Text = Name;
 				SlotsVBox.AddChild(Instanced);
 			}
 		}
 
-		if(Names.Count <= 0)
-		{
-			var Message = (Label) LabelPieceScene.Instance();
+		if(Names.Count <= 0) {
+			var Message = (Label)LabelPieceScene.Instance();
 			Message.Text = "No saves to load";
 			SlotsVBox.AddChild(Message);
 		}
 	}
 
 
-	public void SelectSave(string NameArg)
-	{
+	public void SelectSave(string NameArg) {
 		SelectedSave = NameArg;
 		SelectedSaveLabel.Text = $"Save currently selected: {SelectedSave}";
 	}
 
 
-	public void LoadPressed()
-	{
-		if(SelectedSave != null)
-		{
+	public void LoadPressed() {
+		if(SelectedSave != null) {
 			Net.Host();
 			World.Load(SelectedSave);
 		}
 	}
 
 
-	public void NewPressed()
-	{
+	public void NewPressed() {
 		CloseRenameToolbar();
 		CloseDeleteToolbar();
 
@@ -125,10 +111,8 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void ConfirmCreatePressed()
-	{
-		if(!string.IsNullOrEmpty(CreateEdit.Text) && !string.IsNullOrWhiteSpace(CreateEdit.Text))
-		{
+	public void ConfirmCreatePressed() {
+		if(!string.IsNullOrEmpty(CreateEdit.Text) && !string.IsNullOrWhiteSpace(CreateEdit.Text)) {
 			System.IO.Directory.CreateDirectory($"{OS.GetUserDataDir()}/Saves/{CreateEdit.Text}");
 
 			CloseCreateToolbar();
@@ -137,17 +121,14 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void CloseCreateToolbar()
-	{
+	public void CloseCreateToolbar() {
 		CreateToolbar.Hide();
 		ToolbarScrollSeperator.Hide();
 	}
 
 
-	public void RenamePressed()
-	{
-		if(SelectedSave != null)
-		{
+	public void RenamePressed() {
+		if(SelectedSave != null) {
 			CloseCreateToolbar();
 			CloseDeleteToolbar();
 
@@ -160,14 +141,11 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void ConfirmRenamePressed()
-	{
-		if(!string.IsNullOrEmpty(RenameEdit.Text) && !string.IsNullOrWhiteSpace(RenameEdit.Text))
-		{
+	public void ConfirmRenamePressed() {
+		if(!string.IsNullOrEmpty(RenameEdit.Text) && !string.IsNullOrWhiteSpace(RenameEdit.Text)) {
 			string Source = $"{OS.GetUserDataDir()}/Saves/{SelectedSave}";
 			string Destination = $"{OS.GetUserDataDir()}/Saves/{RenameEdit.Text}";
-			if(System.IO.Directory.Exists(Source) && !System.IO.Directory.Exists(Destination))
-			{
+			if(System.IO.Directory.Exists(Source) && !System.IO.Directory.Exists(Destination)) {
 				System.IO.Directory.Move(Source, Destination);
 			}
 
@@ -178,17 +156,14 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void CloseRenameToolbar()
-	{
+	public void CloseRenameToolbar() {
 		RenameToolbar.Hide();
 		ToolbarScrollSeperator.Hide();
 	}
 
 
-	public void DeletePressed()
-	{
-		if(SelectedSave != null)
-		{
+	public void DeletePressed() {
+		if(SelectedSave != null) {
 			CloseCreateToolbar();
 			CloseRenameToolbar();
 
@@ -200,10 +175,8 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void ConfirmDeletePressed()
-	{
-		if(SelectedSave != null)
-		{
+	public void ConfirmDeletePressed() {
+		if(SelectedSave != null) {
 			System.IO.Directory.Delete($"{OS.GetUserDataDir()}/Saves/{SelectedSave}", true);
 			ResetSelectedSave();
 			ResetSlotsVBox();
@@ -213,15 +186,13 @@ public class HostMenu : VBoxContainer
 	}
 
 
-	public void CloseDeleteToolbar()
-	{
+	public void CloseDeleteToolbar() {
 		DeleteToolbar.Hide();
 		ToolbarScrollSeperator.Hide();
 	}
 
 
-	public void BackPressed()
-	{
+	public void BackPressed() {
 		Menu.BuildMain();
 	}
 }

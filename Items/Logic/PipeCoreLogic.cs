@@ -3,16 +3,13 @@ using System.Collections.Generic;
 
 
 
-public class PipeCoreLogic : Tile, IInGrid
-{
+public class PipeCoreLogic : Tile, IInGrid {
 	public PipeSystem System { get; set; }
 	public HashSet<PipeCoreLogic> Friends { get; set; }
 
 
-	public void RecursiveAddFriendsToSystem()
-	{
-		foreach(PipeCoreLogic Friend in Friends)
-		{
+	public void RecursiveAddFriendsToSystem() {
+		foreach(PipeCoreLogic Friend in Friends) {
 			if(Friend.System == System)
 				continue;
 
@@ -23,11 +20,9 @@ public class PipeCoreLogic : Tile, IInGrid
 	}
 
 
-	public override void OnRemove()
-	{
+	public override void OnRemove() {
 		List<PipeSystem> JustCreated = new List<PipeSystem>();
-		foreach(PipeCoreLogic Friend in Friends)
-		{
+		foreach(PipeCoreLogic Friend in Friends) {
 			Friend.Friends.Remove(this);
 
 			if(JustCreated.Contains(Friend.System))

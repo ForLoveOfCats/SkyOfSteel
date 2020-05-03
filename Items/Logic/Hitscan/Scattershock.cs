@@ -1,8 +1,7 @@
 using static Godot.Mathf;
 
 
-public static class Scattershock
-{
+public static class Scattershock {
 	public static float VerticalRecoil = 36;
 	public static float RecoilLength = 6f;
 	public static float Range = 500;
@@ -13,16 +12,13 @@ public static class Scattershock
 	public static float FireCooldown = 25;
 
 
-	public static void Fire(Items.Instance Item, Player UsingPlayer)
-	{
+	public static void Fire(Items.Instance Item, Player UsingPlayer) {
 		{
 			float Multiplyer = Pow(UsingPlayer.AdsMultiplier, 2);
 
-			for(int x = -2; x <= 2; x++)
-			{
-				for(int y = -2; y <= 2; y++)
-				{
-					Hitscan.QueueFire(x*AngularOffset*Multiplyer, y*AngularOffset*Multiplyer, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
+			for(int x = -2; x <= 2; x++) {
+				for(int y = -2; y <= 2; y++) {
+					Hitscan.QueueFire(x * AngularOffset * Multiplyer, y * AngularOffset * Multiplyer, Range, HeadshotDamage, BodyshotDamage, LegshotDamage);
 				}
 			}
 
@@ -32,9 +28,9 @@ public static class Scattershock
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
 
 		if(UsingPlayer.IsCrouching)
-			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplier*Hitscan.CrouchAffectPercentage, true);
+			UsingPlayer.SetCooldown(0, FireCooldown * UsingPlayer.AdsMultiplier * Hitscan.CrouchAffectPercentage, true);
 		else
-			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplier, true);
+			UsingPlayer.SetCooldown(0, FireCooldown * UsingPlayer.AdsMultiplier, true);
 
 		UsingPlayer.SfxManager.FpScattershockFire();
 	}

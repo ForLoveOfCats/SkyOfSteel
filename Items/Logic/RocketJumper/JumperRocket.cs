@@ -5,8 +5,7 @@ using Optional.Unsafe;
 
 
 
-public class JumperRocket : Spatial, IProjectile
-{
+public class JumperRocket : Spatial, IProjectile {
 	public const float RocketTravelSpeed = 150; //Units-per-second
 	public const float RocketFuseTime = 4f; //In seconds
 	public const float MaxRocketPush = 80; //Units-per-second force applied
@@ -26,35 +25,30 @@ public class JumperRocket : Spatial, IProjectile
 	public static PackedScene ExplodeSfx;
 	public static PackedScene ExplodeParticles;
 
-	static JumperRocket()
-	{
+	static JumperRocket() {
 		ExplodeSfx = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplodeSfx.tscn");
 		ExplodeParticles = GD.Load<PackedScene>("Items/Logic/RocketJumper/ExplosionParticles.tscn");
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		World.AddEntityToChunk(this);
 	}
 
 
-	public override void _ExitTree()
-	{
+	public override void _ExitTree() {
 		World.RemoveEntityFromChunk(this);
 	}
 
 
-	public void ProjectileCollided(Vector3 CollisionPointPosition)
-	{
+	public void ProjectileCollided(Vector3 CollisionPointPosition) {
 		Triggered = true;
 		TriggeredPosition = CollisionPointPosition;
 	}
 
 
 	[Remote]
-	public void Update(params object[] Args)
-	{
+	public void Update(params object[] Args) {
 		Assert.ArgArray(Args, typeof(Vector3));
 		var OriginalChunkTuple = World.GetChunkTuple(Translation);
 		Translation = (Vector3)Args[0];
@@ -63,37 +57,33 @@ public class JumperRocket : Spatial, IProjectile
 
 
 	[Remote]
-	public void PhaseOut()
-	{
+	public void PhaseOut() {
 		QueueFree();
 	}
 
 
 	[Remote]
-	public void Destroy(params object[] Args)
-	{
+	public void Destroy(params object[] Args) {
 		Assert.ArgArray(Args, typeof(Vector3));
 		ExplodeSoundVisual((Vector3)Args[0]);
 		QueueFree();
 	}
 
 
-	public static void ExplodeSoundVisual(Vector3 Position)
-	{
-		var ExplodeSfxInstance = (AudioStreamPlayer3D) ExplodeSfx.Instance();
+	public static void ExplodeSoundVisual(Vector3 Position) {
+		var ExplodeSfxInstance = (AudioStreamPlayer3D)ExplodeSfx.Instance();
 		ExplodeSfxInstance.Play();
 		ExplodeSfxInstance.Translation = Position;
 		World.EntitiesRoot.AddChild(ExplodeSfxInstance);
 
-		var ParticleSystem = (CPUParticles) ExplodeParticles.Instance();
+		var ParticleSystem = (CPUParticles)ExplodeParticles.Instance();
 		ParticleSystem.Translation = Position;
 		ParticleSystem.Emitting = true;
 		World.EntitiesRoot.AddChild(ParticleSystem);
 	}
 
 
-	public static Vector3 CalculatePush(IPushable Pushable, Vector3 Position)
-	{
+	public static Vector3 CalculatePush(IPushable Pushable, Vector3 Position) {
 		float Distance = Clamp(Position.DistanceTo(Pushable.Translation), 1, MaxRocketDistance);
 		float Power =
 			LogBase(-Distance + MaxRocketDistance + 1, 2)
@@ -112,17 +102,14 @@ public class JumperRocket : Spatial, IProjectile
 	}
 
 
-	public void ServerExplode(Vector3 Position)
-	{
+	public void ServerExplode(Vector3 Position) {
 		Assert.ActualAssert(Net.Work.IsNetworkServer());
 
 		var WithinArea = World.GetEntitiesWithinArea(Position, MaxRocketDistance);
-		foreach(Node Body in WithinArea)
-		{
-			if(Body is IPushable Pushable)
-			{
+		foreach(Node Body in WithinArea) {
+			if(Body is IPushable Pushable) {
 				PhysicsDirectSpaceState State = GetWorld().DirectSpaceState;
-				Godot.Collections.Dictionary Results = State.IntersectRay(Position, Pushable.Translation, new Godot.Collections.Array(){Pushable}, 1);
+				Godot.Collections.Dictionary Results = State.IntersectRay(Position, Pushable.Translation, new Godot.Collections.Array() { Pushable }, 1);
 				if(Results.Count > 0)
 					continue;
 
@@ -145,23 +132,19 @@ public class JumperRocket : Spatial, IProjectile
 	}
 
 
-	public override void _PhysicsProcess(float Delta)
-	{
-		if(Triggered || (Life >= RocketFuseTime))
-		{
+	public override void _PhysicsProcess(float Delta) {
+		if(Triggered || (Life >= RocketFuseTime)) {
 			if(TriggeredPosition == null)
 				TriggeredPosition = GetNode<Spatial>("ExplosionOrigin").GlobalTransform.origin;
-			var Position = (Vector3) TriggeredPosition;
+			var Position = (Vector3)TriggeredPosition;
 
 			if(Net.Work.IsNetworkServer())
 				ServerExplode(Position);
 			else //Client
 			{
 				Game.PossessedPlayer.MatchSome(
-					(Plr) =>
-					{
-						if(Position.DistanceTo(Plr.Translation) <= MaxRocketDistance)
-						{
+					(Plr) => {
+						if(Position.DistanceTo(Plr.Translation) <= MaxRocketDistance) {
 							Vector3 Push = CalculatePush(Plr, Position);
 							Plr.ApplyPush(Push);
 						}

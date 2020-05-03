@@ -1,10 +1,8 @@
 using Godot;
 using System;
 
-public class Intro : VBoxContainer
-{
-	public void ContinuePressed()
-	{
+public class Intro : VBoxContainer {
+	public void ContinuePressed() {
 		if(Game.RemoteVersion != null && Game.Version != Game.RemoteVersion)
 			Menu.BuildUpdate();
 		else if(Game.Nickname != Game.DefaultNickname)
@@ -14,8 +12,7 @@ public class Intro : VBoxContainer
 	}
 
 
-	public void QuitPressed()
-	{
+	public void QuitPressed() {
 		Game.Quit();
 	}
 }

@@ -2,34 +2,27 @@ using System;
 
 
 
-public static class Assert
-{
-	public class AssertException : Exception
-	{
-		public AssertException()
-		{}
+public static class Assert {
+	public class AssertException : Exception {
+		public AssertException() { }
 
-		public AssertException(string Message) : base(Message)
-		{}
+		public AssertException(string Message) : base(Message) { }
 	}
 
 
 	//Because C# is a silly language where Debug.Assert doesn't quit or throw an exception on failure
-	public static void ActualAssert(bool Condition)
-	{
+	public static void ActualAssert(bool Condition) {
 		if(!Condition)
 			throw new AssertException();
 	}
 
 
-	public static void ArgArray(object[] Array, params Type[] Types)
-	{
+	public static void ArgArray(object[] Array, params Type[] Types) {
 		if(Array.Length != Types.Length)
 			throw new AssertException($"Incorrect argument count, expected {Types.Length} but got {Array.Length}");
 
 		int Index = 0;
-		foreach(object Item in Array)
-		{
+		foreach(object Item in Array) {
 			var Expected = Types[Index];
 			var Actual = Item.GetType();
 			if(Actual != Expected)

@@ -2,8 +2,7 @@ using Godot;
 using System.Collections.Generic;
 
 
-public class HUD : Node
-{
+public class HUD : Node {
 	public static float DamageIndicatorLifeMultiplyer = 0.1f; //Multipled by damage to calc max life
 
 	private Texture Alpha;
@@ -25,9 +24,8 @@ public class HUD : Node
 
 	public bool Visible = true;
 
-	HUD()
-	{
-		if(Engine.EditorHint) {return;}
+	HUD() {
+		if(Engine.EditorHint) { return; }
 
 		Alpha = GD.Load("res://UI/Textures/Alpha.png") as Texture;
 		Triangle = GD.Load("res://UI/Textures/Triangle.png") as Texture;
@@ -37,8 +35,7 @@ public class HUD : Node
 	}
 
 
-	public override void _Ready()
-	{
+	public override void _Ready() {
 		Crosshair = GetNode<TextureRect>("CLayer/CrossCenter/TextureRect");
 		CooldownBar = GetNode<ProgressBar>("CLayer/CooldownCenter/VBox/CooldownBar");
 		HealthBar = GetNode<ProgressBar>("CLayer/HealthVBox/HealthHBox/HealthBar");
@@ -58,31 +55,25 @@ public class HUD : Node
 	}
 
 
-	public void HotbarUpdate()
-	{
+	public void HotbarUpdate() {
 		Game.PossessedPlayer.MatchSome(
-			(Plr) =>
-			{
-				for(int Slot = 0; Slot <= 9; Slot++)
-				{
+			(Plr) => {
+				for(int Slot = 0; Slot <= 9; Slot++) {
 					var SlotPatch = GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox").GetChild<NinePatchRect>(Slot);
-					if(Plr.Inventory[Slot] != null)
-					{
+					if(Plr.Inventory[Slot] != null) {
 						SlotPatch.Texture = Items.Thumbnails[Plr.Inventory[Slot].Id];
 
 						foreach(Node Child in SlotPatch.GetChildren())
 							Child.QueueFree();
 
-						var CountLabel = (Label) ItemCountLabelScene.Instance();
+						var CountLabel = (Label)ItemCountLabelScene.Instance();
 						CountLabel.Text = Plr.Inventory[Slot].Count.ToString();
 						SlotPatch.AddChild(CountLabel);
 					}
-					else
-					{
+					else {
 						SlotPatch.Texture = Alpha;
 
-						foreach(Node Child in SlotPatch.GetChildren())
-						{
+						foreach(Node Child in SlotPatch.GetChildren()) {
 							Child.QueueFree();
 						}
 					}
@@ -94,7 +85,7 @@ public class HUD : Node
 					ActiveIndicatorPatch.Texture = Alpha;
 				}
 
-				((NinePatchRect) (GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Plr.InventorySlot))).Texture = Triangle;
+				((NinePatchRect)(GetNode("CLayer/HotBarCenter/HBoxContainer/Vbox2").GetChild(Plr.InventorySlot))).Texture = Triangle;
 			}
 		);
 	}
@@ -106,12 +97,9 @@ public class HUD : Node
 	}
 
 
-	private void HideNodes(Godot.Collections.Array Nodes)
-	{
-		foreach(Node ToHide in Nodes)
-		{
-			if(ToHide is CanvasItem)
-			{
+	private void HideNodes(Godot.Collections.Array Nodes) {
+		foreach(Node ToHide in Nodes) {
+			if(ToHide is CanvasItem) {
 				((CanvasItem)ToHide).Hide();
 			}
 			HideNodes(ToHide.GetChildren());
@@ -119,19 +107,15 @@ public class HUD : Node
 	}
 
 
-	public void Hide()
-	{
+	public void Hide() {
 		HideNodes(GetChildren());
 		Visible = false;
 	}
 
 
-	private void ShowNodes(Godot.Collections.Array Nodes)
-	{
-		foreach(Node ToShow in Nodes)
-		{
-			if(ToShow is CanvasItem)
-			{
+	private void ShowNodes(Godot.Collections.Array Nodes) {
+		foreach(Node ToShow in Nodes) {
+			if(ToShow is CanvasItem) {
 				((CanvasItem)ToShow).Show();
 			}
 			ShowNodes(ToShow.GetChildren());
@@ -139,55 +123,47 @@ public class HUD : Node
 	}
 
 
-	public void Show()
-	{
+	public void Show() {
 		ShowNodes(GetChildren());
 		Visible = true;
 		CallDeferred(nameof(HotbarUpdate));
 	}
 
 
-	public void AddNickLabel(int Id, string Nick)
-	{
-		var Instance = (Label) NickLabelScene.Instance();
+	public void AddNickLabel(int Id, string Nick) {
+		var Instance = (Label)NickLabelScene.Instance();
 		Instance.Text = Nick;
 		NickLabelLayer.AddChild(Instance);
 		NickLabels[Id] = Instance;
 	}
 
 
-	public void RemoveNickLabel(int Id)
-	{
-		if(NickLabels.ContainsKey(Id))
-		{
+	public void RemoveNickLabel(int Id) {
+		if(NickLabels.ContainsKey(Id)) {
 			NickLabels[Id].QueueFree();
 			NickLabels.Remove(Id);
 		}
 	}
 
 
-	public void AddDamageIndicator(Vector3 ShotFirePosition, float Damage)
-	{
-		var Indicator = (DamageIndicator) DamageIndicatorScene.Instance();
-		Indicator.Setup(ShotFirePosition, Damage*DamageIndicatorLifeMultiplyer);
+	public void AddDamageIndicator(Vector3 ShotFirePosition, float Damage) {
+		var Indicator = (DamageIndicator)DamageIndicatorScene.Instance();
+		Indicator.Setup(ShotFirePosition, Damage * DamageIndicatorLifeMultiplyer);
 		DamageIndicatorRoot.AddChild(Indicator);
 	}
 
 
-	public void ClearDamageIndicators()
-	{
+	public void ClearDamageIndicators() {
 		foreach(Node Child in DamageIndicatorRoot.GetChildren())
 			Child.QueueFree();
 	}
 
 
-	public override void _Process(float Delta)
-	{
+	public override void _Process(float Delta) {
 		Game.PossessedPlayer.Match(
 			none: () => Hide(),
 
-			some: (Plr) =>
-			{
+			some: (Plr) => {
 				Crosshair.Visible = !Menu.IsOpen;
 				CooldownBar.Visible = !Menu.IsOpen;
 
@@ -199,29 +175,24 @@ public class HUD : Node
 
 				HotbarUpdate(); //TODO: Use InventoryIcon
 
-				foreach(KeyValuePair<int, Label> Current in NickLabels)
-				{
+				foreach(KeyValuePair<int, Label> Current in NickLabels) {
 					Net.Players[Current.Key].Plr.Match(
 						none: () => Current.Value.Visible = false,
 
-						some: (OwningPlayer) =>
-						{
+						some: (OwningPlayer) => {
 							//On the server when a player instance is unloaded due to render distance it technically still exists
 							//So as precaution if the nametag's player is outside the render distance we hide it
 							var OwningPlayerChunk = World.GetChunkTuple(OwningPlayer.Translation);
-							if(!World.ChunkWithinDistanceFrom(OwningPlayerChunk, Game.ChunkRenderDistance, Plr.Translation))
-							{
+							if(!World.ChunkWithinDistanceFrom(OwningPlayerChunk, Game.ChunkRenderDistance, Plr.Translation)) {
 								Current.Value.Visible = false;
 								return; //continue foreach by exiting lambda
 							}
 
 							Vector3 PlayerPos = OwningPlayer.Translation + new Vector3(0, 7.5f, 0);
-							if(Net.Players[OwningPlayer.Id].Team != Net.Players[Plr.Id].Team || Plr.Cam.IsPositionBehind(PlayerPos))
-							{
+							if(Net.Players[OwningPlayer.Id].Team != Net.Players[Plr.Id].Team || Plr.Cam.IsPositionBehind(PlayerPos)) {
 								Current.Value.Visible = false;
 							}
-							else
-							{
+							else {
 								Current.Value.Visible = Visible;
 								Current.Value.MarginLeft = Plr.Cam.UnprojectPosition(PlayerPos).x - Current.Value.RectSize.x / 2;
 								Current.Value.MarginTop = Plr.Cam.UnprojectPosition(PlayerPos).y - Current.Value.RectSize.y / 2;

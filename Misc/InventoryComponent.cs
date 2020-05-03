@@ -6,24 +6,20 @@ using static Godot.Mathf;
 
 
 
-public class SavedInventory
-{
+public class SavedInventory {
 	[Newtonsoft.Json.JsonProperty("C")]
 	public Items.Instance[] Contents;
 
-	public SavedInventory()
-	{}
+	public SavedInventory() { }
 
-	public SavedInventory(InventoryComponent Inventory)
-	{
+	public SavedInventory(InventoryComponent Inventory) {
 		Contents = Inventory.Contents;
 	}
 }
 
 
 
-public class InventoryComponent
-{
+public class InventoryComponent {
 	public const int MaxStackCount = 50;
 
 
@@ -31,15 +27,13 @@ public class InventoryComponent
 	private IHasInventory Owner;
 
 
-	public InventoryComponent(IHasInventory OwnerArg, int SlotCountArg)
-	{
+	public InventoryComponent(IHasInventory OwnerArg, int SlotCountArg) {
 		Owner = OwnerArg;
 		Contents = new Items.Instance[SlotCountArg];
 	}
 
 
-	public Items.Instance this[int Index]
-	{
+	public Items.Instance this[int Index] {
 		get => Contents[Index];
 		private set => Contents[Index] = value;
 	}
@@ -50,26 +44,22 @@ public class InventoryComponent
 		if(!Net.Work.IsNetworkServer())
 			throw new Exception("Attempted to give item on client");
 
-		for(int Slot = 0; Slot < Contents.Length; Slot++)
-		{
+		for(int Slot = 0; Slot < Contents.Length; Slot++) {
 			if(Contents[Slot] is null || Contents[Slot].Id != ToGive.Id) continue;
 
 			int GivingCount = Clamp(MaxStackCount - Contents[Slot].Count, 0, ToGive.Count);
 			ToGive.Count -= GivingCount;
 			Contents[Slot].Count += GivingCount;
 
-			if(ToGive.Count <= 0)
-			{
+			if(ToGive.Count <= 0) {
 				Entities.SendInventory(Owner);
-				return Option.Some(new int[] {Slot});
+				return Option.Some(new int[] { Slot });
 			}
 		}
 
 		var Slots = new List<int>();
-		for(int Slot = 0; Slot < Contents.Length; Slot++)
-		{
-			if(Contents[Slot] is null)
-			{
+		for(int Slot = 0; Slot < Contents.Length; Slot++) {
+			if(Contents[Slot] is null) {
 				int GivingCount = Clamp(ToGive.Count, 0, MaxStackCount);
 				ToGive.Count -= GivingCount;
 				Contents[Slot] = new Items.Instance(ToGive.Id) {
@@ -78,8 +68,7 @@ public class InventoryComponent
 
 				Slots.Add(Slot);
 
-				if(ToGive.Count <= 0)
-				{
+				if(ToGive.Count <= 0) {
 					Entities.SendInventory(Owner);
 					return Option.Some(Slots.ToArray());
 				}
@@ -91,34 +80,28 @@ public class InventoryComponent
 	}
 
 
-	public void UpdateSlot(int Slot, Items.ID Id, int Count)
-	{
-		Contents[Slot] = new Items.Instance(Id) {Count = Count};
+	public void UpdateSlot(int Slot, Items.ID Id, int Count) {
+		Contents[Slot] = new Items.Instance(Id) { Count = Count };
 	}
 
 
-	public void EmptySlot(int Slot)
-	{
+	public void EmptySlot(int Slot) {
 		Contents[Slot] = null;
 	}
 
 
-	public void TransferTo(IHasInventory To, int FromSlot, int ToSlot, Items.IntentCount CountMode)
-	{
+	public void TransferTo(IHasInventory To, int FromSlot, int ToSlot, Items.IntentCount CountMode) {
 		Assert.ActualAssert(Net.Work.IsNetworkServer());
 
-		if(Contents[FromSlot] is Items.Instance Item)
-		{
+		if(Contents[FromSlot] is Items.Instance Item) {
 			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
 			if(Count <= 0)
 				return;
 
-			if(To.Inventory[ToSlot] == null || To.Inventory[ToSlot].Id == Item.Id)
-			{
+			if(To.Inventory[ToSlot] == null || To.Inventory[ToSlot].Id == Item.Id) {
 				if(To.Inventory[ToSlot] == null)
 					To.Inventory.UpdateSlot(ToSlot, Item.Id, Count);
-				else
-				{
+				else {
 					Count = Clamp(MaxStackCount - To.Inventory[ToSlot].Count, 0, Count);
 					To.Inventory.UpdateSlot(ToSlot, Item.Id, To.Inventory[ToSlot].Count + Count);
 				}
@@ -131,8 +114,7 @@ public class InventoryComponent
 				else
 					Owner.Inventory.UpdateSlot(FromSlot, Item.Id, Item.Count - Count);
 			}
-			else if(To.Inventory[ToSlot] != null && Item.Count == Count)
-			{
+			else if(To.Inventory[ToSlot] != null && Item.Count == Count) {
 				var OriginalAtTarget = To.Inventory[ToSlot];
 				To.Inventory.UpdateSlot(ToSlot, Item.Id, Count);
 				Owner.Inventory.UpdateSlot(FromSlot, OriginalAtTarget.Id, OriginalAtTarget.Count);
@@ -144,10 +126,8 @@ public class InventoryComponent
 	}
 
 
-	public void ThrowAt(int Slot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity)
-	{
-		if(Contents[Slot] is Items.Instance Item)
-		{
+	public void ThrowAt(int Slot, Items.IntentCount CountMode, Vector3 At, Vector3 Velocity) {
+		if(Contents[Slot] is Items.Instance Item) {
 			int Count = Items.CalcRetrieveCount(CountMode, Item.Count);
 			if(Count <= 0)
 				return;

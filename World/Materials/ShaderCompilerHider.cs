@@ -1,15 +1,12 @@
 using Godot;
 
 
-public class ShaderCompilerHider : MeshInstance
-{
+public class ShaderCompilerHider : MeshInstance {
 	public bool LivedOneFrame;
 
 
-	public override void _Process(float Delta)
-	{
-		if(LivedOneFrame)
-		{
+	public override void _Process(float Delta) {
+		if(LivedOneFrame) {
 			QueueFree();
 		}
 

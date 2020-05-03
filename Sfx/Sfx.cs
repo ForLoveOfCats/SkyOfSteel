@@ -4,30 +4,24 @@ using System.Collections.Generic;
 
 
 
-public class Sfx : Node
-{
-	private class AudioPlayerOmnispresent : AudioStreamPlayer
-	{
-		public AudioPlayerOmnispresent(Sfx.ID ClipId) : base()
-		{
+public class Sfx : Node {
+	private class AudioPlayerOmnispresent : AudioStreamPlayer {
+		public AudioPlayerOmnispresent(Sfx.ID ClipId) : base() {
 			Stream = Clips[ClipId];
 			Play();
 			Connect("finished", this, nameof(OnFinished));
 		}
 
 
-		private void OnFinished()
-		{
+		private void OnFinished() {
 			QueueFree();
 		}
 	}
 
 
 
-	private class AudioPlayer3D : AudioStreamPlayer3D
-	{
-		public AudioPlayer3D(Sfx.ID ClipId, Vector3 Position) : base()
-		{
+	private class AudioPlayer3D : AudioStreamPlayer3D {
+		public AudioPlayer3D(Sfx.ID ClipId, Vector3 Position) : base() {
 			Translation = Position;
 			Stream = Clips[ClipId];
 			Play();
@@ -35,16 +29,14 @@ public class Sfx : Node
 		}
 
 
-		private void OnFinished()
-		{
+		private void OnFinished() {
 			QueueFree();
 		}
 	}
 
 
 
-	public enum ID
-	{
+	public enum ID {
 		BUTTON_MOUSEOVER,
 		HITSOUND,
 		KILLSOUND,
@@ -63,14 +55,12 @@ public class Sfx : Node
 
 	public static Sfx Self;
 
-	private Sfx()
-	{
-		if(Engine.EditorHint) {return;}
+	private Sfx() {
+		if(Engine.EditorHint) { return; }
 
 		Self = this;
 
-		foreach(ID ClipId in Enum.GetValues(typeof(ID)))
-		{
+		foreach(ID ClipId in Enum.GetValues(typeof(ID))) {
 			var Sample = GD.Load<AudioStreamSample>($"res://Sfx/Clips/{ClipId}.wav");
 			if(Sample is null)
 				throw new Exception($"Sfx for {ClipId} not found");
@@ -81,21 +71,18 @@ public class Sfx : Node
 
 	//Play a clip omnipresently
 	//NOTE: Has no networked counterpart
-	public static void Play(ID ClipId)
-	{
+	public static void Play(ID ClipId) {
 		Self.AddChild(new AudioPlayerOmnispresent(ClipId));
 	}
 
 
-	public static void PlayPlayer(ID ClipId, Player Plr)
-	{
+	public static void PlayPlayer(ID ClipId, Player Plr) {
 		Play(ClipId);
 		PlayAt(ClipId, Plr.Translation);
 	}
 
 
-	public static void PlayAt(ID ClipId, Vector3 Position)
-	{
+	public static void PlayAt(ID ClipId, Vector3 Position) {
 		Self.ActualPlayAt(ClipId, Position);
 
 		if(Net.Work.IsNetworkServer())
@@ -106,10 +93,8 @@ public class Sfx : Node
 
 
 	[Remote]
-	private void PleasePlayAtForOthers(ID ClipId, Vector3 Position)
-	{
-		if(!Net.Work.IsNetworkServer())
-		{
+	private void PleasePlayAtForOthers(ID ClipId, Vector3 Position) {
+		if(!Net.Work.IsNetworkServer()) {
 			Console.ThrowLog($"Attempted to execute {nameof(PleasePlayAtForOthers)} on client");
 			return;
 		}
@@ -120,8 +105,7 @@ public class Sfx : Node
 		{
 			//Play on ourself if the audio's chunk is within render distance
 			Game.PossessedPlayer.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					if(World.ChunkWithinDistanceFrom(AudioChunk, Game.ChunkRenderDistance, Plr.Translation))
 						ActualPlayAt(ClipId, Position);
 				}
@@ -129,15 +113,13 @@ public class Sfx : Node
 		}
 
 		//Play on all clients which have the audio's chunk within render distance
-		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players)
-		{
+		foreach(KeyValuePair<int, Net.PlayerData> KV in Net.Players) {
 			int Receiver = KV.Key;
 			if(Receiver == Net.Work.GetNetworkUniqueId() || Receiver == Net.Work.GetRpcSenderId())
 				continue;
 
 			KV.Value.Plr.MatchSome(
-				(Plr) =>
-				{
+				(Plr) => {
 					int ChunkRenderDistance = World.ChunkRenderDistances[Receiver];
 					if(World.ChunkWithinDistanceFrom(AudioChunk, ChunkRenderDistance, Plr.Translation))
 						Self.RpcId(Receiver, nameof(ActualPlayAt), ClipId, Position);
@@ -148,8 +130,7 @@ public class Sfx : Node
 
 
 	[Remote]
-	private void ActualPlayAt(ID ClipId, Vector3 Position)
-	{
+	private void ActualPlayAt(ID ClipId, Vector3 Position) {
 		Self.AddChild(new AudioPlayer3D(ClipId, Position));
 	}
 }

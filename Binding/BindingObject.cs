@@ -1,8 +1,7 @@
 using System;
 
 
-class BindingObject
-{
+class BindingObject {
 	public string Name = null; //Null to fail early
 	public Action FuncWithoutArg = null;
 	public Action<float> FuncWithArg = null;
@@ -11,14 +10,12 @@ class BindingObject
 
 	public bool JoyWasInDeadzone = true;
 
-	public BindingObject(string NameArg)
-	{
+	public BindingObject(string NameArg) {
 		Name = NameArg;
 	}
 
 
-	public bool Equals(BindingObject Other)
-	{
+	public bool Equals(BindingObject Other) {
 		return Name == Other.Name;
 	}
 }

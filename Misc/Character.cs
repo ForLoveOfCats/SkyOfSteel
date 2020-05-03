@@ -4,22 +4,18 @@ using static Godot.Mathf;
 
 
 
-public class Character : KinematicBody
-{
+public class Character : KinematicBody {
 	public bool OnFloor { get; private set; } = false;
 
 
-	public Vector3 Move(Vector3 Momentum, float Delta, int MaxSlideCount, float MaxAngle, float Snap)
-	{
+	public Vector3 Move(Vector3 Momentum, float Delta, int MaxSlideCount, float MaxAngle, float Snap) {
 		Vector3 Movement = Momentum * Delta;
 
-		if(Momentum.y <= 0)
-		{
+		if(Momentum.y <= 0) {
 			Vector3 OriginalTranslation = Translation;
 			var SnapVec = new Vector3(0, (-Snap - 0.1f) * Delta, 0);
 			KinematicCollision SnapCollision = MoveAndCollide(SnapVec);
-			if(SnapCollision != null && Acos(SnapCollision.Normal.Dot(new Vector3(0, 1, 0))) <= Deg2Rad(MaxAngle))
-			{
+			if(SnapCollision != null && Acos(SnapCollision.Normal.Dot(new Vector3(0, 1, 0))) <= Deg2Rad(MaxAngle)) {
 				float TargetHLength = Movement.Flattened().Length();
 				Movement = Movement.Slide(SnapCollision.Normal);
 				float NewHLength = Movement.Flattened().Length();
@@ -28,15 +24,13 @@ public class Character : KinematicBody
 
 				OnFloor = true;
 
-				if(Momentum.Flattened().Length() <= 0.5f)
-				{
+				if(Momentum.Flattened().Length() <= 0.5f) {
 					Translation = OriginalTranslation;
 					Momentum.y = 0; //On floor so zero out vertical momentum
 					return Momentum;
 				}
 			}
-			else
-			{
+			else {
 				Translation = OriginalTranslation;
 				OnFloor = false;
 			}
@@ -46,8 +40,7 @@ public class Character : KinematicBody
 
 		int SlideCount = 0;
 		float Traveled = 0f;
-		while(SlideCount <= MaxSlideCount)
-		{
+		while(SlideCount <= MaxSlideCount) {
 			Movement = Movement.Normalized() * (Movement.Length() - Traveled);
 			KinematicCollision Collision = MoveAndCollide(Movement);
 			if(Collision == null)
@@ -71,20 +64,20 @@ public class Character : KinematicBody
 	}
 
 
-	[Obsolete] public new bool IsOnFloor()
-	{
+	[Obsolete]
+	public new bool IsOnFloor() {
 		return OnFloor;
 	}
 
 
-	[Obsolete] public new bool IsOnWall()
-	{
+	[Obsolete]
+	public new bool IsOnWall() {
 		return base.IsOnWall();
 	}
 
 
-	[Obsolete] public new bool IsOnCeiling()
-	{
+	[Obsolete]
+	public new bool IsOnCeiling() {
 		return base.IsOnCeiling();
 	}
 }
