@@ -56,63 +56,63 @@ public class Entities : Node {
 
 		switch(Entity) {
 			case IProjectile Projectile: {
-					Projectiles.Self.RpcId(
-						Receiver,
-						nameof(Projectiles.ActualFire),
-						Projectile.ProjectileId,
-						Projectile.FirerId,
-						Projectile.Translation,
-						Projectile.RotationDegrees,
-						Projectile.Momentum,
-						Projectile.Name
-					);
-					return;
-				}
+				Projectiles.Self.RpcId(
+					Receiver,
+					nameof(Projectiles.ActualFire),
+					Projectile.ProjectileId,
+					Projectile.FirerId,
+					Projectile.Translation,
+					Projectile.RotationDegrees,
+					Projectile.Momentum,
+					Projectile.Name
+				);
+				return;
+			}
 
 			case DroppedItem Item: {
-					World.Self.RpcId(
-						Receiver,
-						nameof(World.DropOrUpdateItem),
-						Item.Type,
-						Item.Translation,
-						Item.RotationDegrees.y,
-						Item.Momentum,
-						Item.Name
-					);
-					return;
-				}
+				World.Self.RpcId(
+					Receiver,
+					nameof(World.DropOrUpdateItem),
+					Item.Type,
+					Item.Translation,
+					Item.RotationDegrees.y,
+					Item.Momentum,
+					Item.Name
+				);
+				return;
+			}
 
 			case Tile Branch: {
-					World.Self.RpcId(
-						Receiver,
-						nameof(World.PlaceWithName),
-						Branch.ItemId,
-						Branch.Translation,
-						Branch.RotationDegrees,
-						Branch.OwnerId,
-						Branch.Name
-					);
-					return;
-				}
+				World.Self.RpcId(
+					Receiver,
+					nameof(World.PlaceWithName),
+					Branch.ItemId,
+					Branch.Translation,
+					Branch.RotationDegrees,
+					Branch.OwnerId,
+					Branch.Name
+				);
+				return;
+			}
 
 			case Player Plr: {
-					Game.Self.RpcId(
-						Receiver,
-						nameof(Game.NetSpawnPlayer),
-						Plr.Id
-					);
-					return;
-				}
+				Game.Self.RpcId(
+					Receiver,
+					nameof(Game.NetSpawnPlayer),
+					Plr.Id
+				);
+				return;
+			}
 
 			case MobClass Mob: {
-					Mobs.Self.RpcId(
-						Receiver,
-						nameof(Mobs.NetSpawnMob),
-						Mob.Type,
-						Mob.Name
-					);
-					return;
-				}
+				Mobs.Self.RpcId(
+					Receiver,
+					nameof(Mobs.NetSpawnMob),
+					Mob.Type,
+					Mob.Name
+				);
+				return;
+			}
 		}
 	}
 

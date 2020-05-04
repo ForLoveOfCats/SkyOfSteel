@@ -107,222 +107,222 @@ public class Bindings : Node {
 		switch(KeyName) //Checks custom string literals first then assumes Scancode
 		{
 			case ("MouseOne"): {
-					NewBind.Type = TYPE.MOUSEBUTTON;
-					ButtonValue = ButtonList.Left;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEBUTTON;
+				ButtonValue = ButtonList.Left;
+				break;
+			}
 			case ("MouseTwo"): {
-					NewBind.Type = TYPE.MOUSEBUTTON;
-					ButtonValue = ButtonList.Right;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEBUTTON;
+				ButtonValue = ButtonList.Right;
+				break;
+			}
 			case ("MouseThree"): {
-					NewBind.Type = TYPE.MOUSEBUTTON;
-					ButtonValue = ButtonList.Middle;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEBUTTON;
+				ButtonValue = ButtonList.Middle;
+				break;
+			}
 
 			case ("WheelUp"): {
-					NewBind.Type = TYPE.MOUSEWHEEL;
-					ButtonValue = ButtonList.WheelUp;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEWHEEL;
+				ButtonValue = ButtonList.WheelUp;
+				break;
+			}
 
 			case ("WheelDown"): {
-					NewBind.Type = TYPE.MOUSEWHEEL;
-					ButtonValue = ButtonList.WheelDown;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEWHEEL;
+				ButtonValue = ButtonList.WheelDown;
+				break;
+			}
 
 			case ("MouseUp"): {
-					NewBind.Type = TYPE.MOUSEAXIS;
-					AxisDirection = DIRECTION.UP;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.UP;
+				break;
+			}
 
 			case ("MouseDown"): {
-					NewBind.Type = TYPE.MOUSEAXIS;
-					AxisDirection = DIRECTION.DOWN;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				break;
+			}
 
 			case ("MouseRight"): {
-					NewBind.Type = TYPE.MOUSEAXIS;
-					AxisDirection = DIRECTION.RIGHT;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				break;
+			}
 
 			case ("MouseLeft"): {
-					NewBind.Type = TYPE.MOUSEAXIS;
-					AxisDirection = DIRECTION.LEFT;
-					break;
-				}
+				NewBind.Type = TYPE.MOUSEAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				break;
+			}
 
 			case ("LeftStickUp"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.UP;
-					ControllerButtonValue = JoystickList.AnalogLy;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.UP;
+				ControllerButtonValue = JoystickList.AnalogLy;
+				break;
+			}
 
 			case ("LeftStickDown"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.DOWN;
-					ControllerButtonValue = JoystickList.AnalogLy;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				ControllerButtonValue = JoystickList.AnalogLy;
+				break;
+			}
 
 			case ("LeftStickLeft"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.LEFT;
-					ControllerButtonValue = JoystickList.AnalogLx;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				ControllerButtonValue = JoystickList.AnalogLx;
+				break;
+			}
 
 			case ("LeftStickRight"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.RIGHT;
-					ControllerButtonValue = JoystickList.AnalogLx;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				ControllerButtonValue = JoystickList.AnalogLx;
+				break;
+			}
 
 			case ("RightStickUp"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.UP;
-					ControllerButtonValue = JoystickList.AnalogRy;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.UP;
+				ControllerButtonValue = JoystickList.AnalogRy;
+				break;
+			}
 			case ("RightStickDown"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.DOWN;
-					ControllerButtonValue = JoystickList.AnalogRy;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.DOWN;
+				ControllerButtonValue = JoystickList.AnalogRy;
+				break;
+			}
 			case ("RightStickLeft"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.LEFT;
-					ControllerButtonValue = JoystickList.AnalogRx;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.LEFT;
+				ControllerButtonValue = JoystickList.AnalogRx;
+				break;
+			}
 			case ("RightStickRight"): {
-					NewBind.Type = TYPE.CONTROLLERAXIS;
-					AxisDirection = DIRECTION.RIGHT;
-					ControllerButtonValue = JoystickList.AnalogRx;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERAXIS;
+				AxisDirection = DIRECTION.RIGHT;
+				ControllerButtonValue = JoystickList.AnalogRx;
+				break;
+			}
 
 			case ("XboxA"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.XboxA;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxA;
+				break;
+			}
 
 			case ("XboxB"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.XboxB;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxB;
+				break;
+			}
 
 			case ("XboxX"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.XboxX;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxX;
+				break;
+			}
 
 			case ("XboxY"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.XboxY;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.XboxY;
+				break;
+			}
 
 			case ("XboxLB"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.L;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L;
+				break;
+			}
 
 			case ("XboxRB"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.R;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R;
+				break;
+			}
 
 			case ("XboxLT"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.L2;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L2;
+				break;
+			}
 
 			case ("XboxRT"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.R2;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R2;
+				break;
+			}
 
 			case ("RightStickClick"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.R3;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.R3;
+				break;
+			}
 
 			case ("LeftStickClick"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.L3;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.L3;
+				break;
+			}
 
 			case ("DPadUp"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.DpadUp;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadUp;
+				break;
+			}
 
 			case ("DPadDown"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.DpadDown;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadDown;
+				break;
+			}
 
 			case ("DPadLeft"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.DpadLeft;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadLeft;
+				break;
+			}
 
 			case ("DPadRight"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.DpadRight;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.DpadRight;
+				break;
+			}
 
 			case ("XboxStart"): {
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.Start;
-					break;
-				}
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.Start;
+				break;
+			}
 
 			case ("XboxSelect"): {
-					// Or Select. Or Share. Or The big thing in the middle of ps4 remotes. Or -.
-					NewBind.Type = TYPE.CONTROLLERBUTTON;
-					ControllerButtonValue = JoystickList.Select;
-					break;
-				}
+				// Or Select. Or Share. Or The big thing in the middle of ps4 remotes. Or -.
+				NewBind.Type = TYPE.CONTROLLERBUTTON;
+				ControllerButtonValue = JoystickList.Select;
+				break;
+			}
 
 			default: {
-					//Does not match any custom string literal must either be a Scancode or is invalid
-					uint LocalScancode = (uint)OS.FindScancodeFromString(KeyName);
-					if(LocalScancode != 0) {
-						//Is a valid Scancode
-						NewBind.Type = TYPE.SCANCODE;
-						Scancode = LocalScancode;
-					}
-					else {
-						//If not a valid Scancode then the provided key must not be a valid key
-						Console.ThrowPrint($"The supplied key '{KeyName}' is not a valid key");
-						return false;
-					}
-					break;
+				//Does not match any custom string literal must either be a Scancode or is invalid
+				uint LocalScancode = (uint)OS.FindScancodeFromString(KeyName);
+				if(LocalScancode != 0) {
+					//Is a valid Scancode
+					NewBind.Type = TYPE.SCANCODE;
+					Scancode = LocalScancode;
 				}
+				else {
+					//If not a valid Scancode then the provided key must not be a valid key
+					Console.ThrowPrint($"The supplied key '{KeyName}' is not a valid key");
+					return false;
+				}
+				break;
+			}
 		}
 		//Now we have everything we need to setup the bind with Godot's input system
 
@@ -333,66 +333,66 @@ public class Bindings : Node {
 		InputMap.AddAction(KeyName);
 		switch(NewBind.Type) {
 			case (TYPE.SCANCODE): {
-					InputEventKey Event = new InputEventKey { Scancode = Scancode };
-					InputMap.ActionAddEvent(KeyName, Event);
-					break;
-				}
+				InputEventKey Event = new InputEventKey { Scancode = Scancode };
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
+			}
 
 			case (TYPE.MOUSEBUTTON):
 			case (TYPE.MOUSEWHEEL): {
-					InputEventMouseButton Event = new InputEventMouseButton {
-						ButtonIndex = (int)ButtonValue
-					};
-					InputMap.ActionAddEvent(KeyName, Event);
-					break;
-				}
+				InputEventMouseButton Event = new InputEventMouseButton {
+					ButtonIndex = (int)ButtonValue
+				};
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
+			}
 
 			case (TYPE.MOUSEAXIS): {
-					InputEventMouseMotion Event = new InputEventMouseMotion();
-					InputMap.ActionAddEvent(KeyName, Event);
-					NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
-					break;
-				}
+				InputEventMouseMotion Event = new InputEventMouseMotion();
+				InputMap.ActionAddEvent(KeyName, Event);
+				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				break;
+			}
 
 			case (TYPE.CONTROLLERAXIS): {
-					InputEventJoypadMotion Event = new InputEventJoypadMotion {
-						Axis = (int)ControllerButtonValue
-					};
-					// Set which Joystick axis we're using
-					switch(AxisDirection) { // Set which direction on the axis we need to trigger the event
-						case (DIRECTION.UP): {
-								Event.AxisValue = -1; // -1, on the Vertical axis is up
-								break;
-							}
-
-						case (DIRECTION.LEFT): {
-								Event.AxisValue = -1; // -1, on the Horizontal axis is left
-								break;
-							}
-
-						case (DIRECTION.DOWN): {
-								Event.AxisValue = 1; // 1, on the Vertical axis is down
-								break;
-							}
-
-						case (DIRECTION.RIGHT): {
-								Event.AxisValue = 1; // 1, on the Horizontal axis is right
-								break;
-							}
+				InputEventJoypadMotion Event = new InputEventJoypadMotion {
+					Axis = (int)ControllerButtonValue
+				};
+				// Set which Joystick axis we're using
+				switch(AxisDirection) { // Set which direction on the axis we need to trigger the event
+					case (DIRECTION.UP): {
+						Event.AxisValue = -1; // -1, on the Vertical axis is up
+						break;
 					}
 
-					InputMap.ActionAddEvent(KeyName, Event);
-					NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
-					break;
+					case (DIRECTION.LEFT): {
+						Event.AxisValue = -1; // -1, on the Horizontal axis is left
+						break;
+					}
+
+					case (DIRECTION.DOWN): {
+						Event.AxisValue = 1; // 1, on the Vertical axis is down
+						break;
+					}
+
+					case (DIRECTION.RIGHT): {
+						Event.AxisValue = 1; // 1, on the Horizontal axis is right
+						break;
+					}
 				}
 
+				InputMap.ActionAddEvent(KeyName, Event);
+				NewBind.AxisDirection = (DIRECTION)AxisDirection; //Has to cast as it is Nullable
+				break;
+			}
+
 			case (TYPE.CONTROLLERBUTTON): {
-					InputEventJoypadButton Event = new InputEventJoypadButton {
-						ButtonIndex = (int)ControllerButtonValue
-					};
-					InputMap.ActionAddEvent(KeyName, Event);
-					break;
-				}
+				InputEventJoypadButton Event = new InputEventJoypadButton {
+					ButtonIndex = (int)ControllerButtonValue
+				};
+				InputMap.ActionAddEvent(KeyName, Event);
+				break;
+			}
 		}
 
 		if(NewBind.FuncWithArg != null) {

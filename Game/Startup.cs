@@ -25,10 +25,10 @@ public class Startup : Node {
 
 			switch(CurrentArg) {
 				case "-connect": {
-						ConnectFlag = true;
-						Net.ConnectTo("127.0.0.1");
-						break;
-					}
+					ConnectFlag = true;
+					Net.ConnectTo("127.0.0.1");
+					break;
+				}
 			}
 		}
 

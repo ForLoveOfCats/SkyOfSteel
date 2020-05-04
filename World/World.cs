@@ -526,149 +526,149 @@ public class World : Node {
 
 		switch(Branch.ItemId) {
 			case (Items.ID.PLATFORM): {
-					Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0, 2, 0));
+				Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0, 2, 0));
 
-					{ //Connect to platforms in the eight spaces around us
-						var AheadPos = Branch.Translation + new Vector3(0, 1, PlatformSize);
-						var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
-						var RightPos = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
-						var LeftPos = Branch.Translation + new Vector3(PlatformSize, 1, 0);
+				{ //Connect to platforms in the eight spaces around us
+					var AheadPos = Branch.Translation + new Vector3(0, 1, PlatformSize);
+					var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
+					var RightPos = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
+					var LeftPos = Branch.Translation + new Vector3(PlatformSize, 1, 0);
 
-						Tile Ahead = TryGetPlatform(AheadPos);
-						Tile Behind = TryGetPlatform(BehindPos);
-						Tile Right = TryGetPlatform(RightPos);
-						Tile Left = TryGetPlatform(LeftPos);
+					Tile Ahead = TryGetPlatform(AheadPos);
+					Tile Behind = TryGetPlatform(BehindPos);
+					Tile Right = TryGetPlatform(RightPos);
+					Tile Left = TryGetPlatform(LeftPos);
 
-						if(Ahead != null)
-							Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-						if(Behind != null)
-							Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-						if(Right != null)
-							Pathfinder.ConnectPoints(Branch.Point, Right.Point);
-						if(Left != null)
-							Pathfinder.ConnectPoints(Branch.Point, Left.Point);
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
+					if(Right != null)
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
+					if(Left != null)
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 
-						var AheadRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, PlatformSize);
-						var AheadLeftPos = Branch.Translation + new Vector3(PlatformSize, 1, PlatformSize);
-						var BehindRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, -PlatformSize);
-						var BehindLeftPos = Branch.Translation + new Vector3(PlatformSize, 1, -PlatformSize);
+					var AheadRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, PlatformSize);
+					var AheadLeftPos = Branch.Translation + new Vector3(PlatformSize, 1, PlatformSize);
+					var BehindRightPos = Branch.Translation + new Vector3(-PlatformSize, 1, -PlatformSize);
+					var BehindLeftPos = Branch.Translation + new Vector3(PlatformSize, 1, -PlatformSize);
 
-						Tile AheadRight = null;
-						Tile AheadLeft = null;
-						Tile BehindRight = null;
-						Tile BehindLeft = null;
+					Tile AheadRight = null;
+					Tile AheadLeft = null;
+					Tile BehindRight = null;
+					Tile BehindLeft = null;
 
-						if(Ahead != null && Right != null)
-							AheadRight = TryGetPlatform(AheadRightPos);
-						if(Ahead != null && Left != null)
-							AheadLeft = TryGetPlatform(AheadLeftPos);
-						if(Behind != null && Right != null)
-							BehindRight = TryGetPlatform(BehindRightPos);
-						if(Behind != null && Left != null)
-							BehindLeft = TryGetPlatform(BehindLeftPos);
+					if(Ahead != null && Right != null)
+						AheadRight = TryGetPlatform(AheadRightPos);
+					if(Ahead != null && Left != null)
+						AheadLeft = TryGetPlatform(AheadLeftPos);
+					if(Behind != null && Right != null)
+						BehindRight = TryGetPlatform(BehindRightPos);
+					if(Behind != null && Left != null)
+						BehindLeft = TryGetPlatform(BehindLeftPos);
 
-						if(AheadRight != null)
-							Pathfinder.ConnectPoints(Branch.Point, AheadRight.Point);
-						if(AheadLeft != null)
-							Pathfinder.ConnectPoints(Branch.Point, AheadLeft.Point);
-						if(BehindRight != null)
-							Pathfinder.ConnectPoints(Branch.Point, BehindRight.Point);
-						if(BehindLeft != null)
-							Pathfinder.ConnectPoints(Branch.Point, BehindLeft.Point);
-					}
-
-					{ //Connect to slopes in the four cardinal directions (same Y)
-						var AheadPos = Branch.Translation + new Vector3(0, 1, PlatformSize);
-						var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
-						var RightPos = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
-						var LeftPos = Branch.Translation + new Vector3(PlatformSize, 1, 0);
-
-						Tile Ahead = TryGetSlope(AheadPos);
-						Tile Behind = TryGetSlope(BehindPos);
-						Tile Right = TryGetSlope(RightPos);
-						Tile Left = TryGetSlope(LeftPos);
-
-						Vector3 Pos = Branch.Translation;
-						if(Ahead != null && IsSlopePointingAway(Ahead, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-						if(Behind != null && IsSlopePointingAway(Behind, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-						if(Right != null && IsSlopePointingAway(Right, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Right.Point);
-						if(Left != null && IsSlopePointingAway(Left, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Left.Point);
-					}
-
-					{ //Connect to slopes in the four cardinal directions (lower Y)
-						var AheadPos = Branch.Translation + new Vector3(0, -PlatformSize + 1, PlatformSize);
-						var BehindPos = Branch.Translation + new Vector3(0, -PlatformSize + 1, -PlatformSize);
-						var RightPos = Branch.Translation + new Vector3(-PlatformSize, -PlatformSize + 1, 0);
-						var LeftPos = Branch.Translation + new Vector3(PlatformSize, -PlatformSize + 1, 0);
-
-						var RaycastOffset = new Vector3(0, PlatformSize / 4, 0);
-						Tile Ahead = TryGetSlope(AheadPos, RaycastOffset);
-						Tile Behind = TryGetSlope(BehindPos, RaycastOffset);
-						Tile Right = TryGetSlope(RightPos, RaycastOffset);
-						Tile Left = TryGetSlope(LeftPos, RaycastOffset);
-
-						Vector3 Pos = Branch.Translation;
-						if(Ahead != null && IsSlopePointingAt(Ahead, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-						if(Behind != null && IsSlopePointingAt(Behind, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-						if(Right != null && IsSlopePointingAt(Right, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Right.Point);
-						if(Left != null && IsSlopePointingAt(Left, Pos))
-							Pathfinder.ConnectPoints(Branch.Point, Left.Point);
-					}
-
-					break;
+					if(AheadRight != null)
+						Pathfinder.ConnectPoints(Branch.Point, AheadRight.Point);
+					if(AheadLeft != null)
+						Pathfinder.ConnectPoints(Branch.Point, AheadLeft.Point);
+					if(BehindRight != null)
+						Pathfinder.ConnectPoints(Branch.Point, BehindRight.Point);
+					if(BehindLeft != null)
+						Pathfinder.ConnectPoints(Branch.Point, BehindLeft.Point);
 				}
+
+				{ //Connect to slopes in the four cardinal directions (same Y)
+					var AheadPos = Branch.Translation + new Vector3(0, 1, PlatformSize);
+					var BehindPos = Branch.Translation + new Vector3(0, 1, -PlatformSize);
+					var RightPos = Branch.Translation + new Vector3(-PlatformSize, 1, 0);
+					var LeftPos = Branch.Translation + new Vector3(PlatformSize, 1, 0);
+
+					Tile Ahead = TryGetSlope(AheadPos);
+					Tile Behind = TryGetSlope(BehindPos);
+					Tile Right = TryGetSlope(RightPos);
+					Tile Left = TryGetSlope(LeftPos);
+
+					Vector3 Pos = Branch.Translation;
+					if(Ahead != null && IsSlopePointingAway(Ahead, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
+					if(Behind != null && IsSlopePointingAway(Behind, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
+					if(Right != null && IsSlopePointingAway(Right, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
+					if(Left != null && IsSlopePointingAway(Left, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
+				}
+
+				{ //Connect to slopes in the four cardinal directions (lower Y)
+					var AheadPos = Branch.Translation + new Vector3(0, -PlatformSize + 1, PlatformSize);
+					var BehindPos = Branch.Translation + new Vector3(0, -PlatformSize + 1, -PlatformSize);
+					var RightPos = Branch.Translation + new Vector3(-PlatformSize, -PlatformSize + 1, 0);
+					var LeftPos = Branch.Translation + new Vector3(PlatformSize, -PlatformSize + 1, 0);
+
+					var RaycastOffset = new Vector3(0, PlatformSize / 4, 0);
+					Tile Ahead = TryGetSlope(AheadPos, RaycastOffset);
+					Tile Behind = TryGetSlope(BehindPos, RaycastOffset);
+					Tile Right = TryGetSlope(RightPos, RaycastOffset);
+					Tile Left = TryGetSlope(LeftPos, RaycastOffset);
+
+					Vector3 Pos = Branch.Translation;
+					if(Ahead != null && IsSlopePointingAt(Ahead, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
+					if(Behind != null && IsSlopePointingAt(Behind, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
+					if(Right != null && IsSlopePointingAt(Right, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
+					if(Left != null && IsSlopePointingAt(Left, Pos))
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
+				}
+
+				break;
+			}
 
 			case (Items.ID.SLOPE): {
-					Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0, 2, 0));
+				Branch.Point = Pathfinder.AddPoint(Branch.Translation + new Vector3(0, 2, 0));
 
-					var Axis = new Vector3(0, 1, 0);
-					var Rad = Branch.Rotation.y;
+				var Axis = new Vector3(0, 1, 0);
+				var Rad = Branch.Rotation.y;
 
-					{ //Connect to other slopes in four cardinal directions
-						var AheadPos = Branch.Translation + new Vector3(0, PlatformSize, PlatformSize).Rotated(Axis, Rad);
-						var BehindPos = Branch.Translation + new Vector3(0, -PlatformSize, -PlatformSize).Rotated(Axis, Rad);
-						var RightPos = Branch.Translation + new Vector3(-PlatformSize, 0, 0).Rotated(Axis, Rad);
-						var LeftPos = Branch.Translation + new Vector3(PlatformSize, 0, 0).Rotated(Axis, Rad);
+				{ //Connect to other slopes in four cardinal directions
+					var AheadPos = Branch.Translation + new Vector3(0, PlatformSize, PlatformSize).Rotated(Axis, Rad);
+					var BehindPos = Branch.Translation + new Vector3(0, -PlatformSize, -PlatformSize).Rotated(Axis, Rad);
+					var RightPos = Branch.Translation + new Vector3(-PlatformSize, 0, 0).Rotated(Axis, Rad);
+					var LeftPos = Branch.Translation + new Vector3(PlatformSize, 0, 0).Rotated(Axis, Rad);
 
-						var RaycastOffset = new Vector3(0, PlatformSize / 4, 0);
-						Tile Ahead = TryGetSlope(AheadPos, RaycastOffset);
-						Tile Behind = TryGetSlope(BehindPos, RaycastOffset);
-						Tile Right = TryGetSlope(RightPos);
-						Tile Left = TryGetSlope(LeftPos);
+					var RaycastOffset = new Vector3(0, PlatformSize / 4, 0);
+					Tile Ahead = TryGetSlope(AheadPos, RaycastOffset);
+					Tile Behind = TryGetSlope(BehindPos, RaycastOffset);
+					Tile Right = TryGetSlope(RightPos);
+					Tile Left = TryGetSlope(LeftPos);
 
-						if(Ahead != null)
-							Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-						if(Behind != null)
-							Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-						if(Right != null)
-							Pathfinder.ConnectPoints(Branch.Point, Right.Point);
-						if(Left != null)
-							Pathfinder.ConnectPoints(Branch.Point, Left.Point);
-					}
-
-					{ //Connect to platforms forward and backwards
-						var AheadPos = Branch.Translation + new Vector3(0, PlatformSize / 2, PlatformSize).Rotated(Axis, Rad);
-						var BehindPos = Branch.Translation + new Vector3(0, 0, -PlatformSize).Rotated(Axis, Rad);
-
-						var RaycastOffset = new Vector3(0, PlatformSize / 4, 0);
-						Tile Ahead = TryGetPlatform(AheadPos, RaycastOffset);
-						Tile Behind = TryGetPlatform(BehindPos);
-
-						if(Ahead != null)
-							Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
-						if(Behind != null)
-							Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
-					}
-
-					break;
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
+					if(Right != null)
+						Pathfinder.ConnectPoints(Branch.Point, Right.Point);
+					if(Left != null)
+						Pathfinder.ConnectPoints(Branch.Point, Left.Point);
 				}
+
+				{ //Connect to platforms forward and backwards
+					var AheadPos = Branch.Translation + new Vector3(0, PlatformSize / 2, PlatformSize).Rotated(Axis, Rad);
+					var BehindPos = Branch.Translation + new Vector3(0, 0, -PlatformSize).Rotated(Axis, Rad);
+
+					var RaycastOffset = new Vector3(0, PlatformSize / 4, 0);
+					Tile Ahead = TryGetPlatform(AheadPos, RaycastOffset);
+					Tile Behind = TryGetPlatform(BehindPos);
+
+					if(Ahead != null)
+						Pathfinder.ConnectPoints(Branch.Point, Ahead.Point);
+					if(Behind != null)
+						Pathfinder.ConnectPoints(Branch.Point, Behind.Point);
+				}
+
+				break;
+			}
 
 			default:
 				return;
