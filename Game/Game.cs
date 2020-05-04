@@ -43,13 +43,6 @@ public class Game : Node {
 	public override void _Ready() {
 		RuntimeRoot = GetTree().Root.GetNode("RuntimeRoot");
 		GetTree().SetAutoAcceptQuit(false);
-
-		Menu.Setup();
-
-		if(OS.IsDebugBuild())
-			Menu.BuildMain();
-		else
-			Menu.BuildIntro();
 	}
 
 

@@ -30,10 +30,10 @@ Bindings="*res://Binding/Bindings.cs"
 Items="*res://Items/Items.cs"
 WorldAutoload="*res://World/World.cs"
 Menu="*res://UI/Menu/Menu.cs"
-Startup="*res://Game/Startup.cs"
 Hitscan="*res://Items/Logic/Hitscan/Hitscan.cs"
 Mobs="*res://Mobs/Mobs.cs"
 Projectiles="*res://Projectiles/Projectiles.cs"
+Startup="*res://Game/Startup.cs"
 
 [display]
 

@@ -3,7 +3,7 @@ using Godot;
 
 
 public class Startup : Node {
-	//Ensures folders exist, sets up defaults, processes command line arguments and runs Autoexec.csx
+	//Ensures folders exist, sets up defaults, processes command line arguments and builds menue
 	public override void _Ready() {
 		//First we make sure that the Saves folder exists
 		{
@@ -38,6 +38,12 @@ public class Startup : Node {
 
 		if(CmdArgs.Length > 0)
 			Console.LogLabel.Text += "\n";
+
+
+		if(OS.IsDebugBuild())
+			Menu.BuildMain();
+		else
+			Menu.BuildIntro();
 	}
 
 

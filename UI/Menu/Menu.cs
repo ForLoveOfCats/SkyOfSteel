@@ -49,8 +49,7 @@ public class Menu : Node {
 	}
 
 
-	public static void Setup() //Called from Game.cs before this class's _Ready would
-	{
+	public override void _Ready() {
 		MenuRoot = Game.RuntimeRoot.GetNode("MenuRoot");
 		ShadedBackground = MenuRoot.GetNode<Panel>("ShadedBackground");
 		Center = MenuRoot.GetNode<ScrollContainer>("HBox/Center");
