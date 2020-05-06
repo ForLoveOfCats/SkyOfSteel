@@ -93,7 +93,7 @@ public class HostMenu : VBoxContainer {
 
 	public void LoadPressed() {
 		if(SelectedSave != null) {
-			Net.Host();
+			Net.Host(Dedicated: false);
 			World.Load(SelectedSave);
 		}
 	}

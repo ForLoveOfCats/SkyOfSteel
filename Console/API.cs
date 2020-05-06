@@ -75,7 +75,7 @@ public static class API {
 			return;
 		}
 
-		Net.Host();
+		Net.Host(Dedicated: false);
 		World.Load(Name);
 	}
 

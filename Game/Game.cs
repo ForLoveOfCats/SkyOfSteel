@@ -62,7 +62,7 @@ public class Game : Node {
 				if(Menu.IngameMenuOpen) {
 					Menu.Close();
 				}
-				else if(World.IsOpen) {
+				else if(World.IsOpen && !Net.DedicatedServer) {
 					Menu.BuildPause();
 				}
 			}
