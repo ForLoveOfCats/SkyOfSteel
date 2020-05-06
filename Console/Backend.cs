@@ -28,9 +28,15 @@ public static class Backend {
 			"quit",
 			new CommandInfo {
 				HelpMessages = new string[] {
-					"'quit' Immediately closes the game",
+					"'quit' Immediately saves and closes the game",
 				},
-				Function = (Args) => Game.Quit()
+				Function = (Args) => {
+					if(World.IsOpen) {
+						Assert.ActualAssert(World.SaveName != null);
+						World.Save(World.SaveName);
+					}
+					Game.Quit();
+				}
 			}
 		},
 

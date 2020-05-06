@@ -64,16 +64,20 @@ public class PauseMenu : VBoxContainer {
 
 
 	public void DisconnectPressed() {
-		if(Net.Work.IsNetworkServer() && World.SaveName != null)
+		if(Net.Work.IsNetworkServer() && World.SaveName != null) {
 			World.Save(World.SaveName);
+			World.SaveName = null;
+		}
 
 		Net.Disconnect();
 	}
 
 
 	public void QuitPressed() {
-		if(Net.Work.IsNetworkServer() && World.SaveName != null)
+		if(Net.Work.IsNetworkServer() && World.SaveName != null) {
 			World.Save(World.SaveName);
+			World.SaveName = null;
+		}
 
 		Game.Quit();
 	}
