@@ -200,15 +200,13 @@ public class Net : Node {
 	}
 
 
-	public static void Host(bool Dedicated) {
+	public static void Host() {
 		if(Self.GetTree().NetworkPeer != null) {
 			Console.ThrowPrint(Self.GetTree().IsNetworkServer()
 				? "Cannot host when already hosting"
 				: "Cannot host when connected to a server");
 			return;
 		}
-
-		DedicatedServer = Dedicated;
 
 		Players.Clear();
 		World.Start();

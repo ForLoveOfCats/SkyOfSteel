@@ -241,8 +241,14 @@ public class World : Node {
 
 			//TODO: Save/load player data in savefile
 			Net.Players.Add(Self.GetTree().GetNetworkUniqueId(), new Net.PlayerData());
-			Net.Nicknames[Net.ServerId] = Game.Nickname;
-			Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+
+			if(Net.DedicatedServer) {
+				Net.Nicknames[Net.ServerId] = "DedicatedServer";
+			}
+			else {
+				Net.Nicknames[Net.ServerId] = Game.Nickname;
+				Game.SpawnPlayer(Self.GetTree().GetNetworkUniqueId(), true);
+			}
 
 			return true;
 		}

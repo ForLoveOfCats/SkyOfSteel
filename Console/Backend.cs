@@ -39,7 +39,8 @@ public static class Backend {
 			"host",
 			new CommandInfo {
 				HelpMessages = new string[] {
-					$"'host new <savefile>' Starts hosting new savefile on port {Net.Port}",
+					$"'host new <savefile>' Starts hosting a new savefile on port {Net.Port}",
+					$"'host existing <savefile>' Starts hosting an existing savefile on port {Net.Port}",
 				},
 				Function = (Args) => API.Host(Args)
 			}

@@ -19,8 +19,6 @@ public class Startup : Node {
 
 		//Then command line arguments are processed
 		bool ConnectFlag = false;
-		bool ServerFlag = false;
-
 		string[] CmdArgs = OS.GetCmdlineArgs();
 		foreach(string CurrentArg in CmdArgs) {
 			Console.Log($"Command line argument '{CurrentArg}'");
@@ -33,7 +31,7 @@ public class Startup : Node {
 				}
 
 				case "-server": {
-					ServerFlag = true;
+					Net.DedicatedServer = true;
 					break;
 				}
 			}
@@ -47,10 +45,7 @@ public class Startup : Node {
 			Console.LogLabel.Text += "\n";
 
 
-		if(ServerFlag) {
-			Net.Host(Dedicated: true);
-		}
-		else {
+		if(!Net.DedicatedServer) {
 			if(OS.IsDebugBuild())
 				Menu.BuildMain();
 			else
