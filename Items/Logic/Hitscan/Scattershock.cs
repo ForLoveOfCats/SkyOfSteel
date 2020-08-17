@@ -16,7 +16,7 @@ public static class Scattershock
 	public static void Fire(Items.Instance Item, Player UsingPlayer)
 	{
 		{
-			float Multiplyer = Pow(UsingPlayer.AdsMultiplyer, 2);
+			float Multiplyer = Pow(UsingPlayer.AdsMultiplier, 2);
 
 			for(int x = -2; x <= 2; x++)
 			{
@@ -32,9 +32,9 @@ public static class Scattershock
 		Hitscan.ApplyAdditiveRecoil(VerticalRecoil, RecoilLength);
 
 		if(UsingPlayer.IsCrouching)
-			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer*Hitscan.CrouchAffectPercentage, true);
+			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplier*Hitscan.CrouchAffectPercentage, true);
 		else
-			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplyer, true);
+			UsingPlayer.SetCooldown(0, FireCooldown*UsingPlayer.AdsMultiplier, true);
 
 		UsingPlayer.SfxManager.FpScattershockFire();
 	}

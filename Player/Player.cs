@@ -35,17 +35,17 @@ public class Player : Character, IPushable, IInventory
 	public float MaxAirLegRotation = 80;
 	public float MaxHealth = 100;
 	public float LookDivisor = 6;
-	public float ViewmodelMomentumMax = 12; //Probably never reaches this max
-	public float ViewmodelMomentumHorzInputMultiplyer = 0.9f;
-	public float ViewmodelMomentumVertInputMultiplyer = 0.9f;
-	public float ViewmodelMomentumFriction = 30f;
+
+	public const float ViewmodelSensitivity = 0.1f;
+	public const float MaxViewmodelItemRotation = 12f;
+	public const float MaxViewmodelArmRotation = 4f;
 
 	public static float AdsMultiplyerMovementEffect = 1.66f;
-	public static float MinAdsMultiplyer = 0.7f;
+	public static float MinAdsMultiplier = 0.7f;
 	public static float AdsTime = 0.15f; //Seconds to achieve full ads
 
 	public bool Ads = false;
-	public float AdsMultiplyer = 1;
+	public float AdsMultiplier = 1;
 
 	private const float SfxMinLandMomentumY = 3;
 
@@ -643,7 +643,7 @@ public class Player : Character, IPushable, IInventory
 
 	public float CalcViewmodelMomentumChange(float Sens)
 	{
-		return ((float)Math.Log10(Sens+1)) * 3f * AdsMultiplyer;
+		return ((float)Math.Log10(Sens+1)) * 3f * AdsMultiplier;
 	}
 
 
@@ -653,13 +653,13 @@ public class Player : Character, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.ApplyLookVertical(Change);
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y + Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1)
 			);
 		}
 	}
@@ -671,13 +671,13 @@ public class Player : Character, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.ApplyLookVertical(-Change);
 
 			Plr.ViewmodelMomentum = new Vector2(
 				Plr.ViewmodelMomentum.x,
-				Clamp(Plr.ViewmodelMomentum.y + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumVertInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax)
+				Clamp(Plr.ViewmodelMomentum.y - Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1)
 			);
 		}
 	}
@@ -689,13 +689,13 @@ public class Player : Character, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.LookHorizontal -= Change;
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x + Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x - Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -708,13 +708,13 @@ public class Player : Character, IPushable, IInventory
 		Player Plr = Game.PossessedPlayer;
 		if(Sens > 0)
 		{
-			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplyer;
+			float Change = ((float)Sens/Plr.LookDivisor)*Game.LookSensitivity*Plr.AdsMultiplier;
 
 			Plr.LookHorizontal += Change;
 			Plr.RotationDegrees = new Vector3(0, Plr.LookHorizontal, 0);
 
 			Plr.ViewmodelMomentum = new Vector2(
-				Clamp(Plr.ViewmodelMomentum.x - Plr.CalcViewmodelMomentumChange(Sens)*Plr.ViewmodelMomentumHorzInputMultiplyer, -Plr.ViewmodelMomentumMax, Plr.ViewmodelMomentumMax),
+				Clamp(Plr.ViewmodelMomentum.x + Sens*Player.ViewmodelSensitivity*Plr.AdsMultiplier, -1, 1),
 				Plr.ViewmodelMomentum.y
 			);
 		}
@@ -885,7 +885,7 @@ public class Player : Character, IPushable, IInventory
 
 	public float GetAdsMovementMultiplyer()
 	{
-		return Clamp(((AdsMultiplyer-1) * AdsMultiplyerMovementEffect)+1, 0, 1);
+		return Clamp(((AdsMultiplier-1) * AdsMultiplyerMovementEffect)+1, 0, 1);
 	}
 
 
@@ -1233,32 +1233,30 @@ public class Player : Character, IPushable, IInventory
 			return;
 		}
 
-		Assert(MinAdsMultiplyer > 0 && MinAdsMultiplyer <= 1);
+		Assert(MinAdsMultiplier > 0 && MinAdsMultiplier <= 1);
 		if(Ads)
-			AdsMultiplyer = Clamp(AdsMultiplyer - (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
+			AdsMultiplier = Clamp(AdsMultiplier - (Delta*(1-MinAdsMultiplier)/AdsTime), MinAdsMultiplier, 1);
 		else
-			AdsMultiplyer = Clamp(AdsMultiplyer + (Delta*(1-MinAdsMultiplyer)/AdsTime), MinAdsMultiplyer, 1);
+			AdsMultiplier = Clamp(AdsMultiplier + (Delta*(1-MinAdsMultiplier)/AdsTime), MinAdsMultiplier, 1);
 
-		Cam.Fov = Game.Fov*AdsMultiplyer;
+		Cam.Fov = Game.Fov*AdsMultiplier;
 
-		ViewmodelMomentum = new Vector2(
-			Clamp(ViewmodelMomentum.x - ViewmodelMomentumFriction*Delta*ViewmodelMomentum.x, -ViewmodelMomentumMax, ViewmodelMomentumMax),
-			Clamp(ViewmodelMomentum.y - ViewmodelMomentumFriction*Delta*ViewmodelMomentum.y, -ViewmodelMomentumMax, ViewmodelMomentumMax)
-		);
-		ViewmodelMomentum = ClampVec2(ViewmodelMomentum, -ViewmodelMomentumMax, ViewmodelMomentumMax);
+		float Length = ViewmodelMomentum.Length();
+		Vector2 Normalized = ViewmodelMomentum.Normalized();
+		ViewmodelMomentum = Normalized * Clamp(Length - Delta*3f, 0, float.MaxValue);
 
 		ViewmodelItem.RotationDegrees = new Vector3(
-			ViewmodelMomentum.y*AdsMultiplyer*1.2f,
-			180 - ViewmodelMomentum.x*AdsMultiplyer*1.2f,
+			SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelItemRotation * AdsMultiplier,
+			180 - SafeSign(ViewmodelMomentum.x) * ViewmodelMomentum.x*ViewmodelMomentum.x * MaxViewmodelItemRotation * AdsMultiplier,
 			0
 		);
 		ViewmodelArmJoint.RotationDegrees = new Vector3(
-			ViewmodelMomentum.y*AdsMultiplyer,
-			ViewmodelMomentum.x*AdsMultiplyer,
+			SafeSign(ViewmodelMomentum.y) * ViewmodelMomentum.y*ViewmodelMomentum.y * MaxViewmodelArmRotation * AdsMultiplier,
+			SafeSign(ViewmodelMomentum.x) * ViewmodelMomentum.x*ViewmodelMomentum.x * MaxViewmodelArmRotation * AdsMultiplier,
 			0
 		);
 		ViewmodelArmJoint.Translation = new Vector3(
-			NormalViewmodelArmX * ((AdsMultiplyer-MinAdsMultiplyer) * (1/(1-MinAdsMultiplyer))),
+			NormalViewmodelArmX * ((AdsMultiplier-MinAdsMultiplier) * (1/(1-MinAdsMultiplier))),
 			ViewmodelArmJoint.Translation.y,
 			ViewmodelArmJoint.Translation.z
 		);
