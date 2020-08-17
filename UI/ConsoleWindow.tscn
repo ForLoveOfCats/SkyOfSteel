@@ -85,6 +85,6 @@ margin_bottom = 600.0
 hint_tooltip = "The console is disabled in 0.1.6"
 custom_fonts/font = ExtResource( 3 )
 editable = false
-placeholder_text = "The console is disabled in 0.1.6"
+placeholder_text = "The console is disabled in 0.1.7"
 
 [node name="CanvasLayer" type="CanvasLayer" parent="VBox"]

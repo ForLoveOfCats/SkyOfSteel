@@ -13,34 +13,37 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Welcome" parent="." instance=ExtResource( 2 )]
-margin_top = 228.0
+margin_top = 198.0
 margin_right = 1024.0
-margin_bottom = 268.0
-text = "Welcome to SkyOfSteel!"
+margin_bottom = 250.0
+text = "Welcome to SkyOfSteel"
 
 [node name="Message" parent="." instance=ExtResource( 3 )]
-margin_top = 272.0
+margin_top = 254.0
 margin_right = 1024.0
-margin_bottom = 291.0
-text = "SkyOfSteel is extremely early alpha. As a result it may be buggy and have issues. Thank you for your understanding."
+margin_bottom = 305.0
+text = "This game is unfinished and development has halted. There are many bugs and mechanics which need improvement. However I hope that you can still enjoy it for what it is, a labor of love."
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 295.0
+margin_top = 309.0
 margin_right = 1024.0
-margin_bottom = 314.0
+margin_bottom = 333.0
 
 [node name="ContinueButton" parent="." instance=ExtResource( 5 )]
-margin_top = 318.0
+margin_top = 337.0
 margin_right = 1024.0
-margin_bottom = 343.0
+margin_bottom = 367.0
 text = "Continue"
 
 [node name="QuitButton" parent="." instance=ExtResource( 5 )]
-margin_top = 347.0
+margin_top = 371.0
 margin_right = 1024.0
-margin_bottom = 372.0
+margin_bottom = 401.0
 text = "Quit"
 [connection signal="pressed" from="ContinueButton" to="." method="ContinuePressed"]
 [connection signal="pressed" from="QuitButton" to="." method="QuitPressed"]
