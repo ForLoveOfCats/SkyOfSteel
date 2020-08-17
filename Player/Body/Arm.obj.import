@@ -15,4 +15,5 @@ dest_files=[ "res://.import/Arm.obj-67c98690e62f34502499d01ff8c888c0.mesh", "res
 
 generate_tangents=true
 scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
 optimize_mesh=true

@@ -6,14 +6,14 @@ using System.Collections.Generic;
 using static System.Diagnostics.Debug;
 
 
-public class Player : KinematicBody, IPushable, IInventory
+public class Player : Character, IPushable, IInventory
 {
 	public bool Possessed = false;
 	public int Id = 0;
 
 	public float Hight = 10;
 	public float RequiredUncrouchHight = 11;
-	public float MovementSpeed = 36;
+	public float MovementSpeed = 45;
 	public float FlySprintMultiplyer = 5; //Speed while sprint flying is base speed times this value
 	public float CrouchMovementDivisor = 2.8f;
 	public float MaxVerticalSpeed = 100f;
@@ -575,7 +575,7 @@ public class Player : KinematicBody, IPushable, IInventory
 				}
 				Plr.IsJumping = false;
 			}
-			else if(Plr.IsOnFloor())
+			else if(Plr.OnFloor)
 			{
 				Plr.Momentum.y = Plr.JumpStartForce;
 				Plr.IsJumping = true;
@@ -943,7 +943,7 @@ public class Player : KinematicBody, IPushable, IInventory
 
 		CurrentCooldown = Clamp(CurrentCooldown + (100*Delta), 0, CurrentMaxCooldown);
 
-		if(JumpAxis > 0 && IsOnFloor() && !IsCrouching && !Ads)
+		if(JumpAxis > 0 && OnFloor && !IsCrouching && !Ads)
 		{
 			Momentum.y = JumpStartForce;
 			IsJumping = true;
@@ -977,15 +977,15 @@ public class Player : KinematicBody, IPushable, IInventory
 			}
 		}
 
-		if(IsOnFloor() && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
+		if(OnFloor && !WasOnFloor && Abs(LastMomentumY) > SfxMinLandMomentumY)
 		{
 			float Volume = Abs(Clamp(LastMomentumY, -MaxVerticalSpeed, 0))/4 - 30;
 			SfxManager.FpLand(Volume);
 		}
 
-		WasOnFloor = IsOnFloor();
+		WasOnFloor = OnFloor;
 
-		if(!IsJumping && (IsOnFloor() || FlyMode))
+		if(!IsJumping && (OnFloor || FlyMode))
 		{
 			float SpeedLimit = MovementSpeed*GetAdsMovementMultiplyer();
 			if(FlyMode && IsFlySprinting)
@@ -1065,7 +1065,7 @@ public class Player : KinematicBody, IPushable, IInventory
 		}
 		else
 		{
-			if(IsOnFloor() && Momentum.y <= 0)
+			if(OnFloor && Momentum.y <= 0)
 			{
 				Vector3 BottomPoint;
 				if(IsCrouching)
@@ -1073,10 +1073,10 @@ public class Player : KinematicBody, IPushable, IInventory
 				else
 					BottomPoint = LargeBottomPoint.Translation;
 
-				Momentum = MoveAndSlideWithSnap(Momentum, BottomPoint, new Vector3(0,1,0), true, 100, Deg2Rad(60));
+				Momentum = Move(Momentum, Delta, 5, 75, 0.38f);
 			}
 			else
-				Momentum = MoveAndSlide(Momentum, new Vector3(0,1,0), true, 100, Deg2Rad(60));
+				Momentum = Move(Momentum, Delta, 5, 75, 0.38f);
 
 		}
 		Vector3 NewPos = Translation;
@@ -1086,7 +1086,7 @@ public class Player : KinematicBody, IPushable, IInventory
 			Translation = NewPos;
 		}
 
-		if(!FlyMode && IsOnFloor() && Momentum.y <= 0f)
+		if(!FlyMode && OnFloor && Momentum.y <= 0f)
 			Momentum.y = -1f;
 
 		if(IsCrouching && CrouchAxis == 0)
