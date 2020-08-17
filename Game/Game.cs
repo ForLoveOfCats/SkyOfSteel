@@ -27,17 +27,6 @@ public class Game : Node
 		if(Engine.EditorHint) {return;}
 
 		Self = this;
-
-		using(System.Net.WebClient WebClient = new System.Net.WebClient())
-		{
-			try //Make sure game is still playable if url becomes invalid
-			{
-				RemoteVersion = WebClient.DownloadString("http://skyofsteel.org/LatestVersion.txt");
-				RemoteVersion = RemoteVersion.Trim();
-			}
-			catch
-			{}
-		}
 	}
 
 
