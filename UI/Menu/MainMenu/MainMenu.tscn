@@ -6,7 +6,6 @@
 [ext_resource path="res://UI/Menu/Pieces/SpacerLabelPiece.tscn" type="PackedScene" id=4]
 [ext_resource path="res://UI/Menu/Pieces/ButtonPiece.tscn" type="PackedScene" id=5]
 
-
 [sub_resource type="DynamicFont" id=1]
 size = 90
 font_data = ExtResource( 2 )
@@ -18,99 +17,88 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Title" type="Label" parent="."]
-margin_top = 16.0
+margin_top = 50.0
 margin_right = 1024.0
-margin_bottom = 131.0
+margin_bottom = 165.0
 custom_fonts/font = SubResource( 1 )
 text = "SkyOfSteel"
 align = 1
 
 [node name="Version" parent="." instance=ExtResource( 3 )]
-margin_top = 135.0
+margin_top = 169.0
 margin_right = 1024.0
-margin_bottom = 159.0
+margin_bottom = 193.0
 text = "Version Placeholder Text"
 
 [node name="SpacerLabel" parent="." instance=ExtResource( 4 )]
-margin_top = 163.0
-margin_right = 1024.0
-margin_bottom = 187.0
-
-[node name="HostButton" parent="." instance=ExtResource( 5 )]
-margin_top = 191.0
+margin_top = 197.0
 margin_right = 1024.0
 margin_bottom = 221.0
-text = "Host"
 
-[node name="ConnectButton" parent="." instance=ExtResource( 5 )]
+[node name="HostButton" parent="." instance=ExtResource( 5 )]
 margin_top = 225.0
 margin_right = 1024.0
 margin_bottom = 255.0
+text = "Host"
+
+[node name="ConnectButton" parent="." instance=ExtResource( 5 )]
+margin_top = 259.0
+margin_right = 1024.0
+margin_bottom = 289.0
 text = "Connect"
 
 [node name="SpacerLabel2" parent="." instance=ExtResource( 4 )]
-margin_top = 259.0
-margin_right = 1024.0
-margin_bottom = 283.0
-
-[node name="WebsiteButton" parent="." instance=ExtResource( 5 )]
-margin_top = 287.0
+margin_top = 293.0
 margin_right = 1024.0
 margin_bottom = 317.0
-text = "SkyOfSteel.org"
 
-[node name="DiscordButton" parent="." instance=ExtResource( 5 )]
+[node name="ItchButton" parent="." instance=ExtResource( 5 )]
 margin_top = 321.0
 margin_right = 1024.0
 margin_bottom = 351.0
-text = "Discord"
-
-[node name="ItchButton" parent="." instance=ExtResource( 5 )]
-margin_top = 355.0
-margin_right = 1024.0
-margin_bottom = 385.0
 text = "Itch.io"
 
 [node name="GithubButton" parent="." instance=ExtResource( 5 )]
-margin_top = 389.0
+margin_top = 355.0
 margin_right = 1024.0
-margin_bottom = 419.0
+margin_bottom = 385.0
 text = "Github"
 
 [node name="SpacerLabel3" parent="." instance=ExtResource( 4 )]
-margin_top = 423.0
+margin_top = 389.0
 margin_right = 1024.0
-margin_bottom = 447.0
+margin_bottom = 413.0
 
 [node name="HelpButton" parent="." instance=ExtResource( 5 )]
-margin_top = 451.0
+margin_top = 417.0
 margin_right = 1024.0
-margin_bottom = 481.0
+margin_bottom = 447.0
 text = "Help"
 
 [node name="FilesButton" parent="." instance=ExtResource( 5 )]
-margin_top = 485.0
+margin_top = 451.0
 margin_right = 1024.0
-margin_bottom = 515.0
+margin_bottom = 481.0
 text = "Open Data Folder"
 
 [node name="CreditsButton" parent="." instance=ExtResource( 5 )]
-margin_top = 519.0
+margin_top = 485.0
 margin_right = 1024.0
-margin_bottom = 549.0
+margin_bottom = 515.0
 text = "Credits"
 
 [node name="QuitButton" parent="." instance=ExtResource( 5 )]
-margin_top = 553.0
+margin_top = 519.0
 margin_right = 1024.0
-margin_bottom = 583.0
+margin_bottom = 549.0
 text = "Quit"
 [connection signal="pressed" from="HostButton" to="." method="HostPressed"]
 [connection signal="pressed" from="ConnectButton" to="." method="ConnectPressed"]
-[connection signal="pressed" from="WebsiteButton" to="." method="WebsitePressed"]
-[connection signal="pressed" from="DiscordButton" to="." method="DiscordPressed"]
 [connection signal="pressed" from="ItchButton" to="." method="ItchPressed"]
 [connection signal="pressed" from="GithubButton" to="." method="GithubPressed"]
 [connection signal="pressed" from="HelpButton" to="." method="HelpPressed"]
